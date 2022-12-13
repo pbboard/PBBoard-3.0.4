@@ -1,0 +1,30 @@
+<!--
+// **********************************
+// الرجاء عدم إزالة وصف الحقوق
+// Please don't remove the copyright note
+// MagicToolBox hack 2.0 by Alawi Hussain Ba3qeel © http://www.rayaheen.net  
+// ( free software )
+// **********************************
+-->
+
+<html dir="rtl">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1256">
+<title>حفظ القالب الحالي</title>
+<style>
+ p, textarea: { font-size:8pt; font-family:tahoma; color:brown}
+</style>
+</head>
+<body bgcolor="#FFE1CE">
+<p align="center">
+انسخه الكود التالي وضعه في ملف poem_settings.js تحت part 2
+<textarea name=txt width=100% dir=ltr rows="5" cols="29"></textarea>
+<br>
+<input type=button value="تحديد النص" onclick="txt.select()">
+<input type=button onclick="window.close()" value="اغلاق"></p>
+</body>
+<script>
+  txt.value = 'initializeTemplates("' + window.dialogArguments + '");';
+</script>
+</html>

@@ -1,0 +1,916 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin name="Upgrade Style templates to 3.0.4 ">
+<version>pbb304</version>
+<templates>
+
+<template name="headinclud.tpl" type="before">
+<find><![CDATA[<!-- CSS Stylesheet -->]]></find>
+<action><![CDATA[<link rel="stylesheet" href="{$ForumAdress}{$style_path}" />]]></action>
+</template>
+<template name="headinclud.tpl" type="after">
+<find><![CDATA[<!-- CSS Stylesheet -->]]></find>
+<action><![CDATA[
+<meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+<meta itemprop="image" content="{$ForumAdress}styles/default/images/pbboard-icon.png" />
+<!-- Start Social Media Meta Tags -->
+<link rel="canonical" href="{$GetPageUrl}" />
+<meta name="theme-color" content="#185886" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+<meta name="apple-mobile-web-app-title" content="{$title}" />
+<link rel="apple-touch-icon" href="{$ForumAdress}styles/default/images/pbboard-icon.png" />
+
+<meta property="og:description" content="{$description}" />
+<meta property="og:url" content="{$GetPageUrl}" />
+<meta property="og:site_name" content="{$_CONF['info_row']['title']}" />
+<meta property="og:type" content="website" />
+<meta property="og:title" content="{$title}" />
+<meta property="og:image" content="{$ForumAdress}styles/default/images/pbboard-icon.png" />
+
+<meta property="twitter:title" content="{$title}" />
+<meta property="twitter:description" content="{$description}" />
+<meta property="twitter:image" content="{$ForumAdress}styles/default/images/pbboard-icon.png" />
+<meta property="twitter:card" content="summary" />
+
+<!-- End Social Media Meta Tags -->
+
+<style>
+/* Start css for PBBoard 3.0.4 */
+.smiles-bbcode{
+width:13%;
+vertical-align: top;
+padding-right: 3px;
+padding-left: 3px;
+}
+#smile_menu {
+display: none;
+width: 300px;
+position: absolute;
+z-index: 100;
+padding: 7px;
+background: #fff;
+border: 2px solid #d2d2d2;
+margin-top: 42px;
+overflow: auto;
+word-wrap: break-word;
+overflow-x: hidden;
+overflow-wrap: break-word;
+}
+.quotemain cite {
+font-weight: bold;
+font-style: normal;
+display: block;
+font-size: 1em;
+border-bottom: 1px solid #ccc;
+margin-bottom: 10px;
+padding-bottom: 3px;
+font-family: "Droid Arabic Kufi","tahoma",sans-serif;
+font-size:11px;
+font-weight:normal;
+text-align:right;
+}
+.quotemain cite a {
+float: left;
+font-size:15px;
+direction:ltr;
+margin-top: -5px;
+}
+.quotemain span {
+margin-right: 4px;
+}
+.quotemain date {
+font-size:11px;
+}
+.quotemain{
+position: relative;
+background: white;
+margin: 0.25em 0.05em 0 0;
+border: 1px solid #ccc;
+padding: 10px;
+-moz-border-radius: 6px;
+-webkit-border-radius: 6px;
+border-radius: 6px;
+}
+.codemain{
+background-color: transparent;
+background-image:url('../images/css_img_code.gif');
+background-repeat: no-repeat;
+color:#465584;
+font: normal 12px tahoma;
+margin-right:auto;
+margin-left:auto;
+margin-top:5px;
+margin-bottom:5px;
+padding-top:1px;
+padding-bottom:0px;
+padding-right:5px;
+padding-left:5px;
+border:1px solid #d1d1e1;
+width:auto;
+direction:ltr;
+overflow:inherit;
+}
+pre{
+display:block;
+border:1px solid #d1d1e1;
+text-align: left;
+direction:ltr;
+font-family: "tahoma",sans-serif;
+font-size: 85%;
+font-weight:normal;
+line-height: 1.45;
+word-break: normal;
+padding: 5px;
+width: 98%;
+float: left;
+overflow-x: auto;
+clear: both;
+}
+.codediv{
+display:block;
+background-color: transparent;
+background-image:url('../images/css_img_code.gif');
+background-repeat: no-repeat;
+border:1px solid #d1d1e1;
+border-bottom:0px solid #d1d1e1;
+position: relative;
+top:15px;
+float: 0;
+color:#81818b;
+padding: 5px;
+font: bold 11px tahoma;
+text-align: right;
+width: 98%;
+float: left;
+clear: both;
+}
+.maxy{
+display:block;
+width: 100%;
+clear: both;
+}
+#progress-bar {background-color: #12CC1A;height:20px;color: #FFFFFF;width:0%;-webkit-transition: width .3s;-moz-transition: width .3s;transition: width .3s;}
+#progress-div {width:170px;border:#0FA015 1px solid;padding: 2px 0px;margin:10px 0px;border-radius:4px;text-align:center;}
+#targetLayer{background-color:#12CC1A;text-align:center;overflow: hidden;margin:0px;padding:0px;}
+#message{color: #FF0000;}
+#upload_link{cursor: pointer;}
+#targetood{text-align:right;overflow: hidden;}
+#files{display:none}
+.file-delete-insert {
+background: rgba(0,0,0,0.3);
+border-radius:4px;
+font-family:Tahoma, arial;
+font-size:11px;
+color: #FFFFFF;
+font-weight: bold;
+margin: 0px;
+padding:4px;
+cursor: pointer;
+}
+.trash {
+font-size:15px;
+color: #fff;
+font-weight: normal;
+}
+.file-delete {
+display: inline-block;
+border-radius:4px;
+cursor: pointer;
+margin-right:118px;
+margin-top:-2px;
+position:absolute;
+padding:2px;
+color:#FFFFFF;
+}
+.attachmentInsert {
+display: inline-block;
+padding: 2px;
+border: 1px solid #ccc;
+overflow: hidden;
+}
+.file-Link {
+font-family:Tahoma, arial;
+font-size:11px;
+color: inherit;
+background: rgba(0,0,0,0.3);
+border-radius: 4px;
+padding:2px;
+margin-right:-138px;
+position:absolute;
+color: #fff;
+-webkit-transition: background .25s ease;
+transition: background .25s ease;
+}
+.u-srOnly {
+position: absolute;
+height: 1px;
+width: 1px;
+margin: -1px;
+padding: 0;
+border: 0;
+clip: rect(0 0 0 0);
+overflow: hidden;
+}
+.file-preview {
+display: inline-block;
+font-size: 159px;
+color: #409bd9;
+margin-left: 1px;
+}
+.add_attach
+{
+display: inline-block;
+background:rgba(0,0,0,0.3);
+border-radius:4px;
+cursor: pointer;
+font-size: 12px;
+padding:0px;
+color:#FFFFFF;
+overflow: hidden;
+}
+.add_attach a
+{
+font-family:Tahoma,arial;
+color:#FFFFFF;
+}
+.border .row1 .add_attach a,
+.border .row2 .add_attach a
+{
+font-family:Tahoma,arial;
+color:#FFFFFF;
+padding:2px;
+}
+.container {
+position: relative;
+}
+.topright {
+position: absolute;
+top: 0px;
+right: 0px;
+padding:2px;
+}
+.topleft {
+position: absolute;
+top: 0px;
+left: 0px;
+}
+.insert_to_post
+{
+display: inline-block;background:rgba(0,0,0,0.2);cursor: pointer;position:absolute;display:none;width:100px;padding:2px;
+}
+.clear
+{
+clear: both;
+}
+.icon-mobile-men-top-right{
+list-style:none;
+margin:0px;
+padding: 0px;
+}
+.icon-mobile-men-top-right #icon-mobile-menu a {
+color: #FFF;
+font-size: 22px;
+font-style: normal;
+font-weight: normal;
+position:absolute;
+top: 9px;
+left: 8px;
+cursor: pointer;
+}
+#flip {
+display: none;
+position: absolute;
+top: 35px;
+left: 25px;
+z-index: 99902;
+margin-right: 33px;
+background: #31679e;
+box-shadow: 0px 7px 20px rgb(0 0 0 / 20%);
+border: 5px solid #3A89BE;
+border-radius: 3px;
+padding: 0px;
+opacity: 1;
+width: 200px;
+clear: both;
+}
+#flip ul {
+padding: 0px;
+margin: 0px;
+display:inline;
+}
+#flip li {
+background-color: #409bd9;
+color: #ffffff;
+font-family: "Droid Arabic Kufi","tahoma",sans-serif;
+font-size: 11px;
+font-weight: normal;
+padding: 0px;
+padding-bottom: 2px;
+padding-top: 7px;
+text-decoration: none;
+text-align: right;
+border-bottom: 1px;
+border-bottom-color: #3a89be;
+border-bottom-style: solid;
+list-style: none;
+padding-right: 7px;
+}
+#flip a {
+color: #ffffff;
+}
+#flip li:hover {
+background: #31679e;
+}
+#icon-mobile-menu_menu .element_menu li
+{
+float:left;
+margin-left: -30px;
+}
+.icon-mobile-men-top-right{
+display: none !important;
+}
+.max-input{
+width: 50%;
+}
+iframe{
+width:98%;
+}
+span.register_fixed table{
+width: 190px !important;
+margin: 0px !important;
+}
+
+span.register_fixed{
+display: inline-block !important;
+vertical-align: middle;
+}
+.row1 .wmax{
+width:25%;
+}
+.row1 .wmaxy{
+width:70%;
+position: relative;
+top: 0px;
+right: -18px;
+}
+.form_register input[type="text"],.border input[type="password"]{
+min-width: 40%;
+height: 20px;
+font-family: "Droid Arabic Kufi","tahoma",sans-serif;
+font-size: 11px;
+font-weight: bold;
+}
+.form_login input[type="text"],.border input[type="password"]{
+min-width: 40%;
+height: 23px;
+font-family: "Droid Arabic Kufi","tahoma",sans-serif;
+font-size: 11px;
+font-weight: bold;
+}
+#visitor_messag{
+border: 1px solid #d2d2d2;
+}
+#visitor_messag .thead1{
+position: relative;
+top: -4px;
+border-bottom: 1px solid #d1d1e1;
+}
+.user_s
+{
+font-size:12px;
+text-align:center;
+white-space:nowrap;
+display:inline-block;
+vertical-align:middle;
+padding:5px 5px;
+border-radius:3px;
+border:1px solid #d1d1e1;
+}
+.border .row1 .user_s a
+{
+color: #4b71cf;
+text-decoration:underline;
+}
+.information_user_website{
+opacity: 0.9;
+font-family: "Droid Arabic Kufi","tahoma",sans-serif;
+font-size: 11px;
+position: relative;
+top: 192px;
+right: -167px;
+color: #000;
+float: right;
+display: inline-block;
+vertical-align: middle;
+padding: 6px;
+border-radius: 4px;
+}
+.information_user_website a{
+text-decoration:underline;
+color:#000;
+}
+.information_user_website .dirc{
+direction:ltr;
+}
+.information_user_website:hover a{
+color:#666633;
+}
+.information_user_website:hover
+{
+color:#666633;
+opacity:1;
+}
+.information_user_info{
+*background: #fff;
+opacity: 0.9;
+font-family: "Droid Arabic Kufi","tahoma",sans-serif;
+font-size: 11px;
+font-weight: normal;
+position: absolute;
+top: 137px;
+right: 7px;
+display: block;
+color: #000;
+width: auto;
+float: right;
+z-index: 100;
+display: inline-block;
+vertical-align: middle;
+padding: 6px;
+border-radius: 3px;
+}
+.information_user_info a{margin-top: 8px;
+color:#000;
+}
+.information_user_info .dirc{
+direction:ltr;
+}
+.information_user_info:hover a{
+color:#000;
+}
+.information_user_info:hover
+{
+*background:#fff;
+color:#3366CC;
+opacity:1;
+}
+.user_style_title {
+position: relative;
+top: 20px !important;
+right: 8px !important;
+color: #FFF;
+}
+.user_style_title h3  {
+font-size:20px;
+color: #FFF;
+}
+.nav_header_bar-top{
+margin: 0px;
+padding: 0px;
+width: auto% !important;
+}
+.text .mycode_align_center{
+text-align:center !important;
+}
+.fi-icon{
+font-size: 15px;
+vertical-align: top;
+display: inline-block;
+border: 1px solid #d1d1e1;
+padding: 5px;
+}
+.fiR-icon{
+color:#cf0b29;
+background: #ffffff;
+font-size: 15px;
+vertical-align: top;
+display: inline-block !important;
+border: 1px solid #dd7878;
+padding: 5px;
+}
+.menu_popup input[type="text"],.menu_popup input[type="button"]{
+margin: 5px;
+}
+.s1 {
+font-weight: normal !important;
+}
+.s1 a{
+font-weight: normal !important;
+}
+textarea.tbox {
+overflow: scroll;
+border-radius: 2px;
+border: 1px solid lightgrey;
+padding: 6px;
+width: 98% !important;
+max-height: 27px !important;
+min-height: 27px !important;
+height: 32px;
+font-weight: bold;
+overflow: hidden;
+resize: none !important;
+line-height: 25px;
+}
+#form-chat-id{
+width: 97% !important;
+}
+.d-flex {
+display: flex !important;
+}
+.light {
+background-color: #FDFDFF;
+}
+.fl {
+float: left;
+}
+.flex-fill {
+flex: 1 1 auto !important;
+}
+.UserPhoto_chat{
+margin-left:1px !important;
+background-color:transparent;
+display: inline-block;
+border: 1px solid #fff;
+width: 22px !important;
+height: 20px !important;
+}
+.ln_chat
+{
+display: inline-block !important;
+position: relative;
+top: -5px;
+}
+.ln_chat img
+{
+display: inline-block !important;
+position: relative !important;
+top: 6px !important;
+}
+.chat .thead1
+{
+background: #409bd9;
+color: #fff;
+}
+.dirltr a{
+direction: ltr;
+float: right;
+}
+.spis{
+margin-left: 15px !important;
+}
+#chat-content{
+display: block !important;
+width:98.3% !important;
+margin-right: 11px !important;
+}
+.chat_ee{
+word-wrap: break-word;
+overflow-x: hidden;
+overflow-wrap: break-word;
+}
+.chat_ee .row1{
+width:97% !important;
+}
+.rUlRow .row_sidebar{
+border:0px solid #d2d2d2 !important;
+width:100% !important;
+margin-right: 0px !important;
+}
+html, body {
+font-size: 15px !important;
+}
+.r-subc1 {
+    background-color: #D4E8EF !important;
+    border-bottom: 1px solid #d1d1e1 !important;
+    border-right: 1px solid #d1d1e1 !important;
+    line-height: 1.6;
+}
+
+.r-subc2 {
+    background-color: #fff;
+    border-bottom: 1px solid #d1d1e1 !important;
+    border-left: 1px solid #d1d1e1 !important;
+    border-right: 1px solid #d1d1e1 !important;
+    line-height: 1.6 !important;
+}
+
+.subc {
+    background-color: #FFFF;
+    line-height: 1.8 !important;
+}
+
+.writers_info {
+    margin-right: 15px !important;
+}
+.r-nfo .writers_info {
+    background-color: #D4E8EF;
+    position: relative !important;
+    top: -27px !important;
+}
+
+.r-nfo {
+    border-right: 1px solid #d1d1e1 !important;
+}
+.r-nfo, .writers_info {
+    background-color: #D4E8EF !important;
+}
+
+.UserPhoto_large img {
+    background-color: #FFFFFF;
+    border-radius: 50%;
+    border: 1px solid #fff;
+    width: 80px;
+    height: 80px;
+    padding: 2px;
+    margin-right: -15px;
+    border: 1px solid #d5d5d5;
+    box-shadow: 0 2px 2px rgba(0, 0, 0, 0.1);
+}
+
+span.user_online {
+    background-color: #949eb7;
+    box-shadow: 0 0 0 2px rgb(255 255 255 / 95%);
+    border-radius: 50%;
+    bottom: 4px;
+    height: 16px;
+    width: 16px;
+    position: relative;
+    top: -2px;
+    right: -27px;
+}
+.w_infos {
+    width: 170px !important;
+    vertical-align: top !important;
+    max-width: 150px !important;
+    padding: 0px !important;
+}
+.info-userArrow {
+    position: absolute;
+    top: -40px;
+    left: -9px;
+    border: 12px solid transparent;
+    border-right-width: 0px;
+    border-left-color: #FFFFFF;
+}
+.subcontent .subtr {
+    border-top: 1px solid #d1d1e1;
+    border-right: 1px solid #d1d1e1;
+    border-spacing: 1px;
+    background-image: none #D4E8EF;
+    background-color: #D4E8EF;
+}
+.writers_info a {
+    color: #CC9900 !important;
+}
+.add_reputation a.for_post {
+    color: #CC0000 !important !important;
+    display: inline !important;
+}
+.edit_to_post {
+    background-color: #FFFFFF;
+    border-width: 1px;
+    border-color: #b5c5cb;
+    border-radius: 1px;
+    border-style: solid;
+    position: absolute;
+    top: 1;
+    cursor: pointer;
+}
+.Button_ss {
+    font-family: "Droid Arabic Kufi","tahoma",sans-serif;
+    font-size: 10px;
+    font-weight: bold;
+    cursor: pointer;
+    padding: 2px;
+    padding-left: 4px;
+    padding-right: 6px;
+    display: inline-block;
+    margin: 2px;
+    text-transform: uppercase;
+    outline: none;
+    position: relative;
+    -webkit-transition: none;
+    -moz-transition: none;
+    transition: none;
+    background-color: #d4f0f1;
+    color: #000000;
+    border-width: 1px;
+    border-color: #b5c5cb;
+    border-radius: 1px;
+    border-style: solid;
+}
+ul.post_controls a {
+    font-family: "Droid Arabic Kufi","tahoma",sans-serif;
+    font-size: 10px;
+    font-weight: bold;
+    height: 22px;
+    line-height: 22px;
+    padding: 0 6px;
+    color: #1d3652;
+    margin-left: 4px;
+    display: block;
+    cursor: pointer;
+}
+.user_online .Online {
+    background-color: #CCCC00;
+    border-radius: 100%;
+}
+.w_name_rate {
+    position: relative;
+    left: 0px !important;
+    right: -9px !important;
+    top: 0px !important;
+    }
+.w_photo {
+    width: fit-content !important;
+}
+.r-subc {
+    line-height: 1.9 !important;
+}
+.text {
+    vertical-align: top !important;
+    padding: 7px !important;
+    margin: 0px !important;
+}
+.add_reputation a:link {
+    color: #990099;
+    font-family: arial;
+    font-size: 18px;
+    font-weight: bold;
+    padding: 2px !important;
+    margin-top: 16px !important;
+}
+.morwidth {
+    position: absolute !important;
+    left: 0px !important;
+}
+/* end css for PBBoard 3.0.4 */
+</style>
+]]></action>
+</template>
+<template name="headinclud.tpl" type="replace">
+<find><![CDATA[<!doctype html>]]></find>
+<action><![CDATA[<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">]]></action>
+</template>
+
+<template name="headinclud.tpl" type="replace">
+<find><![CDATA[<html dir="{$_CONF['info_row']['content_dir']}" itemscope="" itemtype="http://schema.org/WebPage" lang="{$_CONF['info_row']['content_language']}">]]></find>
+<action><![CDATA[<html xmlns="http://www.w3.org/1999/xhtml" dir="{$_CONF['info_row']['content_dir']}" lang="{$_CONF['info_row']['content_language']}">]]></action>
+</template>
+
+<template name="headinclud.tpl" type="replace">
+<find><![CDATA[<meta name="viewport" content="width=device-width, initial-scale=1.0" />]]></find>
+<action><![CDATA[<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />]]></action>
+</template>
+
+<template name="headinclud.tpl" type="replace">
+<find><![CDATA[<link rel="shortcut icon" href="{$ForumAdress}favicon.ico" />]]></find>
+<action><![CDATA[<link rel="shortcut icon" href="{$ForumAdress}favicon.ico" type="image/x-icon" />]]></action>
+</template>
+
+<template name="headinclud.tpl" type="replace">
+<find><![CDATA[<script type="text/javascript" src="{$ForumAdress}includes/js/shCore.js"></script>]]></find>
+<action><![CDATA[]]></action>
+</template>
+
+<template name="headinclud.tpl" type="replace">
+<find><![CDATA[<script type="text/javascript" src="{$ForumAdress}includes/js/shBrushPhp.js"></script>]]></find>
+<action><![CDATA[]]></action>
+</template>
+
+<template name="headinclud.tpl" type="replace">
+<find><![CDATA[<script type="text/javascript">SyntaxHighlighter.config.bloggerMode = true; SyntaxHighlighter.all();</script>]]></find>
+<action><![CDATA[]]></action>
+</template>
+
+<template name="headinclud.tpl" type="replace">
+<find><![CDATA[<script type="text/javascript" src="{$ForumAdress}includes/js/shCore.js"></script>]]></find>
+<action><![CDATA[]]></action>
+</template>
+
+<template name="headinclud.tpl" type="replace">
+<find><![CDATA[<script type="text/javascript" src="{$ForumAdress}includes/js/jscolor.js"></script>]]></find>
+<action><![CDATA[]]></action>
+</template>
+
+<template name="headinclud.tpl" type="replace">
+<find><![CDATA[{template}jscolor{/template}]]></find>
+<action><![CDATA[]]></action>
+</template>
+
+<template name="headinclud.tpl" type="replace">
+<find><![CDATA[<style type="text/css">
+@import url("{$ForumAdress}{$style_path}");
+</style>]]></find>
+<action><![CDATA[]]></action>
+</template>
+<template name="sections_list.tpl" type="replace">
+<find><![CDATA[&amp;count={$forum['last_berpage_nm']}#{$forum['last_reply']}]]></find>
+<action><![CDATA[]]></action>
+</template>
+<template name="main_bar.tpl" type="after">
+<find><![CDATA[<!-- action_find_addosans_1 -->]]></find>
+<action><![CDATA[{if {$_CONF['info_row']['activate_chat_bar']}}
+{if {$_CONF['info_row']['chat_bar_dir']} == 'out'}
+<li>
+<a target="_blank" href="index.php?page=chat_message&amp;chatout=1" title="{$lang['chat_message']}">
+<i class="fa fa-commenting" aria-hidden="true"></i> {$lang['chat_message']}</a></li>
+{/if}
+{/if}]]></action>
+</template>
+<template name="chat.tpl" type="replace">
+<find><![CDATA[</style>]]></find>
+<action><![CDATA[#form-chat-id{
+width: 97% !important;
+}
+.d-flex {
+display: flex;
+}
+.light {
+background-color: #FDFDFF;
+}
+.fl {
+float: left;
+}
+.flex-fill {
+flex: 1 1 auto !important;
+}
+.UserPhoto_chat{
+margin-left:1px;
+background-color:transparent;
+display: inline-block;
+border: 1px solid #fff;
+width: 22px !important;
+height: 20px !important;
+}
+.ln_chat
+{
+display: inline-block;
+position: relative;
+top: -5px;
+}
+.ln_chat img
+{
+display: inline-block;
+position: relative;
+top: 6px;
+}
+.chat .thead1
+{
+background: #409bd9;
+color: #fff;
+}
+
+#chat-content{
+display: block !important;
+width:98.3%;
+margin-right: 11px;
+}
+.chat_ee{
+word-wrap: break-word;
+overflow-x: hidden;
+overflow-wrap: break-word;
+}
+.chat_ee .row1{
+width:97% !important;
+}
+.smiles-bbcode{
+width:13%;
+vertical-align: top;
+padding-right: 3px;
+padding-left: 3px;
+}
+#smile_menu {
+display: none;
+width: 300px;
+position: absolute;
+z-index: 100;
+padding: 7px;
+background: #fff;
+border: 2px solid #d2d2d2;
+margin-top: 42px;
+overflow: auto;
+word-wrap: break-word;
+overflow-x: hidden;
+overflow-wrap: break-word;
+}
+textarea.tbox {
+overflow: scroll;
+border-radius: 2px;
+border: 1px solid lightgrey;
+padding: 6px;
+width: 98% !important;
+max-height: 27px;
+min-height: 27px;
+height: 32px;
+font-weight: bold;
+overflow: hidden;
+resize: none;
+line-height: 25px;
+}
+</style>]]></action>
+</template>
+</templates>
+
+</plugin>

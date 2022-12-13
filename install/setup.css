@@ -1,0 +1,188 @@
+html{
+	overflow-x: auto; /* fixes MSIE scrollbar bug DO NOT REMOVE, has no effect in Mozilla, or Opera */
+}
+
+body {
+      background-color: #F0F0F0;
+      margin: 1px 1px 1px 1px;
+}
+
+td.header_logo_side
+{
+    background-color: #409BD9;
+	height: 64px;
+	margin: 0;
+	padding: 0;
+}
+
+
+table.t_style_a
+{
+	background-color: #E9F0F2;
+ 	border: 1px solid #969EA2;
+	border-collapse: collapse;
+	}
+
+table.t_style_b
+{
+	background-color: #E9F0F2;
+ 	border: 1px solid #969EA2;
+	border-collapse: collapse;
+	}
+
+
+.main1
+{
+    background-image: url(images/gradient_thead.gif);
+	font-family: Tahoma;
+	color: #2E5961;
+	font-size: 10pt;
+	text-align: center;
+	padding: 9px;
+}
+
+.main1 a:link
+{
+	color: #2E5961;
+	text-decoration: none;
+}
+
+.main1 a:visited
+{
+	color: #2E5961;
+	text-decoration: none;
+}
+
+.main1 a:hover, .main1 a:active
+{
+	color: #FF0000;
+	text-decoration: none;
+}
+
+.row1
+{
+	background-color: #F7FBFC;
+	font: bold 15px Arial;
+	padding-right: 10px;
+	padding: 3px;
+}
+
+.row2
+{
+	background-color: #F7FBFC;
+	font: bold 15px Arial;
+	padding-right: 10px;
+	padding: 4px;
+}
+
+th,p
+{	background-color: #FFFFFF;
+	color: #0F67A1;
+	font-family: Tahoma;
+	font-size: 12px;
+	font-weight: bold;
+	margin: 5px;
+	padding:5px;
+}
+
+a:link,
+a:visited,
+a:active
+{
+	color: #0A3F63;
+	text-decoration: underline;
+}
+
+a:hover
+{
+	background: transparent;
+	color: #0000FF;
+	text-decoration: underline;
+}
+
+textarea {
+        background: #ffffff;
+        border: 1px solid #B4B4B4;
+        color: #000000;
+        font: bold 16px Arial;
+        padding: 2px;
+        padding-right: 6px;
+        padding-left: 6px;
+        }
+
+input {
+        background-color: #ffffff;
+        border: 1px solid #FFFFFF
+        color: #696757;
+        font-family: Tahoma;
+        font-size: 11px;
+        padding: 2px;
+        padding-right: 4px;
+        padding-left: 4px;
+        }
+
+select
+{
+	background: #FFF;
+	border: 1px solid #4C77B6;
+	color: #000;
+	font: normal 11px Tahoma;
+	margin: 5px;
+	padding: 1px;
+	vertical-align: middle;
+}
+
+div.pbboard_body
+ {
+	width: 90%;
+    margin-left: auto;
+    margin-right: auto;
+    padding-bottom: 70px;
+    padding-left: 0px;
+    padding-right: 0px;
+    background-color: #F4F7FC;
+	border-top-left-radius: 0px;
+	border-top-right-radius: 0px;
+	border-bottom-right-radius: 15px;
+	border-bottom-left-radius: 15px;
+	border-top: 1px solid #67A1CF;
+	border-right: 1px solid #67A1CF;
+	border-left: 1px solid #67A1CF;
+	border-bottom: 8px solid #67A1CF;
+-webkit-box-shadow:0px 2px 4px rgba(0,0,0,0.2);
+-moz-box-shadow:0px 2px 4px rgba(0,0,0,0.2);
+box-shadow:0px 2px 4px rgba(0,0,0,0.2);
+}
+
+#copyright
+{
+	color:#848484;
+	text-align:left;
+	text-shadow:0px 1px 0px #fff;
+	padding: 1px 5px 4px 5px;
+	margin: 5px 0 5px 9px;
+    font: 12px Tahoma, Times New Roman;
+}
+
+#make_link
+{
+	background: #F7FBFC url(images/gradient_thead.gif);
+	font-family: Tahoma;
+	font-size: 13px;
+    font-weight: bold;
+	padding-left: 12px;
+	padding-right: 12px;
+	padding-top: 5px;
+	padding-bottom: 10px;
+	border-bottom: 1px solid #5492CC;
+	border-top: 1px solid #5492CC;
+	border-top-left-radius: 17px;
+	border-top-right-radius: 17px;
+	border-bottom-right-radius: 17px;
+	border-bottom-left-radius: 17px;
+    margin-left: 3px;
+    margin-right: 15px;
+    margin-top: 16px;
+	float: right;
+	*color: #000000;
+}

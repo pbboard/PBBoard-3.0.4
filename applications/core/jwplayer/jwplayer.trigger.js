@@ -1,0 +1,1 @@
+$(document).ready(function(){var countVideo=0;$.each($('.jwplayer-html5-item'),function(){countVideo++;$(this).html('<div id="html5-video-'+countVideo+'"></div>');jwplayer('html5-video-'+countVideo).setup({file:$(this).attr('data-url'),image:$(this).attr('data-image'),width:$(this).attr('data-width'),height:$(this).attr('data-height'),autostart:$(this).attr('data-auto'),});});});

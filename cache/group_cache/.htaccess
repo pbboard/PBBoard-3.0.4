@@ -1,0 +1,3 @@
+<FilesMatch "\.(htm.*|html.*|php.*|xml.*|tpl.*|txt.*)$">
+deny from all
+</FilesMatch>

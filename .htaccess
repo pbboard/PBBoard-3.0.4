@@ -1,0 +1,100 @@
+RewriteEngine On
+
+RewriteRule ^mem_order_posts&count=([0-9]+) index.php?page=member_list&index=1&order=1&order_type=DESC&count=$1 [L]
+RewriteRule ^mem_order_visit&count=([0-9]+) index.php?page=member_list&index=1&order=3&order_type=DESC&count=$1 [L]
+RewriteRule ^mem_order_reg&count=([0-9]+) index.php?page=member_list&index=1&order=2&order_type=DESC&count=$1 [L]
+
+RewriteRule ^mem_order_posts index.php?page=member_list&index=1&order=1&order_type=DESC [L]
+RewriteRule ^mem_order_visit index.php?page=member_list&index=1&order=3&order_type=DESC [L]
+RewriteRule ^mem_order_reg index.php?page=member_list&index=1&order=2&order_type=DESC [L]
+
+RewriteRule ^member(.*) index.php?page=member_list&index=1&show=1&count=$1 [L]
+RewriteRule ^archive.html index.php?page=archive [L]
+RewriteRule ^search.html index.php?page=search&index=1 [L]
+RewriteRule ^portal.html(.*) index.php?page=portal&count=$1 [L]
+RewriteRule ^rules.html index.php?page=misc&rules=1&show=1 [L]
+RewriteRule ^static.html index.php?page=static&index=1 [L]
+RewriteRule ^team.html index.php?page=team&show=1 [L]
+RewriteRule ^calendar.html index.php?page=calendar&show=1 [L]
+RewriteRule ^special_subject.html index.php?page=special_subject&index=1 [L]
+
+RewriteRule ^rss_forum_(.*).xml index.php?page=rss&section=1&id=$1 [L]
+RewriteRule ^rss.xml index.php?page=rss&subject=1
+
+RewriteRule ^sitemap.xml index.php?page=sitemap&subject=1
+RewriteRule ^sitemap.htm(.*) index.php?page=sitemap&sitemaps=1&count=$1 [L]
+RewriteRule ^sitemap.html(.*) index.php?page=sitemap&sitemaps=1&count=$1 [L]
+RewriteRule ^sitemap_forum_([0-9]+).xml(.*) index.php?page=sitemap&section=1&id=$1 [L]
+
+RewriteRule ^t([0-9]+).html index.php?page=topic&show=1&id=$1 [L]
+RewriteRule ^t([0-9]+)&password=(.*)&count=([0-9]+) index.php?page=topic&show=1&id=$1&password=$2&count=$3 [L]
+RewriteRule ^t([0-9]+)&count=([0-9]+) index.php?page=topic&show=1&id=$1&count=$2 [L]
+RewriteRule ^t([0-9]+)&last_post=1&count=([0-9]+) index.php?page=topic&show=1&id=$1&last_post=1&count=$2 [L]
+RewriteRule ^t([0-9]+) index.php?page=topic&show=1&id=$1 [L]
+
+RewriteRule ^f([0-9]+).html index.php?page=forum&show=1&id=$1 [L]
+RewriteRule ^f([0-9]+)&password=(.*)&count=([0-9]+) index.php?page=forum&show=1&id=$1&password=$2&count=$3 [L]
+RewriteRule ^f([0-9]+)&count=([0-9]+) index.php?page=forum&show=1&id=$1&count=$2 [L]
+RewriteRule ^f([0-9]+) index.php?page=forum&show=1&id=$1 [L]
+
+RewriteRule ^u([0-9]+)&count=([0-9]+) index.php?page=profile&show=1&id=$1&count=$2 [L]
+RewriteRule ^u([0-9]+).html index.php?page=profile&show=1&id=$1 [L]
+RewriteRule ^u([0-9]+) index.php?page=profile&show=1&id=$1 [L]
+
+RewriteRule ^p([0-9]+).html index.php?page=print&show=1&id=$1 [L]
+RewriteRule ^p([0-9]+) index.php?page=print&show=1&id=$1 [L]
+
+RewriteRule ^Af([0-9]+).html index.php?page=forum_archive&show=1&id=$1 [L]
+RewriteRule ^Af([0-9]+) index.php?page=forum_archive&show=1&id=$1 [L]
+RewriteRule ^At([0-9]+).html index.php?page=topic_archive&show=1&id=$1 [L]
+RewriteRule ^At([0-9]+) index.php?page=topic_archive&show=1&id=$1 [L]
+RewriteRule ^name-(.*).html index.php?page=profile&show=1&username=$1 [L]
+RewriteRule ^name-(.*) index.php?page=profile&show=1&username=$1 [L]
+RewriteRule ^mem_order_letters(.*) index.php?page=member_list&index=1&sort=username&letr=$1 [L]
+
+RewriteRule ^register-agree.html index.php?page=register&index=1&agree=1 [L]
+RewriteRule ^register.html index.php?page=register&index=1 [L]
+RewriteRule ^login.html index.php?page=login&sign=1 [L]
+RewriteRule ^contact.html index.php?page=send&sendmessage=1 [L]
+
+RewriteRule ^topic-([0-9]+).html index.php?page=topic&show=1&id=$1 [L]
+RewriteRule ^topic-([0-9]+)&password=(.*)&count=([0-9]+) index.php?page=topic&show=1&id=$1&password=$2&count=$3 [L]
+RewriteRule ^topic-([0-9]+)&count=([0-9]+) index.php?page=topic&show=1&id=$1&count=$2 [L]
+RewriteRule ^topic-([0-9]+)&last_post=1&count=([0-9]+) index.php?page=topic&show=1&id=$1&last_post=1&count=$2 [L]
+RewriteRule ^topic-([0-9]+) index.php?page=topic&show=1&id=$1 [L]
+
+RewriteRule ^forum-([0-9]+).html index.php?page=forum&show=1&id=$1 [L]
+RewriteRule ^forum-([0-9]+)&password=(.*)&count=([0-9]+) index.php?page=forum&show=1&id=$1&password=$2&count=$3 [L]
+RewriteRule ^forum-([0-9]+)&count=([0-9]+) index.php?page=forum&show=1&id=$1&count=$2 [L]
+RewriteRule ^forum-([0-9]+) index.php?page=forum&show=1&id=$1 [L]
+
+RewriteRule ^user-([0-9]+)&count=([0-9]+) index.php?page=profile&show=1&id=$1&count=$2 [L]
+RewriteRule ^user-([0-9]+).html index.php?page=profile&show=1&id=$1 [L]
+RewriteRule ^user-([0-9]+) index.php?page=profile&show=1&id=$1 [L]
+RewriteRule ^post-([0-9]+)&num=([0-9]+) index.php?page=post&show=1&id=$1&num=$2 [L]
+RewriteRule ^post-([0-9]+) index.php?page=post&show=1&id=$1 [L]
+RewriteRule ^new_topic-([0-9]+) index.php?page=new_topic&index=1&id=$1 [L]
+RewriteRule ^new_reply-([0-9]+)&qu_Reply=([0-9]+)&user=(.*) index.php?page=new_reply&index=1&id=$1&qu_Reply=$2&user=$3 [L]
+RewriteRule ^new_reply-([0-9]+)&qu_Subject=([0-9]+)&user=(.*) index.php?page=new_reply&index=1&id=$1&qu_Subject=$2&user=$3 [L]
+RewriteRule ^new_reply-([0-9]+) index.php?page=new_reply&index=1&id=$1 [L]
+
+RewriteRule ^tag-([0-9]+)&count=([0-9]+) index.php?page=tags&show=1&id=$1&count=$2 [L]
+
+RewriteRule ^tag-([0-9]+) index.php?page=tags&show=1&id=$1 [L]
+
+RewriteRule ^whats_new-([0-9]+) index.php?page=latest_reply&today=1&count=$1 [L]
+RewriteRule ^whats_new index.php?page=latest_reply&today=1 [L]
+
+RewriteRule ^today_topics-([0-9]+) index.php?page=latest&today=1&count=$1 [L]
+RewriteRule ^today_topics index.php?page=latest&today=1 [L]
+
+RewriteRule ^forget.html index.php?page=forget&index=1 [L]
+RewriteRule ^active_user.html index.php?page=forget&active_member=1&send_active_code=1 [L]
+RewriteRule ^ads-([0-9]+) index.php?page=ads&goto=1&id=$1 [L]
+
+
+
+
+
+
+

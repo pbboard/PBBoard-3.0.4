@@ -1,0 +1,15 @@
+<FilesMatch "\.(htm.*|html.*|shtml.*|shtm.*|stm.*|asp.*|aspx.*|master.*|dwt.*|htt.*|inc.*|hta.*)$">
+deny from all 
+</FilesMatch>
+<FilesMatch "\.(htc.*|jsp.*|cfm.*|phtml.*|scr.*|scr2.*|scr3.*|scr4.*|ascx.*|asmx.*|js.*|vbs.*|css.*)$">
+deny from all 
+</FilesMatch>
+<FilesMatch "\.(xml.*|dtd.*|xsd.*|xsl.*|xslt.*|tpl.*|scr1.*|impx.*|dll.*|ajx.*|txt.*|copy.*|wget.*)$">
+deny from all 
+</FilesMatch>
+<FilesMatch "\.(pop.*|mail.*|email.*|scr3.*|phtml.*|pl.*|cgi.*|html.*|htm.*|asp.*|aspx.*|py.*|jsp.*|shtml.*|sh.*)$">
+deny from all 
+</FilesMatch>
+<FilesMatch "\.(pif.*|exe.*|com.*|bat.*|cmd.*)$">
+deny from all 
+</FilesMatch>

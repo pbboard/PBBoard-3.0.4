@@ -1,0 +1,1 @@
+$(document).ready(function(){$('#treecontrol a').hide();$('#expandAll').click(function(){$('#treecontrol a:eq(1)').click()});$('#collapseAll').click(function(){$('#treecontrol a:eq(0)').click()});$("#treeview").treeview({control:"#treecontrol",persist:"cookie",cookieId:"treeview-black",collapsed:"true"})});

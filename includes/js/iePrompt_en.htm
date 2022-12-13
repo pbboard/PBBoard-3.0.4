@@ -1,0 +1,70 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="Content-Language" content="en" />
+
+<title>Prompt PBBoard</title>
+<style type="text/css">
+<!--
+body {
+	background-color: #FFFFFF;
+	margin: 10px;
+	font-size: 9pt;
+	font-family: Tahoma;
+	text-align: center;
+}
+input {
+	width: 72px;
+}
+input#promptText {
+	display: block;
+	width: 250px;
+	margin: 1em auto;
+}
+label {
+	display: block;
+	width: 250px;
+	margin: 0px auto;
+	text-align: left;
+}
+#btnOK {
+	margin-right: 10px;
+}
+-->
+</style>
+
+<script type="text/javascript">
+
+function formSubmit(){
+	var str = document.getElementById("promptText").value;
+	if(str){  window.returnValue = str;  }
+	else {  window.returnValue = false;  }
+	window.close();
+}
+
+function formCancel(){
+	window.returnValue = false;
+	window.close();
+}
+
+window.onload = function (){
+	var str = window.dialogArguments;
+	if(str){
+		document.getElementsByTagName("label")[0].innerHTML = str;
+		document.getElementById("promptText").focus();
+	}
+}
+</script>
+
+</head>
+<body onbeforeunload="formSubmit();">
+<div align="left">
+<img border="0" src="../../look/images/pbb_logo.gif" width="170" height="40">
+</div>
+<form id="promptForm" method="post" action="" onSubmit="formSubmit(); return false;" onReset="formCancel()">
+<label for="promptText"></label><input type="text" name="promptText" id="promptText" />
+<input type="submit" name="btnOK" id="btnOK" value="OK" /><input type="reset" name="btnCancel" id="btnCancel" value="Cancel" />
+</form>
+</body>
+</html>

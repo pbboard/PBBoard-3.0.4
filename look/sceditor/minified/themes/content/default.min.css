@@ -1,0 +1,81 @@
+/*! SCEditor | (C) 2011-2013, Sam Clarke | sceditor.com/license */body,code:before,html,p,table
+{
+margin:0;padding:0;font-family:Verdana,Arial,Helvetica,sans-serif;font-size:14px;color:#111;line-height:1.25;overflow:auto
+}
+html
+{
+height:100%
+}
+.ios
+{
+overflow:auto;-webkit-overflow-scrolling:touch
+}
+.ios body
+{
+position:relative;overflow:auto
+}
+body
+{
+min-height:100%;word-wrap:break-word
+}
+body.placeholder:before
+{
+content:attr(placeholder);color:#555;font-style:italic
+}
+ol,ul
+{
+margin-top:0;margin-bottom:0;padding-top:0;padding-bottom:0
+}
+table,td
+{
+border:1px dotted #000;empty-cells:show
+}
+table td
+{
+min-width:5px
+}
+code:before, code {
+    display: block;
+    text-align: left;
+}
+code {
+    font-family: Monaco, Consolas, Courier, monospace;
+    font-size: 13px !important;
+    padding: 10px;
+    position: relative;
+    background: white;
+    margin: 0.25em 0.05em 0 0;
+    border: 1px solid #ccc;
+    white-space: pre-wrap;
+    display: block;
+    -moz-border-radius: 6px;
+    -webkit-border-radius: 6px;
+    border-radius: 6px;
+}
+blockquote {
+    position: relative;
+    background: white;
+    margin: 0.25em 0.05em 0 0;
+    border: 1px solid #ccc;
+    padding: 10px;
+    -moz-border-radius: 6px;
+    -webkit-border-radius: 6px;
+    border-radius: 6px;
+}
+blockquote cite {
+    font-weight: bold;
+    font-style: normal;
+    display: block;
+    font-size: 1em;
+    border-bottom: 1px solid #ccc;
+    margin-bottom: 10px;
+    padding-bottom: 3px;
+}
+h1,h2,h3,h4,h5,h6
+{
+padding:0;margin:0
+}
+div,p
+{
+min-height:1.25em
+}

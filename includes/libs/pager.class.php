@@ -143,10 +143,10 @@ class PowerBBPager
         {
           $n_page = $start/$per_page+1;
         }
-        // $this->pages_number ÚÏÏ ÌãíÚ ÇáÕÝÍÇÊ
-        // $per_page ÚÏÏ ÇáÑÏæÏ Ýí ßá ÕÝÍÉ
-        // $this->total ÚÏÏ ÌãíÚ ÇáÑÏæÏ
-        // $this->x ÑÞã ÇáÕÝÍÉ
+        // $this->pages_number Ø¹Ø¯Ø¯ Ø¬Ù…ÙŠØ¹ Ø§Ù„ØµÙØ­Ø§Øª
+        // $per_page Ø¹Ø¯Ø¯ Ø§Ù„Ø±Ø¯ÙˆØ¯ ÙÙŠ ÙƒÙ„ ØµÙØ­Ø©
+        // $this->total Ø¹Ø¯Ø¯ Ø¬Ù…ÙŠØ¹ Ø§Ù„Ø±Ø¯ÙˆØ¯
+        // $this->x Ø±Ù‚Ù… Ø§Ù„ØµÙØ­Ø©
 
 		$string = str_replace('[l]',$this->location,$string);
 		$string = str_replace('[v]',$this->var_name,$string);
@@ -233,21 +233,23 @@ class PowerBBPager
          }
           /////
 
-         if (!($start>=$this->total-$this->perpage)){
+         if ($start == $this->pages_number){
+          $string = str_replace('[next]',"&gt;",$string);
+
+          }
+          else
+          {
           $pnext =  "<a href='".$this->location."&amp;".$this->var_name."=".$next."'>&gt;</a>";
           $string = str_replace('[next]',$pnext,$string);
           }
+
+          if ($start <= '1'){
+          $string = str_replace('[prev]',"&lt;",$string);
+          }
           else
           {
-          $string = str_replace('[next]',"&gt;",$string);
-          }
-         if ($start){
           $pprev =  "<a href='".$this->location."&amp;".$this->var_name."=".$prev."'>&lt;</a>";
           $string = str_replace('[prev]',$pprev,$string);
-          }
-          else
-          {
-          $string = str_replace('[prev]',"&lt;",$string);
           }
          $string = str_replace('[last]',$this->last,$string);
          $pagenav = $PowerBB->functions->range_key();

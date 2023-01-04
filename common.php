@@ -71,7 +71,7 @@ if (!is_array($CALL_SYSTEM))
 	$CALL_SYSTEM['SUBJECT']            = 	true;
 	$CALL_SYSTEM['ICONS']              = 	true;
 	$CALL_SYSTEM['LANG']               = 	true;
-	if(CLASS_NAME == 'PowerBBChatMOD'  or $page == 'chat'){$CALL_SYSTEM['CHAT'] = true;}
+	if(defined('PowerBBChatMOD')  or $page == 'chat'){ $CALL_SYSTEM['CHAT'] = true; }
 	$CALL_SYSTEM['MODERATORS']         = 	true;
 	$CALL_SYSTEM['CACHE']              = 	true;
 

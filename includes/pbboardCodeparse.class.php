@@ -35,16 +35,23 @@ class PowerBBCodeParse
         if ($brackets)
  		{
 
-                // start replaces Quotes
-	          $string = $this->PowerCode_Quote($string);
-			// Replace base, meta,script and style tags in our post - these are > dangerous <
-			//$string = str_ireplace("script", 's c r i p t', $string);
-               $string = htmlspecialchars($string);
+
                  // start replaces code
 			    $regexcode['[php]'] = '#\[php\](.*)\[/php\]#siU';
 				$string = preg_replace_callback($regexcode, function($matches) {
 				    return '[php]'.base64_encode($matches[1]).'[/php]';
 				}, $string);
+                 // start replaces code
+			    $regexcodew['[code]'] = '#\[code\](.*)\[/code\]#siU';
+				$string = preg_replace_callback($regexcodew, function($matchesw) {
+				    return '[code]'.base64_encode($matchesw[1]).'[/code]';
+				}, $string);
+
+                // start replaces Quotes
+	          $string = $this->PowerCode_Quote($string);
+			// Replace base, meta,script and style tags in our post - these are > dangerous <
+			//$string = str_ireplace("script", 's c r i p t', $string);
+               $string = htmlspecialchars($string);
 
              $string = @strip_tags($string);
 
@@ -527,7 +534,7 @@ class PowerBBCodeParse
                 $linky = str_replace("&gt;", ">", $linky);
                 $linky = str_replace(array('"', "'"), array('&quot;', '&#39;'), $linky);
                 $linky = str_replace(array('/watch?', "v="), array('/v', '/'), $linky);
-             return "<span id='ytplayer'><object id='ytplayer' width='560' height='315'><param name='movie' value='$linky'></param><param name='allowFullScreen' value='true'></param><param id='ytplayer' name='allowscriptaccess' value='always'></param><embed id='ytplayer' src='$linky' type='application/x-shockwave-flash' allowscriptaccess='always' allowfullscreen='true' allownetworking='internal' width='560' height='315'></embed></object></span>";
+             return "<span id='ytplayer'><object id='ytplayer' width='95%' height='315'><param name='movie' value='$linky'></param><param name='allowFullScreen' value='true'></param><param id='ytplayer' name='allowscriptaccess' value='always'></param><embed id='ytplayer' src='$linky' type='application/x-shockwave-flash' allowscriptaccess='always' allowfullscreen='true' allownetworking='internal' width='95%' height='315'></embed></object></span>";
             // return "<iframe id='ytplayer' type='text/html' width='560' height='315' src='$linky' frameborder='0' allowfullscreen></iframe>";
          }
 		function PowerCode_BBcode($option, $content, $bbcode_tag)
@@ -770,7 +777,8 @@ class PowerBBCodeParse
                 // end decode php code
 			    $regexcode_code['[code]'] = '#\[code\](.*)\[/code\]#siU';
 				$text = preg_replace_callback($regexcode_code, function($matches) {
-					$matches[1] = ($matches[1]);
+			        $matches[1] = base64_decode($matches[1]);
+			        $matches[1] = htmlspecialchars($matches[1]);
 					$matches[1] = str_replace("&amp;#39;", "'", $matches[1]);
 			        return '<div class="maxy"></div><div class="codediv">CODE</div><pre><code class="language-php">'.$matches[1].'</code></pre><div class="maxy"></div>';
 				}, $text);
@@ -813,6 +821,7 @@ class PowerBBCodeParse
 			$regexcode['php'] = '#\[php\](.*)\[/php\]#siU';
 			$text = preg_replace_callback($regexcode, function($matches) {
 			$matches[1] = base64_decode($matches[1]);
+			$matches[1] = htmlspecialchars($matches[1]);
 			$matches[1] = str_replace("&amp;#39;", "'", $matches[1]);
 			return '<div class="maxy"></div><div class="codediv">PHP</div><pre><code class="language-php">'.$matches[1].'</code></pre><div class="maxy"></div>';
 			}, $text);

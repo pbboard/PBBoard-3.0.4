@@ -96,12 +96,12 @@ if (is_array($CALL_SYSTEM))
 
 	$files[] = ($CALL_SYSTEM['INFO']) 				? 'info.class.php' : null;
 	$files[] = ($CALL_SYSTEM['ANNOUNCEMENT']) 		? 'announcement.class.php' : null;
-	if(CLASS_NAME == 'PowerBBAvatarMOD' or isset($_GET['avatar'])) {$files[] = ($CALL_SYSTEM['AVATAR']) ? 'avatar.class.php' : null;}
-	if(CLASS_NAME == 'PowerBBBannedMOD' or isset($_GET['page']) == 'register') { $files[] = ($CALL_SYSTEM['BANNED']) ? 'banned.class.php' : null;}
+	if(defined('PowerBBAvatarMOD') or isset($_GET['avatar'])) {$files[] = ($CALL_SYSTEM['AVATAR']) ? 'avatar.class.php' : null;}
+	if(defined('PowerBBBannedMOD') or isset($_GET['page']) == 'register') { $files[] = ($CALL_SYSTEM['BANNED']) ? 'banned.class.php' : null;}
 	$files[] = ($CALL_SYSTEM['GROUP']) 				? 'group.class.php' : null;
 	$files[] = ($CALL_SYSTEM['MEMBER']) 			? 'member.class.php' : null;
 	$files[] = ($CALL_SYSTEM['ONLINE']) 			? 'online.class.php' : null;
-	if(CLASS_NAME == 'PowerBBPagesMOD'){$files[] = ($CALL_SYSTEM['PAGES']) ? 'pages.class.php' : null;}
+	if(defined('PowerBBPagesMOD')){$files[] = ($CALL_SYSTEM['PAGES']) ? 'pages.class.php' : null;}
 	$files[] = ($CALL_SYSTEM['PM']) 				? 'pm.class.php' : null;
 	$files[] = ($CALL_SYSTEM['REPLY']) 				? 'reply.class.php' : null;
 	$files[] = ($CALL_SYSTEM['SECTION']) 			? 'sections.class.php' : null;
@@ -112,7 +112,7 @@ if (is_array($CALL_SYSTEM))
 	$files[] = ($CALL_SYSTEM['MISC']) 				? 'misc.class.php' : null;
 	$files[] = ($CALL_SYSTEM['MESSAGE']) 			? 'messages.class.php' : null;
 	$files[] = ($CALL_SYSTEM['ATTACH']) 			? 'attach.class.php' : null;
-	if(CLASS_NAME == 'PowerBBFixupMOD'){$files[] = ($CALL_SYSTEM['FIXUP']) ? 'fixup.class.php' : null;}
+	if(defined('PowerBBFixupMOD')){$files[] = ($CALL_SYSTEM['FIXUP']) ? 'fixup.class.php' : null;}
 	$files[] = ($CALL_SYSTEM['FILESEXTENSION']) 	? 'extension.class.php' : null;
 	$files[] = ($CALL_SYSTEM['USERTITLE']) 			? 'usertitle.class.php' : null;
 	$files[] = ($CALL_SYSTEM['ICONS']) 				? 'icons.class.php' : null;
@@ -128,19 +128,19 @@ if (is_array($CALL_SYSTEM))
 	$files[] = ($CALL_SYSTEM['REPUTATION']) 		? 'reputation.class.php' : null;
 	$files[] = ($CALL_SYSTEM['RATING']) 		    ? 'rating.class.php' : null;
 	$files[] = ($CALL_SYSTEM['SUPERMEMBERLOGS']) 	? 'supermemberlogs.class.php' : null;
-	if(CLASS_NAME == 'PowerBBChatMOD'  or isset($_GET['page']) == 'chat'){ $files[] = ($CALL_SYSTEM['CHAT']) ? 'chat.class.php' : null;}
+	if(defined('PowerBBChatMOD')  or isset($_GET['page']) == 'chat'){ $files[] = ($CALL_SYSTEM['CHAT']) ? 'chat.class.php' : null;}
 	$files[] = ($CALL_SYSTEM['EMAILED']) 	        ? 'emailed_notification.class.php' : null;
-	if(CLASS_NAME == 'PowerBBAwardMOD'){ $files[] = ($CALL_SYSTEM['AWARD']) ? 'award.class.php' : null;}
+	if(defined('PowerBBAwardMOD')){ $files[] = ($CALL_SYSTEM['AWARD']) ? 'award.class.php' : null;}
 	$files[] = ($CALL_SYSTEM['ADSENSE']) 	        ? 'adsense.class.php' : null;
 	$files[] = ($CALL_SYSTEM['FRIENDS']) 	        ? 'friends.class.php' : null;
 	if (defined('IN_ADMIN')){ $files[] = ($CALL_SYSTEM['ADDONS']) ? 'addons.class.php' : null;}
 	if (defined('IN_ADMIN')){ $files[] = ($CALL_SYSTEM['HOOKS']) ? 'hooks.class.php' : null;}
 	if (defined('IN_ADMIN')){ $files[] = ($CALL_SYSTEM['TEMPLATESEDITS']) ? 'templatesedits.class.php' : null;}
 	$files[] = ($CALL_SYSTEM['USERRATING']) 	    ? 'userrating.class.php' : null;
-	if(CLASS_NAME == 'PowerBBMailsendingMOD'){ $files[] = ($CALL_SYSTEM['EMAILMESSAGES']) ? 'emailmessages.class.php' : null;}
+	if(defined('PowerBBMailsendingMOD')){ $files[] = ($CALL_SYSTEM['EMAILMESSAGES']) ? 'emailmessages.class.php' : null;}
 	if (defined('IN_ADMIN')){$files[] = ($CALL_SYSTEM['CUSTOM_BBCODE']) ? 'custom_bbcode.class.php' : null;}
 	$files[] = ($CALL_SYSTEM['CORE']) 	            ? 'core.class.php' : null;
-    if(CLASS_NAME == 'PowerBBProfileViewerMOD' or isset($_GET['page']) == 'profile'){ $files[] = ($CALL_SYSTEM ['LOG_VISIT_PROFILE']) ? 'profileviewer.class.php' : null;}
+    if(defined('PowerBBProfileViewerMOD') or isset($_GET['page']) == 'profile'){ $files[] = ($CALL_SYSTEM ['LOG_VISIT_PROFILE']) ? 'profileviewer.class.php' : null;}
 
 	////////////
 
@@ -396,12 +396,12 @@ class PowerBB
   		$page = empty($this->_GET['page']) ? 'index' : $this->_GET['page'];
 
 		$this->info 			= 	($CALL_SYSTEM['INFO']) 				? new PowerBBInfo($this) : null;
-		if(CLASS_NAME == 'PowerBBAvatarMOD' or isset($this->_GET['avatar'])) { $this->avatar =($CALL_SYSTEM['AVATAR']) ? new PowerBBAvatar($this) : null;}
-		if(CLASS_NAME == 'PowerBBBannedMOD' or $page == 'register') { $this->banned = ($CALL_SYSTEM['BANNED']) ? new PowerBBBanned($this) : null;}
+		if(defined('PowerBBAvatarMOD') or isset($this->_GET['avatar'])) { $this->avatar =($CALL_SYSTEM['AVATAR']) ? new PowerBBAvatar($this) : null;}
+		if(defined('PowerBBBannedMOD') or $page == 'register') { $this->banned = ($CALL_SYSTEM['BANNED']) ? new PowerBBBanned($this) : null;}
 		$this->group 			= 	($CALL_SYSTEM['GROUP']) 			? new PowerBBGroup($this) : null;
 		$this->member 			= 	($CALL_SYSTEM['MEMBER']) 			? new PowerBBMember($this) : null;
 		$this->online 			= 	($CALL_SYSTEM['ONLINE']) 			? new PowerBBOnline($this) : null;
-		if(CLASS_NAME == 'PowerBBPagesMOD'){ $this->pages = ($CALL_SYSTEM['PAGES']) ? new PowerBBPages($this) : null;}
+		if(defined('PowerBBPagesMOD')){ $this->pages = ($CALL_SYSTEM['PAGES']) ? new PowerBBPages($this) : null;}
 		$this->pm 				= 	($CALL_SYSTEM['PM']) 				? new PowerBBPM($this) : null;
 		$this->reply 			= 	($CALL_SYSTEM['REPLY']) 			? new PowerBBReply($this) : null;
 		$this->section 			= 	($CALL_SYSTEM['SECTION']) 			? new PowerBBSection($this) : null;
@@ -412,7 +412,7 @@ class PowerBB
 		$this->request 			= 	($CALL_SYSTEM['REQUEST']) 			? new PowerBBRequest($this) : null;
 		$this->message 			= 	($CALL_SYSTEM['MESSAGE']) 			? new PowerBBMessages($this) : null;
 		$this->attach 			= 	($CALL_SYSTEM['ATTACH']) 			? new PowerBBAttach($this) : null;
-		if(CLASS_NAME == 'PowerBBFixupMOD'){ $this->fixup = ($CALL_SYSTEM['FIXUP']) ? new PowerBBFixup($this) : null;}
+		if(defined('PowerBBFixupMOD')){ $this->fixup = ($CALL_SYSTEM['FIXUP']) ? new PowerBBFixup($this) : null;}
 		$this->extension 		= 	($CALL_SYSTEM['FILESEXTENSION']) 	? new PowerBBFileExtension($this) : null;
 		$this->usertitle 		= 	($CALL_SYSTEM['USERTITLE']) 		? new PowerBBUsertitle($this) : null;
 		$this->icon 			= 	($CALL_SYSTEM['ICONS']) 			? new PowerBBIcons($this) : null;
@@ -428,18 +428,18 @@ class PowerBB
 		$this->reputation 		= 	($CALL_SYSTEM['REPUTATION']) 		? new PowerBBReputation($this) : null;
 		$this->rating 	     	= 	($CALL_SYSTEM['RATING']) 		    ? new PowerBBRating($this) : null;
 		$this->supermemberlogs 	= 	($CALL_SYSTEM['SUPERMEMBERLOGS']) 	? new PowerBBSupermemberlogs($this) : null;
-		if(CLASS_NAME == 'PowerBBChatMOD'  or $page == 'chat'){ $this->chat = ($CALL_SYSTEM['CHAT']) ? new PowerBBChat($this) : null;}
+		if(defined('PowerBBChatMOD')  or $page == 'chat'){ $this->chat = ($CALL_SYSTEM['CHAT']) ? new PowerBBChat($this) : null;}
 		$this->emailed          = 	($CALL_SYSTEM['EMAILED']) 	        ? new PowerBBEmailed($this) : null;
-		if(CLASS_NAME == 'PowerBBAwardMOD'){ $this->award = ($CALL_SYSTEM['AWARD']) ? new PowerBBAward($this) : null;}
+		if(defined('PowerBBAwardMOD')){ $this->award = ($CALL_SYSTEM['AWARD']) ? new PowerBBAward($this) : null;}
 		$this->adsense          = 	($CALL_SYSTEM['ADSENSE']) 	        ? new PowerBBAdsense($this) : null;
 		$this->friends          = 	($CALL_SYSTEM['FRIENDS']) 	        ? new PowerBBFriends($this) : null;
 		if (defined('IN_ADMIN')){ $this->addons = ($CALL_SYSTEM['ADDONS']) ? new PowerBBAddons($this) : null;}
 		if (defined('IN_ADMIN')){ $this->hooks = ($CALL_SYSTEM['HOOKS']) ? new PowerBBHooks($this) : null;}
 		if (defined('IN_ADMIN')){ $this->templates_edits = ($CALL_SYSTEM['TEMPLATESEDITS']) ? new PowerBBTemplatesEdits($this) : null;}
 		$this->userrating       = 	($CALL_SYSTEM['USERRATING']) 	    ? new PowerBBUserRating($this) : null;
-		if(CLASS_NAME == 'PowerBBMailsendingMOD'){ $this->emailmessages = ($CALL_SYSTEM['EMAILMESSAGES']) ? new PowerBBEmailMessages($this) : null;}
-		if(CLASS_NAME == 'PowerBBCustom_bbcodeMOD'){ $this->custom_bbcode = ($CALL_SYSTEM['CUSTOM_BBCODE']) ? new PowerBBCustom_bbcode($this) : null;}
-		if(CLASS_NAME == 'PowerBBProfileViewerMOD' or $page == 'profile'){ $this->log_profile_visit= ($CALL_SYSTEM['LOG_VISIT_PROFILE']) ? new PowerBBProfileViewer($this): null;}
+		if(defined('PowerBBMailsendingMOD')){ $this->emailmessages = ($CALL_SYSTEM['EMAILMESSAGES']) ? new PowerBBEmailMessages($this) : null;}
+		if(defined('PowerBBCustom_bbcodeMOD')){ $this->custom_bbcode = ($CALL_SYSTEM['CUSTOM_BBCODE']) ? new PowerBBCustom_bbcode($this) : null;}
+		if(defined('PowerBBProfileViewerMOD') or $page == 'profile'){ $this->log_profile_visit= ($CALL_SYSTEM['LOG_VISIT_PROFILE']) ? new PowerBBProfileViewer($this): null;}
 	    $this->core             = 	($CALL_SYSTEM['CORE']) 	            ? new PowerBBCore($this) : null;
 
 	////////////

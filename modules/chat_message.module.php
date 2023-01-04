@@ -136,8 +136,14 @@ class PowerBBCOREMOD
 	        /**
 		 * Know who is in Chat ?
 		 */
-
+		$TotleCahtArr 					= 	array();
+		$TotleCahtArr['order']			=	array();
+		$TotleCahtArr['order']['field']	=	'id';
+		$TotleCahtArr['order']['type']	=	'DESC';
+		$chatTotle_message_num = $PowerBB->core->GetNumber($TotleCahtArr,'chat');
+		if($chatTotle_message_num){
     	$PowerBB->template->display('chat_window');
+    	}
 	}
 
 	function _OpinChatout()
@@ -482,7 +488,7 @@ class PowerBBCOREMOD
 			$CahtEditArr				=	array();
 		    $CahtEditArr['where'] 	= 	array('id',$PowerBB->_GET['id']);
 
-			$chatEdit = $PowerBB->chat->GetChatInfo($CahtEditArr);
+			$chatEdit = $PowerBB->core->GetInfo($CahtEditArr,'chat');
 			if (empty($chatEdit['id']))
 			{
 				$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['Chat_message_requested_does_not_exist']);

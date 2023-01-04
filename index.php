@@ -1,5 +1,5 @@
 <?php
-   // error_reporting(E_ERROR | E_PARSE);;
+   error_reporting(E_ERROR | E_PARSE);
 	define('IN_PowerBB',true);
     // Stop any external post request.
      if ($_SERVER['REQUEST_METHOD'] == 'POST')

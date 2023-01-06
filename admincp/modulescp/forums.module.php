@@ -655,19 +655,23 @@ class PowerBBForumsMOD extends _functions
 		{
             // check sec_subject 1 >> hide all subjects
             $section = $PowerBB->_CONF['template']['Inf']['id'];
-		     if ($PowerBB->_POST['sec_section'] == 1)
+		     if ($PowerBB->_POST['sec_section'] == 1
+		     or $PowerBB->_POST['hide_subject'] == 1)
 			 {
-				$SubjectArr = $PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['subject'] . " WHERE section = '$section' and sec_subject = 0 ");
-				while ($getSubject_row = $PowerBB->DB->sql_fetch_array($SubjectArr))
-				{
-				$SubjectArr = array();
-				$SubjectArr['field'] = array();
-				$SubjectArr['field']['sec_subject'] = '1';
+				$SubjectArrQuery = $PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['subject'] . " WHERE section = '$section' and sec_subject = 0 ");
+				if($SubjectArrQuery)
+				 {
+					while ($getSubject_row = $PowerBB->DB->sql_fetch_array($SubjectArrQuery))
+					{
+					$SubjectArr = array();
+					$SubjectArr['field'] = array();
+					$SubjectArr['field']['sec_subject'] = '1';
 
-				$SubjectArr['where'] = array('id',$getSubject_row['id']);
+					$SubjectArr['where'] = array('id',$getSubject_row['id']);
 
-				$Update = $PowerBB->subject->UpdateSubject($SubjectArr);
-				}
+					$Update = $PowerBB->core->Update($SubjectArr,'subject');
+					}
+			     }
 			 }
 
 			$cache = $PowerBB->section->UpdateSectionsCache(array('parent'=>$PowerBB->_POST['parent']));

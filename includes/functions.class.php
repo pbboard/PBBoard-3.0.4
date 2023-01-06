@@ -839,6 +839,9 @@ class PowerBBFunctions
 		}
 		elseif ($page == 'forum')
 		{
+			if (empty($PowerBB->_GET['id']))
+			{			$PowerBB->_GET['id'] = $PowerBB->functions->CleanVariable($PowerBB->_GET['section'],'intval');
+			}
         $Forum 			= 	array();
 		$Forum['where'] 	= 	array('id',$PowerBB->_GET['id']);
 		$Forum_rwo = $PowerBB->core->GetInfo($Forum,'section');

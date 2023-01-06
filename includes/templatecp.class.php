@@ -274,7 +274,16 @@ class PBBTemplate
 
 		$this->_while_var_num += 1;
 
-		return '<?php $this->x_loop = 0; $this->size_loop = sizeof($PowerBB->_CONF[\'template\'][\'while\'][\'' . $varname . '\']); while ($this->x_loop < $this->size_loop) { ?>';
+		if (isset($PowerBB->_CONF['template']['while'][''.$varname.'']))
+		{
+		$loop = '<?php $this->x_loop = 0; $this->size_loop = sizeof($PowerBB->_CONF[\'template\'][\'while\'][\'' . $varname . '\']); while ($this->x_loop < $this->size_loop) { ?>';
+		}
+		else
+		{
+		$loop = '<?php while (0 < 0) { ?>';
+		}
+
+		return $loop;
 	}
 
 	function _ProccessForeach($string)

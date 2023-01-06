@@ -2308,7 +2308,7 @@ title="{$lang['announcement']}" />
 {/Des::while}]]></forum_announcement_table>
 <forum_moderator_table><![CDATA[{if {$STOP_MODERATOR_TEMPLATE}}
 {$lang['NO_MODERATOR']}
-{/if}
+{else}
 {Des::while}{ModeratorsList}
 <a href="index.php?page=profile&amp;show=1&amp;id={$ModeratorsList['member_id']}">
 {if {$ModeratorsList['username_style_cache']} !=''}
@@ -2316,7 +2316,8 @@ title="{$lang['announcement']}" />
 {else}
 <span class="inline-block">{$ModeratorsList['username']} ,</span>
 {/if}
-{/Des::while}]]></forum_moderator_table>
+{/Des::while}
+{/if}]]></forum_moderator_table>
 <forum_online_table><![CDATA[{Des::while}{SectionVisitor}
 {if {$SectionVisitor['username']} == 'Guest'}
 <span class="inline-block">
@@ -14241,7 +14242,7 @@ img.src = $('#url_input').val();
 </td>
 <td class="row1 wd60">
 <select name="gender" id="select_gender">
-{if {$_CONF['rows']['member_row']['user_gender']} == m}
+{if {$_CONF['rows']['member_row']['user_gender']} == 'm'}
 <option value="m" selected="selected">{$lang['gender_m']}</option>
 <option value="f">{$lang['gender_f']}</option>
 {else}
@@ -16065,7 +16066,7 @@ $(this).next("#menue_{$Info['id']}_{$Info['reply_id']}").slideToggle("slow");
 {if !empty({$ReplierInfo['user_website']}) and {$ReplierInfo['user_website']} != 'http://'}
 <div class="writer_info right_text_align">
 {$lang['UserWebsite']} :
-<?php if (strstr($PowerBB->_CONF['template']['ReplierInfo']['user_website'],'http://')) {  ?>
+<?php if (strstr($PowerBB->_CONF['template']['ReplierInfo']['user_website'],'http')) {  ?>
 <a target="_blank" href="{$ReplierInfo['user_website']}">{$lang['Visit_my_website']}</a>
 <?php }else{ ?>
 <a target="_blank" href="http://{$ReplierInfo['user_website']}">{$lang['Visit_my_website']}</a>

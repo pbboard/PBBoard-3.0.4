@@ -452,7 +452,7 @@ function fetch_gzipped_text($source)
     function year_date($input)
 	{
 		global $PowerBB;
-         $format = $PowerBB->_CONF['info_row']['timesystem'];
+         $format = $PowerBB->_CONF['info_row']['datesystem'];
 		if(is_numeric($input))
 		{
 		$timesystem = (new DateTime())->setTimestamp($input);

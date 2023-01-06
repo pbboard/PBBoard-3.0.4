@@ -1012,7 +1012,22 @@ function _AllCacheStart()
 
           }
 
-
+		if ($this->Section['hide_subject'])
+		{
+		  if ($PowerBB->functions->ModeratorCheck($this->Section['moderators']))
+		  {
+          $subject_nums = $this->Section['subject_num'];
+          }
+          else
+		  {
+		  $Forum_user_subject_number = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT id FROM " . $PowerBB->table['subject'] . " WHERE section ='" . $this->Section['id'] . "' AND writer='" . $PowerBB->_CONF['member_row']['username'] . "'"));
+          $subject_nums = $Forum_user_subject_number;
+          }
+        }
+        else
+        {
+          $subject_nums = $this->Section['subject_num'];
+        }
 
 	    $SubjectArr['proc'] 						= 	array();
 		$SubjectArr['proc']['*'] 					= 	array('method'=>'clean','param'=>'html');
@@ -1021,7 +1036,7 @@ function _AllCacheStart()
 
 		// Pager setup
 		$SubjectArr['pager'] 				= 	array();
-		$SubjectArr['pager']['total']		= 	$this->Section['subject_num'];
+		$SubjectArr['pager']['total']		= 	$subject_nums;
 		$SubjectArr['pager']['perpage'] 	= 	$PowerBB->_CONF['info_row']['subject_perpage'];
 		$SubjectArr['pager']['count'] 		= 	$PowerBB->_GET['count'];
 		$SubjectArr['pager']['location'] 	= 	$location;
@@ -1202,7 +1217,7 @@ function _AllCacheStart()
 			}
 
 
-		 if ($this->Section['subject_num'] > $PowerBB->_CONF['info_row']['subject_perpage'])
+		 if ($subject_nums > $PowerBB->_CONF['info_row']['subject_perpage'])
 		 {
 		   $PowerBB->template->assign('pager',$PowerBB->pager->show());
          }
@@ -1276,6 +1291,7 @@ function _AllCacheStart()
 	      }
 
 
+
            $PowerBB->_GET['count'] = (!isset($PowerBB->_GET['count'])) ? 0 : $PowerBB->_GET['count'];
            $PowerBB->_GET['count'] = $PowerBB->functions->CleanVariable($PowerBB->_GET['count'],'intval');
 		//////////
@@ -1310,9 +1326,21 @@ function _AllCacheStart()
 			$location = 'index.php?page=forum&amp;option=1&amp;section=' . $section . '&amp;keyword=' . $keyword . '&amp;password=' . $PowerBB->_GET['password'];
 		    }
 
-          	$subject_nm = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT id FROM " . $PowerBB->table['subject'] . " WHERE text LIKE '%$keyword%' AND section = '$section'"));
+		// Get section information and set it in $this->Section
+		$SectiondArr 			= 	array();
+		$SectiondArr['where'] 	= 	array('id',$section);
 
-                $PowerBB->template->assign('nm',$subject_nm);
+		$tSection = $PowerBB->core->GetInfo($SectiondArr,'section');
+
+			if ($PowerBB->functions->ModeratorCheck($tSection['moderators']))
+			{          	 $subject_nm = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['subject'] . " WHERE text LIKE '%$keyword%' AND section = '$section'"));
+            }
+             else
+			{
+          	 $subject_nm = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['subject'] . " WHERE text LIKE '%$keyword%' AND section = '$section' AND sec_subject = 0"));
+            }
+
+            $PowerBB->template->assign('nm',$subject_nm);
 
             $sec = ' AND section =  ';
 
@@ -1324,6 +1352,14 @@ function _AllCacheStart()
 			$SubjectSearchArr['where'][0]['name'] 	= 	'text LIKE ';
 			$SubjectSearchArr['where'][0]['oper']		=  "'".'%' .$keyword .'%'."'  $sec";
 			$SubjectSearchArr['where'][0]['value']    =  $section;
+           	if ($PowerBB->functions->ModeratorCheck($tSection['moderators']) == false)
+			{
+			$SubjectSearchArr['where'][1] 			= 	array();
+			$SubjectSearchArr['where'][1]['con'] 		= 	'AND';
+			$SubjectSearchArr['where'][1]['name'] 	= 	'sec_subject';
+			$SubjectSearchArr['where'][1]['oper'] 	= 	'=';
+			$SubjectSearchArr['where'][1]['value'] 	= 	'0';
+           }
 			$SubjectSearchArr['order'] 			= 	array();
 			$SubjectSearchArr['order']['field'] 	= 	'id';
 			$SubjectSearchArr['order']['type'] 	= 	$sort_order;
@@ -1357,8 +1393,6 @@ function _AllCacheStart()
 
 		$PowerBB->template->assign('keyword',$keyword);
 		$PowerBB->template->display('search_results_all');
-
-
 
 	}
 

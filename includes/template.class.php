@@ -428,6 +428,7 @@ class PBBTemplate
         return $this->_StoreWhileVarName($matches[1]);
          }, $string);
 
+
 		// If statement _must_ be first
 		if (preg_match('~\{if (.*)\}~',$string)
 			or preg_match('~if (.*) {~',$string))
@@ -460,11 +461,20 @@ class PBBTemplate
 	function _StoreWhileVarName($varname)
 	{
 		global $PowerBB;
+		//@error_reporting(0);
+
 		$this->_while_var[$this->_while_var_num] = $varname;
 
 		$this->_while_var_num += 1;
+		if (isset($PowerBB->_CONF['template']['while'][''.$varname.'']))
+		{
+		$loop = '<?php $this->x_loop = 0; $this->size_loop = sizeof($PowerBB->_CONF[\'template\'][\'while\'][\'' . $varname . '\']); while ($this->x_loop < $this->size_loop) { ?>';
+		}
+		else
+		{		$loop = '<?php while (0 < 0) { ?>';
+		}
 
-		return '<?php $this->x_loop = 0; $this->size_loop = sizeof($PowerBB->_CONF[\'template\'][\'while\'][\'' . $varname . '\']); while ($this->x_loop < $this->size_loop) { ?>';
+		return $loop;
 	}
 
 	function _ProccessForeach($string)

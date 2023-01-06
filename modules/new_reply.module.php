@@ -1316,7 +1316,7 @@ class PowerBBReplyAddMOD
 		     			$PowerBB->_CONF['template']['ReplierInfo']['visitor'] 			= 	$PowerBB->_CONF['member_row']['visitor'];
 		     			$PowerBB->_CONF['template']['ReplierInfo']['away'] 				= 	$PowerBB->_CONF['member_row']['away'];
 		     			$PowerBB->_CONF['template']['ReplierInfo']['away_msg'] 			= 	$PowerBB->_CONF['member_row']['away_msg'];
-		     			$PowerBB->_CONF['template']['ReplierInfo']['register_date'] 		= 	$PowerBB->_CONF['member_row']['register_date'];
+		     			$PowerBB->_CONF['template']['ReplierInfo']['register_date'] 		= 	$PowerBB->functions->year_date($PowerBB->_CONF['member_row']['register_date']);
 		     			$PowerBB->_CONF['template']['ReplierInfo']['user_title'] 		= 	$PowerBB->_CONF['member_row']['user_title'];
 		     			$PowerBB->_CONF['template']['ReplierInfo']['reply_id'] 		= 	$PowerBB->reply->id;
 		     			$PowerBB->_CONF['template']['Info']['reply_id'] 		= 	$PowerBB->reply->id;
@@ -1387,6 +1387,36 @@ class PowerBBReplyAddMOD
 							{
 					          $PowerBB->template->assign('class_reply','tbar_writer_info');
 							}
+
+							//get user rating
+								$ratings = $PowerBB->userrating->GetCachedRatings();
+					            $y = @sizeof($ratings);
+								for ($b = 0; $b <= $y; $b++)
+								{
+									if($ratings[$y-1]['posts'] < $PowerBB->_CONF['member_row']['posts'])
+									{
+									$user_ratings = $ratings[$y-1]['rating'];
+									$user_posts = $ratings[$y-1]['posts'];
+									break;
+									}
+									if($ratings[$b]['posts'] > $PowerBB->_CONF['member_row']['posts'])
+									{
+									$user_ratings = $ratings[$b]['rating'];
+									$user_posts = $ratings[$b]['posts'];
+									break;
+									}
+									if($this->Info['posts'] < $ratings[1]['posts'])
+									{
+									$user_ratings = $ratings[1]['rating'];
+									$user_posts = $ratings[1]['posts'];
+									break;
+									}
+								}
+
+								 $PowerBB->_CONF['template']['RatingInfo']['rating'] = $user_ratings;
+								 $PowerBB->_CONF['template']['RatingInfo']['posts'] = $user_posts;
+					          /////////
+
                         if (($PowerBB->_CONF['member_row']['review_reply'] or $PowerBB->_CONF['group_info']['review_reply'])
 						and !$PowerBB->functions->ModeratorCheck($this->SectionInfo['id']))
 						{

@@ -16372,12 +16372,6 @@ title="{$lang['qu_reply']}">
 {$lang['quote']}
 </a>
 </li>
-<li>
-<?php $post_id = $PowerBB->_CONF['template']['Info']['reply_id']; ?>
-<a class="img-submit" id="mad_<?php echo "$post_id"; ?>" name="mad_<?php echo "$post_id"; ?>" onclick="multiquote_add(<?php echo "$post_id"; ?>); return false;" href="#">
-{$lang['multiquote']}
-</a>
-</li>
 </ul>
 </div>
 </dd>

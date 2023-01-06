@@ -778,7 +778,7 @@ class PowerBBCodeParse
 			    $regexcode_code['[code]'] = '#\[code\](.*)\[/code\]#siU';
 				$text = preg_replace_callback($regexcode_code, function($matches) {
 			        $matches[1] = base64_decode($matches[1]);
-			        $matches[1] = htmlspecialchars($matches[1]);
+
 					$matches[1] = str_replace("&amp;#39;", "'", $matches[1]);
 			        return '<div class="maxy"></div><div class="codediv">CODE</div><pre><code class="language-php">'.$matches[1].'</code></pre><div class="maxy"></div>';
 				}, $text);
@@ -821,7 +821,7 @@ class PowerBBCodeParse
 			$regexcode['php'] = '#\[php\](.*)\[/php\]#siU';
 			$text = preg_replace_callback($regexcode, function($matches) {
 			$matches[1] = base64_decode($matches[1]);
-			$matches[1] = htmlspecialchars($matches[1]);
+
 			$matches[1] = str_replace("&amp;#39;", "'", $matches[1]);
 			return '<div class="maxy"></div><div class="codediv">PHP</div><pre><code class="language-php">'.$matches[1].'</code></pre><div class="maxy"></div>';
 			}, $text);

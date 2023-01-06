@@ -32,6 +32,8 @@ $("#active_static").show("slow");$("#heading_up_static").show("slow");$("#headin
 {$(this).next("#active_statistics_list").slideToggle("slow")
 $("#active_statistics_list").show("slow");$("#heading_up_statistics_list").show("slow");$("#heading_down_statistics_list").hide("slow");$.cookie("collapsed_forum_statistics_list","0",{expires:365});});if($.cookie("collapsed_forum_statistics_list")=="0"){$("#active_statistics_list").show();$("#heading_down_statistics_list").css('display','none');};if($.cookie("collapsed_forum_statistics_list")=="1"){$("#active_statistics_list").hide();$("#heading_up_statistics_list").css('display','none');};if(!$.cookie("collapsed_forum_statistics_list")){$("#heading_down_statistics_list").css('display','none');};});$(document).click(function(event){var target=$(event.target);if(!target.hasClass('active_alerts')&&target.parents('#alerts-trigger').length==0){$('#alerts-coeeentent').hide("slow");}
 if(!target.hasClass('active_usercptools')&&target.parents('#usercptools-trigger').length==0){$('#usercptools-content').hide("slow");}
+if(!target.hasClass('active_userlink')&&target.parents('#userlink-trigger').length==0){$('#userlink_menu').hide("slow");}
+if(!target.hasClass('active_alerts')&&target.parents('#alerts-trigger').length==0){$('#alerts-content').hide("slow");}
 if(!target.hasClass('active_pages')&&target.parents('#pages-trigger').length==0){$('#pages-content').hide("slow");}
 if(!target.hasClass('active_smile')&&target.parents('#smiles-trigger').length==0){$('#smile_menu').hide();}
 if(!target.hasClass('app_button Button_overlaid')&&target.parents('#eledit_photo').length==0){$('#eledit_photo_menu').hide("slow");$("#eledit_photo_menu").css('display','none');}

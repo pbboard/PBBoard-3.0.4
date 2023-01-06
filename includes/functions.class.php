@@ -2795,6 +2795,10 @@ function my_strlen($string)
 									$MemberArr['where'] 	= 	array('id',$FeedsInfo['userid']);
 									$MemberInfo = $PowerBB->core->GetInfo($MemberArr,'member');
 									$section = $FeedsInfo['forumid'];
+
+							    $FROM_query = $PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['section'] . " WHERE id = '".$section."' ");
+								$FROM__row   = $PowerBB->DB->sql_fetch_array($FROM_query);
+
 									$SubjectArr	=	array();
 									$SubjectArr['field']	=	array();
 									$SubjectArr['field']['title']	=	$Item['TITLE'];
@@ -2802,6 +2806,10 @@ function my_strlen($string)
 									$SubjectArr['field']['writer']	=	$MemberInfo['username'];
 									$SubjectArr['field']['write_time'] 			= 	$PowerBB->_CONF['now'];
 									$SubjectArr['field']['native_write_time'] 	= 	$PowerBB->_CONF['now'];
+									if($FROM__row['review_subject'])
+									{
+									$SubjectArr['field']['review_subject']	=	'1';
+									}
 									$SubjectArr['field']['icon'] 				= 	'look/images/icons/i1.gif';
 									$SubjectArr['field']['section']	=	$FeedsInfo['forumid'];
 									$Insert = $PowerBB->subject->InsertSubject($SubjectArr);

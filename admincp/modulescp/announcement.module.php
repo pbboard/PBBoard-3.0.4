@@ -188,7 +188,7 @@ class PowerBBAnnouncementMOD extends _functions
 		$DelArr 			= 	array();
 		$DelArr['where'] 	= 	array('id',$PowerBB->_GET['id']);
 
-		$del = $PowerBB->announcement->DeleteAnnouncement($DelArr);
+		$del = $PowerBB->core->Deleted($DelArr,'announcement');
 
 		if ($del)
 		{

@@ -134,9 +134,9 @@ class PowerBBTopicMOD
 			$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['can_not_view_this_subject']);
 	        }
 		}
-
+        if(!empty($this->SectionInfo['section_password'])){
      	$PowerBB->_CONF['template']['password'] = '&amp;password=' . base64_encode($this->SectionInfo['section_password']);
-
+        }
 		$TagArr 			= 	array();
 		$TagArr['where'] 	= 	array('subject_id',$PowerBB->_CONF['template']['ReplyInfo']['subject_id']);
 

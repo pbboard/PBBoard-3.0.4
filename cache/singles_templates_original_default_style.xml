@@ -12918,30 +12918,6 @@ if($Section_rwo4['id'])
 </a>
 </span>
 {template}address_bar_part2{/template}
-
-<!--
-<br />
-<br />
-<div class="h_tag">
-<?php
-$num = '400';
-$PowerBB->_CONF['template']['Subjectinfo']['text']   = 	$PowerBB->Powerparse->deletedalltags($PowerBB->_CONF['template']['Subjectinfo']['text'],$num);
-$PowerBB->_CONF['template']['Subjectinfo']['text'] = $PowerBB->functions->Getkeywords($PowerBB->_CONF['template']['Subjectinfo']['text']);
-
-$PowerBB->_CONF['template']['Subjectinfo']['text'] = $PowerBB->functions->CleanText($PowerBB->_CONF['template']['Subjectinfo']['text']);
-$PowerBB->_CONF['template']['Subjectinfo']['text'] = $PowerBB->Powerparse->_wordwrap($PowerBB->_CONF['template']['Subjectinfo']['text'],$num);
-
-$PowerBB->_CONF['template']['subject_title']   = 	$PowerBB->functions->CleanText($PowerBB->_CONF['template']['subject_title']);
-$PowerBB->_CONF['template']['subject_title']   = 	$PowerBB->Powerparse->censor_words($PowerBB->_CONF['template']['subject_title']);
-
-?>
-<h1>{$subject_title}</h1>
- {if {$Subjectinfo['text']} !=''}
-<h2>{$Subjectinfo['text']}</h2>
-{/if}
-</div>
-<br />
--->
 <!-- table -->
 <div style="width:98%;" class="table center_text_align collapse">
 <dl>

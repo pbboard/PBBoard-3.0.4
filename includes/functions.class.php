@@ -3137,7 +3137,7 @@ function my_strlen($string)
 	   global $PowerBB;
         $last_Update = $PowerBB->_CONF['info_row']['last_time_updates'];
         $Version = $PowerBB->_CONF['info_row']['MySBB_version'];
-        $pbboard_last_time_updates = 'https://www.pbboard.info/check_updates/pbboard_last_time_updates_303.txt';
+        $pbboard_last_time_updates = 'https://www.pbboard.info/check_updates/pbboard_last_time_updates_304.txt';
 			$ch = @curl_init();
 			@curl_setopt($ch, CURLOPT_URL, $pbboard_last_time_updates);
 			@curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);

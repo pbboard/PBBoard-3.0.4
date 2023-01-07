@@ -8,7 +8,7 @@ $CALL_SYSTEM			        =	array();
 $CALL_SYSTEM['AWARD']           =   true;
 
 define('JAVASCRIPT_PowerCode',true);
-
+define('PowerBBAwardMOD',true);
 
 
 define('CLASS_NAME','PowerBBAwardMOD');

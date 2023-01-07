@@ -7,7 +7,7 @@ $CALL_SYSTEM				=	array();
 $CALL_SYSTEM['BANNED']      =   true;
 
 
-
+define('PowerBBBannedMOD',true);
 define('CLASS_NAME','PowerBBBannedMOD');
 
 include('../common.php');

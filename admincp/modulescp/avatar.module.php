@@ -5,7 +5,7 @@ define('DONT_STRIPS_SLIASHES',true);
 $CALL_SYSTEM				=	array();
 $CALL_SYSTEM['AVATAR'] 		= 	true;
 
-
+define('PowerBBAvatarMOD',true);
 define('CLASS_NAME','PowerBBAvatarMOD');
 
 

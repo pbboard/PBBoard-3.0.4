@@ -6,10 +6,9 @@ define('IN_ADMIN',true);
 
 $CALL_SYSTEM			        =	array();
 $CALL_SYSTEM['CUSTOM_BBCODE']           =   true;
+$CALL_SYSTEM['CORE']           =   true;
 
 define('JAVASCRIPT_PowerCode',true);
-
-
 
 define('CLASS_NAME','PowerBBCustom_bbcodeMOD');
 
@@ -101,11 +100,11 @@ class PowerBBCustom_bbcodeMOD
 			$Custom_bbcodeArr['field']['bbcode_switch'] 		    = 	$PowerBB->_POST['bbcode_switch'];
 			$Custom_bbcodeArr['field']['bbcode_replace'] 		    = 	$PowerBB->_POST['bbcode_replace'];
 
-			$insert = $PowerBB->custom_bbcode->InsertCustom_bbcode($Custom_bbcodeArr);
+		    $insert = $PowerBB->core->insert($Custom_bbcodeArr,'custom_bbcode');
+
 			if ($insert)
 			{
 				$cache = $PowerBB->custom_bbcode->UpdateCustom_bbcodeCache(null);
-
 				$PowerBB->functions->msg($PowerBB->_CONF['template']['_CONF']['lang']['Add_the_bbcode_successfully']);
 				$PowerBB->functions->redirect('index.php?page=custom_bbcode&amp;control=1&amp;main=1');
 			}
@@ -144,7 +143,7 @@ class PowerBBCustom_bbcodeMOD
 			$Custom_bbcodeEditArr				=	array();
 		    $Custom_bbcodeEditArr['where'] 	= 	array('id',$PowerBB->_GET['id']);
 
-			$Custom_bbcodeEdit = $PowerBB->custom_bbcode->GetCustom_bbcodeInfo($Custom_bbcodeEditArr);
+			$Custom_bbcodeEdit = $PowerBB->core->GetInfo($Custom_bbcodeEditArr,'custom_bbcode');
 
 			$PowerBB->template->assign('Custom_bbcodeEdit',$Custom_bbcodeEdit);
 
@@ -173,7 +172,8 @@ class PowerBBCustom_bbcodeMOD
 			$Custom_bbcodeArr['field']['bbcode_replace'] 		    = 	$PowerBB->_POST['bbcode_replace'];
 			$Custom_bbcodeArr['where'] 				= 	array('id',$PowerBB->_GET['id']);
 
-		$update = $PowerBB->custom_bbcode->UpdateCustom_bbcode($Custom_bbcodeArr);
+		  $update = $PowerBB->core->Update($Custom_bbcodeArr,'custom_bbcode');
+
 
 		if ($update)
 		{
@@ -196,11 +196,11 @@ class PowerBBCustom_bbcodeMOD
 			$DelArr 			= 	array();
 			$DelArr['where'] 	= 	array('id',$PowerBB->_GET['id']);
 
-			$del = $PowerBB->custom_bbcode->DeleteCustom_bbcode($DelArr);
+			$del = $PowerBB->core->Deleted($DelArr,'custom_bbcode');
+
 
 		if ($del)
-		{
-				$cache = $PowerBB->custom_bbcode->UpdateCustom_bbcodeCache(null);
+		{				$cache = $PowerBB->custom_bbcode->UpdateCustom_bbcodeCache(null);
 				$PowerBB->functions->msg($PowerBB->_CONF['template']['_CONF']['lang']['bbcode_Deleted_successfully']);
 				$PowerBB->functions->redirect('index.php?page=custom_bbcode&amp;control=1&amp;main=1');
 

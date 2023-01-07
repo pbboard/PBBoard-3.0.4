@@ -3,11 +3,11 @@
 (!defined('IN_PowerBB')) ? die() : '';
 
 define('IN_ADMIN',true);
-
 $CALL_SYSTEM				=	array();
 $CALL_SYSTEM['EMAILMESSAGES'] =   true;
 
 
+define('PowerBBMailsendingMOD',true);
 
 define('CLASS_NAME','PowerBBMailsendingMOD');
 

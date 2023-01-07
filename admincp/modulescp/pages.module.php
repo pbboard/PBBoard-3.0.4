@@ -8,7 +8,7 @@ $CALL_SYSTEM			=	array();
 $CALL_SYSTEM['PAGES'] 	= 	true;
 
 
-
+define('PowerBBPagesMOD',true);
 define('CLASS_NAME','PowerBBPagesMOD');
 
 include('../common.php');

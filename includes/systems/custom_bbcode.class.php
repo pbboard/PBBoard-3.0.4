@@ -78,6 +78,21 @@ class PowerBBCustom_bbcode
 		return ($query) ? true : false;
  	}
 
+	function GetCustom_bbcodeList($param)
+	{
+ 		if (!isset($param)
+ 			or !is_array($param))
+ 		{
+ 			$param = array();
+ 		}
+
+		$param['select'] 	= 	'*';
+ 		$param['from'] 		= 	$this->Engine->table['custom_bbcode'];
+
+		$rows = $this->Engine->records->GetList($param);
+
+		return $rows;
+	}
 
 
 	function CreateCustom_bbcodeCache($param)

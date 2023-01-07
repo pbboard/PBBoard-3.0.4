@@ -97,7 +97,7 @@ class PowerBBAnnouncementMOD extends _functions
 		$AnnArr['field']['writer'] 	= 	$PowerBB->_CONF['rows']['member_row']['username'];
 		$AnnArr['field']['date'] 	= 	$PowerBB->_CONF['now'];
 
-		$insert = $PowerBB->announcement->InsertAnnouncement($AnnArr);
+		$insert = $PowerBB->core->Insert($AnnArr,'announcement');
 
 		if ($insert)
 		{
@@ -157,9 +157,10 @@ class PowerBBAnnouncementMOD extends _functions
 		$AnnArr['field']['date'] 	= 	$PowerBB->_CONF['template']['AnnInfo']['date'];
 		$AnnArr['where']			=	array('id',$PowerBB->_CONF['template']['AnnInfo']['id']);
 
-		$insert = $PowerBB->announcement->UpdateAnnouncement($AnnArr);
+		$Update = $PowerBB->core->Update($AnnArr,'announcement');
 
-		if ($insert)
+
+		if ($Update)
 		{
 			$PowerBB->functions->msg($PowerBB->_CONF['template']['_CONF']['lang']['Announcement_has_been_updated_successfully']);
 			$PowerBB->functions->redirect('index.php?page=announcement&amp;control=1&amp;main=1');

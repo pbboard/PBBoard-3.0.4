@@ -224,7 +224,7 @@
 <span class="statsl">
 {$MembersActiveList}
 		 {if {$MembersActiveList} > '0'}
-		(<a href="index.php?page=member&amp;active_member=1&amp;main2=1" target="main2"> {$lang['active_member']}</a>  )
+		(<a href="index.php?page=member&amp;active_member=1&amp;main=1" target="main2"> {$lang['active_member']}</a>  )
 		{/if}
 </span>
 <br />

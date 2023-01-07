@@ -16,9 +16,9 @@ class PowerBBFixMOD
 		global $PowerBB;
 
 		if ($PowerBB->_CONF['member_permission'])
-		{
+		{            if (!$PowerBB->_GET['pbboard_updates']){
 			$PowerBB->template->display('header');
-
+             }
 			if ($PowerBB->_CONF['rows']['group_info']['admincp_fixup'] == '0')
 			{
 			  $PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['error_permission']);
@@ -84,8 +84,9 @@ class PowerBBFixMOD
 			{
 				$this->_pbboard_updates_start();
 			}
-
+           if (!$PowerBB->_GET['pbboard_updates']){
 			$PowerBB->template->display('footer');
+			}
 		}
 	}
 
@@ -830,7 +831,11 @@ class PowerBBFixMOD
             // get main dir
 			$To = $PowerBB->functions->GetMianDir();
 			$To = str_ireplace("index.php/", '', $To);
-        if($PowerBB->_CONF['info_row']['MySBB_version'] == '3.0.3')
+        if($PowerBB->_CONF['info_row']['MySBB_version'] == '3.0.4')
+        {
+		$pbboard_last_time_updates = 'https://www.pbboard.info/check_updates/pbboard_last_time_updates_304.txt';
+		}
+        elseif($PowerBB->_CONF['info_row']['MySBB_version'] == '3.0.3')
         {
 		$pbboard_last_time_updates = 'https://www.pbboard.info/check_updates/pbboard_last_time_updates_303.txt';
 		}
@@ -845,7 +850,10 @@ class PowerBBFixMOD
 		 {
 			$ch = @curl_init();
 			@curl_setopt($ch, CURLOPT_URL, $pbboard_last_time_updates);
-			@curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+			curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+			curl_setopt($ch, CURLOPT_HEADER, false);
+			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 			@curl_setopt($ch, CURLOPT_TIMEOUT, 10);
 			$last_time_updates = @curl_exec($ch);
 			@curl_close($ch);

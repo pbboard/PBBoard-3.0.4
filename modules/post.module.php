@@ -175,7 +175,30 @@ class PowerBBTopicMOD
 	        }
 		}
 
-
+       if ($PowerBB->functions->ModeratorCheck($this->SectionInfo['moderators']))
+		{
+			$PowerBB->template->assign('mod_toolbar',0);
+		}
+		else
+		{
+			$PowerBB->template->assign('mod_toolbar',1);
+	       if ($PowerBB->_CONF['group_info']['edit_own_reply']== '1')
+	       {
+	        $PowerBB->_CONF['template']['_CONF']['group_info']['edit_own_reply'] = $PowerBB->functions->section_group_permission($this->SectionInfo['id'],$PowerBB->_CONF['group_info']['id'],'edit_own_reply');
+	       }
+	       if ($PowerBB->_CONF['group_info']['del_own_reply']== '1')
+	       {
+	        $PowerBB->_CONF['template']['_CONF']['group_info']['del_own_reply'] = $PowerBB->functions->section_group_permission($this->SectionInfo['id'],$PowerBB->_CONF['group_info']['id'],'del_own_reply');
+	       }
+	       if ($PowerBB->_CONF['group_info']['del_own_subject']== '1')
+	       {
+	        $PowerBB->_CONF['template']['_CONF']['group_info']['del_own_subject'] = $PowerBB->functions->section_group_permission($this->SectionInfo['id'],$PowerBB->_CONF['group_info']['id'],'del_own_subject');
+	       }
+	       if ($PowerBB->_CONF['group_info']['edit_own_subject']== '1')
+	       {
+	        $PowerBB->_CONF['template']['_CONF']['group_info']['edit_own_subject'] = $PowerBB->functions->section_group_permission($this->SectionInfo['id'],$PowerBB->_CONF['group_info']['id'],'edit_own_subject');
+	       }
+		}
        		// if section Allw hide subject can't show this subject  , so stop the page
    		if ($this->SectionInfo['hide_subject']
    		and !$PowerBB->functions->ModeratorCheck($PowerBB->_CONF['template']['SubjectInfo']['section']))

@@ -127,7 +127,7 @@ class PowerBBCustom_bbcode
 			$x += 1;
 		}
 
-		$cache = json_encode($cache);
+		$cache = base64_encode(json_encode($cache));
 
 		return $cache;
  	}

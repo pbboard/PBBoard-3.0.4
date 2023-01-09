@@ -2796,8 +2796,8 @@ function my_strlen($string)
 									$MemberInfo = $PowerBB->core->GetInfo($MemberArr,'member');
 									$section = $FeedsInfo['forumid'];
 
-							    $FROM_query = $PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['section'] . " WHERE id = '".$section."' ");
-								$FROM__row   = $PowerBB->DB->sql_fetch_array($FROM_query);
+					            $FROM_query = $PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['section'] . " WHERE id = '$section' ");
+								$FROM__row  = $PowerBB->DB->sql_fetch_array($FROM_query);
 
 									$SubjectArr	=	array();
 									$SubjectArr['field']	=	array();
@@ -2808,7 +2808,12 @@ function my_strlen($string)
 									$SubjectArr['field']['native_write_time'] 	= 	$PowerBB->_CONF['now'];
 									if($FROM__row['review_subject'])
 									{
-									$SubjectArr['field']['review_subject']	=	'1';
+									$SubjectArr['field']['review_subject'] = '1';
+									}
+									if($FROM__row['sec_section']
+									or $FROM__row['hide_subject'])
+									{
+									$SubjectArr['field']['sec_subject'] = '1';
 									}
 									$SubjectArr['field']['icon'] 				= 	'look/images/icons/i1.gif';
 									$SubjectArr['field']['section']	=	$FeedsInfo['forumid'];
@@ -3039,9 +3044,7 @@ function my_strlen($string)
   	function GetCachedCustom_bbcode()
 	{
 	   global $PowerBB;
- 		$cache = $PowerBB->_CONF['info_row']['custom_bbcodes_list_cache'];
-		$cache = json_decode($cache, true);
-        $cache = str_replace("&#39;","'",$cache);
+		$cache = json_decode(base64_decode($PowerBB->_CONF['info_row']['custom_bbcodes_list_cache']), true);
 		return $cache;
 	}
   	function get_cache_permissions_group_id_numbr($param)
@@ -3140,7 +3143,10 @@ function my_strlen($string)
         $pbboard_last_time_updates = 'https://www.pbboard.info/check_updates/pbboard_last_time_updates_304.txt';
 			$ch = @curl_init();
 			@curl_setopt($ch, CURLOPT_URL, $pbboard_last_time_updates);
-			@curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+			@curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+	        @curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+			@curl_setopt($ch, CURLOPT_HEADER, false);
+			@curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 			@curl_setopt($ch, CURLOPT_TIMEOUT, 10 );
 			$last_time_updates = @curl_exec($ch);
             @curl_close($ch);
@@ -3177,8 +3183,12 @@ function my_strlen($string)
 
 		$ch = @curl_init();
 		@curl_setopt($ch, CURLOPT_URL, $LatestVersionUrl);
-		@curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+		@curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        @curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+		@curl_setopt($ch, CURLOPT_HEADER, false);
+		@curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 		@curl_setopt($ch, CURLOPT_TIMEOUT, 10 );
+
 		$LatestVersionTxt = @curl_exec($ch);
         @curl_close($ch);
          if(!$LatestVersionTxt)

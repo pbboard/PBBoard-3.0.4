@@ -742,9 +742,9 @@ class PowerBBCodeParse
 	        $Custom_bbcodes = $PowerBB->functions->GetCachedCustom_bbcode();
 	        if(!empty($Custom_bbcodes))
 	        {
-
               foreach ($Custom_bbcodes as $getbbcode_row)
 		      {
+
 		      	$bbcode_tag = $getbbcode_row['bbcode_tag'];
 		      	$bbcode_replace = $getbbcode_row['bbcode_replace'];
                 $bbcode_replace = str_ireplace("'","&#39;",$bbcode_replace);

@@ -177,8 +177,7 @@ class PowerBBCustom_bbcodeMOD
 
 		if ($update)
 		{
-				$cache = $PowerBB->custom_bbcode->UpdateCustom_bbcodeCache(null);
-
+			$cache = $PowerBB->custom_bbcode->UpdateCustom_bbcodeCache(null);
 			$PowerBB->functions->msg($PowerBB->_CONF['template']['_CONF']['lang']['bbcode_has_been_updated_successfully']);
 			$PowerBB->functions->redirect('index.php?page=custom_bbcode&amp;control=1&amp;main=1');
 		}

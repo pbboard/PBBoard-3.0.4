@@ -774,14 +774,10 @@ class PowerBBCodeParse
             $text = str_replace('rel="dofollow" rel="nofollow"', '', $text);
             $text = str_replace('  rel="dofollow"   ', ' rel="dofollow" ', $text);
 
-                // end decode php code
-			    $regexcode_code['[code]'] = '#\[code\](.*)\[/code\]#siU';
-				$text = preg_replace_callback($regexcode_code, function($matches) {
-			        $matches[1] = base64_decode($matches[1]);
+          $text = str_replace("<br>", "<br />", $text);
 
-					$matches[1] = str_replace("&amp;#39;", "'", $matches[1]);
-			        return '<div class="maxy"></div><div class="codediv">CODE</div><pre><code class="language-php">'.$matches[1].'</code></pre><div class="maxy"></div>';
-				}, $text);
+            eval($PowerBB->functions->get_fetch_hooks('BBCodeParseHooks_cr'));
+
 
 			    $regexcode_html['[html]'] = '#\[html\](.*)\[/html\]#siU';
 				$text = preg_replace_callback($regexcode_html, function($matches) {
@@ -818,18 +814,24 @@ class PowerBBCodeParse
 			        return '<div class="maxy"></div><div class="codediv">SQL</div><pre><code class="language-sql">'.$matches[1].'</code></pre><div class="maxy"></div>';
 				}, $text);
 
-			$regexcode['php'] = '#\[php\](.*)\[/php\]#siU';
-			$text = preg_replace_callback($regexcode, function($matches) {
-			$matches[1] = base64_decode($matches[1]);
+                // end decode php code
+			    $regexcode_code['[code]'] = '#\[code\](.*)\[/code\]#siU';
+				$text = preg_replace_callback($regexcode_code, function($matches) {
+				   $matches[1] = base64_decode($matches[1]);
+				   $matches[1] = htmlspecialchars($matches[1]);
+				   $matches[1] = str_replace("&amp;", "&", $matches[1]);
+				   $matches[1] = str_replace('&lt;br /&gt;', "", $matches[1]);
+			        return '<div class="maxy"></div><div class="codediv">CODE</div><pre><code class="language-php">'.$matches[1].'</code></pre><div class="maxy"></div>';
+				}, $text);
+				$regexcode['php'] = '#\[php\](.*)\[/php\]#siU';
+				$text = preg_replace_callback($regexcode, function($matches) {
+				   $matches[1] = base64_decode($matches[1]);
+				   $matches[1] = htmlspecialchars($matches[1]);
+				   $matches[1] = str_replace("&amp;", "&", $matches[1]);
+				return '<div class="maxy"></div><div class="codediv">PHP</div><pre><code class="language-php">'.$matches[1].'</code></pre><div class="maxy"></div>';
+				}, $text);
 
-			$matches[1] = str_replace("&amp;#39;", "'", $matches[1]);
-			return '<div class="maxy"></div><div class="codediv">PHP</div><pre><code class="language-php">'.$matches[1].'</code></pre><div class="maxy"></div>';
-			}, $text);
 
-
-          $text = str_replace("<br>", "<br />", $text);
-
-            eval($PowerBB->functions->get_fetch_hooks('BBCodeParseHooks_cr'));
 
         return $text;
 	}

@@ -177,7 +177,43 @@
 12 {$lang['hours']}
 </option>
 {/if}
-&nbsp;
+{if {$FeedEdit['ttl']} == 86400}
+<option value="86400" selected="selected">
+24 {$lang['hours']}
+</option>
+{else}
+<option value="86400">
+24 {$lang['hours']}
+</option>
+{/if}
+{if {$FeedEdit['ttl']} == 172800}
+<option value="172800" selected="selected">
+48 {$lang['hours']}
+</option>
+{else}
+<option value="172800">
+48 {$lang['hours']}
+</option>
+{/if}
+{if {$FeedEdit['ttl']} == 259200}
+<option value="259200" selected="selected">
+72 {$lang['hours']}
+</option>
+{else}
+<option value="259200">
+72 {$lang['hours']}
+</option>
+{/if}
+{if {$FeedEdit['ttl']} == 604800}
+<option value="604800" selected="selected">
+7 {$lang['Day']}
+</option>
+{else}
+<option value="604800">
+7 {$lang['Day']}
+</option>
+{/if}
+</select>
 </td>
 </tr>
 <tr valign="top">

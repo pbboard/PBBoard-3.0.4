@@ -66,8 +66,16 @@
 			10 {$lang['hours']}</option>
 <option value="43200">
 			12 {$lang['hours']}</option>
+<option value="86400">
+			24 {$lang['hours']}</option>
+<option value="172800">
+			48 {$lang['hours']}</option>
+<option value="259200">
+			72 {$lang['hours']}</option>
+<option value="604800">
+			7 {$lang['Day']}</option>
 			</select>
-&nbsp;
+
 </td>
 </tr>
 <tr valign="top">

@@ -441,7 +441,7 @@ function _AllCacheStart()
 							$forum['last_subject'] = $PowerBB->Powerparse->censor_words($forum['last_subject']);
 							$forum['last_subject_title'] =  $forum['last_subject'];
 							$forum['last_subject'] =  $PowerBB->Powerparse->_wordwrap($forum['last_subject'],'35');
-							$forum['last_post_date'] = $forum['last_time'];
+							$forum['last_post_date'] = $PowerBB->sys_functions->_date($forum['last_time']);
 							$forum['l_date'] = $forum_last_time1;
 							$forum['last_date'] = $PowerBB->sys_functions->time_ago($forum_last_time1);
 							$forum['last_time_ago'] = $PowerBB->sys_functions->time_ago($forum_last_time1);
@@ -488,7 +488,7 @@ function _AllCacheStart()
 													$forum['last_subject'] = $PowerBB->Powerparse->censor_words($sub['last_subject']);
                                                    	$forum['last_subject_title'] =  $forum['last_subject'];
 													$forum['last_subject'] =  $PowerBB->Powerparse->_wordwrap($sub['last_subject'],'35');
-													$forum['last_post_date'] = $sub['last_time'];
+													$forum['last_post_date'] = $PowerBB->sys_functions->_date($forum_last_time1);
 				                                     $forum['l_date'] = $forum_last_time1;
 													 $forum['last_date'] = $PowerBB->sys_functions->time_ago($forum_last_time1);
 													$forum['last_time_ago'] = $PowerBB->sys_functions->time_ago($forum_last_time1);
@@ -554,7 +554,7 @@ function _AllCacheStart()
 																		$forum['last_subject'] = $PowerBB->Powerparse->censor_words($subforum['last_subject']);
 																		$forum['last_subject_title'] =  $forum['last_subject'];
 																		$forum['last_subject'] =  $PowerBB->Powerparse->_wordwrap($subforum['last_subject'],'35');
-																		$forum['last_post_date'] = $subforum['last_time'];
+																		$forum['last_post_date'] = $PowerBB->sys_functions->_date($forum_last_time1);
 									                                    $forum['l_date'] = $forum_last_time1;
 																		$forum['last_date'] = $PowerBB->sys_functions->time_ago($forum_last_time1);
 																		$forum['last_time_ago'] = $PowerBB->sys_functions->time_ago($forum_last_time1);
@@ -599,7 +599,7 @@ function _AllCacheStart()
 																					$forum['last_subject'] = $PowerBB->Powerparse->censor_words($sub4forum['last_subject']);
 																					$forum['last_subject_title'] =  $forum['last_subject'];
 																					$forum['last_subject'] =  $PowerBB->Powerparse->_wordwrap($sub4forum['last_subject'],'35');
-																					$forum['last_post_date'] = $sub4forum['last_time'];
+																		            $forum['last_post_date'] = $PowerBB->sys_functions->_date($forum_last_time1);
 												                                    $forum['l_date'] = $forum_last_time1;
 																					$forum['last_date'] = $PowerBB->sys_functions->time_ago($forum_last_time1);
 																					$forum['last_time_ago'] = $PowerBB->sys_functions->time_ago($forum_last_time1);

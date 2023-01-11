@@ -1501,6 +1501,8 @@ class PowerBBTopicMOD
 				$PowerBB->template->assign('question',$question);
 				$PowerBB->template->assign('answer',$answer);
 		     }
+          // show Smiles in fast reply box
+         $PowerBB->_CONF['template']['while']['SmileRows'] = $PowerBB->icon->GetCachedSmiles();
 
           $PowerBB->_CONF['template']['_CONF']['info_row']['title_quote'] = '1';
          eval($PowerBB->functions->get_fetch_hooks('topic_end'));

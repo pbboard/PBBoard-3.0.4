@@ -65,8 +65,6 @@ class PowerBBCodeParse
 
 	         $string = str_replace("&quot;", '"', $string);
 
-
-
                  // jwplayer tag replace
 			    $jwplayer_search= '#\[jwplayer=(.*),(.*),(.*),(.*)\](.*)\[/jwplayer\]#siU';
 				$string = preg_replace_callback($jwplayer_search, function($jwplayer) {
@@ -139,38 +137,18 @@ class PowerBBCodeParse
 	        $string = preg_replace("#\[color=([a-zA-Z]*|\#?[\da-fA-F]{3}|\#?[\da-fA-F]{6})](.*?)\[/color\]#si", "<span style=\"color: $1;\" class=\"mycode_color\">$2</span>", $string);
 	        $string = preg_replace('#\[color\=(.+)\](.+)\[\/color\]#iUs', "<span style=\"color: $1;\" class=\"mycode_color\">$2</span>", $string);
 	        $string = preg_replace('#\[style\=(.+)\](.+)\[\/style\]#iUs', "<span $1 class=\"mycode_style\">$2</span>", $string);
-
-			$regex_font = "#\[font=(.*?)\,(.*?)\](.*?)\[/font\]#si";
-			$string = preg_replace_callback($regex_font, function($x_font) {
-			return $this->mycode_parse_font_callback_issue($x_font[1],$x_font[2],$x_font[3]);
-			}, $string);
-
-			$regex_font_issue = "#\[font=\\s*(\"?)([a-z0-9 ,\-_'\"]+)\\1\\s*\](.*?)\[/font\]#si";
-			$string = preg_replace_callback($regex_font_issue, function($x_font_issue) {
-			return $this->mycode_parse_font_callback($x_font_issue[1],$x_font_issue[2],$x_font_issue[3]);
-			}, $string);
-
-
             $string = preg_replace("#\[size=(xx-small|x-small|small|medium|large|x-large|xx-large)\](.*?)\[/size\]#si", "<span style=\"font-size: $1;\" class=\"mycode_size\">$2</span>", $string);
-
-            $regex_size_font = array();
-			$regex_size_font[] = "#\[size=([0-9\+\-]+?)\](.*?)\[/size\]#si";
-			$string = preg_replace_callback($regex_size_font, function($x_size_font) {
-			return $this->mycode_handle_size($x_size_font[1],$x_size_font[2]);
-			}, $string);
-
-
-
-			$regex_list = '#\[list\](.*)\[/list\]#siU';
-			$string = preg_replace_callback($regex_list, function($x_list) {
-			return $this->DoList($x_list[1]);
-			}, $string);
-
+       	    $string = preg_replace('#\[size\=(.+)\](.+)\[\/size\]#iUs', "<font size=\"$1\" style=\"font-size: $1;\" class=\"mycode_size\">$2</font>", $string);
+            $string = preg_replace('#\[font\=(.+)\](.+)\[\/font\]#iUs', "<font face=\"$1\" style=\"font-family: $1;\" class=\"mycode_font\">$2</font>", $string);
 			$regexx_list = '#\[list=(1|2)\](.*)\[/list\]#siU';
 			$string = preg_replace_callback($regexx_list, function($xx_list) {
 			return $this->DoList($xx_list[1],$xx_list[2]);
 			}, $string);
-
+			$regex_list = '#\[list\](.*)\[/list\]#siU';
+			$string = preg_replace_callback($regex_list, function($x_list) {
+			return $this->DoList($x_list[1]);
+			}, $string);
+            $string = str_replace('[/list]', '', $string);
 
             eval($PowerBB->functions->get_fetch_hooks('BBCodeParseHooks1'));
 
@@ -178,7 +156,6 @@ class PowerBBCodeParse
 
 
         $string = $this->text_with_hyperlink($string);
-
         $string = nl2br($string);
 		// Fix up new lines and block level elements
 		$string = preg_replace("#(</?(?:html|head|body|div|p|form|table|thead|tbody|tfoot|tr|td|th|ul|ol|li|div|p|blockquote|cite|hr)[^>]*>)\s*<br />#i", "$1", $string);
@@ -190,6 +167,7 @@ class PowerBBCodeParse
 
 		return $string;
  	}
+
 
  	function Simplereplace($string)
  	{
@@ -564,6 +542,7 @@ class PowerBBCodeParse
                 $txt = str_replace('\\"', '"', $txt);
            return '' . $txt . '';
         }
+
         function DoList($mark,$item = '')
          {
                   if ($mark=="1")
@@ -587,6 +566,7 @@ class PowerBBCodeParse
                   $return .= "</".$tag.">";
                   return $return;
          }
+
  	function censor_words($text)
 	{
 		global $PowerBB;
@@ -1686,19 +1666,20 @@ class PowerBBCodeParse
 	* @param array $matches Matches.
 	* @return string The HTML <span> tag with styled font.
 	*/
-	function mycode_parse_font_callback_issue($matches, $matchest, $matchestr)
+	function mycode_parse_font_callback_issue($matches, $matchest)
 	{
 
 		$matches = str_replace("&quot;", "'", $matches);
 		$matches = str_replace('"', "'", $matches);
 
-		return "<span style=\"font-family: {$matches},{$matchest};\" class=\"mycode_font\">{$matchestr}</span>";
+		return "<span style=\"font-family: {$matches};\" class=\"mycode_font\">{$matchest}</span>";
 	}
 
 	function mycode_parse_font_callback($matches, $matchest, $matchestr)
 	{
-		$fonts = str_replace('"', "'", $matchest);
-		return "<span style=\"font-family: {$fonts};\" class=\"mycode_font\">{$matchestr}</span>";
+		$matches = str_replace("&quot;", "'", $matches);
+		$matches = str_replace('"', "'", $matches);
+		return "<span style=\"font-family: {$matches},{$matchest};\" class=\"mycode_font\">{$matchestr}</span>";
 	}
 	/**
 	* Handles fontsize.

@@ -783,7 +783,7 @@ class PowerBBTopicMOD
 				$Reply_NumArr = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['reply'] . " WHERE subject_id='$subject_id' and delete_topic <>1"));
 				$ss_r = $PowerBB->_CONF['info_row']['perpage']/2+1;
 				$roun_ss_r = round($ss_r, 0);
-				$reply_number_r = $Reply_NumArr-$roun_ss_r+1;
+				$reply_number_r = $Reply_NumArr-$roun_ss_r;
 				$pagenum_r = $reply_number_r/$PowerBB->_CONF['info_row']['perpage'];
 				$round0_r = round($pagenum_r, 0);
 				$countpage = $round0_r+1;

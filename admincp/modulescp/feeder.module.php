@@ -68,10 +68,15 @@ class PowerBBCoreMOD
 					$this->_DelFeedStart();
 				}
 			}
+			elseif ($PowerBB->_GET['ective_feeds'])
+			{
+					$this->_EctiveFeeds();
+
+			}
 
       }
 
-			       $PowerBB->template->display('footer');
+		$PowerBB->template->display('footer');
 
 	}
 
@@ -282,12 +287,12 @@ class PowerBBCoreMOD
 			$MemberArr['where']						=	array('id',$MemberInfo['id']);
 			$UpdateMember = $PowerBB->core->Update($MemberArr,'member');
 
-           $exisT_s = '1';
+           $exisT_s = true;
 
 		  }
           else
           {
-          	$exisT_s = '0';
+          	$exisT_s = false;
           }
 
 		}
@@ -336,13 +341,6 @@ class PowerBBCoreMOD
 
     		$UpdateSubjectNumber = $PowerBB->core->Update($UpdateArr,'section');
 
-    		//////////
-
-    		// Update section's cache
-			$PowerBB->functions->UpdateSectionCache($FeedsInfo['forumid']);
-
-
-    		//////////
 
 
 			$FeedsArr	                    =	array();
@@ -359,6 +357,9 @@ class PowerBBCoreMOD
 
 			$InsertFeeds = $PowerBB->core->Insert($FeedsArr,'feeds');
       }
+    		// Update section's cache
+			$PowerBB->functions->UpdateSectionCache($FeedsInfo['forumid']);
+
 	       $PowerBB->functions->msg($PowerBB->_CONF['template']['_CONF']['lang']['feed_has_been_brought_successfully']);
            $PowerBB->functions->redirect('index.php?page=feeder&amp;control=1&amp;main=1');
 	}
@@ -647,13 +648,14 @@ class PowerBBCoreMOD
 					$MemberArr['where']						=	array('id',$MemberInfo['id']);
 					$UpdateMember = $PowerBB->core->Update($MemberArr,'member');
 
-					$exisT_s = '1';
+					$exisT_s = true;
 				 }
 				 else
 				 {
-				    $exisT_s = '0';
+				    $exisT_s = false;
 				 }
           	  }
+
 			if ($exisT_s)
 			{
 		      $section = $PowerBB->_POST['section'];
@@ -694,8 +696,7 @@ class PowerBBCoreMOD
 
 		    		//////////
 
-		    		// Update section's cache
-				    $PowerBB->functions->UpdateSectionCache($PowerBB->_POST['section']);
+
 
 		     }
         }
@@ -720,10 +721,11 @@ class PowerBBCoreMOD
 
 
 			$UpdateFeeds = $PowerBB->core->Update($FeedsArr,'feeds');
+		    // Update section's cache
+			$PowerBB->functions->UpdateSectionCache($PowerBB->_POST['section']);
 
 	       $PowerBB->functions->msg($PowerBB->_CONF['template']['_CONF']['lang']['Has_been_saved_successfully_feed']);
            $PowerBB->functions->redirect('index.php?page=feeder&amp;control=1&amp;main=1');
-
 
 	}
 
@@ -835,12 +837,12 @@ class PowerBBCoreMOD
 						$MemberArr['where']						=	array('id',$MemberInfo['id']);
 						$UpdateMember = $PowerBB->core->Update($MemberArr,'member');
 
-                     $exisT_s = '1';
+                     $exisT_s = true;
 
 					}
                    else
                    {
-                   	$exisT_s = '0';
+                   	$exisT_s = false;
                    }
 				  }
 			  if ($exisT_s)
@@ -870,17 +872,16 @@ class PowerBBCoreMOD
 		              // The overall number of subjects
 		    		$UpdateSubjectNumber = $PowerBB->cache->UpdateSubjectNumber(array('subject_num'	=>	$PowerBB->_CONF['info_row']['subject_number']));
 
-		    		//////////
-
-		    		// The number of section's subjects number
-		    		// Update section's cache
-		    		$PowerBB->functions->UpdateSectionCache($FeedsInfo['forumid']);
-
              }
+
+		    	// Update section's cache
+		    	$PowerBB->functions->UpdateSectionCache($FeedsInfo['forumid']);
+
 		       $PowerBB->functions->msg($PowerBB->_CONF['template']['_CONF']['lang']['feed_has_been_brought_successfully']);
 	           $PowerBB->functions->redirect('index.php?page=feeder&control=1&main=1');
 
   }
+
 
 
 	function _DelFeedStart()
@@ -902,6 +903,33 @@ class PowerBBCoreMOD
 		if ($del)
 		{
 	       $PowerBB->functions->msg($PowerBB->_CONF['template']['_CONF']['lang']['feed_has_been_deleted_successfully']);
+           $PowerBB->functions->redirect('index.php?page=feeder&control=1&main=1');
+		}
+  }
+
+
+	function _EctiveFeeds()
+	{
+
+		global $PowerBB;
+
+		$PowerBB->template->display('header');
+			if (empty($PowerBB->_GET['id']))
+			{
+				$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['The_declaration_does_not_exist']);
+			}
+
+			$FeedsArr	                    =	array();
+			$FeedsArr['field']	            =	array();
+			$FeedsArr['field']['options']	=	$PowerBB->_GET['options'];
+		    $FeedsArr['where'] 				= 	array('id',$PowerBB->_GET['id']);
+
+
+			$UpdateFeeds = $PowerBB->core->Update($FeedsArr,'feeds');
+
+		if ($UpdateFeeds)
+		{
+	       $PowerBB->functions->msg($PowerBB->_CONF['template']['_CONF']['lang']['action_was_successful']);
            $PowerBB->functions->redirect('index.php?page=feeder&control=1&main=1');
 		}
   }

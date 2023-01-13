@@ -189,33 +189,22 @@ class PowerBBRegisterMOD
 	   // Stop any external post request.
 		$Y = explode('/',$PowerBB->_SERVER['HTTP_REFERER']);
 		$X = explode('/',$PowerBB->_SERVER['HTTP_HOST']);
-		if (function_exists("file_get_contents")) {
 
-		if (stristr(@file_get_contents("http://www.stopforumspam.com/api?ip=" .$PowerBB->_SERVER['REMOTE_ADDR']), "yes")) {
-		exit('spammer ip');
-		}
-
-		if (stristr(@file_get_contents("http://www.stopforumspam.com/api?email=" .$PowerBB->_POST['email']), "yes")) {
-		exit('spammer email');
-		}
-		} else {
 		if (function_exists("curl_init")) {
-		$ch = @curl_init();
-		@curl_setopt($ch, CURLOPT_HEADER, 0);
-		@curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-		@curl_setopt($ch, CURLOPT_URL, "http://www.stopforumspam.com/api?ip=" .$PowerBB->_SERVER['REMOTE_ADDR']);
 
-		if (stristr(@curl_exec($ch), "yes")) {
-		exit('spammer ip');
-		}
+			$url_ch_ip = "https://www.stopforumspam.com/api?ip=" .$PowerBB->_CONF['ip'];
+		    $stop_ch_ip = $PowerBB->sys_functions->CURL_URL($url_ch_ip);
+			if (stristr($stop_ch_ip, "yes")) {
+			exit('spammer ip');
+			}
 
-		@curl_setopt($ch, CURLOPT_URL, "http://www.stopforumspam.com/api?email=" .$PowerBB->_POST['email']);
+			$url_ch_email = "https://www.stopforumspam.com/api?email=" .$PowerBB->_POST['email'];
+		    $stop_ch_email = $PowerBB->sys_functions->CURL_URL($url_ch_email);
 
-		if (@stristr(@curl_exec($ch), "yes")) {
-		exit('spammer email');
-		}
+			if (stristr($stop_ch_email, "yes")) {
+			exit('spammer email');
+			}
 
-		@curl_close($ch);
 		}
 		elseif ($Y[2] != $X[0])
 		{
@@ -233,7 +222,7 @@ class PowerBBRegisterMOD
 		{
 		exit('No direct script access register allowed');
 		}
-		}
+
 
        ////
 

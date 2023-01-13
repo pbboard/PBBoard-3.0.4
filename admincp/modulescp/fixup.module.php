@@ -848,57 +848,49 @@ class PowerBBFixMOD
 
          if(!$last_time_updates)
 		 {
-			$ch = @curl_init();
-			@curl_setopt($ch, CURLOPT_URL, $pbboard_last_time_updates);
-			curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
-			curl_setopt($ch, CURLOPT_HEADER, false);
-			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-			@curl_setopt($ch, CURLOPT_TIMEOUT, 10);
-			$last_time_updates = @curl_exec($ch);
-			@curl_close($ch);
+		 $last_time_updates = $PowerBB->sys_functions->CURL_cloudFlareBypass($pbboard_last_time_updates);
 		 }
 
 		$arr = explode('-',$last_time_updates);
 
 		$url     = trim($arr[2]);
+        $urls= $PowerBB->sys_functions->CURL_cloudFlareBypass($url);
 
-        $file_get = fopen($url, 'r');
+        $file_put = file_put_contents($To."Tmpfile.zip", $urls);
 
-        @file_put_contents($To."Tmpfile.zip", $file_get);
+           $zip = new ZipArchive;
+			$file = $To.'Tmpfile.zip';
+			//$path = pathinfo(realpath($file), PATHINFO_DIRNAME);
+			if ($zip->open($file) === TRUE) {
+			    $zip->extractTo($To);
 
-		$zip = new ZipArchive;
-		$file = $To.'Tmpfile.zip';
-		//$path = pathinfo(realpath($file), PATHINFO_DIRNAME);
-		if ($zip->open($file) === TRUE) {
-		    $zip->extractTo($To);
+			    $ziped = true;
+			} else {
+			   $ziped = false;
+			   echo 'Failed to open zip file';
+			}
 
-		    $ziped = 1;
-		} else {
-		   $ziped = 0;
-		}
-
-         if($ziped)
-         {
-          if($PowerBB->admincpdir !='admincp')
-		  {
-				for ($i = 0; $i < $zip->numFiles; $i++) {
-				   if(strstr($zip->getNameIndex($i),'admincp'))
-				   {
-					    $zip->renameIndex($i, str_replace("admincp",$PowerBB->admincpdir, $zip->getNameIndex($i)));
-					     $zip->extractTo($To,$zip->getNameIndex($i));
-				   }
-				}
-          }
-         $zip->close();
-		$PowerBB->info->UpdateInfo(array('value'=>$PowerBB->_CONF['now'],'var_name'=>'last_time_updates'));
-		@unlink($file);
-		echo $PowerBB->_CONF['template']['_CONF']['lang']['pbboard_updated'];
-		}
-		else
-         {
-		 echo $PowerBB->_CONF['template']['_CONF']['lang']['automatic_update_fails'];
-		}
+	         if($ziped)
+	         {
+	          if($PowerBB->admincpdir !='admincp')
+			  {
+					for ($i = 0; $i < $zip->numFiles; $i++) {
+					   if(strstr($zip->getNameIndex($i),'admincp'))
+					   {
+						    $zip->renameIndex($i, str_replace("admincp",$PowerBB->admincpdir, $zip->getNameIndex($i)));
+						     $zip->extractTo($To,$zip->getNameIndex($i));
+					   }
+					}
+	          }
+	         $zip->close();
+			$PowerBB->info->UpdateInfo(array('value'=>$PowerBB->_CONF['now'],'var_name'=>'last_time_updates'));
+			unlink($file);
+			echo $PowerBB->_CONF['template']['_CONF']['lang']['pbboard_updated'];
+			}
+			else
+	         {
+			 echo $PowerBB->_CONF['template']['_CONF']['lang']['automatic_update_fails'];
+			}
 	}
 
 }

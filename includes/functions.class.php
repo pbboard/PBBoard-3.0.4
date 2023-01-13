@@ -3141,15 +3141,8 @@ function my_strlen($string)
         $last_Update = $PowerBB->_CONF['info_row']['last_time_updates'];
         $Version = $PowerBB->_CONF['info_row']['MySBB_version'];
         $pbboard_last_time_updates = 'https://www.pbboard.info/check_updates/pbboard_last_time_updates_304.txt';
-			$ch = @curl_init();
-			@curl_setopt($ch, CURLOPT_URL, $pbboard_last_time_updates);
-			@curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-	        @curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
-			@curl_setopt($ch, CURLOPT_HEADER, false);
-			@curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-			@curl_setopt($ch, CURLOPT_TIMEOUT, 10 );
-			$last_time_updates = @curl_exec($ch);
-            @curl_close($ch);
+		 $last_time_updates = $PowerBB->sys_functions->CURL_cloudFlareBypass($pbboard_last_time_updates);
+
          if(!$last_time_updates)
 		 {
       	   $last_time_updates = @file_get_contents($pbboard_last_time_updates);
@@ -3181,16 +3174,8 @@ function my_strlen($string)
          // Check if this version is up to date
          $LatestVersionUrl = ("https://www.pbboard.info/pbboard_latest_version.txt");
 
-		$ch = @curl_init();
-		@curl_setopt($ch, CURLOPT_URL, $LatestVersionUrl);
-		@curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-        @curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
-		@curl_setopt($ch, CURLOPT_HEADER, false);
-		@curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-		@curl_setopt($ch, CURLOPT_TIMEOUT, 10 );
+		 $LatestVersionTxt = $PowerBB->sys_functions->CURL_cloudFlareBypass($LatestVersionUrl);
 
-		$LatestVersionTxt = @curl_exec($ch);
-        @curl_close($ch);
          if(!$LatestVersionTxt)
 		 {
 		 $LatestVersionTxt = @file_get_contents($LatestVersionUrl);

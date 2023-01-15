@@ -221,7 +221,7 @@ class PowerBBAJAXtMOD
 		$update = $PowerBB->core->Update($ReplyArr,'reply');
 
 		// show message
-		$PowerBB->_POST['message'] = $PowerBB->Powerparse->replace_htmlentities($PowerBB->_POST['message']);
+		//$PowerBB->_POST['message'] = $PowerBB->Powerparse->replace_htmlentities($PowerBB->_POST['message']);
 		$PowerBB->_POST['message'] = $PowerBB->Powerparse->replace($PowerBB->_POST['message']);
 		$PowerBB->Powerparse->replace_smiles($PowerBB->_POST['message']);
 		$PowerBB->_POST['message'] = $PowerBB->Powerparse->censor_words($PowerBB->_POST['message']);
@@ -308,7 +308,8 @@ class PowerBBAJAXtMOD
 		$update = $PowerBB->core->Update($SubjectArr,'subject');
 
 		// show message
-		$PowerBB->_POST['message'] = $PowerBB->Powerparse->replace_htmlentities($PowerBB->_POST['message']);
+		//$PowerBB->_POST['message'] = $PowerBB->Powerparse->replace_htmlentities($PowerBB->_POST['message']);
+
 		$PowerBB->_POST['message'] = $PowerBB->Powerparse->replace($PowerBB->_POST['message']);
 		$PowerBB->Powerparse->replace_smiles($PowerBB->_POST['message']);
 		$PowerBB->_POST['message'] = $PowerBB->Powerparse->censor_words($PowerBB->_POST['message']);

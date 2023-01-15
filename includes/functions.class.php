@@ -3583,5 +3583,16 @@ function dec_to_utf8($src)
 		return $mention_ex;
 	}
 
+	function retur_numbe_rows($text)
+	{
+		$cols = '20';
+		$minrows = '10';
+		$rows = @floor(@mb_strlen(@utf8_decode($text)) / $cols)+1;
+		if ($minrows >= $rows)   {
+		$rows = $minrows;
+		}
+
+	   return $rows;
+	}
  }
 ?>

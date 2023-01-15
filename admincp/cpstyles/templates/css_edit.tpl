@@ -18,7 +18,7 @@
 		</tr>
 		<tr valign="top">
 			<td class="row1" align="center">
-				<textarea rows="45" cols="50" name="css_context" dir="ltr">{$css_context}</textarea>
+				<textarea rows="45" cols="90" name="css_context" dir="ltr">{$css_context}</textarea>
 			</td>
 		</tr>
 	</table>

@@ -1043,6 +1043,7 @@ class PowerBBManagementMOD
         $this->Subject['title']    =   $PowerBB->Powerparse->censor_words($this->Subject['title']);
 	   //$this->Subject['title'] = str_ireplace("\\",'', $this->Subject['title']);
         $this->Subject['title'] = $PowerBB->_POST['title'];
+
 		$PowerBB->template->assign('SubjectpreviewInfo',$this->Subject);
 
 		// Get section information and set it in $this->Section
@@ -1146,10 +1147,12 @@ class PowerBBManagementMOD
 
        // $GetSubjectInfo['text'] = $PowerBB->Powerparse->censor_words($GetSubjectInfo['text']);
 
-		$GetSubjectInfo['text'] = $PowerBB->Powerparse->replace_htmlentities($GetSubjectInfo['text']);
+		//$GetSubjectInfo['text'] = $PowerBB->Powerparse->replace_htmlentities($GetSubjectInfo['text']);
+		//$GetSubjectInfo['text'] = str_replace('<br />', "", $GetSubjectInfo['text']);
 		$GetSubjectInfo['title'] 	= 	$PowerBB->functions->CleanVariable($GetSubjectInfo['title'],'html');
 		$GetSubjectInfo['title'] 	= 	$PowerBB->functions->CleanVariable($GetSubjectInfo['title'],'sql');
          $GetSubjectInfo['title']    =   $PowerBB->Powerparse->censor_words($GetSubjectInfo['title']);
+        // $GetSubjectInfo['text'] = @strip_tags($GetSubjectInfo['text']);
         $PowerBB->template->assign('GetSubjectInfo',$GetSubjectInfo['text']);
 
 		$MemberArr 				= 	array();
@@ -1336,7 +1339,7 @@ class PowerBBManagementMOD
        {
             define('DONT_STRIPS_SLIASHES',true);
 			$PowerBB->_POST['text'] = str_replace('target="_blank" ','',$PowerBB->_POST['text']);
-			$PowerBB->template->assign('prev',$PowerBB->Powerparse->replace_htmlentities($PowerBB->_POST['text']));
+			$PowerBB->template->assign('prev',$PowerBB->_POST['text']);
 			$PowerBB->_POST['text'] = $PowerBB->Powerparse->replace($PowerBB->_POST['text']);
 			$PowerBB->Powerparse->replace_smiles($PowerBB->_POST['text']);
             $PowerBB->_POST['text'] = $PowerBB->Powerparse->censor_words($PowerBB->_POST['text']);
@@ -1932,6 +1935,8 @@ class PowerBBManagementMOD
 
 		$PowerBB->_CONF['template']['ReplyInfo'] = $PowerBB->core->GetInfo($ReplyArr,'reply');
 
+         $PowerBB->_CONF['template']['ReplyInfo']['text'] = $PowerBB->Powerparse->remove_strings($PowerBB->_CONF['template']['ReplyInfo']['text']);
+
 		$SubjectArr = array();
 		$SubjectArr['where'] = array('id',$PowerBB->_GET['subject_id']);
 
@@ -1966,7 +1971,7 @@ class PowerBBManagementMOD
           $PowerBB->template->assign('Admin',$Admin);
           $PowerBB->template->assign('SRInfo',$PowerBB->_CONF['template']['ReplyInfo']);
 
-		$PowerBB->_CONF['template']['ReplyInfo']['text'] = $PowerBB->Powerparse->replace_htmlentities($PowerBB->_CONF['template']['ReplyInfo']['text']);
+		//$PowerBB->_CONF['template']['ReplyInfo']['text'] = $PowerBB->Powerparse->replace_htmlentities($PowerBB->_CONF['template']['ReplyInfo']['text']);
 
          $PowerBB->template->assign('GetReplyInfo',$PowerBB->_CONF['template']['ReplyInfo']['text']);
 		$PowerBB->template->display('reply_edit');
@@ -2033,7 +2038,7 @@ class PowerBBManagementMOD
        {
          define('DONT_STRIPS_SLIASHES',true);
 		$PowerBB->_POST['text'] = str_replace('target="_blank" ','',$PowerBB->_POST['text']);
-		$PowerBB->template->assign('prev',$PowerBB->Powerparse->replace_htmlentities($PowerBB->_POST['text']));
+		$PowerBB->template->assign('prev',$PowerBB->_POST['text']);
 		$PowerBB->_POST['text'] = $PowerBB->Powerparse->replace($PowerBB->_POST['text']);
 		$PowerBB->Powerparse->replace_smiles($PowerBB->_POST['text']);
         $PowerBB->_POST['text'] = $PowerBB->Powerparse->censor_words($PowerBB->_POST['text']);

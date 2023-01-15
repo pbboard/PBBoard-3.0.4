@@ -61,6 +61,8 @@ class PowerBBTopicMOD
 			}
 		}
 
+        $PowerBB->_CONF['template']['SubjectInfo']['text'] = $PowerBB->Powerparse->remove_strings($PowerBB->_CONF['template']['SubjectInfo']['text']);
+
 		$PowerBB->template->assign('PostInfo',$PowerBB->_CONF['template']['SubjectInfo']);
 		$PowerBB->template->assign('subject','1');
         $PowerBB->template->assign('text',$PowerBB->_CONF['template']['SubjectInfo']['text']);
@@ -90,6 +92,7 @@ class PowerBBTopicMOD
 			$PowerBB->functions->stop_no_foot($PowerBB->_CONF['template']['_CONF']['lang']['Reply_Editing_time_out']);
 			}
 		}
+        $PowerBB->_CONF['template']['ReplyInfo']['text'] = $PowerBB->Powerparse->remove_strings($PowerBB->_CONF['template']['ReplyInfo']['text']);
 
 		$PowerBB->template->assign('PostInfo',$PowerBB->_CONF['template']['ReplyInfo']);
         $PowerBB->template->assign('text',$PowerBB->_CONF['template']['ReplyInfo']['text']);

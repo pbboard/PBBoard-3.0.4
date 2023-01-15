@@ -628,7 +628,7 @@ class PowerBBStyleMOD extends _functions
     		$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['is_not_writable']);
     	}
 
-    	$PowerBB->_POST['css_context'] = stripslashes($PowerBB->_POST['css_context']);
+    	//$PowerBB->_POST['css_context'] = stripslashes($PowerBB->_POST['css_context']);
 
     	$fp = fopen($path,'w+');
     	$fw = fwrite($fp,$PowerBB->_POST['css_context']);

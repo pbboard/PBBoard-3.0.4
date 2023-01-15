@@ -120,6 +120,7 @@ class PowerBBCodeParse
             $string = preg_replace('#\[h6\](.+)\[\/h6\]#iUs', '<h1>$1</h1>', $string);
             $string = preg_replace('#\[hr\]\[\/hr\]#iUs', '<HR id=null>', $string);
             $string = preg_replace('#\[hr\]#iUs', '<HR id=null>', $string);
+            $string = preg_replace('#\[\/hr\]#iUs', '', $string);
             $string = preg_replace('#\[sub\](.+)\[\/sub\]#iUs', '<SUB>$1</SUB>', $string);
             $string = preg_replace('#\[sup\](.+)\[\/sup\]#iUs', '<SUP>$1</SUP>', $string);
             $string = preg_replace('#\[guest_name\](.+)\[\/guest_name\]#iUs', '<br>$1</br>', $string);
@@ -799,8 +800,7 @@ class PowerBBCodeParse
 				$text = preg_replace_callback($regexcode_code, function($matches) {
 				   $matches[1] = base64_decode($matches[1]);
 				   $matches[1] = htmlspecialchars($matches[1]);
-				   $matches[1] = str_replace("&amp;", "&", $matches[1]);
-				   $matches[1] = str_replace('&lt;br /&gt;', "", $matches[1]);
+                    $matches[1] = $this->remove_strings($matches[1]);
 			        return '<div class="maxy"></div><div class="codediv">CODE</div><pre><code class="language-php">'.$matches[1].'</code></pre><div class="maxy"></div>';
 				}, $text);
 				$regexcode['php'] = '#\[php\](.*)\[/php\]#siU';
@@ -2234,6 +2234,21 @@ function htmlspecialchars_uni($message)
 
 		// Add invisible white space
 		$string = preg_replace($js_array, "$1\xE2\x80\x8C$2$6", $string);
+
+		return $string;
+	}
+
+	function remove_strings($string)
+	{
+		$string = str_replace("&amp;", "&", $string);
+		$find_matches1 = array("\n&lt;br&gt;","\n&lt;br /&gt;","\n&lt;hr&gt;");
+		$find_matches2 = array("&lt;br&gt;\r","&lt;br /&gt;\r","&lt;hr&gt;\r");
+
+		$replace_find_matches = array("");
+		$string =  str_replace($find_matches1,$replace_find_matches, $string);
+		$string =  str_replace($find_matches2,$replace_find_matches, $string);
+
+		$string = strip_tags($string);
 
 		return $string;
 	}

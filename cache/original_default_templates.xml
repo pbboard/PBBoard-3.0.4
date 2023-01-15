@@ -2495,6 +2495,7 @@ $(".input_button").click(function()
 {
 $("#status_rename_"+valu+"").hide("slow");
 $.cookie("PbbSubject_id", '', { expires: 0 });
+setTimeout(location.reload.bind(location), 60);
 });
 $(".input_cancel").click(function()
 {
@@ -10160,6 +10161,9 @@ $(".slide_Down_"+id).slideToggle();
 function edit_reply(valu)
 {
 $("#status_rename_"+valu+"").show();
+$('html, body').animate({
+        scrollTop: $("#status_"+valu).offset().top
+    }, 100);
 $.post("index.php?page=topic&fastEdit=1&id="+valu, function(data, status){
 $("#status_rename_"+valu+"").html(data);
 $('.bottom_text').attr('style','min-height:2px !important;');
@@ -10391,6 +10395,9 @@ user={$Info['username']}" title="{$lang['qu_subject']}" class="Button_secondary"
 function edit_subject(valu)
 {
     $("#status_rename_"+valu+"").show();
+$('html, body').animate({
+        scrollTop: $("#status_"+valu).offset().top
+    }, 100);
     $.post("index.php?page=topic&fastEdit=1&subject=1&id="+valu, function(data, status){
      $("#status_rename_"+valu+"").html(data);
 
@@ -17331,8 +17338,11 @@ $("#edit_"+valu).slideToggle();
 }
 </script>
 <br />
-
-<textarea id="message{$PostInfo['id']}" name="message{$PostInfo['id']}" rows="15" cols="45" style="width:97%;">{$text}</textarea>
+<?php
+$rows = $PowerBB->functions->retur_numbe_rows($PowerBB->_CONF['template']['text']);
+$PowerBB->_CONF['template']['rows'] = $rows;
+?>
+<textarea id="message{$PostInfo['id']}" name="message{$PostInfo['id']}" rows="{$rows}" cols="100" style="width:97%;">{$text}</textarea>
 
 	<?php
 if($PowerBB->functions->mention_permissions())

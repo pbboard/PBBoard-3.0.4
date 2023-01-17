@@ -35,6 +35,7 @@ if(!target.hasClass('active_usercptools')&&target.parents('#usercptools-trigger'
 if(!target.hasClass('active_userlink')&&target.parents('#userlink-trigger').length==0){$('#userlink_menu').hide("slow");}
 if(!target.hasClass('active_alerts')&&target.parents('#alerts-trigger').length==0){$('#alerts-content').hide("slow");}
 if(!target.hasClass('active_pages')&&target.parents('#pages-trigger').length==0){$('#pages-content').hide("slow");}
-if(!target.hasClass('active_smile')&&target.parents('#smiles-trigger').length==0){$('#smile_menu').hide();}
+if(!target.hasClass('#flip')&&target.parents('#smiles-trigger').length==0){$('#smile_menu').hide();}
+if(!target.hasClass('active_smile')&&target.parents('#icon-mobile-menu').length==0){$('#flip').hide();}
 if(!target.hasClass('app_button Button_overlaid')&&target.parents('#eledit_photo').length==0){$('#eledit_photo_menu').hide("slow");$("#eledit_photo_menu").css('display','none');}
 if(!target.hasClass('app_button Button_overlaid')&&target.parents('#remove_friend').length==0){$('#friend_menu').hide("slow");$("#friend_menu").css('display','none');}});

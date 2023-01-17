@@ -3697,9 +3697,9 @@ clear: both;
 }
 #signature
 {
-width:50%;
+min-width: 70%;
 border-spacing:1px;
-margin-top: 10px;
+margin-top: auto;
 clear: both;
 }
 
@@ -3835,11 +3835,21 @@ margin-right:29px;
 display: none;
 }
 .user_awards{
+border: 1px dotted #d1d1e1;
+border-radius:4px;
+font-family: "Droid Arabic Kufi","tahoma",sans-serif;
+font-size: 12px;
 width:170px;
 height:150px;
 overflow-x: hidden;
-overflow-y: hidden;
+overflow-y: scroll;
+margin-top:23px;
+margin-bottom:23px;
 float: left;
+}
+.user_awards img{
+max-width:140px;
+border: 3px dotted #d1d1e1;
 }
 img{
 max-width:auto;
@@ -3894,8 +3904,8 @@ vertical-align: top;
 }
 .w_awards {
 vertical-align: top;
-margin-left:4px;
-margin-right:4px;
+margin-left:10px;
+margin-right:1px;
 }
 .w_lasts marquee
 {
@@ -5143,6 +5153,12 @@ padding: 3px;
 .spis{
 margin-left: 15px;
 }
+pre code.hljs {
+white-space: pre-wrap;
+}
+.userbar #alerts-trigger
+{cursor: pointer;
+}
 @media (max-width:1200px) {
 .cked_fast{
 width: 80%;
@@ -5364,6 +5380,7 @@ display:block !important;
 width:97%;
 display:block !important;
 }
+
 #submit_search input[type="text"]
 {
 width: 70px;

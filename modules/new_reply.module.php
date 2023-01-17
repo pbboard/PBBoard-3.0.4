@@ -183,8 +183,10 @@ class PowerBBReplyAddMOD
 	        }
 		}
 
-     	$PowerBB->_CONF['template']['password'] = '&amp;password=' . base64_encode($this->SectionInfo['section_password']);
-
+			if(!empty($this->SectionInfo['section_password']))
+			{
+			  $PowerBB->_CONF['template']['password'] = '&amp;password=' . base64_encode($this->SectionInfo['section_password']);
+			}
 		//////////
 
 
@@ -628,6 +630,25 @@ class PowerBBReplyAddMOD
 		     }
 		     else
 		     {
+						     if ((time() - 1800) <= $PowerBB->_CONF['member_row']['lastpost_time'])
+						     {
+		     	              $ajax_lastpost_time = true;
+						     }
+						     else
+		     	             {
+		     	              $ajax_lastpost_time = false;
+						     }
+
+                        	if ($this->SubjectInfo['last_replier'] == $PowerBB->_CONF['member_row']['username'] and $ajax_lastpost_time)
+							{
+						      $PowerBB->template->assign('ajax_last_replier',true);
+						      $ajax_last_replier = true;
+							}
+							else
+							{
+						      $PowerBB->template->assign('ajax_last_replier',false);
+						      $ajax_last_replier = false;
+							}
 
 		            if ((time() - $PowerBB->_CONF['info_row']['floodctrl']) <= $PowerBB->_CONF['member_row']['lastpost_time'])
 		            {
@@ -636,6 +657,7 @@ class PowerBBReplyAddMOD
   			               $floodctrl = @time() - $PowerBB->_CONF['member_row']['lastpost_time'] - $PowerBB->_CONF['info_row']['floodctrl'] ;
   			               $PowerBB->_CONF['template']['_CONF']['lang']['floodctrl'] = str_replace($PowerBB->_CONF['info_row']['floodctrl'], " <b>".$floodctrl."</b> ", $PowerBB->_CONF['template']['_CONF']['lang']['floodctrl']);
   			               $PowerBB->_CONF['template']['_CONF']['lang']['floodctrl'] = str_replace("-", "", $PowerBB->_CONF['template']['_CONF']['lang']['floodctrl']);
+  			               echo "<!-- #flood: -->";
 						   $PowerBB->functions->error_no_foot($PowerBB->_CONF['template']['_CONF']['lang']['floodctrl']);
 
 						}
@@ -648,6 +670,7 @@ class PowerBBReplyAddMOD
 							 {
 				                if($PowerBB->_POST['code'] != $PowerBB->_POST['code_answer'])
 								 {
+								    echo "<!-- #flood: -->";
 						            $PowerBB->functions->error_no_foot($PowerBB->_CONF['template']['_CONF']['lang']['random_answer_not_correct']);
 							     }
 						     }
@@ -655,11 +678,13 @@ class PowerBBReplyAddMOD
 							 {
 						        if(md5($PowerBB->_POST['code']) != $_SESSION['captcha_key'])
 								 {
+								    echo "<!-- #flood: -->";
 						            $PowerBB->functions->error_no_foot($PowerBB->_CONF['template']['_CONF']['lang']['Code_that_you_enter_the_wrong']);
 							     }
 						    }
 							if (empty($PowerBB->_POST['guest_name']))
 							{
+							       echo "<!-- #flood: -->";
 			                       $PowerBB->functions->error_no_foot($PowerBB->_CONF['template']['_CONF']['lang']['You_do_not_type_your_name']);
 							}
 			            }
@@ -673,6 +698,7 @@ class PowerBBReplyAddMOD
 					}
 					else
 					{
+					echo "<!-- #flood: -->";
 					$PowerBB->functions->error_no_foot($PowerBB->_CONF['template']['_CONF']['lang']['Please_fill_in_all_the_information']);
 					}
 				}
@@ -1263,6 +1289,25 @@ class PowerBBReplyAddMOD
                     }
                    eval($PowerBB->functions->get_fetch_hooks('insert_reply'));
 
+					// get url to last reply
+					$Reply_NumArr = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['reply'] . " WHERE subject_id='$Subjectid' and delete_topic <>1"));
+					$ss_r = $PowerBB->_CONF['info_row']['perpage']/2+1;
+					$roun_ss_r = round($ss_r, 0);
+					$reply_number_r = $Reply_NumArr-$roun_ss_r+1;
+					$pagenum_r = $reply_number_r/$PowerBB->_CONF['info_row']['perpage'];
+					$round0_r = round($pagenum_r, 0);
+					$countpage = $round0_r+1;
+					$countpage = str_replace("-", '', $countpage);
+
+					if($Reply_NumArr <= $PowerBB->_CONF['info_row']['perpage'])
+					{
+					$header_redirect = 'index.php?page=topic&amp;show=1&amp;id=' . $this->SubjectInfo['id'] . '#' . $PowerBB->reply->id;
+					}
+					elseif($Reply_NumArr > $PowerBB->_CONF['info_row']['perpage'])
+					{
+					$header_redirect = 'index.php?page=topic&amp;show=1&amp;id=' . $this->SubjectInfo['id'] . '&amp;count=' . $countpage  . '#' . $PowerBB->reply->id;
+					}
+
 		     		if (!isset($PowerBB->_POST['ajax']))
 		     		{
 						if (($PowerBB->_CONF['member_row']['review_reply'] or $PowerBB->_CONF['group_info']['review_reply'])
@@ -1276,25 +1321,8 @@ class PowerBBReplyAddMOD
 						}
 		     			else
 		     			{
-                                $Reply_NumArr = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['reply'] . " WHERE subject_id='$Subjectid' and delete_topic <>1"));
-								$ss_r = $PowerBB->_CONF['info_row']['perpage']/2+1;
-								$roun_ss_r = round($ss_r, 0);
-								$reply_number_r = $Reply_NumArr-$roun_ss_r+1;
-								$pagenum_r = $reply_number_r/$PowerBB->_CONF['info_row']['perpage'];
-								$round0_r = round($pagenum_r, 0);
-								$countpage = $round0_r+1;
-								$countpage = str_replace("-", '', $countpage);
-
-								if($Reply_NumArr <= $PowerBB->_CONF['info_row']['perpage'])
-                                {
-							      $PowerBB->functions->header_redirect('index.php?page=topic&amp;show=1&amp;id=' . $this->SubjectInfo['id'] . '#' . $PowerBB->reply->id);
-                                }
-                                elseif($Reply_NumArr > $PowerBB->_CONF['info_row']['perpage'])
-                                {
-							      $PowerBB->functions->header_redirect('index.php?page=topic&amp;show=1&amp;id=' . $this->SubjectInfo['id'] . '&amp;count=' . $countpage  . '#' . $PowerBB->reply->id);
-                                }
-
-	                     }
+						   $PowerBB->functions->header_redirect($header_redirect);
+	                    }
 		            }
 		     		else
 		     		{
@@ -1371,14 +1399,18 @@ class PowerBBReplyAddMOD
                         $PowerBB->template->assign('subject_title',$PowerBB->_CONF['template']['Info']['title']);
                         $PowerBB->_CONF['template']['Info']['write_time'] = $reply_date;
                         $PowerBB->_CONF['template']['Info']['icon'] = "look/images/icons/i1.gif";
-                        $PowerBB->_CONF['template']['mod_toolbar'] = 1;
                         $PowerBB->_CONF['template']['reply_number'] = $PagerReplyNumArr+1;
                         $PowerBB->_CONF['template']['Info']['reply_number'] = $PagerReplyNumArr+1;
                         $PowerBB->_CONF['template']['Info']['subject_id'] = $PowerBB->_GET['id'];
                         $PowerBB->_CONF['template']['Awards_nm'] = '0';
-
+                        $PowerBB->_CONF['template']['SubjectInfo'] = $this->SubjectInfo;
+                        $PowerBB->template->assign('timeout',true);
                        $PowerBB->template->assign('id',$PowerBB->_GET['id']);
                        $PowerBB->template->assign('password',$this->SectionInfo['section_password']);
+                       $PowerBB->template->assign('count_peg',$PowerBB->_GET['count']);
+                       $PowerBB->template->assign('subject','0');
+                        $PowerBB->template->assign('ajax','1');
+
 							if ($PowerBB->_CONF['template']['Info']['review_reply'])
 							{
 						      $PowerBB->template->assign('class_reply','tbar_review');
@@ -1387,6 +1419,28 @@ class PowerBBReplyAddMOD
 							{
 					          $PowerBB->template->assign('class_reply','tbar_writer_info');
 							}
+
+					       if ($PowerBB->functions->ModeratorCheck($this->SectionInfo['moderators']))
+							{
+								$PowerBB->template->assign('mod_toolbar',0);
+							}
+							else
+							{
+								$PowerBB->template->assign('mod_toolbar',1);
+
+
+						       if ($PowerBB->_CONF['group_info']['edit_own_reply']== '1')
+						       {
+						        $PowerBB->_CONF['template']['_CONF']['group_info']['edit_own_reply'] = $PowerBB->functions->section_group_permission($this->SectionInfo['id'],$PowerBB->_CONF['group_info']['id'],'edit_own_reply');
+						       }
+						       if ($PowerBB->_CONF['group_info']['del_own_reply']== '1')
+						       {
+						        $PowerBB->_CONF['template']['_CONF']['group_info']['del_own_reply'] = $PowerBB->functions->section_group_permission($this->SectionInfo['id'],$PowerBB->_CONF['group_info']['id'],'del_own_reply');
+						       }
+
+							}
+
+
 
 							//get user rating
 								$ratings = $PowerBB->userrating->GetCachedRatings();
@@ -1424,7 +1478,23 @@ class PowerBBReplyAddMOD
 						}
 		     			else
 		     			{
-                        $PowerBB->template->display('show_reply');
+		     			 if($ajax_last_replier)
+							{
+						      $PowerBB->template->assign('ajax_last_replier',true);
+						      $header_redirect = $PowerBB->functions->rewriterule($header_redirect);
+						      $header_redirect = str_replace('&amp;','&',$header_redirect);
+						      $PowerBB->template->assign('location',$PowerBB->functions->GetForumAdress().$header_redirect);
+							}
+							else
+							{
+						      $PowerBB->template->assign('ajax_last_replier',false);
+							}
+
+                           $PowerBB->template->display('show_reply');
+
+
+
+
                         }
 
                   }

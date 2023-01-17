@@ -3386,7 +3386,7 @@ function my_search() {
 </li>
 <!-- Start login Box-->
 <li class="tabsup">
-<a title="{$lang['login']}" id="login-trigger" href="#"><i class="g_icon fa fa-sign-in"></i> {$lang['login']} </a>
+<a title="{$lang['login']}" id="login-trigger"><i class="g_icon fa fa-sign-in"></i> {$lang['login']} </a>
 <div id="login-content">
 <form method="post" action="index.php?page=login&amp;login=1">
 <div id="inputs">
@@ -3410,7 +3410,7 @@ function my_search() {
 {/if}
 <span class="UserPhoto_tiny" style="background-image: url({$avater_path});"></span>
 </a>
-<a id="userlink-trigger" href="#">
+<a id="userlink-trigger">
 {$_CONF['rows']['member_row']['username']}  <i class="usermenu fa fa-caret-down"></i>
 </a>
 </li>
@@ -3428,7 +3428,7 @@ function my_search() {
 </li>
 {/if}
 <li class="userbar">
-<a title="{$lang['alerts']}" id="alerts-trigger" href="#"><i class="userbar_icon fa fa-bell-o"></i><sup id="sup"><b>{$all_alerts_num}</b></sup></a>
+<a title="{$lang['alerts']}" id="alerts-trigger"><i class="userbar_icon fa fa-bell-o"></i><sup id="sup"><b>{$all_alerts_num}</b></sup></a>
 </li>
 <li class="userlogout">
 <a href="index.php?page=logout&amp;index=1" onclick="return confirm('{$lang['confirm']}')" title="{$lang['logout']}">
@@ -3487,7 +3487,7 @@ $(document).ready(function(){
 </script>
 <div class="icon-mobile-men-top-right">
 <div id="icon-mobile-menu" class=" open_menu_fixed">
-<a title="Open Mobile Menu" href="#" aria-label="Open Menu" class="fa fa-bars fa-3x"> </a>
+<a title="Open Mobile Menu" aria-label="Open Menu" class="fa fa-bars fa-3x"> </a>
 </div>
 <div id="flip">
 <ul style="display:inline;">
@@ -4585,18 +4585,19 @@ function getMeta(url) {
 <form id="uploadForm">
 <input name="files[]" id="files" type="file" onchange="uploadFile()" accept=".zip,.txt,.pdf,.png,.jfif,.jpg,.jpeg,.jpe,.gif,.psd,.diff,.sql,.svg,.m4v,.mov,.mp4,.mp4v,.mpeg,.mpg,.ogv,.webm,.mp3,.opus,.ogg,.wav" />
 </form>
-
-<table class="border wd98 brd1 clpc0 a-center">
+<table class="border wd98 brd0 clpc0 a-center">
 <tr>
-<td class="thead1 right_text_align wd98" colspan="2">
+<td class="thead1 right_text_align wd98">
 {$lang['posts_reverse_order']}
 </td>
 </tr>
 <tr>
-<td class="wd20 subtr va-t r-nfo">
-{$GeSubjectInfo['writer']}
+<td class="thead1 right_text_align">
+{$GeSubjectInfo['writer']} | {$GeSubjectInfo['title']}
 </td>
-<td class="tbar_writer_info">
+</tr>
+<tr>
+<td class="row1 va-t">
 <?php $PowerBB->_CONF['template']['GeSubjectInfo']['text'] = $PowerBB->Powerparse->censor_words($PowerBB->_CONF['template']['GeSubjectInfo']['text']); ?>
 <div class="text">{$GeSubjectInfo['text']}</div>
 </td>
@@ -9965,7 +9966,21 @@ title="{$lang['no_photo']}" width="80" height="80" />
 <strong><?php echo $PowerBB->_CONF['template']['Poll']['qus']; ?> !</strong>
 </td>
 </tr>]]></show_poll_top>
-<show_reply><![CDATA[{Des::while}{AdsensesList}
+<show_reply><![CDATA[{if {$ajax} == '1'}
+<link rel="stylesheet" href="{$ForumAdress}look/fonts/font-awesome.min.css" />
+<link rel="stylesheet" href="{$ForumAdress}look/fonts/fonts.css" />
+<link rel="stylesheet" href="{$ForumAdress}{$style_path}" />
+<script type="text/javascript" src="{$ForumAdress}includes/js/jquery-1.10.2.js"></script>
+<script type="text/javascript" src="{$ForumAdress}includes/js/jquery-ui.js"></script>
+{/if}
+{if {$ajax_last_replier}}
+<?php
+$site = $PowerBB->_CONF['template']['location'];
+echo '<meta http-equiv="refresh" content="0;URL='.$site.'" />';
+?>
+{/if}
+
+{Des::while}{AdsensesList}
 {if {$AdsensesList['between_replys']} == '1'}
 <div class="center_text_align">
 {$AdsensesList['adsense']}
@@ -10079,7 +10094,7 @@ href="index.php?page=report&amp;index=1&amp;subject_id={$Info['subject_id']}&amp
 <div class="l-left">
 <ul class="post_controls">
 {if {$_CONF['member_permission']}}
-{if !{$mod_toolbar}}
+{if {$mod_toolbar} == '0'}
 <li>
 <a title="{$lang['edit_reply']}" OnClick="edit_slide_Downd({$Info['reply_id']});return false;" class="Button_secondary">
 {$lang['edit_reply']}
@@ -10099,6 +10114,7 @@ title="{$lang['delete_reply']}">
 {$lang['delete_reply']}</a>
 </li>
 {else}
+
 {if {$SubjectInfo['close']} == '0'}
 {if {$timeout}}
 {if {$_CONF['member_row']['username']} == {$ReplierInfo['username']}}
@@ -10117,6 +10133,7 @@ href="index.php?page=management&amp;reply=1&amp;section={$Info['section']}&amp;s
 </div>
 </li>
 {/if}
+
 {if {$_CONF['group_info']['del_own_reply']}}
 <li>
 <a href="index.php?page=managementreply&amp;do_replys=1&amp;section={$Info['section']}&amp;subject_id={$Info['subject_id']}&amp;reply_id={$Info['reply_id']}&amp;operator=delete" class="Button_secondary"
@@ -13442,10 +13459,11 @@ return $("#docheck_status").html(key_values.join());
   {
 	var textarea = document.getElementById("box_text");
 	var instance = sceditor.instance(textarea);
+	var theWord  = "#flood:";
 	if ($.trim(instance.val())){
 	$( document ).ajaxSend(function() {
 	$("#status").html("<div class='info_bar'> <img class='brd0' src='{$image_path}/loading.gif' alt='' /></div>");
-	 $("#fast_reply_id").slideToggle("slow");
+
 	});
 	var data = {};
 	data['title']    =    $("#title_id").val();
@@ -13460,6 +13478,11 @@ return $("#docheck_status").html(key_values.join());
 	$.post("index.php?page=new_reply&start=1&id={$id}{$password}",data,
 	function Success(xml) {
 	$("#status").html(xml);
+	if (xml.indexOf(theWord) !== -1) {
+	instance.val(instance.val());
+	} else {
+	instance.val("");
+	}
     });
 	} else {
 	alert("{$lang['Please_fill_in_all_the_information']}");
@@ -15387,16 +15410,13 @@ eval("form.elements[" + i + "].checked = form.elements[0].checked");
 <view_reply><![CDATA[
 <table class="border wd98 brd1 clpc0 a-center">
 <tr>
-<td class="thead1 right_text_align" colspan="2">
-{$GeReplyInfo['title']}
+<td class="thead1 right_text_align">
+{$GeReplyInfo['writer']} | {$GeReplyInfo['title']}
 </td>
 </tr>
 <tr>
-<td class="row1 center_text_align wd15 va-t">
-{$GeReplyInfo['writer']}
-</td>
 <td class="row1 wd80">
-<div class="text ">{$GeReplyInfo['text']} </div>
+<div class="text">{$GeReplyInfo['text']} </div>
 </td>
 </tr>
 </table>

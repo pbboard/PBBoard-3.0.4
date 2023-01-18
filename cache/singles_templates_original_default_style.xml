@@ -13300,6 +13300,26 @@ $Forum_id = $Forum['id'];
 <br />
 <br />]]></today_subject>
 <topic_end><![CDATA[<div class="center_text_align" id="status"></div>
+<dl style="width:98%; border-spacing:0px;border-collapse: collapse;" class="table mrgTable">
+<dt></dt>
+<dd class="right_text_align mod_box">
+ {if {$close}}
+{if !{$mod_toolbar}}
+{template}add_reply_link{/template}
+{template}add_subject_link{/template}
+{/if}
+{else}
+{template}add_reply_link{/template}
+{template}add_subject_link{/template}
+{/if}
+</dd>
+<dd class="right_text_align pager_box" style="white-space: nowrap; float: left;">
+{if {$pager_reply}}
+{$pager_reply}
+{/if}
+</dd>
+</dl>
+
 {if {$close}}
 {if !{$mod_toolbar}}
 {template}topic_end_fast_reply{/template}
@@ -13337,17 +13357,7 @@ return $("#docheck_status").html(key_values.join());
 <div style="display: none;" id="docheck_status"></div>
 <dl>
 <dt></dt>
-<dd class="right_text_align mod_box">
-{if {$close}}
-{if !{$mod_toolbar}}
-{template}add_reply_link{/template}
-{template}add_subject_link{/template}
-{/if}
-{else}
-{template}add_reply_link{/template}
-{template}add_subject_link{/template}
-{/if}
-</dd>
+
 <dd class="right_text_align mod_box" style="padding-bottom:10px;">
 {if {$Info['reply_id']}}
 <div class="l-left">
@@ -13375,11 +13385,7 @@ return $("#docheck_status").html(key_values.join());
 <dd class="right_text_align topic_links">
 
 </dd>
-<dd class="right_text_align pager_box">
-{if {$pager_reply}}
-{$pager_reply}
-{/if}
-</dd>
+
 </dl>
 </div>
 <!-- /table -->

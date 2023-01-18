@@ -33,6 +33,9 @@ class PowerBBPager
 
             $this->var_name		=	$var;
 
+
+
+
             if (($this->count <> 0) && ($this->count > 0) && ($this->count < $this->total) && (($this->count % $this->perpage) === 0)){
                 $this->current_page =  $this->count / $this->perpage;
             }else{
@@ -41,6 +44,29 @@ class PowerBBPager
             }
             $this->current_page++;
             $this->pages_number = 	@ceil($this->total/$this->perpage);
+
+           if(intval($PowerBB->_GET['count']))
+           {
+		         if(intval($PowerBB->_GET['count'])>$this->pages_number)
+		         {
+		          if($this->pages_number > 1)
+		          {
+		            $url_last_page = $PowerBB->functions->rewriterule($location."&".$this->var_name."=".$this->pages_number);
+		            $PowerBB->functions->redirect($url_last_page);
+		            exit();
+		          }
+		          elseif($this->current_page == 1
+		          and intval($PowerBB->_GET['count']) > 1)
+		          {
+		            $url_last_page = $PowerBB->functions->rewriterule($location);
+		            $PowerBB->functions->redirect($url_last_page);
+		            exit();
+		          }
+		         }
+           }
+
+
+
             if ($PowerBB->_CONF['info_row']['page_max'] == 1
             or !intval($PowerBB->_CONF['info_row']['page_max']))
             {
@@ -148,6 +174,12 @@ class PowerBBPager
         // $this->total عدد جميع الردود
         // $this->x رقم الصفحة
 
+        if($this->pages_number <= $PowerBB->_CONF['info_row']['page_max'])
+        {
+         $string = str_replace('<td class="pag_row wd1 last_page_show"><a href="[l]&amp;[v]=[last]"><span class="smallfont">[last_page]</span></a></td>',"",$string);
+         $string = preg_replace('#<td class="mainbar wd1 Go_to_the_page_show">(.*)</table></div></td>#siU', '', $string);
+         $string = str_replace('class="multi_pages','style="width:150px;" class="multi_pages',$string);
+        }
 		$string = str_replace('[l]',$this->location,$string);
 		$string = str_replace('[v]',$this->var_name,$string);
 		$string = str_replace('[c]',$this->x,$string);
@@ -170,6 +202,8 @@ class PowerBBPager
         $string = str_replace('[Jump_between_pages]',$PowerBB->_CONF['template']['_CONF']['lang']['Jump_between_pages'],$string);
         $string = str_replace('[Go_to_the_page]',$PowerBB->_CONF['template']['_CONF']['lang']['Go_to_the_page'],$string);
         $string = str_replace('[Go]',$PowerBB->_CONF['template']['_CONF']['lang']['Go'],$string);
+
+
         //
          $menu_open_display ='style="visibility: hidden; display: none;"';
         if ($PowerBB->_GET['page'] == 'forum')
@@ -260,6 +294,7 @@ class PowerBBPager
          $url = $this->location."&amp;".$this->var_name."=".$this->last;
 	  	 echo "<META HTTP-EQUIV=\"refresh\" CONTENT=\"0; URL=$url\">\n";
         }
+
 		return $string;
 	}
 }

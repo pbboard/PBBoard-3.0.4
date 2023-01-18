@@ -5215,13 +5215,9 @@ title="{$lang['Management_tools']}" />
 <a href="[l]&amp;[v]=[c]"><span class="smallfont">[p]</span></a>
 </td>
 ]]></pager_style_part3>
-<pager_style_part4><![CDATA[<td class="pag_row wd1">
-<span class="smallfont"> [next]</span>
-</td>
-<td class="pag_row wd1">
-<a href="[l]&amp;[v]=[last]"><span class="smallfont">[last_page]</span></a>
-</td>
-<td class="mainbar wd1">
+<pager_style_part4><![CDATA[<td class="pag_row wd1 next_show"><span class="smallfont">[next]</span></td>
+<td class="pag_row wd1 last_page_show"><a href="[l]&amp;[v]=[last]"><span class="smallfont">[last_page]</span></a></td>
+<td class="mainbar wd1 Go_to_the_page_show">
 <a href="javascript:switchMenuNone('pageid');" id="pagdropmenu" title="[Jump_between_pages]"><span class="menu_open"></span></a>
 <div style="display:none; margin-right:-100px;" id="pageid" class="drop_menu">
 <table class="border wd120n brd1 clpc0">
@@ -5230,18 +5226,15 @@ title="{$lang['Management_tools']}" />
 [Go_to_the_page]
 </td>
 </tr>
-<tr class="center_text_align">
+<tr class="center_text_align page_button_show">
 <td class="menu_popup" onclick="pagerBlock('pageid')">
 <form name="misc" method="post" action="[action]">
 <input type="hidden" name="[name]" value="[id]" />
 <input class="bginput" name="count" style="font-size: 11px;" size="4" type="text" />
 <input class="button button_b" type="submit" value="[Go]" name="page_button" />
-</form>
-</td>
+</form></td>
 </tr>
-</table>
-</div>
-</td>
+</table></div></td>
 </tr>
 </table><br />]]></pager_style_part4>
 <pages><![CDATA[      <!-- Code pages Menu start -->

@@ -17359,6 +17359,10 @@ $("#edit_"+valu).slideToggle();
 <?php
 $rows = $PowerBB->functions->retur_numbe_rows($PowerBB->_CONF['template']['text']);
 $PowerBB->_CONF['template']['rows'] = $rows;
+if($rows > 20)
+{
+$PowerBB->_CONF['template']['rows'] = "20";	
+}
 ?>
 <textarea id="message{$PostInfo['id']}" name="message{$PostInfo['id']}" rows="{$rows}" cols="100" style="width:97%;">{$text}</textarea>
 

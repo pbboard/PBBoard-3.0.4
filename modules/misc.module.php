@@ -96,6 +96,10 @@ class PowerBBMiscMOD
 		{
 			$this->_StartAddPoemTemplat();
 		}
+       elseif ($PowerBB->_GET['pagenav_general'])
+       {
+          $this->_GoPagenavGeneral();
+       }
 		else
 		{
 			header("Location: index.php");
@@ -270,6 +274,48 @@ class PowerBBMiscMOD
 
     }
 
+  function _GoPagenavGeneral()
+    {
+       global $PowerBB;
+		  if (!is_numeric($PowerBB->_POST['count'])) {
+            $PowerBB->functions->ShowHeader();
+            $PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['the_page_number_must_contain_only_numbers']);
+           }
+       if (empty($PowerBB->_POST['count']))
+       {
+         $PowerBB->functions->ShowHeader();
+         $PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['Please_write_the_page_number']);
+
+       }
+        $PowerBB->_POST['count'] = $PowerBB->functions->CleanVariable($PowerBB->_POST['count'],'intval');
+  		$PowerBB->_POST['count'] 	= 	$PowerBB->functions->CleanVariable($PowerBB->_POST['count'],'html');
+  		$PowerBB->_POST['count'] 	= 	$PowerBB->functions->CleanVariable($PowerBB->_POST['count'],'sql');
+
+       $PowerBB->functions->ShowHeader();
+
+
+      $PowerBB->functions->msg($PowerBB->_CONF['template']['_CONF']['lang']['go_page'] . ' ('. $PowerBB->_POST['count'] .') '. $PowerBB->_CONF['template']['_CONF']['lang']['Please_wait']);
+      $iscount = "&count=";
+     if(strstr($PowerBB->_SERVER['HTTP_REFERER'],'whats_new'))
+      {
+      $PowerBB->functions->redirect("whats_new-".$PowerBB->_POST['count']);
+      $PowerBB->functions->GetFooter();
+      exit();
+      }
+      elseif(strstr($PowerBB->_SERVER['HTTP_REFERER'],'today_topics'))
+      {
+      $PowerBB->functions->redirect("today_topics-".$PowerBB->_POST['count']);
+      $PowerBB->functions->GetFooter();
+      exit();
+      }
+      elseif(strstr($PowerBB->_SERVER['HTTP_REFERER'],'count='))
+      {      $PowerBB->_SERVER['HTTP_REFERER'] = str_replace('&count='.$PowerBB->_GET['count'],"",$PowerBB->_SERVER['HTTP_REFERER']);
+      }
+     $PowerBB->functions->redirect($PowerBB->functions->rewriterule($PowerBB->_SERVER['HTTP_REFERER'].$iscount.$PowerBB->_POST['count']));
+
+    $PowerBB->functions->GetFooter();
+
+    }
 	function _SubjectSendReputation()
 	{
 		global $PowerBB;

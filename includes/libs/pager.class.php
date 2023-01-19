@@ -247,19 +247,26 @@ class PowerBBPager
          elseif ($PowerBB->_GET['page'] == 'latest_reply')
          {
          $string = str_replace('[id]','',$string);
-         $string = str_replace('[action]','index.php?page=latest_reply&amp;today=1',$string);
+        // $string = str_replace('[action]','index.php?page=latest_reply&amp;today=1',$string);
          $string = str_replace('[menu_open_gif]',$menu_open,$string);
          $string = str_replace('[Jump_between_pages]',$PowerBB->_CONF['template']['_CONF']['lang']['Jump_between_pages'],$string);
-         $string = str_replace('&amp;count=','-',$string);
-
+          if ($PowerBB->_CONF['info_row']['rewriterule'])
+ 	       {
+             $string = str_replace('&amp;count=','-',$string);
+             $string = str_replace('&count=','-',$string);
+           }
          }
          elseif ($PowerBB->_GET['page'] == 'latest')
          {
          $string = str_replace('[id]','',$string);
-         $string = str_replace('[action]','index.php?page=latest&amp;today=1',$string);
+        // $string = str_replace('[action]','index.php?page=latest&amp;today=1',$string);
          $string = str_replace('[menu_open_gif]',$menu_open,$string);
          $string = str_replace('[Jump_between_pages]',$PowerBB->_CONF['template']['_CONF']['lang']['Jump_between_pages'],$string);
-         $string = str_replace('&amp;count=','-',$string);
+          if ($PowerBB->_CONF['info_row']['rewriterule'])
+ 	       {
+             $string = str_replace('&amp;count=','-',$string);
+             $string = str_replace('&count=','-',$string);
+           }
          }
          else
          {
@@ -294,6 +301,8 @@ class PowerBBPager
          $url = $this->location."&amp;".$this->var_name."=".$this->last;
 	  	 echo "<META HTTP-EQUIV=\"refresh\" CONTENT=\"0; URL=$url\">\n";
         }
+
+$string = str_replace('[action]',"index.php?page=misc&amp;pagenav_general=1",$string);
 
 		return $string;
 	}

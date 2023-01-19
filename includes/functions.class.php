@@ -795,8 +795,8 @@ class PowerBBFunctions
  	function ShowHeader($title = null)
  	{
  		global $PowerBB;
- 		$num = '160';
-		$titlenum = '100';
+ 		$num = '200';
+		$titlenum = '150';
 		// visito today number  today_cookie
 		if ($PowerBB->_CONF['date'] == $PowerBB->_CONF['info_row']['today_date_cache'])
 		{
@@ -903,7 +903,7 @@ class PowerBBFunctions
 			$ReplyInfo['text']    = $PowerBB->Powerparse->remove_message_quotes($ReplyInfo['text']);
             $ReplyInfo['text']    = $PowerBB->functions->CleanText($ReplyInfo['text']);
 		    $ReplyInfo['text']    = $PowerBB->Powerparse->_wordwrap($ReplyInfo['text'],$num);
-            $ReplyInfo['text']    = $PowerBB->Powerparse->CycleText($ReplyInfo['text']);
+           // $ReplyInfo['text']    = $PowerBB->Powerparse->CycleText($ReplyInfo['text']);
 
 
             $keywords    = $PowerBB->functions->Getkeywords($ReplyInfo['text']);
@@ -913,7 +913,8 @@ class PowerBBFunctions
             $description    = str_replace(","," ", $description);
 			$PowerBB->template->assign('description',$description);
 
-			$title    = $PowerBB->Powerparse->_wordwrap($description,$titlenum);
+			$title    = $PowerBB->Powerparse->_wordwrap($ReplyInfo['title']." ".$description,$titlenum);
+
 			$page_address['post'] = $title;
 			$PowerBB->template->assign('index',1);
 		 }
@@ -1494,7 +1495,7 @@ class PowerBBFunctions
 	    $text = strip_tags($text);
 
 	    $commonWords = "'tis,'twas,a,able,about,across,after,',all,almost,also,am,among,an,and,any,are,aren't," .
-	        "as,at,be,.,been,but,by,can,<,>,could,},(,),did,=,+,-,والسلام," .
+	        "as,at,be,.,وعليكم,but,by,can,<,>,could,},(,),did,=,+,-,والسلام," .
 	        ",{,],[,جزاك,اللهم,لله,وصحبه,الرحيم,الرحمن,بسم,أعضاء,اعضاء,العالمين,والله,التوفيق,والاخوات,الاخوة,الحمد,الصلاة,وبركاته,وبركاتة,الله,ورحمه,ورحمة,عليكم,السلام";
 
 	    $commonWords = explode(",", $commonWords);
@@ -1511,17 +1512,18 @@ class PowerBBFunctions
 	        // Skip if word contains less than 4 digits
 			if (function_exists('mb_strlen'))
 			{
-			if (mb_strlen(utf8_decode($value)) < 3) continue;
+			if (mb_strlen(utf8_decode($value)) < 2) continue;
 			}
 			else
 			{
-			if (strlen(utf8_decode($value)) < 3) continue;
+			if (strlen(utf8_decode($value)) < 2) continue;
 			}
 
 	        $keywords[] = preg_replace('/^[\s{Arabic}a-zA-Z0-9\s{N}]+\h?[^a-zA-Z0-9\s].+/', '', $value);
 	    }
 
 	    $str = @implode(",",$keywords);
+	    $str = str_replace(",,",",", $str);
 	    return $str;
     }
 

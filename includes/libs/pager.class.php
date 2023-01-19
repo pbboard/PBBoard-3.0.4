@@ -45,13 +45,25 @@ class PowerBBPager
             $this->current_page++;
             $this->pages_number = 	@ceil($this->total/$this->perpage);
 
+			if($PowerBB->_GET['page'] == "latest"
+			or $PowerBB->_GET['page'] == "latest_reply"
+			and $PowerBB->_CONF['info_row']['rewriterule'])
+			{
+        	$iscount = "-";
+			}
+			else
+			{
+        	  $iscount = "&".$this->var_name."=";
+			}
+
            if(intval($PowerBB->_GET['count']))
-           {
+           {
 		         if(intval($PowerBB->_GET['count'])>$this->pages_number)
 		         {
 		          if($this->pages_number > 1)
 		          {
-		            $url_last_page = $PowerBB->functions->rewriterule($location."&".$this->var_name."=".$this->pages_number);
+
+		            $url_last_page = $PowerBB->functions->rewriterule($location.$iscount.$this->pages_number);
 		            $PowerBB->functions->redirect($url_last_page);
 		            exit();
 		          }
@@ -63,6 +75,7 @@ class PowerBBPager
 		            exit();
 		          }
 		         }
+
            }
 
 

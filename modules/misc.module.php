@@ -309,7 +309,7 @@ class PowerBBMiscMOD
       exit();
       }
       elseif(strstr($PowerBB->_SERVER['HTTP_REFERER'],'count='))
-      {      $PowerBB->_SERVER['HTTP_REFERER'] = str_replace('&count='.$PowerBB->_GET['count'],"",$PowerBB->_SERVER['HTTP_REFERER']);
+      {      $PowerBB->_SERVER['HTTP_REFERER'] = str_replace($iscount.$PowerBB->_GET['count'],"",$PowerBB->_SERVER['HTTP_REFERER']);
       }
      $PowerBB->functions->redirect($PowerBB->functions->rewriterule($PowerBB->_SERVER['HTTP_REFERER'].$iscount.$PowerBB->_POST['count']));
 

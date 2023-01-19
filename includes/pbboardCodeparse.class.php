@@ -157,7 +157,14 @@ class PowerBBCodeParse
 
 
         $string = $this->text_with_hyperlink($string);
+        If(strstr($string,"n-l-2-b-r"))
+        {
+         $string = str_replace("n-l-2-b-r", "", $string);
+        }
+        else
+        {
         $string = nl2br($string);
+        }
 		// Fix up new lines and block level elements
 		$string = preg_replace("#(</?(?:html|head|body|div|p|form|table|thead|tbody|tfoot|tr|td|th|ul|ol|li|div|p|blockquote|cite|hr)[^>]*>)\s*<br />#i", "$1", $string);
 		$string = preg_replace("#(&nbsp;)+(</?(?:html|head|body|div|p|form|table|thead|tbody|tfoot|tr|td|th|ul|ol|li|div|p|blockquote|cite|hr)[^>]*>)#i", "$2", $string);
@@ -812,8 +819,7 @@ class PowerBBCodeParse
 				}, $text);
 
 
-
-        return $text;
+        return $this->replace($text."n-l-2-b-r");
 	}
    // long URL, Shortening Long URLs With PHP
  	function shortenurl($Aurl,$Burl,$lg_max)

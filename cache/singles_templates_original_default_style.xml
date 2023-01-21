@@ -7130,7 +7130,7 @@ title="{$lang['linkvisitor']} ({$viewersList['viewer_user_counter']})"{/if}>
 {/if}
 {if {$Awards_nm} > '0'}
 <br />
-<table class="border center_text_align wd98 brd1 clpc0 a-center" style="table-layout: fixed;">
+<table class="border center_text_align wd98 brd1 clpc0 a-center user_awards" style="table-layout: fixed;">
 <tr>
 <td class="tcat wd60">
 {$lang['awards']}:{$Awards_nm}
@@ -7928,7 +7928,7 @@ $(document).ready(Ready);
 </script>
 
 <!-- Code reputation Menu start -->
-<div class="border drop_menu" style="display:none;" id="{$Info['reply_number']}replyreputation">
+<div class="border user_menue" style="position: absolute; z-index: 1; display:none;" id="{$Info['reply_number']}replyreputation">
 <div class="thead">
 {$lang['reputation']}
 </div>
@@ -10067,6 +10067,7 @@ echo '<meta http-equiv="refresh" content="0;URL='.$site.'" />';
 {if {$_CONF['member_permission']}}
 {if {$ReplierInfo['username']} !=''}
 {if {$_CONF['member_row']['username']} != {$ReplierInfo['username']}}
+
 {if {$_CONF['info_row']['reputationallw']} == 1}
 <a href="javascript:switchMenuNone('{$Info['reply_number']}replyreputation')"
 title="{$lang['add_reputation_to']}
@@ -10075,13 +10076,15 @@ title="{$lang['add_reputation_to']}
 {$ReplierInfo['username']}"class="fa fa-thumbs-o-up fa-2" aria-hidden="true"></i>
 </a>
 {template}reply_reputation{/template}
-{/if}
-{/if}
-{/if}
+{if {$ReplierInfo['usergroup']} > 2}
 <a class="for_post" title="{$lang['reporting_for_post']}"
 href="index.php?page=report&amp;index=1&amp;subject_id={$Info['subject_id']}&amp;reply_id={$Info['reply_id']}&amp;count={$count_peg}">
 <i title="{$lang['reporting_for_post']}"class="fa fa-bell-o" aria-hidden="true"></i>
 </a>
+{/if}
+{/if}
+{/if}
+{/if}
 {/if}
 </div>
 <div class="l-left">
@@ -10276,8 +10279,8 @@ $(".slide_Down_"+id).hide();
 <dd>
 <div class="r-right add_reputation">
 {if {$_CONF['member_permission']}}
-{if {$ReplierInfo['username']}}
-{if {$_CONF['member_row']['username']} != {$ReplierInfo['username']}}
+{if {$Info['username']}}
+{if {$_CONF['member_row']['username']} != {$Info['username']}}
 {if {$_CONF['info_row']['reputationallw']} == 1}
 <a href="javascript:switchMenuNone('{$subject_id}reputation')"
 title="{$lang['add_reputation_to']}
@@ -10286,13 +10289,15 @@ title="{$lang['add_reputation_to']}
 {$ReplierInfo['username']}"class="fa fa-thumbs-o-up fa-2" aria-hidden="true"></i>
 </a>
 {template}subject_reputation{/template}
-{/if}
-{/if}
-{/if}
+{if {$Info['usergroup']} > 2}
 <a class="for_post" title="{$lang['reporting_for_post']}"
 href="index.php?page=report&amp;index=1&amp;subject_id={$subject_id}">
 <i title="{$lang['reporting_for_post']}"class="fa fa-bell-o" aria-hidden="true"></i>
 </a>
+{/if}
+{/if}
+{/if}
+{/if}
 {/if}
 <!-- like facebook -->
 {if {$_CONF['info_row']['active_like_facebook']} == '1'}

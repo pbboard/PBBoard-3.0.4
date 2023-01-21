@@ -3,12 +3,12 @@
 <div class="address_bar">
 {$lang['Control_Panel']}
 &raquo; {$lang['addons_pbb']}
-&raquo; {$lang['writing_addon']}
-&raquo; {$lang['edit_hook']}
+&raquo; <a href="index.php?page=addons&amp;control_hooks=1&amp;main=1">{$lang['control_hooks']} </a>
+&raquo; <a href="index.php?page=addons&amp;edit_hook=1&amp;main=1&amp;id={$HooksInfo['id']}">{$lang['edit_hook']} </a>
 </div>
 <br />
 <form action="index.php?page=addons&amp;edit_hook=1&amp;start=1&amp;id={$HooksInfo['id']}" method="post">
-	<table width="88%" class="t_style_b" border="0" cellspacing="1" align="center">
+	<table width="100%" class="t_style_b" border="0" cellspacing="1" align="center">
 		<tr align="center">
 			<td class="main1" colspan="2">
 			{$lang['edit_hook']}
@@ -36,53 +36,34 @@
 </select>
 			</td>
 		</tr>
-<tr>
-			<td class="row2">
-			{$lang['main_location_place']}
-			</td>
-			<td class="row2">
-<select name="main_place" id="main_place" dir="ltr">
-<option value="{$HooksInfo['main_place']}" selected="selected">{$HooksInfo['main_place']}</option>
-<option value="index">index</option>
-<option value="forum">forum</option>
-<option value="topic">topic</option>
-<option value="profile">profile</option>
-<option value="usercp">usercp</option>
-<option value="archive">archive</option>
-<option value="new_topic">new_topic</option>
-<option value="new_reply">new_reply</option>
-<option value="pm">pm</option>
-<option value="search">search</option>
-<option value="register">register</option>
-<option value="">{$lang['no_place']}</option>
-</select>
-			</td>
-		</tr>
+
 <tr>
 			<td class="row2">
 			{$lang['Location']}
 			</td>
 			<td class="row2">
-<select name="place_of_hook" id="place_of_hook" dir="ltr">
-<option value="{$HooksInfo['place_of_hook']}" selected="selected">{$HooksInfo['place_of_hook']}</option>
-<option value="on_top_of_replace_links">on_top_of_replace_links</option>
-<option value="on_buttom_of_replace_links">on_buttom_of_replace_links</option>
-<option value="">{$lang['no_place']}</option>
-</select>
+<input type="text" name="place_of_hook" id="place_of_hook" value="{$HooksInfo['main_place']}" size="30" dir="ltr">
+
 			</td>
 		</tr>
 
-		<tr>
-			<td class="row1" valign="top">
+		<tr width="100%">
+			<td class="row1" align="center" width="100%" colspan="2">
+<?php
+
+$PowerBB->_CONF['template']['HooksInfo']['phpcode']  = str_replace("{sq}", "'", $PowerBB->_CONF['template']['HooksInfo']['phpcode']);
+
+?>
 {$lang['PHP_Code_as_well_as_private']}
+<br />
+<font color="#FF0000">{$lang['RewriteEnginetextarea']}</font>
+<br />
 
-			</td>
-			<td class="row1">
-				<textarea name="phpcode" id="textarea_phpcode" rows="12" cols="56" wrap="virtual" dir="ltr">{$HooksInfo['phpcode']}</textarea>
+				<textarea name="phpcode" id="textarea_phpcode"  style="width: 80%;max-width: 80%;" rows="30" wrap="virtual" dir="ltr">{$HooksInfo['phpcode']}</textarea>
 			</td>
 		</tr>
 		<tr>
-			<td class="row2" colspan="2" align="center">
+			<td class="row2" align="center" colspan="2">
 					<input type="submit" value="  {$lang['execution_submit']}  " name="start_writing" />
 					</td>
 		</tr>

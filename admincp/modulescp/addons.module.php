@@ -320,7 +320,7 @@ class PowerBBAddonsMOD
 			$HooksArr 	=	array();
 			$HooksArr['field']	=	array();
 			$HooksArr['field']['addon_id']           =       $PowerBB->_POST['addons'];
-			$HooksArr['field']['main_place']         =       $PowerBB->_POST['main_place'];
+			$HooksArr['field']['main_place']         =       $PowerBB->_POST['place_of_hook'];
 			$HooksArr['field']['place_of_hook']      =       $PowerBB->_POST['place_of_hook'];
 			$HooksArr['field']['phpcode']	=	str_replace("'","{sq}",$PowerBB->_POST['phpcode']);
 
@@ -328,6 +328,7 @@ class PowerBBAddonsMOD
 
 			if ($InsertHook)
 			{
+   			   $this->update_cache();
 	           $PowerBB->functions->msg($PowerBB->_CONF['template']['_CONF']['lang']['addon_added_successfully']);
 			   $PowerBB->functions->redirect('index.php?page=addons&amp;control_hooks=1&amp;main=1');
 			}
@@ -1801,13 +1802,14 @@ $Hooks = array();
 		$HookArr['field']	=	array();
 
 		$HookArr['field']['addon_id']           =       $PowerBB->_POST['addons'];
-		$HookArr['field']['main_place']         =       $PowerBB->_POST['main_place'];
+		$HookArr['field']['main_place']         =       $PowerBB->_POST['place_of_hook'];
 		$HookArr['field']['place_of_hook']      =       $PowerBB->_POST['place_of_hook'];
 		$HookArr['field']['phpcode'] 		    =       $PowerBB->_POST['phpcode'];
 		$HookArr['where'] 				        = 	array('id',$PowerBB->_GET['id']);
 
 		$update = $PowerBB->hooks->UpdateHooks($HookArr);
 
+         $this->update_cache();
 
 			$PowerBB->functions->msg($PowerBB->_CONF['template']['_CONF']['lang']['plugin_updated_successfully']);
 			$PowerBB->functions->redirect('index.php?page=addons&amp;control_hooks=1&amp;main=1');

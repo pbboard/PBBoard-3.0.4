@@ -540,16 +540,18 @@
 <li><i class="fa fa-dot-circle-o" aria-hidden="true" style="float:{$align};"></i><a href="index.php?page=addons&amp;control=1&amp;main=1">
 {$lang['control_addons']}
 </a></li>
-<!----<li><i class="fa fa-dot-circle-o" aria-hidden="true" style="float:{$align};"></i><a href="index.php?page=auto_addons&amp;add=1&amp;main=1">
+<!--
+<li><i class="fa fa-dot-circle-o" aria-hidden="true" style="float:{$align};"></i><a href="index.php?page=auto_addons&amp;add=1&amp;main=1">
 PBBoard Auto Add-ons
-</a></li> ---->
-<!--<li><i class="fa fa-dot-circle-o" aria-hidden="true" style="float:{$align};"></i><a href="index.php?page=addons&amp;writing_addon=1&amp;main=1">
-{$lang['writing_addon']}
-</a></li>
-<li><i class="fa fa-dot-circle-o" aria-hidden="true" style="float:{$align};"></i><a href="index.php?page=addons&amp;control_hooks=1&amp;main=1">
-{$lang['control_hooks']}
 </a></li>
 -->
+<li><i class="fa fa-dot-circle-o" aria-hidden="true" style="float:{$align};"></i><a href="index.php?page=addons&amp;writing_addon=1&amp;main=1">
+{$lang['writing_addon']} (Hook)
+</a></li>
+<li><i class="fa fa-dot-circle-o" aria-hidden="true" style="float:{$align};"></i><a href="index.php?page=addons&amp;control_hooks=1&amp;main=1">
+{$lang['control_hooks']} (Hooks)
+</a></li>
+
      </ul>
     </li>
 

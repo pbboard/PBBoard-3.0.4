@@ -5,16 +5,13 @@
 &raquo; {$lang['addons_pbb']}
 &raquo; <a href="index.php?page=addons&amp;control=1&amp;main=1">{$lang['control_hooks']}</a>
 </div>
-
 <br />
-
+<font color="#FF0000">{$lang['RewriteEnginetextarea']}</font>
+<br />
 <table width="98%" class="t_style_b" border="0" cellspacing="1" align="center">
 	<tr>
 		<td class="main1" align="center" width="39%">
     {$lang['sel_addons']}
-		</td>
-		<td class="main1" align="center" width="20%">
-		{$lang['main_location_place']}
 		</td>
 		<td class="main1" align="center" width="30%">
 		{$lang['Location']}
@@ -34,9 +31,6 @@
         $title = $Addon['title'];
 ?>
 <?php echo $title; ?>
-		</td>
-		<td class="row1" width="20%">
-      {$HooksList['main_place']}
 		</td>
 		<td class="row1" width="30%">
         {$HooksList['place_of_hook']}

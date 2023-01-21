@@ -558,6 +558,17 @@ class PowerBBCommon
 
 
 		$PowerBB->template->assign('image_path',$PowerBB->_CONF['rows']['style']['image_path']);
+
+		//Set no caching to css file add modification time in end url
+        $Gets_file_style_path = $PowerBB->_CONF['rows']['style']['style_path'];
+		if(file_exists($Gets_file_style_path))
+		{
+		$Gets_file_modification_time = filemtime($PowerBB->_CONF['rows']['style']['style_path']);
+		}
+        if($Gets_file_modification_time)
+        {
+        $PowerBB->_CONF['rows']['style']['style_path'] = $PowerBB->_CONF['rows']['style']['style_path']."?v=".$Gets_file_modification_time;
+        }
 		$PowerBB->template->assign('style_path',$PowerBB->_CONF['rows']['style']['style_path']);
 
 		if (empty($PowerBB->_CONF['member_row']['avater_path']))
@@ -751,9 +762,20 @@ class PowerBBCommon
 				$PowerBB->_CONF['info_row']['content_language'] = 'ar';
 			}
 
+		//Set no caching to css file add modification time in end url
+        $Gets_file_style_path = $PowerBB->_CONF['rows']['style']['style_path'];
+		if(file_exists($Gets_file_style_path))
+		{
+		$Gets_file_modification_time = filemtime($PowerBB->_CONF['rows']['style']['style_path']);
+		}
+        if($Gets_file_modification_time)
+        {
+        $PowerBB->_CONF['rows']['style']['style_path'] = $PowerBB->_CONF['rows']['style']['style_path']."?v=".$Gets_file_modification_time;
+        }
 
+        $PowerBB->template->assign('style_path',$PowerBB->_CONF['rows']['style']['style_path']);
 		$PowerBB->template->assign('image_path',$PowerBB->_CONF['rows']['style']['image_path']);
-		$PowerBB->template->assign('style_path',$PowerBB->_CONF['rows']['style']['style_path']);
+
 	}
 
 	function _SetInformation()

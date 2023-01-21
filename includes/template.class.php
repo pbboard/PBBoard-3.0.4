@@ -10,6 +10,8 @@ class PBBTemplate
 	protected $_while_var_num		=	0;
 	protected $_foreach_var			=	null;
 	protected $_foreach_var_num		=	0;
+
+
 	private $vars_list				=	array();
 
 	public $vars 					= 	array();
@@ -25,6 +27,8 @@ class PBBTemplate
 		$this->_vars 			= 	array();
 		$this->_while_var 		= 	array();
 		$this->_foreach_var 	= 	array();
+
+
 	}
 
 	/**
@@ -236,6 +240,30 @@ class PBBTemplate
 			$string = str_replace('<label for="emailed_id">',"\n", $string);
 			$string = str_replace("ForumAdress}look/","ForumAdress}look/", $string);
 
+	     	//Set no caching to javascript files add modification time in end url
+           if($filename == 'headinclud')
+           {
+	            //Set no caching to javascript files add modification time in end url
+	           	$regex_js = '#src="(.*?)"></script>#is';
+					$string = preg_replace_callback($regex_js, function($matches) {
+					   $matches[1] = str_replace("{\$ForumAdress}","",$matches[1]);
+					   if(file_exists($matches[1]))
+					    {
+						$matchtime = filemtime($matches[1]);
+						}
+						if($matchtime)
+						{
+						$matches[1] = 'src="{$ForumAdress}'.$matches[1]."?v=".$matchtime.'"></script>';
+						}
+	                    else
+						{
+						$matches[1] = 'src="'.$matches[1].'?v=1"></script>';
+						}
+					    return $matches[1];
+					}, $string);
+
+             }
+
 			// CSRF protect all your forms
 			//$string = str_ireplace("</form>",'<input type="hidden" name="csrf" value="{$csrf_key}" />'."\n</form>",$string);
 			@eval($PowerBB->functions->get_fetch_hooks('template_class_start'));
@@ -409,6 +437,7 @@ class PBBTemplate
 
              $string = str_replace(">time(",">_date(",$string);
              $string = str_replace(">date(",">_date(",$string);
+
 
 			$write  = @eval(" ?>".$string."<?php ");
 	}

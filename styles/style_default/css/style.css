@@ -5365,6 +5365,13 @@ width:85%;
 }
 }
 @media screen and (max-width: 680px) {
+.info-userArrow
+{
+display: none !important;
+}
+.user_menue{
+width:150px;
+}
 .form_register input[type="text"],.border input[type="password"]{
 min-width: 70%;
 }
@@ -5570,7 +5577,6 @@ display: none !important;
  width: 124px;
 }
 
-
 div.pagetext_visitorMessage{
 width: 250px;
 max-width:250px;
@@ -5654,12 +5660,14 @@ font-size: 8px;
 display: none;
 }
 table,td,h1,textarea{
-*height: auto;
 outline:0 !important ;
 left:auto !important ;
 right:auto !important ;
 resize:vertical;
 min-height:auto !important
+}
+.rows_space textarea
+{width: 90%;
 }
 .Iconchevron{	left:auto !important ;
 right:auto !important ;

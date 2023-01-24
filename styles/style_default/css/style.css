@@ -4936,7 +4936,8 @@ width:25%;
 width:70%;
 	position: relative;
     top: 0px;
-    right: -18px;
+    right: 10px;
+font-weight:normal;
 }
 .form_register input[type="text"],.border input[type="password"]{
 min-width: 40%;
@@ -5401,7 +5402,7 @@ width: 80px;
 #submit_search {
 position: relative;
     left: 13px;
-    top: -35px;
+    top: -80px;
 }
 #advsearch {
     left: 20px;
@@ -5614,10 +5615,10 @@ display: none !important;
 @media screen and (max-width: 480px) {
 .last_page_show{
 font-size: 8px !important;
-width: 12% !important;
+width: 4% !important;
 }
 .multi_pages td.main_bar {
-  width: 5% !important;
+  width: 2% !important;
 }
 .f_sub_link #buttons_link {
     position: relative;
@@ -5822,7 +5823,7 @@ width: 100%;
 min-width: 100%;
 }
 .sub_tools{
-direction: ltr;
+*direction: ltr;
 }
 #subject_tools{
 direction: rtl;
@@ -5874,6 +5875,21 @@ width: 320px;
 .quotelang
 {
 display: none !important;
+}
+
+.forum-stats {
+    width: 308px;
+}
+
+#submit_search {
+    position: relative;
+    left: 3px;
+    top: 0px;
+    z-index: 9;
+   }
+
+.buttons_no_link , #buttons_link{
+    padding: 2px 5px 2px 5px;
 }
 }
 

@@ -3071,20 +3071,25 @@ alt="{$lang['s_special']}" /> </span>
 </table>
 {if {$NO_SUBJECTS}}
 <br />
-{template}options_mod{/template}
-<br />
-<!-- table --><div style="width:98%; border-collapse: collapse;" class="table mrgTable">
-<dl>
-<dt></dt>
-<dd class="f_sub_link" style="text-align: {$align};">
+<!-- table -->
+<div style="width:98%; border-collapse: collapse;" class="table mrgTable">
+<table border="0" width="100%" cellspacing="0" cellpadding="0">
+<tr>
+<td>
 {template}add_subject_link{/template}
-</dd>
-<dd class="l-left f_sub_pager">
+</td>
+<td>
+{template}options_mod{/template}
+ </td>
+</tr>
+<tr>
+<td colspan="2">
 {if {$pager}}
 <?php echo $PowerBB->pager->show();?>
-{/if}
-</dd>
-</dl>
+{/if}	
+</td>
+</tr>
+</table>
 </div><!-- /table -->
 <br />
 <table class="border wd98 brd1 clpc0 a-center">
@@ -7349,8 +7354,9 @@ $(document).ready(Ready);
 <dd class="row1 wd40" rowspan="2">{$lang['Image_Verification']}<br />
 <span class="smallfont">{$lang['Verification']}</span></dd>
 <dd class="row1 wd31">
-<input name="code" id="code_confirm" class="max-input" type="text" size="10" dir="ltr"/>	&nbsp;&nbsp;<img id="turing" src="includes/captcha.php" alt="" /><br />
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a onclick="updateImg();">{$lang['Image_replacement']}</a>
+<input name="code" id="code_confirm" class="max-input" type="text" size="5" dir="ltr"/>	
+<img id="turing" src="includes/captcha.php" alt="captcha" />
+<input type="button" class="button button_b" value="{$lang['Image_replacement']}" onclick="updateImg()">
 <script type='text/javascript'>
 var clicks = 0;
 function updateImg()
@@ -7427,7 +7433,9 @@ doc.src = "includes/captcha.php" + "?act=" + clicks;
 <span class="register_fixed wmax">{$lang['Registr_invite']}</span>
 <span class="register_fixed wmaxy">
 {$lang['invite_form']}
-<input type="text" name="invite" value="{$invite}" id="invite_id" class="max-input" size="40" dir="{$_CONF['info_row']['content_dir']}" />
+<br />
+<input type="text" name="invite" value="{$invite}" 
+id="invite_id" style="min-width: 50px;" class="max-input" size="20" dir="{$_CONF['info_row']['content_dir']}" />
 </span>
 </dd>
 </dl>

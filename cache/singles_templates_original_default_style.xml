@@ -2511,17 +2511,24 @@ eval("form.elements[" + i + "].checked = form.elements[0].checked");
 }
 }
 </script>
-<div class="rRow">
-<div class="r-right">
-{template}add_subject_link{/template}
-</div>
-<div class="l-left morwidth">
-{if {$pager}}
+
+<table border="0" width="100%" cellspacing="0" cellpadding="0">
+	<tr>
+<td colspan="2">
+		
+		{if {$pager}}
 <?php echo $PowerBB->pager->show();?>
-{/if}
-</div>
-</div>
-<!-- Code search Menu start -->
+{/if}		
+				
+		</td>
+				
+	</tr>
+	<tr>
+<td>
+		{template}add_subject_link{/template}
+		</td>
+		<td>
+		<!-- Code search Menu start -->
 {if {$_CONF['group_info']['search_allow']} == '1'}
 <div id="searchContainer">
 <form name="search" action="index.php?page=forum" method="get">
@@ -2540,11 +2547,10 @@ dir="{$_CONF['info_row']['content_dir']}" /></li>
 </div>
 {/if}
 <!-- Code search Menu End -->
-<br />
-<br />
-<br />
-<br />
-<br />
+</td>
+	</tr>
+</table>
+
 <form name="tools_thread" method="post" enctype="multipart/form-data" action="index.php?page=management&amp;subject=1&amp;section={$SECTION_ID}&amp;operator=tools_thread">
 <table class="border forum_sub wd98 brd1 clpc0 a-center">
 {if {$NO_SUBJECTS}}
@@ -7709,7 +7715,7 @@ doc.src = "includes/captcha.php" + "?act=" + clicks;
 <td class="editoricon va-t" colspan="2">
 <fieldset>
 <legend>{$lang['reason_edit']}</legend>
-<input name="reason_edit" type="text" value="{$reason_edit}" size="50" />
+<input name="reason_edit" type="text" value="{$reason_edit}" size="38" />
 </fieldset>{template}iconbox{/template}</td>
 </tr>
 </table></div>
@@ -9068,20 +9074,19 @@ imgChange.className = "collapsed";
 <form method="post" action="index.php?page=forget&amp;send_active_code=1">
 <table class="border wd88 brd1 clpc0 a-center">
 <tr class="center_text_align">
-<td class="tcat wd88" colspan="2">
+<td class="tcat wd88">
 {$lang['send_active_code']}
 </td>
 </tr>
 {if !{$_CONF['member_permission']}}
 {if {$_CONF['info_row']['captcha_type']} == 'captcha_IMG'}
 <tr>
-<td class="row1 rows_space" colspan="2">
+<td class="row1">
 {$lang['Image_Verification']}:&nbsp;&nbsp;
 <span style="font-size:10px;">{$lang['Verification']}</span>
 <br />
 <input name="code" id="code_confirm" type="text" size="7"/>
-&nbsp;&nbsp;<img id="turing" src="includes/captcha.php" width="87" height="17" alt="" />
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a onclick="updateImg();">{$lang['Image_replacement']}</a>
+<img id="turing" src="includes/captcha.php" width="87" height="17" alt="" /><a onclick="updateImg();">{$lang['Image_replacement']}</a>
 <script type='text/javascript'>
 var clicks = 0;
 function updateImg()
@@ -9094,7 +9099,7 @@ doc.src = "includes/captcha.php" + "?act=" + clicks;
 </td>
 </tr>
 {else}<tr>
-<td class="row1" colspan="2">
+<td class="row1">
 {$lang['random_question']}
 <span class="smallfont" dir="{$_CONF['info_row']['content_dir']}" title="{$lang['question']}">
 {$question}
@@ -9109,15 +9114,13 @@ doc.src = "includes/captcha.php" + "?act=" + clicks;
 <tr>
 <td class="row1 wd10">
 {$lang['email_Retrieve_password']}
-</td>
-<td class="row1 wd60">
-{$lang['active_code_Message']}
+<p>{$lang['active_code_Message']}
 <br />
-<input name="email" type="text" value="{$MemberEmail}" size="44" dir="ltr"/>
+<input name="email" type="text" value="{$MemberEmail}" size="33" dir="ltr"/>
 </td>
 </tr>
 <tr class="center_text_align">
-<td class="row1" colspan="2">
+<td class="row1">
 <input type="submit" name="submit_active_code" value="{$lang['Count']}" />
 </td>
 </tr>
@@ -10576,7 +10579,7 @@ $(document).ready(Ready);
 <dd id="top_topic_bar" class="nwrp">
 <ul class="pbbList_inline">
 <li class="r-right">
-{if {$Info['stick']} or {$Info['close']} or {$Info['delete_topic']}}
+{if {$Info['stick']} or {$Info['delete_topic']}}
 <strong>
 {$lang['case_of_Subject']}
 </strong>
@@ -10588,16 +10591,7 @@ $(document).ready(Ready);
 {if {$Info['stick']}}
 {$lang['sticky']}
 {/if}
-{if {$Info['close']}}
-{if {$Info['stick']}}
-,
-{/if}
-{$lang['Closed']}
-{/if}
 {if {$Info['delete_topic']}}
-{if {$Info['stick']} or {$Info['close']}}
-,
-{/if}
 {$lang['Deleted']}
 {/if}
 </li>
@@ -12252,15 +12246,14 @@ $(document).ready(Ready);
 <form method="post" action="index.php?page=management&amp;close=1&amp;subject_id={$subject}">
 {/if}<table class="border wd60 brd1 clpc0 a-center">
 <tr class="center_text_align">
-<td class="tcat wd60" colspan="2">
+<td class="tcat wd60">
 {$lang['locked_Topic']}
 </td>
 </tr>
 <tr>
 <td class="row1 rows_space wd30">
 {$lang['reason_close_topic']}
-</td>
-<td class="row1 wd30">
+<p>
 <input name="reason" type="text" size="38" />
 </td>
 </tr>
@@ -12268,8 +12261,7 @@ $(document).ready(Ready);
 <tr>
 <td class="row1 rows_space wd30">
 {$lang['poll_close']} !
-</td>
-<td class="row1 wd30">				{if {$SubjectInfo['close_poll_subject']} == '0'}
+<p>{if {$SubjectInfo['close_poll_subject']} == '0'}
 <input name="close_poll" value="0" checked="checked" id="red" type="radio">&nbsp; {$lang['No']} &nbsp;&nbsp;&nbsp;
 <input name="close_poll" value="1" id="green" type="radio">  &nbsp;{$lang['Yes']}&nbsp;
 {/if}
@@ -12277,7 +12269,7 @@ $(document).ready(Ready);
 </tr>
 <tr>
 {/if}
-<td class="row1 rows_space wd60" colspan="2">
+<td class="row1 rows_space wd60">
 <div class="center_text_align">
 {if {$_CONF['info_row']['ajax_moderator_options']}}
 <input type="button" id="close_id" value="{$lang['Count']}" />
@@ -12507,7 +12499,7 @@ $('#charNum').text({$_CONF['info_row']['post_title_max']} - len);
 <td class="editoricon va-t" colspan="2">
 <fieldset>
 <legend>{$lang['reason_edit']}</legend>
-<input name="reason_edit" type="text" value="{$reason_edit}" size="50" />
+<input name="reason_edit" type="text" value="{$reason_edit}" size="38" />
 </fieldset>
 {template}iconbox{/template}
 </td>
@@ -12702,8 +12694,7 @@ function getMeta(url) {
 <!-- action_find_addons_7 -->
 
 ]]></subject_edit>
-<subject_merge_index><![CDATA[
-<br />
+<subject_merge_index><![CDATA[<br />
 {template}address_bar_part1{/template}
 {$lang['Management_Subjects']}
 <div class="btn-nav"></div>
@@ -12728,7 +12719,7 @@ function getMeta(url) {
 </tr>
 <tr>
 <td class="row1 wd20" colspan="2">
-<input name="url" type="text" size="61" />
+<input name="url" type="text" size="38" />
 </td>
 </tr>
 <tr>
@@ -12768,8 +12759,7 @@ function getMeta(url) {
 </table>
 <br />
 <br />]]></subject_move_index>
-<subject_repeat_index><![CDATA[
-<br />
+<subject_repeat_index><![CDATA[<br />
 {if {$_CONF['info_row']['ajax_moderator_options']}}
 {else}
 {template}address_bar_part1{/template}
@@ -12781,20 +12771,19 @@ function getMeta(url) {
 <form method="post" action="index.php?page=management&amp;repeat=1&amp;subject_id={$subject}">
 <table class="border wd60 brd1 clpc0 a-center">
 <tr class="center_text_align">
-<td class="tcat wd20" colspan="2">
+<td class="tcat wd20">
 {$lang['repeated_Subject']}
 </td>
 </tr>
 <tr>
 <td class="row1 rows_space wd20">
 {$lang['url_Original_repeat']}
-</td>
-<td class="row1 wd20">
-<input name="url" type="text" size="50" />
+<p>
+<input name="url" type="text" size="38" />
 </td>
 </tr>
 <tr>
-<td class="row1 rows_space wd60" colspan="2">
+<td class="row1 rows_space wd60">
 <div class="center_text_align">
 <input type="submit" value="{$lang['Count']}" />
 </div>

@@ -269,7 +269,8 @@ margin-inline-end: 0px;
 padding-inline-start: 0px;
 padding-inline-end: 0px;
 }
-#userlink_menu li{width: 165px;
+#userlink_menu li{
+width: 165px;
 margin: 0px;
 padding: 7px;
 padding-bottom-end: 0px;
@@ -300,7 +301,8 @@ font-weight: normal;
 color: #222222;
 }
 #userlink_menu .Menu_sep
-{color:#222222;
+{
+color:#222222;
 }
 #userlink_menu .Menu_sep a
 {
@@ -523,19 +525,15 @@ border-right: 10px solid #adadad;
 /* search arrows */
 /* div container containing the form */
 #searchContainer {
-margin-left: 38px;
-margin-top: 29px;
-/* float: left; */
-/* background: transparent; */
-position: absolute;
-top: revert;
-left: 2px;
+margin-left: 10px;
+float: left;
 }
 #searchContainer li{
 display:inline-block;
 list-style:none;
 margin-left:-3px;
 margin-right:-4px;
+margin-top: -10px;
 padding:0px;
 vertical-align:top;
 cursor:pointer;
@@ -1366,10 +1364,12 @@ border-style:solid;
 .center_text_align input[type="submit" i] {
 font-family: "Droid Arabic Kufi","tahoma",sans-serif;
 font-size: 11px;
-font-weight: normal;color: #fff;
+font-weight: normal;
+color: #fff;
 background: #47a7eb;
 min-width: 80px;
 border-color: #5eb2ed #309ce8 #309ce8 #5eb2ed;
+margin-top: 11px;
 }
 .popmenubutton {
 margin-top: -2px;
@@ -1621,7 +1621,8 @@ font-weight: bold;
 font-size: 16px;
 color:#000000;
 }
-.a-center .preview{text-align:right;
+.a-center .preview{
+text-align:right;
 }
 .top_forum_bar{
 background: transparent;
@@ -1635,7 +1636,7 @@ text-decoration:none;
 }
 #top_topic_bar{
 background:#f0f0f0;
-text-align:right;
+text-align:left;
 font-family: Tahoma, Times New Roman, Arial;
 color:#333333;
 font-size:11px;
@@ -2116,6 +2117,7 @@ border-collapse: separate;
 height:0px;
 width:265px;
 clear: both;
+margin-top: 20px;
 }
 .multi_pages .mainbar{
 border-radius: 5px;
@@ -3586,7 +3588,8 @@ direction:ltr;
 text-align:left;
 }
 
-div.chat .thead1 a {background-color: #EDF7FF;
+div.chat .thead1 a {
+background-color: #EDF7FF;
 color:#409bd9;
 font-weight: bold;
 border:1px solid #B5C5CB;
@@ -4472,7 +4475,8 @@ cursor: pointer;
     width: 200px;
     clear: both;
 }
-#flip ul {padding: 0px;
+#flip ul {
+padding: 0px;
 margin: 0px;
 display:inline;
 }
@@ -4767,7 +4771,8 @@ border-bottom: 1px dotted #d1d1e1;
 .r-nfo{
 border-right: 1px solid #d1d1e1;
 }
-.subc {background-color: #FFFF;
+.subc {
+background-color: #FFFF;
 line-height: 1.8;
 }
 .r-subc {
@@ -4813,7 +4818,8 @@ border:1px solid #dbdbdb;
 .f_perpage, .f_attach, .f_observed, f_rating
 {
 padding-right:3px !important;
-padding-left:2px !important;}
+padding-left:2px !important;
+}
 
 .theadcontent
 {
@@ -4987,7 +4993,8 @@ vertical-align: middle;
 padding: 6px;
 border-radius: 4px;
 }
-.information_user_website a{text-decoration:underline;
+.information_user_website a{
+text-decoration:underline;
 color:#000;
 }
 .information_user_website .dirc{
@@ -5093,7 +5100,8 @@ textarea.tbox {
     resize: none;
     line-height: 25px;
 }
-#form-chat-id{width: 97% !important;
+#form-chat-id{
+width: 97% !important;
 }
 .d-flex {
     display: flex;
@@ -5140,7 +5148,7 @@ float: right;
 
 .menu_popup select {
 overflow: hidden;
-width: 100px;
+width: auto;
 height: 282px;
 }
 .menu_popup option {
@@ -5157,7 +5165,8 @@ pre code.hljs {
 white-space: pre-wrap;
 }
 .userbar #alerts-trigger
-{cursor: pointer;
+{
+cursor: pointer;
 }
 @media (max-width:1200px) {
 .cked_fast{
@@ -5387,12 +5396,12 @@ display:block !important;
 
 #submit_search input[type="text"]
 {
-width: 70px;
+width: 80px;
 }
 #submit_search {
 position: relative;
     left: 13px;
-    top: -60px;
+    top: -35px;
 }
 #advsearch {
     left: 20px;
@@ -5450,7 +5459,8 @@ position: fixed;
 top: 0px;
 z-index: 99999 !important;
 }
-#nav_header_bar{border-bottom:0px solid #000;
+#nav_header_bar{
+border-bottom:0px solid #000;
 }
 header {
     margin-top: 50px;
@@ -5463,6 +5473,7 @@ display: none !important;
 }
 }
 @media screen and (max-width: 650px) {
+
 .information_user_info{
 font-size: 8px;
 top: 113px;
@@ -5601,9 +5612,16 @@ display: none !important;
 }
 /* for 480px or less */
 @media screen and (max-width: 480px) {
-
-.button_b{
-margin-top: 16px;
+.last_page_show{
+font-size: 8px !important;
+width: 12% !important;
+}
+.multi_pages td.main_bar {
+  width: 5% !important;
+}
+.f_sub_link #buttons_link {
+    position: relative;
+    top: -40px;
 }
 #userbar {
  width: 124px;
@@ -5699,7 +5717,8 @@ resize:vertical;
 min-height:auto !important
 }
 .rows_space textarea
-{width: 90%;
+{
+width: 90%;
 }
 .Iconchevron{	left:auto !important ;
 right:auto !important ;
@@ -5734,10 +5753,6 @@ width:100px;
 margin: 5px;
 display: inline-block !important;
 }
-.f_sub_link, .f_sub_pager{
-margin: 10px 0px;
-display: inline-block !important;
-}
 .cked_fast{
 width: 98%;
 }
@@ -5768,7 +5783,7 @@ display: none;
 width: 320px;
 }
 .multi_pages{
-width: 330px;
+width: 350px;
 }
 .pbbList_inline .r-right {
     margin-top: -30px;
@@ -5781,6 +5796,11 @@ width: 98%;
 }
 .forum-last-post {
 width: 350px;
+}
+.menu_popup input[type="submit" i]{
+min-width: 10px;
+margin: 1px;
+padding: 2px 5px 0 4px;
 }
 .Info_last_Reply {
 font-weight: bold;
@@ -5840,7 +5860,8 @@ display: none !important;
 }
 @media screen and (max-width: 390px) {
 .pbbsearch
-{padding: 0px !important;
+{
+padding: 0px !important;
 margin-top: 37px;
 margin-left: 0px;
 top: 0;
@@ -5854,7 +5875,8 @@ width: 320px;
 {
 display: none !important;
 }
-}
+}
+
 @media screen and (max-width: 360px) {
 .forum-last-post {
     width: 305px;

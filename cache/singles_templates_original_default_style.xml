@@ -2035,8 +2035,8 @@ $(function() {
 <footer><![CDATA[{if {$_CONF['info_row']['sidebar_list_active']} and {$on_sidebar_list_thes_page}}
 </div>
 <div class="sbp_show">
-<a class="sbp_buton sbp_foot" style="margin-top: -17px; float: {$_CONF['info_row']['sidebar_list_align']};" title="{$lang['sbplus_sidebarac']}">{$lang['hide_blocks']}</a>
-<a class="sbp_tbuton sbp_tfoot" style="margin-top: -17px; float: {$_CONF['info_row']['sidebar_list_align']};" title="{$lang['sbplus_sidebarkapat']}">{$lang['show_blocks']}</a>
+<a class="sbp_buton sbp_foot" style="margin-top: -17px; float: {$_CONF['info_row']['sidebar_list_align']};" title="{$lang['sbplus_sidebarac']}"></a>
+<a class="sbp_tbuton sbp_tfoot" style="margin-top: -17px; float: {$_CONF['info_row']['sidebar_list_align']};" title="{$lang['sbplus_sidebarkapat']}"></a>
 </div>
 <div class="sbp_sbar" style="float: {$_CONF['info_row']['sidebar_list_align']};width: {$_CONF['info_row']['sidebar_list_width']}%;">
 {info_row}sidebar_list_content{/info_row}
@@ -3355,8 +3355,8 @@ showFrame(1);
 <input type="hidden" name="sort_order" value="desc" />
 <input type="hidden" name="section" value="all" />
 <ul>
-<li><input type="text" name="keyword" class="searchfield" value="{$lang['search_keyword']}" onclick="my_search()" onfocus="if (this.value == '{$lang['search_keyword']}') this.value = '';"
-dir="{$_CONF['info_row']['content_dir']}" /></li>
+<li><input type="text" name="keyword" class="searchfield" value="{$lang['search_keyword']}" onkeydown="countChar(this)" onclick="my_search()" onfocus="if (this.value == '{$lang['search_keyword']}') this.value = '';"
+dir="{$_CONF['info_row']['content_dir']}" autocomplete="off" /></li>
 <li><input type="submit" name="submit" class="submit_id" title="{$lang['start_search']}" /></li>
 </ul>
 <script type='text/javascript'>
@@ -5293,9 +5293,12 @@ eval("form.elements[" + i + "].checked = form.elements[0].checked");
 <td class="thead wd3">
 {$lang['Case']}
 </td>
+{if {$MsgsNum} > 0}
 <td class="thead wd3">
 <input type="checkbox" name="check_all" onClick="checkAll(this.form)"/>
-</td>		<td class="thead wd40">
+</td>
+{/if}
+<td class="thead wd40">
 {$lang['PmTitle']}
 </td>
 <td class="thead wd10">
@@ -5366,21 +5369,28 @@ src="{$image_path}/newfolder.gif" class="brd0" />
 ({$AllowedPmNum})
 {else}
 ({$lang['Infinite']})
-{/if}             <br />
+{/if}             
+<br />
+{if {$MsgsNum} > 0}
 {if {$folder} == 'sent'}
 <input class="button button_b" name="sent_empty" type="submit" value="{$lang['Make_Sent_Empty']}" />
 {/if}
 {if {$folder} == 'inbox'}
 <input class="button button_b" name="inbox_empty" type="submit" value="{$lang['Make_Inbox_Empty']}" />
-{/if}             </td>
+{/if}  
+{/if}           
+</td>
 </tr>
+{if {$MsgsNum} > 0}
 <tr>
 <td class="row1 center_text_align" colspan="5">
 <input class="button button_b" name="delet" type="submit" value="{$lang['Del_selected_PM']}" />
 <input class="button button_b" name="readable" type="submit" value="{$lang['Make_it_readable']}" />
 <input class="button button_b" name="unreadable" type="submit" value="{$lang['Make_it_unreadable']}" />
 </td>
-</tr>	</table>
+</tr>
+{/if} 
+</table>
 </form>
 <table class="wd98 brd0 clpc0 a-center" style="border-collapse: collapse">
 <tr>
@@ -5877,6 +5887,11 @@ function getMeta(url) {
 </dl>
 </div><!-- /table --><br />]]></pm_setting>
 <pm_show><![CDATA[<!-- action_find_addons_1 -->
+<style>
+.r-nfo{
+border-bottom: 1px solid #d1d1e1 !important;
+}
+</style>
 <div class="usercp_context">
 {template}address_bar_part1{/template}
 <a href="index.php?page=pm_list&amp;list=1&amp;folder=inbox">{$lang['Private_Messages']}</a>
@@ -11819,13 +11834,13 @@ $(document).ready(Ready);
 <tr>
 {Des::while}{FriendsList}
 <?php
-if($t== '3'){
+if($t== '2'){
 $t=0;
 echo "</tr><tr>";
 }?>
 
 <td class="va-t">
-<div class="UserPhoto center_text_align" style="width: 80px;height: 80px; margin-left: 10px;margin-right: 10px; margin-bottom: 10px;">
+<div class="UserPhoto center_text_align" style="width: 50px;height: 50px; margin-left: 2px;margin-right: 2px; margin-bottom: 2px;">
 <?php
 $vuserid_friend_id = $PowerBB->_CONF['template']['while']['FriendsList'][$this->x_loop]['userid_friend'];
 
@@ -11834,14 +11849,14 @@ $MemberIDInfo= $PowerBB->DB->sql_fetch_array($MemberIDArr);
 if ($MemberIDInfo['avater_path']){
 ?>
 <a href="index.php?page=profile&amp;show=1&amp;id={$FriendsList['userid_friend']}">
-<img src="<?php echo $MemberIDInfo['avater_path']?>" class="brd0" width="80" height="80" title="<?php echo $MemberIDInfo['user_info']?>"
+<img src="<?php echo $MemberIDInfo['avater_path']?>" class="brd0" width="50" height="50" title="<?php echo $MemberIDInfo['user_info']?>"
 alt="{$lang['Picture']}
 <?php echo $MemberIDInfo['username']?>
 {$lang['Personal']}" /></a>
 {else}
 <a href="index.php?page=profile&amp;show=1&amp;id={$FriendsList['userid_friend']}">
 <img src="{$image_path}/
-{$_CONF['info_row']['default_avatar']}" class="brd0" width="80" height="80"
+{$_CONF['info_row']['default_avatar']}" class="brd0" width="50" height="50"
 alt="{$lang['no_photo']}"
 title="<?php echo $MemberIDInfo['user_info']?>" />
 </a>
@@ -15896,6 +15911,13 @@ $(this).next("#menue_{$Info['id']}_{$Info['reply_id']}").slideToggle("slow");
 
 });
 </script>
+{if !{$_CONF['member_permission']}}
+<style>
+.r-nfo{
+border-bottom: 1px solid #d1d1e1 !important;
+}
+</style>
+{/if}
 <!-- table -->
 <div class="writers_info">
 <div style="vertical-align: top;" class="center_text_align w_photo">

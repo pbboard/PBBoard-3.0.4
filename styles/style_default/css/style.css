@@ -4263,7 +4263,7 @@ overflow: hidden;
  font-family:Tahoma, arial;
  font-size:11px;
  color: inherit;
- background: rgba(0,0,0,0.3);
+ background: #232a35;
  border-radius: 4px;
  padding:2px;
  margin-right:-138px;
@@ -4293,7 +4293,7 @@ overflow: hidden;
 .add_attach
 {
 display: inline-block;
-background:rgba(0,0,0,0.3);
+background:#232a35;
 border-radius:4px;
 cursor: pointer;
 font-size: 12px;
@@ -4333,7 +4333,7 @@ padding:2px;
 }
 .insert_to_post
 {
-display: inline-block;background:rgba(0,0,0,0.2);cursor: pointer;position:absolute;display:none;width:100px;padding:2px;
+display: inline-block;background:#232a35;cursor: pointer;position:absolute;display:none;width:100px;padding:2px;
 }
 
 .border .row1 .insert_to_post a,

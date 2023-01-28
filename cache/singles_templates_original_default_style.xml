@@ -16221,6 +16221,11 @@ document.write('<input type="button" value="{$lang['login']}" id="login_id" />')
 <a href="index.php?page=forum&amp;show=1&amp;id={$section_info['id']}{$password}">
 {$section_info['title']}
 </a>
+<style>
+.r-nfo{
+border-bottom: 0px solid #d1d1e1 !important;
+}
+</style>
 <div class="btn-nav"></div>
 <a title="{$lang['post']}
 ({$Info['reply_number']})" name="{$Info['reply_id']}" href="#{$Info['reply_id']}">
@@ -16266,11 +16271,7 @@ document.write('<input type="button" value="{$lang['login']}" id="login_id" />')
 </div>
 <div class="l-left awesome">
  &nbsp; {$Info['write_time']} &nbsp;
-<a title="{$lang['view_single_post']}" href="index.php?page=post&amp;show=1&amp;id={$Info['reply_id']}">
-<i class="fa fa-plus-square-o fa-2" aria-hidden="true"></i>
-</a>
-[<a title="{$lang['post']}
-({$Info['reply_number']})" name="{$Info['reply_id']}" href="#{$Info['reply_id']}">{$Info['reply_number']}</a>]
+
 {if !{$mod_toolbar}}
 <input type="checkbox" name="check[]" value="{$Info['reply_id']}" />
 {/if}
@@ -16321,13 +16322,13 @@ document.write('<input type="button" value="{$lang['login']}" id="login_id" />')
 </dd>
 </dl>
 {if {$_CONF['group_info']['write_reply']}}
-<dl>
+<dl class="subc center_text_align">
 <dt></dt>
-<dd class="row1 a-center subbr"></dd>
-<dd class="row1 a-center">
+<dd class="r-subc1"></dd>
+<dd class="r-subc2">
 <!-- table -->
 
-<div style="width:100%; border-collapse: collapse;" class="table">
+<div class="wd100 clpc0 table r-subc">
 <dl>
 <dt></dt>
 <dd>

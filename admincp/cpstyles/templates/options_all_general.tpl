@@ -31,6 +31,7 @@
 		</select>
 	</td>
 </tr>
+<tr>
 <td class="row2">{$lang['members_send_pm']}</td>
 		<td class="row2">
 <input type="text" name="members_send_pm" id="input_members_send_pm" value="{$_CONF['info_row']['members_send_pm']}" size="2" maxlength="2" />
@@ -153,6 +154,7 @@
 <input type="text" name="content_language" id="input_content_language" value="{$_CONF['info_row']['content_language']}" size="3" maxlength="9" />
 	</td>
 </tr>
+<tr>
 	<td class="row2">
 {$lang['flood_search']}
 	</td>
@@ -1302,41 +1304,7 @@
 			{$lang['mange_ajax']}
 			</td>
 		</tr>
-<!--
-		<tr>
-			<td class="row1">
-			تنشيطها في صفحة البحث
-			</td>
-			<td class="row1">
-				<select name="ajax_search" id="select_ajax_search">
-					{if {$_CONF['info_row']['ajax_search']}}
-					<option value="1" selected="selected">{$lang['yes']}</option>
-					<option value="0">{$lang['no']}</option>
-					{else}
-					<option value="1">{$lang['yes']}</option>
-					<option value="0" selected="selected">{$lang['no']}</option>
-					{/if}
-				</select>
-			</td>
-		</tr>
 
-			<td class="row2">
-			{$lang['activate_ajax_register']}
-			</td>
-			<td class="row2">
-			<input TYPE="hidden" name="ajax_search" id="select_ajax_search" value="0" />
-				<select name="ajax_register" id="select_ajax_register">
-					{if {$_CONF['info_row']['ajax_register']}}
-					<option value="1" selected="selected">{$lang['yes']}</option>
-					<option value="0">{$lang['no']}</option>
-					{else}
-					<option value="1">{$lang['yes']}</option>
-					<option value="0" selected="selected">{$lang['no']}</option>
-					{/if}
-				</select>
-			</td>
-		</tr>
--->
 		<tr>
 			<td class="row1">
 			{$lang['ajax_freply']}
@@ -1353,24 +1321,7 @@
 				</select>
 			</td>
 		</tr>
-		<!--
-		<tr>
-			<td class="row1">
-			{$lang['ajax_moderator_options']}
-			</td>
-			<td class="row1">
-				<select name="ajax_moderator_options" id="select_ajax_moderator_options">
-					{if {$_CONF['info_row']['ajax_moderator_options']}}
-					<option value="1" selected="selected">{$lang['yes']}</option>
-					<option value="0">{$lang['no']}</option>
-					{else}
-					<option value="1">{$lang['yes']}</option>
-					<option value="0" selected="selected">{$lang['no']}</option>
-					{/if}
-				</select>
-			</td>
-		</tr>
-		-->
+
 <tr valign="top" align="center">
 	<td class="main2" colspan="2">{$lang['board_close']}</td>
 </tr>
@@ -1617,25 +1568,7 @@
 {$lang['Settings_ads']}
 			</td>
 		</tr>
-<!--
-		<tr>
-			<td class="row1">
-تنشيط ظهور الإعلان التجاري العشوائي
-			</td>
-			<td class="row1">
-				<select name="random_ads" id="select_random_ads">
-					{if {$_CONF['info_row']['random_ads']}}
-					<option value="1" selected="selected">{$lang['yes']}</option>
-					<option value="0">{$lang['no']}</option>
-					{else}
-					<option value="1">{$lang['yes']}</option>
-					<option value="0" selected="selected">{$lang['no']}</option>
-					{/if}
-				</select>
-			</td>
-		</tr>
-		<tr>
--->
+
 			<td class="row1">
 {$lang['show_ads']}
 			</td>
@@ -1806,7 +1739,6 @@
 			</td>
 		</tr>
 		<tr>
-				<tr>
 			<td class="row1">
 {$lang['chat_num_mem_posts']}
 			</td>
@@ -1839,24 +1771,6 @@
 			</td>
 		</tr>
 		<tr>
-		<!--
-		<tr>
-			<td class="row1">
-{$lang['chat_bar_dir']}
-			</td>
-		<td class="row1">
-      <select name="chat_bar_dir" id="select_chat_bar_dir">
-	{if {$_CONF['info_row']['chat_bar_dir']} == 'out'}
-	<option value="out" selected="selected">{$lang['chat_place_out']}</option>
-	<option value="inside">{$lang['chat_place_inside']}</option>
-	{else}
-	<option value="out">{$lang['chat_place_out']}</option>
-	<option value="inside" selected="selected">{$lang['chat_place_inside']}</option>
-	{/if}
-	</select>
-	</td>
-		</tr>
-		!-->
 		<tr align="center">
 			<td class="main2" colspan="2">
 {$lang['Hide_links_for_visitors']}

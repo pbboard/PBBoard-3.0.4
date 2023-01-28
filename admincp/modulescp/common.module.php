@@ -324,7 +324,12 @@ class PowerBBCommon
 		$PowerBB->template->assign('DISABLE_HOOKS',$PowerBB->DISABLE_HOOKS);
 		$PowerBB->template->assign('admincpdir_cssprefs',"../".$PowerBB->admincpdir."/cpstyles/".$PowerBB->_CONF['info_row']['cssprefs']);
 		$PowerBB->template->assign('superadministrators',$PowerBB->superadministrators);
+		 $Gets_file_cssprefs_path = "../".$PowerBB->admincpdir."/cpstyles/".$PowerBB->_CONF['info_row']['cssprefs']."/style.css";
 
+		if(file_exists($Gets_file_cssprefs_path))
+		{		$Gets_file_modification_time = filemtime($Gets_file_cssprefs_path);
+		$PowerBB->template->assign('style_path',$Gets_file_cssprefs_path."?v=".$Gets_file_modification_time);
+		}
 		if (empty($PowerBB->_CONF['rows']['member_row']['avater_path']))
 		{
 		 $avater_path_admin = "../".$PowerBB->admincpdir."/cpstyles/".$PowerBB->_CONF['info_row']['cssprefs']."/profile-45x45.png";

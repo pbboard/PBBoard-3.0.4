@@ -1034,13 +1034,24 @@ color:#63A28F;font-size:7pt;font-weight:bold;text-align:left;
   color:#3366CC;
 }
 /* for 480px or less */
-@media screen and (max-width: 480px) {
-.row1, .row2{
-border-top: 2px dotted #C9C9C9 !important;
+@media screen and (max-width: 680px) {
+table,td,h1,textarea{
+outline:0 !important ;
+left:auto !important ;
+right:auto !important ;
+resize:vertical;
+min-height:auto !important
 }
-textarea, #text{
-max-width:40%;
+.row1,.row2,.row3,.row4{
+padding: 0px;
+height: auto;
+border: 0px solid;
 }
+
+.sceditor-container {
+width: 420px; height: 400px;
+}
+
 }
 
 /*

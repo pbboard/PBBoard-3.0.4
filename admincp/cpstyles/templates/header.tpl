@@ -8,7 +8,8 @@
 - {$lang['powered']}
 {/if}</title>
 <!-- action_find_addons_1 -->
-<link rel="stylesheet" href="../{$admincpdir}/cpstyles/<?php echo $PowerBB->_CONF['info_row']['cssprefs'];?>/style.css" type="text/css" />
+
+<link rel="stylesheet" href="{$style_path}" type="text/css" />
 <meta http-equiv="Content-Type" content="text/html; charset={$_CONF['info_row']['charset']}" />
 <link rel="stylesheet" href="../look/fonts/font-awesome.min.css" />
 <link rel="stylesheet" href="../look/fonts/fonts.css" />

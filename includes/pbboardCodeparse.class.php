@@ -63,7 +63,7 @@ class PowerBBCodeParse
 			return $matches[1];
 			}, $string);
 
-	         $string = str_replace("&quot;", '"', $string);
+	         $string = str_replace("http://www.youtube.com", "https://www.youtube.com", $string);
 
                  // jwplayer tag replace
 			    $jwplayer_search= '#\[jwplayer=(.*),(.*),(.*),(.*)\](.*)\[/jwplayer\]#siU';
@@ -520,8 +520,8 @@ class PowerBBCodeParse
                 $linky = str_replace("&gt;", ">", $linky);
                 $linky = str_replace(array('"', "'"), array('&quot;', '&#39;'), $linky);
                 $linky = str_replace(array('/watch?', "v="), array('/v', '/'), $linky);
-             return "<span id='ytplayer'><object id='ytplayer' width='95%' height='315'><param name='movie' value='$linky'></param><param name='allowFullScreen' value='true'></param><param id='ytplayer' name='allowscriptaccess' value='always'></param><embed id='ytplayer' src='$linky' type='application/x-shockwave-flash' allowscriptaccess='always' allowfullscreen='true' allownetworking='internal' width='95%' height='315'></embed></object></span>";
-            // return "<iframe id='ytplayer' type='text/html' width='560' height='315' src='$linky' frameborder='0' allowfullscreen></iframe>";
+                $linky = str_replace("/v/", "/embed/", $linky);
+             return '<iframe width="560" height="315" src="'.$linky.'" title="YouTube video player" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" frameborder="0" allowfullscreen></iframe>';
          }
 		function PowerCode_BBcode($option, $content, $bbcode_tag)
         {
@@ -598,9 +598,6 @@ class PowerBBCodeParse
          $text = str_ireplace("<script", "&lt;script", $text);
          $text = str_ireplace("<meta", "&lt;meta", $text);
 
-
-          // regex iframe
-        $text = str_ireplace("<iframe", '<iframe sandbox="allow-popups allow-same-origin"', $text);
           // nofollow links out said
 		if (isset($PowerBB->_SERVER['HTTPS']) &&
 		    ($PowerBB->_SERVER['HTTPS'] == 'on' || $PowerBB->_SERVER['HTTPS'] == 1) ||
@@ -926,22 +923,6 @@ class PowerBBCodeParse
          $text = str_replace("&amp;#39;","'",$text);
 		 $text = $PowerBB->functions->pbb_stripslashes($text);
          $text = str_replace('{39}',"'",$text);
-         $text = str_ireplace('xss',"**",$text);
-         $text = str_ireplace('document',"**",$text);
-         $text = str_ireplace('cookie',"**",$text);
-         $text = str_ireplace('alert',"**",$text);
-         $text = str_ireplace('location',"**",$text);
-         $text = str_ireplace('equiv',"**",$text);
-         $text = str_ireplace('script',"**",$text);
-         $text = str_ireplace('equiv',"**",$text);
-         $text = str_ireplace('refresh',"**",$text);
-         $text = str_ireplace('meta',"**",$text);
-         $text = str_ireplace('base',"**",$text);
-         $text = str_ireplace('iframe',"**",$text);
-         $text = str_ireplace('style',"",$text);
-         $text = str_ireplace('method',"**",$text);
-         $text = str_ireplace('input',"**",$text);
-         $text = str_ireplace('action',"**",$text);
         $censorwords = preg_split('#[ \r\n\t]+#', $PowerBB->_CONF['info_row']['censorwords'], -1, PREG_SPLIT_NO_EMPTY);
         $text = str_ireplace($censorwords,'**', $text);
          $blankasciistrip ="160 173 u8205 u8204 u8237 u8238";
@@ -1420,6 +1401,7 @@ class PowerBBCodeParse
             '#<li>(.*?)</li>#si' => '[li]\\1[/li]',
             '#&nbsp;#si' => ' ',
             '#<center>(.*?)</center>#si' => '[center]\\1[/center]',
+            '#<div style="text-align: center;">(.*?)</div>#si' => '[center]\\1[/center]',
             '#<br(.*?)>#si' => chr(13).chr(10),
 			'#<p>(.*?)</p>#si' => chr(13).chr(10).chr(13).chr(10).'\\1',
 
@@ -1431,7 +1413,7 @@ class PowerBBCodeParse
             //'#<code>(.*?)</code>#si' => '[code]\\1[/code]',
             //'#<iframe style="(.*?)" id="ytplayer" type="text/html" width="534" height="401" src="(.*?)/embed/(.*?)" frameborder="0"/></iframe>#si' => '[youtube]\\3[/youtube]',
 
-            '#<span.*? style="(.*?)".*?>(.*?)</span>#si' => '[style=\\1]\\2[/style]',
+            '#<span.*? style="(.*?)".*?>(.*?)</span>#si' => '\\2',
 			//'#<a href="mailto:"(.*?)" title="Email (.*?)">(.*?)</a>#si' => '[email]\\1[/email]',
 			 //'#<img src="(.*?) >#si' => '[img]\\1[/img]',
 		);
@@ -1451,32 +1433,36 @@ class PowerBBCodeParse
 	  $string = preg_replace('#<p align="(.*?)">(.*?)</p>#i', "[$1] $2 [/$1]", $string);
 	  $string = preg_replace('#<div align="(.*?)">(.*?)</div>#i', "[$1] $2 [/$1]", $string);
 	  $string = preg_replace('#<div>(.*?)</div>#i', "$1 \r\n", $string);
+
+
 	  $string = preg_replace('#<span>(.*?)</span>#i', "$1", $string);
 	  $string = preg_replace('#<code>(.*?)</code>#i', "[code]$1[/code]", $string);
         $string = str_replace('\\"', '"', $string);
-		$string = str_replace('</b>',  '',    $string);
+		//$string = str_replace('</b>',  '',    $string);
 		$string = str_replace('</i>',  '[/i]',    $string);
 		$string = str_replace('</u>',  '[/u]',    $string);
 		$string = str_replace('</ul>', '[/list]', $string);
 		$string = str_replace('</ol>', '[/list]', $string);
 		$string = str_replace('</em>', '[/i]',    $string);
-		$string = str_replace('</strong>', '[/b]', $string);
-		$string = str_replace('</blockquote>', '[/quote]', $string);
 		$string = str_replace('</code>', '[/code]', $string);
 		$string = str_replace('<code>', '[code]', $string);
-		$string = str_replace('</pre>', '[code]', $string);
 		// Do simple reg expr replacements
 		$string = preg_replace('#<b(| .*?)>#',      '',      $string);
-		$string = preg_replace('#<span(| .*?)>#',      '',      $string);
 		$string = preg_replace('#<i(| .*?)>#',      '[i]',      $string);
 		$string = preg_replace('#<u(| .*?)>#',      '[u]',      $string);
 		$string = preg_replace('#<ul(| .*?)>#',     '[list]',   $string);
 		$string = preg_replace('#<ol(| .*?)>#',     '[list=1]', $string);
 		$string = preg_replace('#<li(| .*?)>#',     '[*]',      $string);
 		$string = preg_replace('#<em(| .*?)>#',     '[i]',      $string);
-		$string = preg_replace('#<strong(| .*?)>#', '',      $string);
-		$string = preg_replace('#<blockquote(| .*?)>#', '[quote]',  $string);
+		$string = preg_replace('#<strong(| .*?)>#', '[b]',      $string);
+		$string = str_replace('</strong>', '[/b]', $string);
+
+		$string = preg_replace('#<blockquote(| .*?)>#i', '[quote]$1',  $string);
+		$string = str_replace('</blockquote>', '[/quote]', $string);
+
 		$string = preg_replace('#<pre(| .*?)>#', '[code]',  $string);
+		$string = str_replace('</pre>', '[/code]', $string);
+
 		// replace multiple instances of [b] or [i] with single tags
 		$string = preg_replace('#(\[b\])+#',      '[b]',      $string);
 		$string = preg_replace('#(\[i\])+#',      '[i]',      $string);

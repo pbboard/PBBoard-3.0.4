@@ -826,16 +826,10 @@ class PowerBBCodeParse
 	function xss_clean($data)
 	{
 
-
-	// Fix &entity\n;
-	$data = str_replace(array('&amp;','&lt;','&gt;'), array('&amp;amp;','&amp;lt;','&amp;gt;'), $data);
-	$data = preg_replace('/(&#*\w+)[\x00-\x20]+;/u', '$1;', $data);
-	$data = preg_replace('/(&#x*[0-9A-F]+);*/iu', '$1;', $data);
-	$data = html_entity_decode($data, ENT_COMPAT, 'UTF-8');
-
-	 // start filtering tags
+		// start filtering tags
 		$regexcodexss = '#\<(.*)\>#siU';
 		$data = preg_replace_callback($regexcodexss, function($matches) {
+		$matches[1] = html_entity_decode($matches[1], ENT_COMPAT, 'UTF-8');
 		$matches[1] = str_ireplace('alert', '', $matches[1]);
 		$matches[1] = str_replace('(', '', $matches[1]);
 		$matches[1] = str_replace(')', '', $matches[1]);
@@ -843,13 +837,19 @@ class PowerBBCodeParse
 		$matches[1] = str_ireplace('document.cookie', '', $matches[1]);
 		$matches[1] = str_ireplace('onclick', '', $matches[1]);
 		$matches[1] = str_ireplace('absolute',"a*bsolute",$matches[1]);
-        $matches[1] = str_ireplace('equiv',"e*quiv",$matches[1]);
-        $matches[1] = str_ireplace('refresh',"r*efresh",$matches[1]);
-        $matches[1] = str_ireplace('meta',"m*eta",$matches[1]);
-         $matches[1] = str_ireplace('input',"i*nput",$text);
-         $matches[1] = str_ireplace('action',"a*ction",$matches[1]);
+		$matches[1] = str_ireplace('equiv',"e*quiv",$matches[1]);
+		$matches[1] = str_ireplace('refresh',"r*efresh",$matches[1]);
+		$matches[1] = str_ireplace('meta',"m*eta",$matches[1]);
+		$matches[1] = str_ireplace('input',"i*nput",$matches[1]);
+		$matches[1] = str_ireplace('action',"a*ction",$matches[1]);
 		return "<".$matches[1].">";
 		}, $data);
+
+	// Fix &entity\n;
+	$data = str_replace(array('&amp;','&lt;','&gt;'), array('&amp;amp;','&amp;lt;','&amp;gt;'), $data);
+	$data = preg_replace('/(&#*\w+)[\x00-\x20]+;/u', '$1;', $data);
+	$data = preg_replace('/(&#x*[0-9A-F]+);*/iu', '$1;', $data);
+	$data = html_entity_decode($data, ENT_COMPAT, 'UTF-8');
 
 	// Remove any attribute starting with "on" or xmlns
 	$data = preg_replace('#(<[^>]+?[\x00-\x20"\'])(?:on|xmlns)[^>]*+>#iu', '$1>', $data);

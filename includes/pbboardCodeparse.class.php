@@ -754,6 +754,9 @@ class PowerBBCodeParse
 		      }
 
             }
+
+           $text = $this->xss_clean($text);
+
 			$text = str_ireplace("{h-h}", "http", $text);
 			$text = str_ireplace("{w-w}", "www.", $text);
             $text = str_replace('rel="dofollow" rel="nofollow"', '', $text);
@@ -761,7 +764,6 @@ class PowerBBCodeParse
 
           $text = str_replace("<br>", "<br />", $text);
           //XSS filtering function
-            $text = $this->xss_clean($text);
             eval($PowerBB->functions->get_fetch_hooks('BBCodeParseHooks_cr'));
 
 
@@ -823,11 +825,31 @@ class PowerBBCodeParse
     //XSS filtering function
 	function xss_clean($data)
 	{
+
+
 	// Fix &entity\n;
 	$data = str_replace(array('&amp;','&lt;','&gt;'), array('&amp;amp;','&amp;lt;','&amp;gt;'), $data);
 	$data = preg_replace('/(&#*\w+)[\x00-\x20]+;/u', '$1;', $data);
 	$data = preg_replace('/(&#x*[0-9A-F]+);*/iu', '$1;', $data);
 	$data = html_entity_decode($data, ENT_COMPAT, 'UTF-8');
+
+	 // start filtering tags
+		$regexcodexss = '#\<(.*)\>#siU';
+		$data = preg_replace_callback($regexcodexss, function($matches) {
+		$matches[1] = str_ireplace('alert', '', $matches[1]);
+		$matches[1] = str_replace('(', '', $matches[1]);
+		$matches[1] = str_replace(')', '', $matches[1]);
+		$matches[1] = str_replace('<', '', $matches[1]);
+		$matches[1] = str_ireplace('document.cookie', '', $matches[1]);
+		$matches[1] = str_ireplace('onclick', '', $matches[1]);
+		$matches[1] = str_ireplace('absolute',"a*bsolute",$matches[1]);
+        $matches[1] = str_ireplace('equiv',"e*quiv",$matches[1]);
+        $matches[1] = str_ireplace('refresh',"r*efresh",$matches[1]);
+        $matches[1] = str_ireplace('meta',"m*eta",$matches[1]);
+         $matches[1] = str_ireplace('input',"i*nput",$text);
+         $matches[1] = str_ireplace('action',"a*ction",$matches[1]);
+		return "<".$matches[1].">";
+		}, $data);
 
 	// Remove any attribute starting with "on" or xmlns
 	$data = preg_replace('#(<[^>]+?[\x00-\x20"\'])(?:on|xmlns)[^>]*+>#iu', '$1>', $data);
@@ -849,13 +871,16 @@ class PowerBBCodeParse
 	{
 	    // Remove really unwanted tags
 	    $old_data = $data;
-	    $data = preg_replace('#</*(?:applet|b(?:ase|gsound|link)|embed|frame(?:set)?|i(?:frame|layer)|l(?:ayer|ink)|meta|object|s(?:cript|tyle)|title|xml)[^>]*+>#i', '', $data);
+        $input = preg_replace('#</*(?:applet|b(?:ase|gsound|link)|embed|frame(?:set)?|i(?:frame|layer)|l(?:ayer|ink)|meta|object|s(?:cript|tyle)|title|xml)[^>]*+>#i', '', $input);
 	}
 	while ($old_data !== $data);
 
 	// we are done...
+
 	return $data;
 	}
+
+
 
    // long URL, Shortening Long URLs With PHP
  	function shortenurl($Aurl,$Burl,$lg_max)

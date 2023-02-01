@@ -11,7 +11,7 @@ https://www.pbboard.info/forums/
 			and provide you with a bit of legal preamble we need to include 
 			within our product. A <a href="https://pbboard.info/forums/f16">
 			PBBoard Tutorials</a> of PBBoard is available at the
-			<a href="https://pbboard.info">PBBoard website</a>.</div>
+			<a href="https://www.pbboard.info">PBBoard website</a>.</div>
 	</div>
 </div>
 
@@ -66,8 +66,8 @@ https://www.pbboard.info/forums/
 		<div id="utilities">
 			<div id="syndication">
 				<h3>PBBoard Links</h3>
-				<p><a href="https://pbboard.info">PBBoard Website</a><br>
-				<a href="https://pbboard.info/forums">PBBoard Community Forums</a><br>
+				<p><a href="https://www.pbboard.info">PBBoard Website</a><br>
+				<a href="https://www.pbboard.info/forums/">PBBoard Community Forums</a><br>
 			</div>
 		</div>
 	</div>

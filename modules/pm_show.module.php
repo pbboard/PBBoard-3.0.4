@@ -214,8 +214,7 @@ class PowerBBPrivateMassegeShowMOD
 		$censorwords = preg_split('#[ \r\n\t]+#', $PowerBB->_CONF['info_row']['censorwords'], -1, PREG_SPLIT_NO_EMPTY);
 		$send_text = str_ireplace($censorwords,'**', $send_text);
 		$send_text = str_ireplace('{39}',"'",$send_text);
-        $send_text = str_ireplace('cookie','**',$send_text);
-        //$send_text = $PowerBB->Powerparse->censor_words($send_text);
+       $send_text = $PowerBB->Powerparse->censor_words($send_text);
        $send_text = $PowerBB->functions->CleanVariable($send_text,'html');
 
 		$PowerBB->template->assign('send_title',$PowerBB->_CONF['template']['_CONF']['lang']['Reply_pm'] . $PowerBB->_CONF['template']['MassegeRow']['title']);

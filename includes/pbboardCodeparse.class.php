@@ -825,7 +825,6 @@ class PowerBBCodeParse
     //XSS filtering function
 	function xss_clean($data)
 	{
-
 		// start filtering tags
 		$regexcodexss = '#\<(.*)\>#siU';
 		$data = preg_replace_callback($regexcodexss, function($matches) {
@@ -879,7 +878,6 @@ class PowerBBCodeParse
 
 	return $data;
 	}
-
 
 
    // long URL, Shortening Long URLs With PHP

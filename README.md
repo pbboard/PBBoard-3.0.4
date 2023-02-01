@@ -10,8 +10,8 @@ https://www.pbboard.info/forums/
 			PBBoard on to your web site, updating an existing copy of PBBoard 
 			and provide you with a bit of legal preamble we need to include 
 			within our product. A <a href="https://www.pbboard.info/forums/f16">
-			PBBoard Tutorials</a> And for Support <a href="https://www.pbboard.info/forums/f43">
-			PBBoard Support</a>of PBBoard is available at the
+			PBBoard Tutorials</a> And for Community Support <a href="https://www.pbboard.info/forums/f43">
+			PBBoard Support</a> of PBBoard is available at the
 			<a href="https://www.pbboard.info">PBBoard website</a>.</div>
 	</div>
 </div>

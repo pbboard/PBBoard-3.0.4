@@ -865,12 +865,20 @@ class PowerBBCodeParse
 		$matches[1] = str_replace('(', '**', $matches[1]);
 		$matches[1] = str_replace(')', '**', $matches[1]);
 		$matches[1] = str_ireplace('&lt;', '**', $matches[1]);
+<<<<<<< HEAD
 		$matches[1] = str_ireplace('document', 'documen*t', $matches[1]);
 		// By Christynorl
 		$patterns = '/(<\w*\s)*(((on\w*=)*|(on\w*\s*=))*)/Ui';
 		$replacement = '$1';
 		$matches[1] = preg_replace($patterns, $replacement, $matches[1]);
 		//
+=======
+		$matches[1] = str_ireplace('document', 'documen*t', $matches[1]); 
+		// by 
+		$patterns = '/(<\w*\s)*(((on\w*=)*|(on\w*\s*=))*)/Ui';
+		$replacement = '$1';
+		$matches[1] = preg_replace($patterns, $replacement, $matches[1]);
+>>>>>>> 30a359be05e43d2bbfe9e5a9cc1368e0b23b59d5
 		$matches[1] = str_ireplace('absolute',"a*bsolute",$matches[1]);
 		$matches[1] = str_ireplace('equiv',"e*quiv",$matches[1]);
 		$matches[1] = str_ireplace('refresh',"r*efresh",$matches[1]);
@@ -879,9 +887,14 @@ class PowerBBCodeParse
 		$matches[1] = str_ireplace('action',"a*ction",$matches[1]);
 		return "<".$matches[1].">";
 		}, $data);
+<<<<<<< HEAD
 
     // we are done...
+=======
+>>>>>>> 30a359be05e43d2bbfe9e5a9cc1368e0b23b59d5
 
+    // we are done...
+    
 	return $data;
 	}
 

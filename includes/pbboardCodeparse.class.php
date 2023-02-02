@@ -823,58 +823,36 @@ class PowerBBCodeParse
 	}
 
     //XSS filtering function
-	function xss_clean($data)
+		function xss_clean($data)
 	{
-		// start filtering tags
-		$regexcodexss = '#\<(.*)\>#siU';
-		$data = preg_replace_callback($regexcodexss, function($matches) {
-		$matches[1] = html_entity_decode($matches[1], ENT_COMPAT, 'UTF-8');
-		$matches[1] = str_ireplace('alert', '', $matches[1]);
-		$matches[1] = str_replace('(', '', $matches[1]);
-		$matches[1] = str_replace(')', '', $matches[1]);
-		$matches[1] = str_replace('<', '', $matches[1]);
-		$matches[1] = str_ireplace('document.cookie', '', $matches[1]);
-		$matches[1] = str_ireplace('onclick', '', $matches[1]);
-		$matches[1] = str_ireplace('absolute',"a*bsolute",$matches[1]);
-		$matches[1] = str_ireplace('equiv',"e*quiv",$matches[1]);
-		$matches[1] = str_ireplace('refresh',"r*efresh",$matches[1]);
-		$matches[1] = str_ireplace('meta',"m*eta",$matches[1]);
-		$matches[1] = str_ireplace('input',"i*nput",$matches[1]);
-		$matches[1] = str_ireplace('action',"a*ction",$matches[1]);
-		return "<".$matches[1].">";
-		}, $data);
-
 	// Fix &entity\n;
 	$data = str_replace(array('&amp;','&lt;','&gt;'), array('&amp;amp;','&amp;lt;','&amp;gt;'), $data);
 	$data = preg_replace('/(&#*\w+)[\x00-\x20]+;/u', '$1;', $data);
 	$data = preg_replace('/(&#x*[0-9A-F]+);*/iu', '$1;', $data);
 	$data = html_entity_decode($data, ENT_COMPAT, 'UTF-8');
+        $data=htmlspecialchars_decode($data);
 
 	// Remove any attribute starting with "on" or xmlns
 	$data = preg_replace('#(<[^>]+?[\x00-\x20"\'])(?:on|xmlns)[^>]*+>#iu', '$1>', $data);
+        $data = preg_replace('#</*\w+:\w[^>]*+>#i', '', $data);
+	$patterns = '/(<\w*\s)*(((on\w*=)*|(on\w*\s*=))*)/Ui';
+	$replacement = '$1';
+	$data = preg_replace($patterns, $replacement, $data);
 
-	// Remove javascript: and vbscript: protocols
+	// Remove javascript: protocols
 	$data = preg_replace('#([a-z]*)[\x00-\x20]*=[\x00-\x20]*([`\'"]*)[\x00-\x20]*j[\x00-\x20]*a[\x00-\x20]*v[\x00-\x20]*a[\x00-\x20]*s[\x00-\x20]*c[\x00-\x20]*r[\x00-\x20]*i[\x00-\x20]*p[\x00-\x20]*t[\x00-\x20]*:#iu', '$1=$2nojavascript...', $data);
-	$data = preg_replace('#([a-z]*)[\x00-\x20]*=([\'"]*)[\x00-\x20]*v[\x00-\x20]*b[\x00-\x20]*s[\x00-\x20]*c[\x00-\x20]*r[\x00-\x20]*i[\x00-\x20]*p[\x00-\x20]*t[\x00-\x20]*:#iu', '$1=$2novbscript...', $data);
 	$data = preg_replace('#([a-z]*)[\x00-\x20]*=([\'"]*)[\x00-\x20]*-moz-binding[\x00-\x20]*:#u', '$1=$2nomozbinding...', $data);
+        $data = str_ireplace('javascript','non_java',$data);
 
-	// Only works in IE: <span style="width: expression(alert('Ping!'));"></span>
-	$data = preg_replace('#(<[^>]+?)style[\x00-\x20]*=[\x00-\x20]*[`\'"]*.*?expression[\x00-\x20]*\([^>]*+>#i', '$1>', $data);
-	$data = preg_replace('#(<[^>]+?)style[\x00-\x20]*=[\x00-\x20]*[`\'"]*.*?behaviour[\x00-\x20]*\([^>]*+>#i', '$1>', $data);
-	$data = preg_replace('#(<[^>]+?)style[\x00-\x20]*=[\x00-\x20]*[`\'"]*.*?s[\x00-\x20]*c[\x00-\x20]*r[\x00-\x20]*i[\x00-\x20]*p[\x00-\x20]*t[\x00-\x20]*:*[^>]*+>#iu', '$1>', $data);
-
-	// Remove namespaced elements (we do not need them)
-	$data = preg_replace('#</*\w+:\w[^>]*+>#i', '', $data);
-
+	// Remove alert
+	$data = str_ireplace('alert','***',$data);
 	do
 	{
 	    // Remove really unwanted tags
 	    $old_data = $data;
-        $input = preg_replace('#</*(?:applet|b(?:ase|gsound|link)|embed|frame(?:set)?|i(?:frame|layer)|l(?:ayer|ink)|meta|object|s(?:cript|tyle)|title|xml)[^>]*+>#i', '', $input);
+	    $data = preg_replace('#</*(?:applet|b(?:ase|gsound|link)|embed|frame(?:set)?|i(?:frame|layer)|l(?:ayer|ink)|meta|object|s(?:cript|tyle)|title|xml)[^>]*+>#i', '', $data);
 	}
 	while ($old_data !== $data);
-
-	// we are done...
 
 	return $data;
 	}

@@ -16959,7 +16959,7 @@ right: -7px;
 {if {$lastPostsList['title']} != ''}
 {if {$lastPostsList['review_subject']} == 0 and {$lastPostsList['sec_subject']} == 0}
 <?php
-$PowerBB->_CONF['template']['while']['lastPostsList'][$this->x_loop]['title'] =  $PowerBB->Powerparse->_wordwrap($PowerBB->_CONF['template']['while']['lastPostsList'][$this->x_loop]['title'],'30');
+$PowerBB->_CONF['template']['title_wordwrap'] =  $PowerBB->Powerparse->_wordwrap($PowerBB->_CONF['template']['while']['lastPostsList'][$this->x_loop]['title'],'30');
 if ($PowerBB->_CONF['template']['while']['lastPostsList'][$this->x_loop]['last_replier']!='')
 {
 $PowerBB->_CONF['template']['while']['lastPostsList'][$this->x_loop]['writer'] = $PowerBB->_CONF['template']['while']['lastPostsList'][$this->x_loop]['last_replier'];
@@ -17011,7 +17011,7 @@ $PowerBB->_CONF['template']['while']['lastPostsList'][$this->x_loop]['avater_pat
 {/if}
 <li class="last_subjectid" style="position:relative; vertical-align:middle; margin-top: -4px; display:inline-block;">
 <a title="{$lastPostsList['title']}" href="index.php?page=topic&amp;show=1&amp;id={$lastPostsList['id']}">
-{$lastPostsList['title']}</a>
+{$title_wordwrap}</a>
 <div>
 <span class="last_time_ago"><?php echo $PowerBB->functions->_date($PowerBB->_CONF['template']['while']['lastPostsList'][$this->x_loop]['write_time']); ?></span>
 </div>

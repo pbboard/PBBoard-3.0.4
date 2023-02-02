@@ -80,6 +80,10 @@ class PowerBBMiscMOD
 		{
 			$this->_StartAddSubscription();
 		}
+		elseif ($PowerBB->_GET['unsubscription'])
+		{
+			$this->_StartUnSubscription();
+		}
 		elseif ($PowerBB->_GET['frame_form'])
 		{
 			$this->_StartAddFrame();
@@ -777,9 +781,36 @@ class PowerBBMiscMOD
 
 		///////////
 	$PowerBB->functions->msg($PowerBB->_CONF['template']['_CONF']['lang']['addsubscription_successfully']);
-	$PowerBB->functions->redirect('index.php?page=topic&amp;show=1&amp;id='.$PowerBB->_GET['id']);
+ 	 $PowerBB->functions->redirect($PowerBB->functions->rewriterule("index.php?page=topic&amp;show=1&amp;id=".$PowerBB->_GET['id']));
       $PowerBB->functions->GetFooter();
 		}
+
+    }
+
+	function _StartUnSubscription()
+	{
+		global $PowerBB;
+
+		$PowerBB->functions->ShowHeader();
+
+      	$PowerBB->_GET['id'] = $PowerBB->functions->CleanVariable($PowerBB->_GET['id'],'intval');
+		if (empty($PowerBB->_GET['id']))
+		{
+			$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['path_not_true']);
+		}
+
+		// Delete Subscriptionsment from database
+		$DelSubscriptionsArr 							= 	array();
+		$DelSubscriptionsArr['field']['user_id'] 			= 	$PowerBB->_CONF['member_row']['id'];
+		$DelSubscriptionsArr['where'] 		    	= 	array('subject_id',intval($PowerBB->_GET['id']));
+
+		$DeleteSubscriptions = $PowerBB->emailed->DeleteEmailed($DelSubscriptionsArr);
+
+		///////////
+	  $PowerBB->functions->msg($PowerBB->_CONF['template']['_CONF']['lang']['Was_Cancel_request_successfully']);
+ 	 $PowerBB->functions->redirect($PowerBB->functions->rewriterule("index.php?page=topic&amp;show=1&amp;id=".$PowerBB->_GET['id']));
+
+      $PowerBB->functions->GetFooter();
 
     }
 

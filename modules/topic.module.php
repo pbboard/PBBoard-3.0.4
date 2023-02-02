@@ -443,6 +443,11 @@ class PowerBBTopicMOD
        }
 
 		//////////
+		$SubjectInfoid = $PowerBB->_CONF['template']['SubjectInfo']['id'];
+		$member_row_id = $PowerBB->_CONF['member_row']['id'];
+
+		$subject_user_emailed_nm = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['emailed'] . " WHERE subject_id='$SubjectInfoid' and user_id ='$member_row_id'"));
+         $PowerBB->template->assign('is_subscribe',$subject_user_emailed_nm);
 
 		//show list last 5 posts member
 		if ($PowerBB->_CONF['info_row']['show_list_last_5_posts_member'] == 1)

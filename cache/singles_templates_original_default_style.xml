@@ -9363,17 +9363,16 @@ doc.src = "includes/captcha.php" + "?act=" + clicks;
 {$lang['Sendermail']}<br />
 <input name="Sendermail" type="text" value="" size="30" /><br />
 {$lang['titlesendsubjecttofriend']}<br />
-<input name="title" type="text" value="{$SubjectInfo['title']}" size="43" /></td>
+<input name="title" type="text" value="{$SubjectInfo['title']}" size="30" /></td>
 </tr>
 <tr>
 <td class="row2">
 <table class="border wd60 brd1 clpc0">
 {if {$_CONF['info_row']['captcha_type']} == 'captcha_IMG'}
 <tr>
-<td class="row1 wd30">{$lang['Image_Verification']}<br /><br /><br />
-<span style="font-size:10px;">{$lang['Verification']}</span></td>
-<td class="row1 center_text_align wd31">
-<img id="turing" src="includes/captcha.php" alt="" /><br />
+<td class="row1 wd30">{$lang['Image_Verification']}
+<span style="font-size:10px;">{$lang['Verification']}</span><p>
+<img id="turing" src="includes/captcha.php" alt="" />
 <a onclick="updateImg();">{$lang['Image_replacement']}</a><script language="javascript">
 var clicks = 0;
 function updateImg()
@@ -9383,6 +9382,8 @@ var doc = document.getElementById("turing");
 doc.src = "includes/captcha.php" + "?act=" + clicks;
 }
 </script>
+<br />
+<br />
 <input name="code" id="code_confirm" type="text" /> </td>
 </tr>
 {else}	<tr>
@@ -9404,12 +9405,11 @@ doc.src = "includes/captcha.php" + "?act=" + clicks;
 <td class="row2">
 {$lang['Your_Message']}
 <br />
-<textarea rows="10" name="text" cols="67">
+<textarea rows="10" name="text" cols="50" class="wd95">
 {$lang['textsendsubjecttofriend']}
 
 {$Adress}
 index.php?page=topic&amp;show=1&amp;id={$SubjectInfo['id']}
-
 
 {$lang['Sender']}: {$Sender}
 </textarea></td>
@@ -10779,11 +10779,22 @@ title="{$lang['sendsubjecttofriend']}" class="brd0" alt="" />
 <dl>
 <dt></dt>
 <dd class="menu_popup">
+{if {$is_subscribe} == '1'}
+<a href="index.php?page=misc&amp;unsubscription=1&amp;id={$subject_id}">
+<img src="{$image_path}/subscribe.gif"
+title="{$lang['Cancel']}
+ {$lang['addsubscription']}
+" class="brd0" alt="" />
+{$lang['Cancel']}
+ {$lang['addsubscription']}
+</a>
+{else}
 <a href="index.php?page=misc&amp;addsubscription=1&amp;id={$subject_id}">
 <img src="{$image_path}/subscribe.gif"
 title="{$lang['addsubscription']}" class="brd0" alt="" />
 {$lang['addsubscription']}
 </a>
+{/if}
 </dd>
 </dl>
 {/if}

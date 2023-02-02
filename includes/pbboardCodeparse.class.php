@@ -842,10 +842,12 @@ class PowerBBCodeParse
 	// Remove javascript: protocols
 	$data = preg_replace('#([a-z]*)[\x00-\x20]*=[\x00-\x20]*([`\'"]*)[\x00-\x20]*j[\x00-\x20]*a[\x00-\x20]*v[\x00-\x20]*a[\x00-\x20]*s[\x00-\x20]*c[\x00-\x20]*r[\x00-\x20]*i[\x00-\x20]*p[\x00-\x20]*t[\x00-\x20]*:#iu', '$1=$2nojavascript...', $data);
 	$data = preg_replace('#([a-z]*)[\x00-\x20]*=([\'"]*)[\x00-\x20]*-moz-binding[\x00-\x20]*:#u', '$1=$2nomozbinding...', $data);
-        $data = str_ireplace('javascript','non_java',$data);
 
 	// Remove alert
-	$data = str_ireplace('alert','***',$data);
+	$replace_alert='${1}';
+	$pat_alert='/(<\w*\s)*(alert)(\w*\s>)*/Ui';
+	$data=preg_replace($pat_alert,$replace_alert,$data);
+			
 	do
 	{
 	    // Remove really unwanted tags

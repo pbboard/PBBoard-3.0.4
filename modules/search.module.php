@@ -18,7 +18,8 @@ class PowerBBSearchEngineMOD
 
 		$username 	= 	(isset($PowerBB->_GET['username'])) ? $PowerBB->_GET['username'] : $PowerBB->_POST['username'];
 		$sort_order	= 	(isset($PowerBB->_GET['sort_order'])) ? $PowerBB->_GET['sort_order'] : $PowerBB->_POST['sort_order'];
-        $exactname	= 	(isset($PowerBB->_GET['exactname'])) ? $PowerBB->_GET['exactname'] : $PowerBB->_POST['exactname'];
+        $exactname	= 	(isset($PowerBB->_GET['exactname'])) ? 0 : $PowerBB->_POST['exactname'];
+
 		$starteronly	= 	(isset($PowerBB->_GET['starteronly'])) ? $PowerBB->_GET['starteronly'] : $PowerBB->_POST['starteronly'];
 		$section	= 	(isset($PowerBB->_GET['section'])) ? $PowerBB->_GET['section'] : $PowerBB->_POST['section'];
 		$option = (isset($PowerBB->_GET['option'])) ? $PowerBB->_GET['option'] : $PowerBB->_POST['option'];
@@ -533,6 +534,10 @@ class PowerBBSearchEngineMOD
 		$username 	= 	(isset($PowerBB->_GET['username'])) ? $PowerBB->_GET['username'] : $PowerBB->_POST['username'];
 		$sort_order	= 	(isset($PowerBB->_GET['sort_order'])) ? $PowerBB->_GET['sort_order'] : $PowerBB->_POST['sort_order'];
         $exactname	= 	(isset($PowerBB->_GET['exactname'])) ? $PowerBB->_GET['exactname'] : $PowerBB->_POST['exactname'];
+			   if (!isset($exactname))
+	           {
+	           	$exactname    =  0;
+		       }
 		$starteronly	= 	(isset($PowerBB->_GET['starteronly'])) ? $PowerBB->_GET['starteronly'] : $PowerBB->_POST['starteronly'];
 		$section	= 	(isset($PowerBB->_GET['section'])) ? $PowerBB->_GET['section'] : $PowerBB->_POST['section'];
 		$option = (isset($PowerBB->_GET['option'])) ? $PowerBB->_GET['option'] : $PowerBB->_POST['option'];
@@ -583,22 +588,24 @@ class PowerBBSearchEngineMOD
               $section = " AND section = '".$section."' ";
               $sectionall = $PowerBB->_GET['section'];
 		 }
-                  $forum_not = $PowerBB->_CONF['info_row']['last_subject_writer_not_in'];
+
+       $forum_not = $PowerBB->_CONF['info_row']['last_subject_writer_not_in'];
+			   if ($exactname == 0)
+	           {
+	           	$user_name    =  '%' .$username .'%';
+		       }
+		       else
+	           {
+	           	$user_name    =  $username;
+		       }
 
            if ($starteronly == '0')
 	        {
-       	        $username_subject_nm = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['subject'] . " WHERE writer LIKE '$username' AND delete_topic<>'1' AND review_subject<>'1' AND sec_subject<>'1' ".$section." "));
+       	        $username_subject_nm = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['subject'] . " WHERE writer LIKE '$user_name' AND delete_topic<>'1' AND review_subject<>'1' AND sec_subject<>'1' ".$section." "));
 	          if ($username_subject_nm > '0')
 	          {
 		       $PowerBB->functions->msg($PowerBB->_CONF['template']['_CONF']['lang']['Search_successful']);
-		       if ($exactname)
-	           {
 		       $PowerBB->functions->redirect('index.php?page=search&amp;option=3&amp;username=' . $username . '&amp;starteronly=0&amp;section=' . $sectionall . '&amp;exactname=' . $exactname . '&amp;sort_order='.strtoupper($sort_order));
-		       }
-		       else
-		       {
-		        $PowerBB->functions->redirect('index.php?page=search&amp;option=3&amp;username=' . $username . '&amp;starteronly=0&amp;section=' . $sectionall . '&amp;sort_order='.strtoupper($sort_order));
-		       }
 	           }
 		      else
 		       {
@@ -618,7 +625,7 @@ class PowerBBSearchEngineMOD
 		       }
 		       else
 		       {
-		        $PowerBB->functions->redirect('index.php?page=search&amp;option=4&amp;username=' . $username . '&amp;starteronly=0&amp;section=' . $sectionall . '&amp;sort_order='.strtoupper($sort_order));
+		       $PowerBB->functions->redirect('index.php?page=search&amp;option=4&amp;username=' . $username . '&amp;starteronly=0&amp;section=' . $sectionall . '&amp;exactname=' . $exactname . '&amp;sort_order='.strtoupper($sort_order));
 		       }
 	           }
 		      else
@@ -1237,6 +1244,11 @@ class PowerBBSearchEngineMOD
               $sectionall = $PowerBB->_GET['section'];
 		 }
 
+			  if ($exactname == '0')
+	           {
+	           	$username    =  '%' .$username .'%';
+		       }
+
        	        $username_subject_nm = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['subject'] . " WHERE writer LIKE '$username' AND delete_topic<>'1' AND review_subject<>'1' AND sec_subject<>'1' ".$section." "));
 
 				$PowerBB->template->assign('username_nm',$username_subject_nm);
@@ -1247,14 +1259,8 @@ class PowerBBSearchEngineMOD
 				$MemSubjectArr['where'][0] 			= 	array();
 				$MemSubjectArr['where'][0]['name'] 	=  'writer';
 				$MemSubjectArr['where'][0]['oper']		=  'LIKE';
-			  if ($exactname == '1')
-	           {
 	           	$MemSubjectArr['where'][0]['value']    =  $username;
-		       }
-		       else
-		       {
-		       	$MemSubjectArr['where'][0]['value']    =  '%' .$username .'%';
-		       }
+
                 $MemSubjectArr['where'][1] 			= 	array();
 				$MemSubjectArr['where'][1]['con']		=	'AND';
 				$MemSubjectArr['where'][1]['name'] 	= 	"review_subject<>1 AND sec_subject<>1 ".$section." AND delete_topic";
@@ -1292,14 +1298,8 @@ class PowerBBSearchEngineMOD
 		            $MemSubjectArr['pager']['perpage'] 	= 	$username_subject_nm;
 			        }
 			        $MemSubjectArr['pager']['count'] 		= 	$count;
-			        if ($exactname == '1')
-	                {
 					$MemSubjectArr['pager']['location'] 	= 	'index.php?page=search&amp;option=3&amp;username=' . $username . '&amp;starteronly=0&amp;section=' . $sectionall . '&amp;exactname=' . $exactname . '&amp;sort_order='.strtoupper($sort_order);
-					}
-               	   else
-		            {
-					$MemSubjectArr['pager']['location'] 	= 	'index.php?page=search&amp;option=3&amp;username=' . $username . '&amp;starteronly=0&amp;section=' . $sectionall . '&amp;sort_order='.strtoupper($sort_order);
-		            }
+
 					$MemSubjectArr['pager']['var'] 		= 	'count';
 	           }
 
@@ -1393,7 +1393,10 @@ class PowerBBSearchEngineMOD
 
 
                   $forum_not = $PowerBB->_CONF['info_row']['last_subject_writer_not_in'];
-
+			  if ($exactname == '0')
+	           {
+		       	$username    =  '%' .$username .'%';
+		       }
 	           $username_reply_nm = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['reply'] . " WHERE writer LIKE '$username' AND section not in (" .$forum_not. ") AND delete_topic<>1 AND review_reply<>1 ".$section." "));
 
 				$PowerBB->template->assign('username_nm',$username_reply_nm);
@@ -1403,14 +1406,7 @@ class PowerBBSearchEngineMOD
 				$MemReplyArr['where'][0] 			= 	array();
 				$MemReplyArr['where'][0]['name'] 	=  'writer';
 				$MemReplyArr['where'][0]['oper']		=  'LIKE';
-			  if ($exactname == '1')
-	           {
 	           	$MemReplyArr['where'][0]['value']    =  $username;
-		       }
-		       else
-		       {
-		       	$MemReplyArr['where'][0]['value']    =  '%' .$username .'%';
-		       }
 
                 $MemReplyArr['where'][1] 			= 	array();
 				$MemReplyArr['where'][1]['con']		=	'AND';
@@ -1449,14 +1445,8 @@ class PowerBBSearchEngineMOD
 		            $MemReplyArr['pager']['perpage'] 	= 	$username_reply_nm;
 			        }
 			        $MemReplyArr['pager']['count'] 		= 	$count;
-			        if ($exactname == '1')
-	                {
 					$MemReplyArr['pager']['location'] 	= 	'index.php?page=search&amp;option=4&amp;username=' . $username . '&amp;starteronly=0&amp;section=' . $sectionall . '&amp;exactname=' . $exactname . '&amp;sort_order='.strtoupper($sort_order);
-					}
-               	   else
-		            {
-					$MemReplyArr['pager']['location'] 	= 	'index.php?page=search&amp;option=3&amp;username=' . $username . '&amp;starteronly=0&amp;section=' . $sectionall . '&amp;sort_order='.strtoupper($sort_order);
-		            }
+
 					$MemReplyArr['pager']['var'] 		= 	'count';
 	           }
 

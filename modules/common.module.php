@@ -876,14 +876,9 @@ class PowerBBCommon
 			{
 				if ($value !='')
 				{
-					if(version_compare(PHP_VERSION, '7.4.0', "<"))
-					{
-				  	$PowerBB->_GET[$var_name] = strip_tags($PowerBB->_GET[$var_name]);
-					}
-					else
-					{
 		       	     $PowerBB->_GET[$var_name] = htmlspecialchars($PowerBB->_GET[$var_name]);
-		       	    }
+		       	     $var_name = htmlspecialchars($var_name);
+		       	     $value = htmlspecialchars($value);
 				}
 			}
 

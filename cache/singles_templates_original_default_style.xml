@@ -2147,21 +2147,21 @@ $(function() {
 {template}address_bar_part2{/template}<br /><form method="post" action="index.php?page=forget&amp;start=1">
 <div class="center_text_align">
 <table class="border wd88 brd1 clpc0">
-<tr class="center_text_align">
-<td class="tcat wd50" colspan="2">
+<tr>
+<td class="tcat wd50">
 {$lang['Retrieve_password']}
 </td>
 </tr>
 {if !{$_CONF['member_permission']}}
 {if {$_CONF['info_row']['captcha_type']} == 'captcha_IMG'}
 <tr>
-<td class="row1 rows_space" colspan="2">
-{$lang['Image_Verification']}:&nbsp;&nbsp;
-<span style="font-size:13px;">{$lang['Verification']}</span>
+<td class="row1">
+{$lang['Image_Verification']}<br />
+<small>{$lang['Verification']}</small>
 <br />
-<input name="code" id="code_confirm" type="text" size="7"/>
-&nbsp;&nbsp;<img alt="" id="turing" src="includes/captcha.php" width="87" height="17"/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a onclick="updateImg();">{$lang['Image_replacement']}</a>
+<input name="code" id="code_confirm" size="5" style="min-width:3%" type="text" />
+<img alt="" id="turing" src="includes/captcha.php" width="87" height="17"/>
+<a onclick="updateImg();"><small>{$lang['Image_replacement']}</small></a>
 <script type='text/javascript'>
 var clicks = 0;
 function updateImg()
@@ -2174,13 +2174,13 @@ doc.src = "includes/captcha.php" + "?act=" + clicks;
 </td>
 </tr>
 {else}<tr>
-<td class="row1" colspan="2">
+<td class="row1">
 {$lang['random_question']}
 <span class="smallfont" dir="{$_CONF['info_row']['content_dir']}" title="{$lang['question']}">
 {$question}
 <u title="{$lang['correct_answer']}">
 {$answer}</u></span>
-<input name="code" id="code_confirm" type="text" size="40" dir="{$_CONF['info_row']['content_dir']}"/>
+<input name="code" id="code_confirm" type="text" size="8" style="min-width:5%" dir="{$_CONF['info_row']['content_dir']}"/>
 <input value="{$answer}" type="hidden" name="code_answer" id="code_answer" />
 </td>
 </tr>
@@ -2189,15 +2189,13 @@ doc.src = "includes/captcha.php" + "?act=" + clicks;
 <tr>
 <td class="row1 wd10">
 {$lang['email_Retrieve_password']}
-</td>
-<td class="row1 wd60">
-{$lang['forget_password_Message']}
+<p><small>{$lang['forget_password_Message']}</small>
 <br />
-<input name="email" type="text" size="41" dir="ltr" />
+<input name="email" type="text" size="33" dir="ltr" />
 </td>
 </tr>
 <tr class="center_text_align">
-<td class="row1" colspan="2">
+<td class="row1 rows_space">
 <input type="submit" name="submit_forget" value="{$lang['Count']}" />
 </td>
 </tr>

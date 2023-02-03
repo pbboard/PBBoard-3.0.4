@@ -1358,6 +1358,7 @@ class PowerBBCodeParse
 	  $string = str_replace("&quot;", '"', $string);
 	  $string = str_replace("&lt;","<", $string);
 	  $string = str_replace("&gt;",">", $string);
+	  $string = str_replace('\"','"', $string);
 
 		  $tags = array(
             '#<strong>(.*?)</strong>#si' => '[b]\\1[/b]',
@@ -1366,15 +1367,22 @@ class PowerBBCodeParse
             '#<i>(.*?)</i>#si' => '[i]\\1[/i]',
             '#<u>(.*?)</u>#si' => '[u]\\1[/u]',
             '#<s>(.*?)</s>#si' => '[s]\\1[/s]',
-			'#<h2>(.*?)</h2>#si' => '[h1]\\1[/h1]',
-            '#<h3>(.*?)</h3>#si' => '[h2]\\1[/h2]',
-            '#<h4>(.*?)</h4>#si' => '[h3]\\1[/h3]',
+			'#<h1>(.*?)</h1>#si' => '[h1]\\1[/h1]',
+			'#<h2>(.*?)</h2>#si' => '[h2]\\1[/h2]',
+            '#<h3>(.*?)</h3>#si' => '[h3]\\1[/h3]',
+            '#<h4>(.*?)</h4>#si' => '[h4]\\1[/h4]',
             '#<ul>(.*?)</ul>#si' => '[ul]\\1[/ul]',
             '#<ol>(.*?)</ol>#si' => '[ol]\\1[/ol]',
             '#<li>(.*?)</li>#si' => '[li]\\1[/li]',
             '#&nbsp;#si' => ' ',
             '#<center>(.*?)</center>#si' => '[center]\\1[/center]',
+            '#<div style="text-align:center">(.*?)</div>#si' => '[center]\\1[/center]',
             '#<div style="text-align: center;">(.*?)</div>#si' => '[center]\\1[/center]',
+            '#<div style="text-align:(.*?);">(.*?)</div>#si' => '[\\1]\\2[/\\1]',
+            '#<div style="text-align:(.*?)">(.*?)</div>#si' => '[\\1]\\2[/\\1]',
+            '#<div(.*?)>(.*?)</div>#si' => '\\2',
+            '#<span(.*?)>(.*?)</span>#si' => '\\2',
+            '#<a(.*?)href="(.*?)"(.*?)>(.*?)</a>#si' => '[url=\\2]\\4[/url]',
             '#<br(.*?)>#si' => chr(13).chr(10),
 			'#<p>(.*?)</p>#si' => chr(13).chr(10).chr(13).chr(10).'\\1',
 
@@ -1408,10 +1416,13 @@ class PowerBBCodeParse
 	  $string = preg_replace('#<div>(.*?)</div>#i', "$1 \r\n", $string);
 
 
+
 	  $string = preg_replace('#<span>(.*?)</span>#i', "$1", $string);
 	  $string = preg_replace('#<code>(.*?)</code>#i', "[code]$1[/code]", $string);
         $string = str_replace('\\"', '"', $string);
 		//$string = str_replace('</b>',  '',    $string);
+		$string = str_replace('<hr />',  '[hr]',    $string);
+		$string = str_replace('<hr>',  '[hr]',    $string);
 		$string = str_replace('</i>',  '[/i]',    $string);
 		$string = str_replace('</u>',  '[/u]',    $string);
 		$string = str_replace('</ul>', '[/list]', $string);
@@ -1435,6 +1446,20 @@ class PowerBBCodeParse
 
 		$string = preg_replace('#<pre(| .*?)>#', '[code]',  $string);
 		$string = str_replace('</pre>', '[/code]', $string);
+		$string = str_replace('[/ ', '[/', $string);
+		$string = str_replace('[ ', '[', $string);
+		$string = str_replace('http://www.pbboard.info', 'https://www.pbboard.info', $string);
+		$string = str_replace('http://pbboard.info', 'https://www.pbboard.info', $string);
+
+		$string = preg_replace('#<table(| .*?)>#', '[table]',  $string);
+		$string = str_replace('</table>', '[/table]', $string);
+		$string = str_replace('<tbody>', '', $string);
+		$string = str_replace('</tbody>', '', $string);
+		$string = preg_replace('#<tr(| .*?)>#', '[tr]',  $string);
+		$string = str_replace('</tr>', '[/tr]', $string);
+		$string = preg_replace('#<td(| .*?)>#', '[td]',  $string);
+		$string = str_replace('</td>', '[/td]', $string);
+
 
 		// replace multiple instances of [b] or [i] with single tags
 		$string = preg_replace('#(\[b\])+#',      '[b]',      $string);
@@ -1454,6 +1479,10 @@ class PowerBBCodeParse
 		// Remove all remaining HTML tags
 		$string = preg_replace('#<(/?)(base|meta|script|style)([^>]*)>#i', '&lt;$1$2$3&gt;', $string);
 
+		$string = preg_replace('#<span(| .*?)>#', '',  $string);
+		$string = preg_replace('#<div(| .*?)>#', '',  $string);
+		$string = str_replace('</span>', '', $string);
+		$string = str_replace('</div>', '', $string);
 
 		// Convert HTML entities
 		$string = html_entity_decode($string, ENT_QUOTES, 'UTF-8');
@@ -2164,7 +2193,7 @@ function htmlspecialchars_uni($message)
 	$message = preg_replace("#&(?!\#[0-9]+;)#si", "&amp;", $message); // Fix & but allow unicode
 	$message = str_replace("<", "&lt;", $message);
 	$message = str_replace(">", "&gt;", $message);
-	$message = str_replace('"', "&quot;", $message);
+	$message = str_replace("\"", "&quot;", $message);
 	return $message;
 }
 
@@ -2173,7 +2202,8 @@ function htmlspecialchars_off($message)
 	$message = str_replace("&amp;", "&", $message);
 	$message = str_replace("&lt;", "<", $message);
 	$message = str_replace("&gt", ">;", $message);
-	$message = str_replace("&quot;", '"', $message);
+	$message = str_replace("&quot;", "\"", $message);
+	$message = str_replace("<br />", "\n", $message);
 
 	return $message;
 }

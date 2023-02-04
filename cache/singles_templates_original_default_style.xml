@@ -1880,8 +1880,8 @@ x += 1;
 var answers_max = 100;
 $("#poll_answers_count_id").val(x);
 $(".more_tr").hide();
-$("#poll_question_answers").append('<tr class="center_text_align"><td class="row1 rows_space">"{$lang['more_answer']}"</td><td class="row1 rows_space"><input name="answer[]" type="text" id="answer' + x + '"  size="40"/></td></tr>');
-$("#poll_question_answers").append('<tr class="more_tr center_text_align"><td class="row1 rows_space" colspan="2"><input type="button" name="more_answers" class="more_answers_class" value="{$lang['more_answers']}" /></td></tr>');     $("#answer" + x).focus(); 	       $(".more_answers_class").click(function() { AddMoreAnswers(x) });        if (function() { AddMoreAnswers(x) })
+$("#poll_question_answers").append('<tr class="center_text_align"><td class="row1">{$lang['more_answer']}</td><td class="row1"><input name="answer[]" type="text" id="answer' + x + '"  size="25"/></td></tr>');
+$("#poll_question_answers").append('<tr class="more_tr"><td class="row1" colspan="2"><input type="button" name="more_answers" class="more_answers_class" value="{$lang['more_answers']}" /></td></tr>');     $("#answer" + x).focus(); 	       $(".more_answers_class").click(function() { AddMoreAnswers(x) });        if (function() { AddMoreAnswers(x) })
 {
 $(".more_tr").stopPropagation();
 }}
@@ -1907,16 +1907,18 @@ $(document).ready(Ready);
 </td>
 <td class="row1">
 <?php $PowerBB->_CONF['template']['Poll']['qus'] = $PowerBB->Powerparse->censor_words($PowerBB->_CONF['template']['Poll']['qus']); ?>
-<input name="question" value="{$Poll['qus']}" size="40" />
+<input name="question" value="{$Poll['qus']}" size="25" />
 </td>
 </tr>
 ]]></edit_poll_table1>
-<edit_poll_table2><![CDATA[	<tr class="center_text_align">
+<edit_poll_table2><![CDATA[<tr class="center_text_align">
 <td class="row1">
-<?php $PowerBB->_CONF['template']['answers'] = $PowerBB->Powerparse->censor_words($PowerBB->_CONF['template']['answers']); ?>			{$lang['answers_number']}<?php echo $PowerBB->_CONF['template']['answers_number']+1; ?>
+<?php $PowerBB->_CONF['template']['answers'] = $PowerBB->Powerparse->censor_words($PowerBB->_CONF['template']['answers']); ?>
+{$lang['answers_number']}
+<?php echo $PowerBB->_CONF['template']['answers_number']+1; ?>
 </td>
 <td class="row1">
-<input name="answer[]" value="{$answers}" size="40" />
+<input name="answer[]" value="{$answers}" size="25" />
 </td>
 </tr>]]></edit_poll_table2>
 <edit_poll_table3><![CDATA[	<tr class="more_tr center_text_align">
@@ -9902,7 +9904,7 @@ title="{$lang['no_photo']}" width="80" height="80" />
 <img src="{$image_path}/bar_right.gif" width="4" height="11" alt="" /><img src="{$image_path}/bar.gif" alt="" style="width:{$Vote}%;" height="11" /><img src="{$image_path}/bar_left.gif" alt="" width="4" height="11" />
 </td>
 <td class="row1 center_text_align wd12">
-{$lang['votes']} {$Vote}
+<i title="{$lang['votes']}" class="fa fa-users" aria-hidden="true"></i> {$Vote}
 </td>
 </tr>]]></show_poll>
 <show_poll_down><![CDATA[{if {$_CONF['group_info']['vote_poll']} == 1}
@@ -9931,53 +9933,51 @@ title="{$lang['no_photo']}" width="80" height="80" />
 <tr>
 <td class="tcat wd95" colspan="3">
 <b style="FLOAT: left">
-<a href="index.php?page=vote&amp;show_votes=1&amp;id={$Poll['id']}&amp;subject_id={$subject_id}">
-{$lang['show_votes']}</a>
+<a title="{$lang['show_votes']}" href="index.php?page=vote&amp;show_votes=1&amp;id={$Poll['id']}&amp;subject_id={$subject_id}">
+<i class="fa fa-eye fa-2" aria-hidden="true"></i></a>
 </b>
 {if !{$mod_toolbar}}
 <b style="FLOAT: left">
-<a href="index.php?page=vote&amp;poll_edit=1&amp;id={$Poll['id']}&amp;subject_id={$subject_id}&amp;poll_section={$poll_section}&amp;user={$poll_writer}">
-{$lang['poll_edit']}</a>
-| <a href="index.php?page=vote&amp;poll_delet=1&amp;id={$Poll['id']}&amp;subject_id={$subject_id}">
-{$lang['poll_delet']}</a>
+<a title="{$lang['poll_edit']}" href="index.php?page=vote&amp;poll_edit=1&amp;id={$Poll['id']}&amp;subject_id={$subject_id}&amp;poll_section={$poll_section}&amp;user={$poll_writer}">
+<i class="fa fa-pencil-square fa-2" aria-hidden="true"></i></a>
+| <a title="{$lang['poll_delet']}" href="index.php?page=vote&amp;poll_delet=1&amp;id={$Poll['id']}&amp;subject_id={$subject_id}">
+<i class="fa fa-trash-o fa-2" aria-hidden="true"></i></a>
 |
 {if {$Info['close_poll_subject']} == '0'}
-<a href="index.php?page=vote&amp;poll_close=1&amp;id={$Poll['id']}&amp;subject_id={$subject_id}">
-{$lang['poll_close']}</a>
+<a title="{$lang['poll_close']}" href="index.php?page=vote&amp;poll_close=1&amp;id={$Poll['id']}&amp;subject_id={$subject_id}">
+<i class="fa fa-toggle-off fa-2" aria-hidden="true"></i></a>
 |
 {else}
-<a href="index.php?page=vote&amp;poll_open=1&amp;id={$Poll['id']}&amp;subject_id={$subject_id}">
-{$lang['poll_open']}</a>
+<a title="{$lang['poll_open']}" href="index.php?page=vote&amp;poll_open=1&amp;id={$Poll['id']}&amp;subject_id={$subject_id}">
+<i class="fa fa-toggle-on fa-2" aria-hidden="true"></i></a>
 |
 {/if}
 </b>
 {else}
 {if {$_CONF['member_row']['username']} == {$poll_writer}}
 <b style="FLOAT: left">
-<a href="index.php?page=vote&amp;poll_edit=1&amp;id={$Poll['id']}&amp;subject_id={$subject_id}&amp;poll_section={$poll_section}&amp;user={$poll_writer}">
-{$lang['poll_edit']}</a>
-| <a href="index.php?page=vote&amp;poll_delet=1&amp;id={$Poll['id']}&amp;subject_id={$subject_id}">
-{$lang['poll_delet']}</a>
+<a title="{$lang['poll_edit']}" href="index.php?page=vote&amp;poll_edit=1&amp;id={$Poll['id']}&amp;subject_id={$subject_id}&amp;poll_section={$poll_section}&amp;user={$poll_writer}">
+<i class="fa fa-pencil-square fa-2" aria-hidden="true"></i></a>
+| <a title="{$lang['poll_delet']}" href="index.php?page=vote&amp;poll_delet=1&amp;id={$Poll['id']}&amp;subject_id={$subject_id}">
+<i class="fa fa-trash-o fa-2" aria-hidden="true"></i></a>
 |
 {if {$Info['close_poll_subject']} == '0'}
-<a href="index.php?page=vote&amp;poll_close=1&amp;id={$Poll['id']}&amp;subject_id={$subject_id}">
-{$lang['poll_close']}</a>
+<a title="{$lang['poll_close']}" href="index.php?page=vote&amp;poll_close=1&amp;id={$Poll['id']}&amp;subject_id={$subject_id}">
+<i class="fa fa-toggle-off fa-2" aria-hidden="true"></i></a>
 |
 {else}
-<a href="index.php?page=vote&amp;poll_open=1&amp;id={$Poll['id']}&amp;subject_id={$subject_id}">
-{$lang['poll_open']}</a>
+<a title="{$lang['poll_open']}" href="index.php?page=vote&amp;poll_open=1&amp;id={$Poll['id']}&amp;subject_id={$subject_id}">
+<i class="fa fa-toggle-on fa-2" aria-hidden="true"></i></a>
 |
 {/if}
 </b>
 {/if}
-{/if}<b style="FLOAT: right">{$lang['Poll']}
-<?php $PowerBB->_CONF['template']['Poll']['qus']= $PowerBB->functions->CleanVariable($PowerBB->_CONF['template']['Poll']['qus'],'html'); ?>
-<?php $PowerBB->_CONF['template']['Poll']['qus'] = $PowerBB->Powerparse->censor_words($PowerBB->_CONF['template']['Poll']['qus']); ?>
-<?php echo $PowerBB->_CONF['template']['Poll']['qus']; ?> !
+{/if}
+<b style="FLOAT: right">{$lang['Poll']}
 </b>
 </td>
 </tr>
-<tr class="center_text_align">
+<tr class="right_text_align">
 <td class="thead wd95" colspan="3">
 {$lang['qus']}
 <strong><?php echo $PowerBB->_CONF['template']['Poll']['qus']; ?> !</strong>
@@ -10840,7 +10840,10 @@ title="{$lang['addsubscription']}" class="brd0" alt="" />
 <show_votes><![CDATA[<tr class="center_text_align va-t">
 <td class="row1 wd10">{$answers}</td>
 <td class="row1 wd15">
-<img src="{$image_path}/bar_right.gif" title="{$Vote}%" width="4" height="11" alt="" /><img src="{$image_path}/bar.gif" title="{$Vote}%" style="width:{$Vote}%;" height="11" alt="" /><img src="{$image_path}/bar_left.gif" title="{$Vote}%" width="4" height="11" alt="" />
+<?php
+$PowerBB->_CONF['template']['Voteddd'] = $PowerBB->_CONF['template']['Vote']*5;
+?>
+<img src="{$image_path}/bar_right.gif" title="{$Vote}%" width="4" height="11" alt="" /><img src="{$image_path}/bar.gif" title="{$Vote}%" style="width:{$Voteddd}px;" height="11" alt="" /><img src="{$image_path}/bar_left.gif" title="{$Vote}%" width="4" height="11" alt="" />
 </td>
 <td class="row1 wd49">
 {Des::while}{VoteList}
@@ -10881,16 +10884,16 @@ title="{$lang['addsubscription']}" class="brd0" alt="" />
 <table class="border wd90 brd0 clp2 clpc1 a-center">
 <tr class="center_text_align va-t">
 <td class="tcat" colspan="4">
-<span style="FLOAT: left">
+<b style="FLOAT: left">
 {$lang['votes_num']}
 {$AllVote}
-</span>
-<span style="FLOAT: right">
+</b>
+<b style="FLOAT: right">
 {$Poll['qus']}
-</span>
+</b>
 </td>
 </tr>
-<tr class="center_text_align va-t">
+<tr class="va-t">
 <td class="thead wd10">{$lang['the_answers']}</td>
 <td class="thead wd15">{$lang['votes_Cumulative']}</td>
 <td class="thead wd49">{$lang['the_votes']}</td>

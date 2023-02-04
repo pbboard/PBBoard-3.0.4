@@ -261,16 +261,6 @@ class PowerBBCoreMOD
 		and isset($PowerBB->_POST['answer'][1]))
 	  {
 
-		if (strstr($PowerBB->_POST['question'].$PowerBB->_POST['answer'][0].$PowerBB->_POST['answer'][1],'"')
-			or strstr($PowerBB->_POST['question'].$PowerBB->_POST['answer'][0].$PowerBB->_POST['answer'][1],"'")
-			or strstr($PowerBB->_POST['question'].$PowerBB->_POST['answer'][0].$PowerBB->_POST['answer'][1],'>')
-			or strstr($PowerBB->_POST['question'].$PowerBB->_POST['answer'][0].$PowerBB->_POST['answer'][1],'<')
-			or strstr($PowerBB->_POST['question'].$PowerBB->_POST['answer'][0].$PowerBB->_POST['answer'][1],'*'))
-      	{
-      		$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['can_not_these_symbols']);
-      	}
-
-
 		$answers_number = 2;
 
 		if ($PowerBB->_POST['poll_answers_count'] > 0)
@@ -299,14 +289,6 @@ class PowerBBCoreMOD
 		$PowerBB->functions->CleanVariable($PowerBB->_POST['answer'],'html');
 		$PowerBB->functions->CleanVariable($PowerBB->_POST['answer'],'sql');
 
-		if (strstr($PowerBB->_POST['answer'],'"')
-			or strstr($PowerBB->_POST['answer'],"'")
-			or strstr($PowerBB->_POST['answer'],'>')
-			or strstr($PowerBB->_POST['answer'],'<')
-			or strstr($PowerBB->_POST['answer'],'*'))
-      	{
-      		$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['can_not_these_symbols']);
-      	}
 
  		$UpdateArr 			= 	array();
 		$UpdateArr['field']	=	array();

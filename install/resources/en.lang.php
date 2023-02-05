@@ -141,7 +141,7 @@ $l['req_step_error_box'] = '<p><strong>{1}</strong></p>';
 $l['req_step_error_phpversion'] = 'PBBoard Requires PHP 5.2.0 or later to run. You currently have {1} installed.';
 $l['req_step_error_dboptions'] = 'PBBoard requires one or more suitable database extensions to be installed. Your server reported that none were available.';
 $l['req_step_error_xmlsupport'] = 'PBBoard requires PHP to be compiled with support for XML Data Handling. Please see <a href="http://www.php.net/xml" target="_blank">PHP.net</a> for more information.';
-$l['req_step_error_configdefaultfile'] = 'The configuration file (inc/config.default.php) could not be renamed. Please manually rename the <u>config.default.php</u> file to <u>config.php</u> to allow it to be written to or contact <a href="https://www.pbboard.info/forums" target="_blank">PBBoard Support.</a>';
+$l['req_step_error_configdefaultfile'] = 'The configuration file (inc/config.default.php) could not be renamed. Please manually rename the <u>config.default.php</u> file to <u>config.php</u> to allow it to be written to or contact <a href="https://pbboard.info/forums" target="_blank">PBBoard Support.</a>';
 $l['req_step_error_configfile'] = 'The configuration file (inc/config.php) is not writable. Please adjust the <a href="http://docs.pbboard.info/CHMOD_Files.html" target="_blank">chmod</a> permissions to allow it to be written to.';
 $l['req_step_error_settingsfile'] = 'The settings file (inc/settings.php) is not writable. Please adjust the <a href="http://docs.pbboard.info/CHMOD_Files.html" target="_blank">chmod</a> permissions to allow it to be written to.';
 $l['req_step_error_cachedir'] = 'The cache directory (cache/) is not writable. Please adjust the <a href="http://docs.pbboard.info/CHMOD_Files.html" target="_blank">chmod</a> permissions to allow it to be written to.';
@@ -317,10 +317,10 @@ $l['done_step_admincreated'] = '<p>Creating Administrator account...';
 $l['done_step_adminoptions'] = '<p>Building Administrator permissions...';
 $l['done_step_cachebuilding'] = '<p>Building data caches...';
 $l['done_step_success'] = '<p class="success">Your copy of PBBoard has successfully been installed and configured correctly.</p>
-<p>The PBBoard Group thanks you for your support in installing our software and we hope to see you around the <a href="https://www.pbboard.info/forums/" target="_blank">PBBoard Community Forums</a> if you need help or wish to become a part of the PBBoard community Forums.</p>';
+<p>The PBBoard Group thanks you for your support in installing our software and we hope to see you around the <a href="https://pbboard.info/forums/" target="_blank">PBBoard Community Forums</a> if you need help or wish to become a part of the PBBoard community Forums.</p>';
 $l['done_step_locked'] = '<p>Your installer has been locked. To unlock the installer please delete the \'<b>lock</b>\' file in this directory.</p><p>You may now proceed to your new copy of PBBoard. Go To <a href="../index.php"><big>Forum</big></a> or its <a href="../admincp/index.php"><big>Admin Control Panel</big></a>.</p>';
 $l['done_step_dirdelete'] = '<p><strong><span style="color:red">Please remove this directory before exploring your copy of PBBoard.</span></strong></p>';
-$l['done_whats_next'] = '<div class="error"><p><strong>Switching from another forum software?</strong></p><p>PBBoard offers a merge system for easy merging of multiple forums from various different popular forum software, allowing an easy conversion process to PBBoard. If you\'re looking to switch to PBBoard, you\'re heading in the right direction! Check out the <a target="_blank" href="https://www.pbboard.info/categorie_12">Merge System</a> for more information.</p>';
+$l['done_whats_next'] = '<div class="error"><p><strong>Switching from another forum software?</strong></p><p>PBBoard offers a merge system for easy merging of multiple forums from various different popular forum software, allowing an easy conversion process to PBBoard. If you\'re looking to switch to PBBoard, you\'re heading in the right direction! Check out the <a target="_blank" href="https://pbboard.info/categorie_12">Merge System</a> for more information.</p>';
 
 /* UPGRADE LANGUAGE VARIABLES */
 $l['upgrade'] = "Upgrade Process";

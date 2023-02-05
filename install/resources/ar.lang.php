@@ -140,7 +140,7 @@ $l['req_step_error_box'] = '<p><strong>{1}</strong></p>';
 $l['req_step_error_phpversion'] = 'PBBoard Requires PHP 5.2.0 or later to run. You currently have {1} installed.';
 $l['req_step_error_dboptions'] = 'PBBoard requires one or more suitable database extensions to be installed. Your server reported that none were available.';
 $l['req_step_error_xmlsupport'] = 'PBBoard requires PHP to be compiled with support for XML Data Handling. Please see <a href="http://www.php.net/xml" target="_blank">PHP.net</a> for more information.';
-$l['req_step_error_configdefaultfile'] = 'The configuration file (inc/config.default.php) could not be renamed. Please manually rename the <u>config.default.php</u> file to <u>config.php</u> to allow it to be written to or contact <a href="https://www.pbboard.info/forums" target="_blank">PBBoard Support.</a>';
+$l['req_step_error_configdefaultfile'] = 'The configuration file (inc/config.default.php) could not be renamed. Please manually rename the <u>config.default.php</u> file to <u>config.php</u> to allow it to be written to or contact <a href="https://pbboard.info/forums" target="_blank">PBBoard Support.</a>';
 $l['req_step_error_configfile'] = 'The configuration file (inc/config.php) is not writable. Please adjust the <a href="http://docs.pbboard.info/CHMOD_Files.html" target="_blank">chmod</a> permissions to allow it to be written to.';
 $l['req_step_error_settingsfile'] = 'The settings file (inc/settings.php) is not writable. Please adjust the <a href="http://docs.pbboard.info/CHMOD_Files.html" target="_blank">chmod</a> permissions to allow it to be written to.';
 $l['req_step_error_cachedir'] = 'The cache directory (cache/) is not writable. Please adjust the <a href="http://docs.pbboard.info/CHMOD_Files.html" target="_blank">chmod</a> permissions to allow it to be written to.';
@@ -316,10 +316,10 @@ $l['done_step_admincreated'] = '<p>إنشاء حساب المسؤول..';
 $l['done_step_adminoptions'] = '<p>إنشاء خيارات حساب المسؤول ..';
 $l['done_step_cachebuilding'] = '<p>Building data caches..';
 $l['done_step_success'] = '<p class="success">تم بنجاح تثبيت نسخة PBBoard الخاصة بك وتكوينها بشكل صحيح.</p>
-<p>تشكرك مجموعة PBBoard على دعمك في تثبيت برنامجنا ونأمل أن نراك في <a href="https://www.pbboard.info/forums/" target="_blank">PBBoard Community Forums</a> إذا كنت بحاجة إلى مساعدة أو ترغب في أن تصبح جزء من PBBoard community Forums.</p>';
+<p>تشكرك مجموعة PBBoard على دعمك في تثبيت برنامجنا ونأمل أن نراك في <a href="https://pbboard.info/forums/" target="_blank">PBBoard Community Forums</a> إذا كنت بحاجة إلى مساعدة أو ترغب في أن تصبح جزء من PBBoard community Forums.</p>';
 $l['done_step_locked'] = '<p>تم قفل المثبت الخاص بك. لفتح المثبت ، يرجى حذف \'<b>lock</b>\' من مجلد install.</p><p>يمكنك الآن المتابعة إلى نسختك الجديدة من PBBoard. اذهب إلى <a href="../index.php"><big>المنتدى</big></a> أو <a href="../admincp/index.php"><big>لوحة تحكم الإدارة</big></a>.</p>';
 $l['done_step_dirdelete'] = '<p><strong><span style="color:red">ينصح بحذف مجلد install لحماية المنتدى.</span></strong></p>';
-$l['done_whats_next'] = '<div class="error"><p><strong>للتحويل من برنامج منتدى آخر؟</strong></p><p>يقدم PBBoard نظام دمج لسهولة دمج المنتديات المتعددة من مختلف برامج المنتدى الشائعة ، مما يتيح عملية تحويل سهلة إلى PBBoard. إذا كنت تتطلع للتبديل إلى PBBoard ، فأنت تتوجه في الاتجاه الصحيح! تفحص ال <a target="_blank" href="https://www.pbboard.info/categorie_12">سكربتات التحويل </a> للمزيد من المعلومات.</p>';
+$l['done_whats_next'] = '<div class="error"><p><strong>للتحويل من برنامج منتدى آخر؟</strong></p><p>يقدم PBBoard نظام دمج لسهولة دمج المنتديات المتعددة من مختلف برامج المنتدى الشائعة ، مما يتيح عملية تحويل سهلة إلى PBBoard. إذا كنت تتطلع للتبديل إلى PBBoard ، فأنت تتوجه في الاتجاه الصحيح! تفحص ال <a target="_blank" href="https://pbboard.info/categorie_12">سكربتات التحويل </a> للمزيد من المعلومات.</p>';
 
 /* UPGRADE LANGUAGE VARIABLES */
 $l['upgrade'] = "عمليات الترقية";

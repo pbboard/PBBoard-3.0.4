@@ -799,6 +799,9 @@ class PowerBBCodeParse
         $text = str_ireplace('"  title=', '" title=', $text);
 
 		$text = str_replace("<br>", "<br />", $text);
+ 		$string = str_replace('https://www.pbboard.info', 'https://pbboard.info', $string);
+		$string = str_replace('http://www.pbboard.info', 'https://pbboard.info', $string);
+		$string = str_replace('http://pbboard.info', 'https://pbboard.info', $string);
 
 		eval($PowerBB->functions->get_fetch_hooks('BBCodeParseHooks_cr'));
         return $text;
@@ -1056,6 +1059,10 @@ class PowerBBCodeParse
 	    }else {
 	        $newtext = $newtext2;
 	    }
+ 		$newtext = str_replace('https://www.pbboard.info', 'https://pbboard.info', $newtext);
+		$newtext = str_replace('http://www.pbboard.info', 'https://pbboard.info', $newtext);
+		$newtext = str_replace('http://pbboard.info', 'https://pbboard.info', $newtext);
+
 	    return $newtext;
 	}
 
@@ -1445,8 +1452,8 @@ class PowerBBCodeParse
 
 		$string = str_replace('[/ ', '[/', $string);
 		$string = str_replace('[ ', '[', $string);
-		$string = str_replace('http://www.pbboard.info', 'https://www.pbboard.info', $string);
-		$string = str_replace('http://pbboard.info', 'https://www.pbboard.info', $string);
+		$string = str_replace('https://www.pbboard.info', 'https://pbboard.info', $string);
+		$string = str_replace('http://www.pbboard.info', 'https://pbboard.info', $string);
 
 		$string = str_replace('<td>', '[td]', $string);
 		$string = str_replace('</td>', '[/td]', $string);

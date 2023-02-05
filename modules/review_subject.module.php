@@ -3,7 +3,7 @@
 // ##############################################################################||
 // #
 // #   PowerBB Version 2.0.0
-// #   http://www.pbboard.info
+// #   https://pbboard.info
 // #   Copyright (c) 2009 by Abu.Rakan
 // #
 // #   filename : special_topics.module.php

@@ -1512,7 +1512,7 @@ function create_tables()
  *
  * Please see the PBBoard Docs for advanced
  * database configuration for larger installations
- * http://pbboard.info/
+ * https://pbboard.info/
  */
 
 \$config['db']['name'] = '{$config['dbname']}';

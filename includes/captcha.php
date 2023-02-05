@@ -1,7 +1,7 @@
 <?php
 // ##############################################################################||
 // #   PowerBB Version 2.0.0
-// #   http://www.pbboard.info
+// #   https://pbboard.info
 // #   Copyright (c) 2009 by Suliman
 // #   filename : captcha.php
 // #   Change name session key to captcha_key 5-1-2016

@@ -4,8 +4,8 @@ error_reporting(E_ERROR | E_PARSE);
  * PBBoard 3.3
  * Copyright 2019 PBBoard Group, All Rights Reserved
  *
- * Website: http://www.pbboard.info
- * License: https://www.pbboard.info/about/license
+ * Website: https://pbboard.info
+ * License: https://pbboard.info/about/license
  *
  */
 

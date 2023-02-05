@@ -3010,7 +3010,7 @@ function my_strlen($string)
 	{
 	   global $PowerBB;
         $year = ' 2009-'. @date("Y");
-    	$copy = 'Copyright ©' .$year.' <a target="_blank" title="Powered By PBBoard" href="https://www.pbboard.info"><b>PBBoard</b><sup>®</sup></a> Solutions. All Rights Reserved';
+    	$copy = 'Copyright ©' .$year.' <a target="_blank" title="Powered By PBBoard" href="https://pbboard.info"><b>PBBoard</b><sup>®</sup></a> Solutions. All Rights Reserved';
 		return $copy;
 	}
 	function Update_Cache_groups()
@@ -3142,7 +3142,7 @@ function my_strlen($string)
 	   global $PowerBB;
         $last_Update = $PowerBB->_CONF['info_row']['last_time_updates'];
         $Version = $PowerBB->_CONF['info_row']['MySBB_version'];
-        $pbboard_last_time_updates = 'https://www.pbboard.info/check_updates/pbboard_last_time_updates_304.txt';
+        $pbboard_last_time_updates = 'https://pbboard.info/check_updates/pbboard_last_time_updates_304.txt';
 		 $last_time_updates = $PowerBB->sys_functions->CURL_cloudFlareBypass($pbboard_last_time_updates);
 
          if(!$last_time_updates)
@@ -3174,7 +3174,7 @@ function my_strlen($string)
 	{
 	   global $PowerBB;
          // Check if this version is up to date
-         $LatestVersionUrl = ("https://www.pbboard.info/pbboard_latest_version.txt");
+         $LatestVersionUrl = ("https://pbboard.info/pbboard_latest_version.txt");
 
 		 $LatestVersionTxt = $PowerBB->sys_functions->CURL_cloudFlareBypass($LatestVersionUrl);
 
@@ -3200,7 +3200,7 @@ function my_strlen($string)
 			else
 			{
 			$JS_Notification = 1;
-			$morinfrmosn ="https://www.pbboard.info";
+			$morinfrmosn ="https://pbboard.info";
 			$Result = $PowerBB->_CONF['template']['_CONF']['lang']['there_is_newer_version1'].$LatestVersion.$PowerBB->_CONF['template']['_CONF']['lang']['there_is_newer_version2'].$morinfrmosn.$PowerBB->_CONF['template']['_CONF']['lang']['there_is_newer_version3'];
 			}
 		}

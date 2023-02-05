@@ -50,7 +50,7 @@ class PowerBBAddonsMOD
  function _get_pbboard_addons_url()
     {
       global $PowerBB;
-	  $pbboard_addons_url = 'https://www.pbboard.info/pbboard_addons/pbb3x/';
+	  $pbboard_addons_url = 'https://pbboard.info/pbboard_addons/pbb3x/';
       return $pbboard_addons_url;
     }
    function get_text($filename)

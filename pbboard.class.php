@@ -769,6 +769,9 @@ class PowerBB
 			}
 		}
 
+	 $ip = str_replace(":", "", $ip);
+	 $ip = str_replace("f", "", $ip);
+
 		return $ip;
 	}
 

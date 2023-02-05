@@ -3,8 +3,8 @@
  * PBBoard 1.8
  * Copyright 2014 PBBoard Group, All Rights Reserved
  *
- * Website: http://www.PBBoard.info
- * License: https://www.pbboard.info/about/license
+ * Website: https://pbboard.info
+ * License: https://pbboard.info/about/license
  *
  */
 

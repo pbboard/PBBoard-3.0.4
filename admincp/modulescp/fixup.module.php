@@ -833,15 +833,15 @@ class PowerBBFixMOD
 			$To = str_ireplace("index.php/", '', $To);
         if($PowerBB->_CONF['info_row']['MySBB_version'] == '3.0.4')
         {
-		$pbboard_last_time_updates = 'https://www.pbboard.info/check_updates/pbboard_last_time_updates_304.txt';
+		$pbboard_last_time_updates = 'https://pbboard.info/check_updates/pbboard_last_time_updates_304.txt';
 		}
         elseif($PowerBB->_CONF['info_row']['MySBB_version'] == '3.0.3')
         {
-		$pbboard_last_time_updates = 'https://www.pbboard.info/check_updates/pbboard_last_time_updates_303.txt';
+		$pbboard_last_time_updates = 'https://pbboard.info/check_updates/pbboard_last_time_updates_303.txt';
 		}
 		elseif($PowerBB->_CONF['info_row']['MySBB_version'] == '3.0.2')
 		{
-		$pbboard_last_time_updates = 'https://www.pbboard.info/check_updates/pbboard_last_time_updates.txt';
+		$pbboard_last_time_updates = 'https://pbboard.info/check_updates/pbboard_last_time_updates.txt';
 		}
 
 		$last_time_updates = @file_get_contents($pbboard_last_time_updates);

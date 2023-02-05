@@ -4,8 +4,8 @@ error_reporting(E_ERROR | E_PARSE);
  * PBBoard  3
  * Copyright 2019 PBBoard  Group, All Rights Reserved
  *
- * Website: http://www.pbboard.info
- * License: https://www.pbboard.info/about/license
+ * Website: https://pbboard.info
+ * License: https://pbboard.info/about/license
  *
  */
 
@@ -468,7 +468,7 @@ class errorHandler {
 <body>
 	<div id="container">
 		<div id="logo">
-			<h1><a href="https://www.pbboard.info/" title="PBBoard"><span class="invisible">PBBoard</span></a></h1>
+			<h1><a href="https://pbboard.info/" title="PBBoard"><span class="invisible">PBBoard</span></a></h1>
 		</div>
 
 		<div id="content">
@@ -476,7 +476,7 @@ class errorHandler {
 
 			<div id="error">
 				{$error_message}
-				<p id="footer">Please contact the <a href="http://www.pbboard.info">PBBoard  Group</a> for technical support.</p>
+				<p id="footer">Please contact the <a href="https://pbboard.info">PBBoard  Group</a> for technical support.</p>
 			</div>
 		</div>
 	</div>
@@ -501,7 +501,7 @@ EOF;
 		<h2>{$title}</h2>
 		<div id="PBB_error_error">
 		{$error_message}
-			<p id="PBB_error_footer">Please contact the <a href="http://www.pbboard.info">PBBoard  Group</a> for technical support.</p>
+			<p id="PBB_error_footer">Please contact the <a href="https://pbboard.info">PBBoard  Group</a> for technical support.</p>
 		</div>
 	</div>
 EOF;

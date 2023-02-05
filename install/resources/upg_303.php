@@ -2,7 +2,7 @@
 /**
  * PBBoard 303
  * Copyright 2019 PBBoard Group, All Rights Reserved
- * Website: http://www.PBBoard.info
+ * Website: https://pbboard.info
  */
 /**
  * Upgrade Script: 3.0.2

@@ -1,9 +1,8 @@
 <?php
 session_start();
 (!defined('IN_PowerBB')) ? die() : '';
-
-define('CLASS_NAME','PowerBBTopicAddMOD');
 include('common.php');
+define('CLASS_NAME','PowerBBTopicAddMOD');
 class PowerBBTopicAddMOD
 {
 	var $SectionInfo;
@@ -37,6 +36,38 @@ class PowerBBTopicAddMOD
 	{
 		global $PowerBB;
 
+		//////////
+       	if ($PowerBB->_CONF['info_row']['MySBB_version'] == "3.0.0"
+       	or $PowerBB->_CONF['info_row']['MySBB_version'] == "3.0.1")
+        {
+
+		$fileJsvk_popup = "look/ckeditor/plugins/Jsvk/jscripts/vk_popup.html";
+		$fileJsvk_iframe = "look/ckeditor/plugins/Jsvk/jscripts/vk_iframe.html";
+		$filewsc_ciframe = "look/ckeditor/plugins/wsc/dialogs/ciframe.html";
+		$filewsc_tmpFrameset = "look/ckeditor/plugins/wsc/dialogs/tmpFrameset.html";
+		$filecke_preview = "look/ckeditor/plugins/preview/preview.html";
+		if (file_exists($fileJsvk_popup))
+		{
+		$delJsvkpopup = @unlink($fileJsvk_popup);
+		}
+		if (file_exists($fileJsvk_iframe))
+		{
+		$delJsvkiframe = @unlink($fileJsvk_iframe);
+		}
+		if (file_exists($filewsc_ciframe))
+		{
+		$delciframe = @unlink($filewsc_ciframe);
+		}
+		if (file_exists($filewsc_tmpFrameset))
+		{
+		$deltmpFrameset = @unlink($filewsc_tmpFrameset);
+		}
+		if (file_exists($filecke_preview))
+		{
+		$delpreview = @unlink($filecke_preview);
+		}
+
+	   }
 		$PowerBB->functions->CleanVariable($PowerBB->_GET['id'],'intval');
 
 		if (empty($PowerBB->_GET['id']))
@@ -128,8 +159,7 @@ class PowerBBTopicAddMOD
  			          $PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['Sorry_you_can_not_write_in_this_section']);
  					}
 			        else
-			        {
-		              $PowerBB->template->display('login');
+			        {		              $PowerBB->template->display('login');
 		              $PowerBB->functions->error_stop();
 			        }
 			     }
@@ -229,27 +259,17 @@ class PowerBBTopicAddMOD
 	function _preview()
 	{
 		global $PowerBB;
+
 		$PowerBB->functions->GetEditorTools();
+
      	$PowerBB->template->assign('id',$PowerBB->_GET['id']);
+
+
+		////////
+
 		$Admin = $PowerBB->functions->ModeratorCheck($PowerBB->_GET['id']);
+
 		$PowerBB->template->assign('Admin',$Admin);
-		$AttachArr 							= 	array();
-		$AttachArr['where']					= 	array();
-		$AttachArr['where'][0] 				=	array();
-		$AttachArr['where'][0]['name'] 		=	'subject_id';
-		$AttachArr['where'][0]['oper'] 		=	'=';
-		$AttachArr['where'][0]['value'] 	=	'-'.$PowerBB->_CONF['member_row']['id'];
-		$AttachArr['where'][1] 				=	array();
-		$AttachArr['where'][1]['con']		=	'AND';
-		$AttachArr['where'][1]['name'] 		=	'reply';
-		$AttachArr['where'][1]['oper'] 		=	'=';
-		$AttachArr['where'][1]['value'] 	=	'0';
-
-		$AttachArr['order'] 				=	 array();
-		$AttachArr['order']['field'] 		= 	'id';
-		$AttachArr['order']['type'] 	    = 	'DESC';
-		$PowerBB->_CONF['template']['while']['AttachList'] = $PowerBB->core->GetList($AttachArr,'attach');
-
 
 		////////
         $ExArr 						= 	array();
@@ -305,20 +325,6 @@ class PowerBBTopicAddMOD
 		$PowerBB->template->assign('Admin',$Admin);
 
 		////////
-		$AttachArr 							= 	array();
-		$AttachArr['where']					= 	array();
-		$AttachArr['where'][0] 				=	array();
-		$AttachArr['where'][0]['name'] 		=	'subject_id';
-		$AttachArr['where'][0]['oper'] 		=	'=';
-		$AttachArr['where'][0]['value'] 	=	'-'.$PowerBB->_CONF['member_row']['id'];
-		$AttachArr['where'][1] 				=	array();
-		$AttachArr['where'][1]['con']		=	'AND';
-		$AttachArr['where'][1]['name'] 		=	'reply';
-		$AttachArr['where'][1]['oper'] 		=	'=';
-		$AttachArr['where'][1]['value'] 	=	'0';
-
-		$PowerBB->_CONF['template']['while']['AttachList'] = $PowerBB->core->GetList($AttachArr,'attach');
-
         $ExArr 						= 	array();
 		$ExArr['order']				=	array();
 		$ExArr['order']['field']	=	'id';
@@ -332,8 +338,7 @@ class PowerBBTopicAddMOD
 
 		$section_info = $PowerBB->core->GetInfo($SecInfoArr,'section');
 		if ($section_info['parent'] == '0')
-        {
-       	$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['no_newthread_in_section_main']);
+        {       	$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['no_newthread_in_section_main']);
 	    }
 
 	    $checked 			= 	'no_icon';
@@ -431,7 +436,6 @@ class PowerBBTopicAddMOD
 
 	   if ($PowerBB->_POST['preview'])
        {
-            define('DONT_STRIPS_SLIASHES',true);
     	    $PowerBB->functions->ShowHeader($PowerBB->_CONF['template']['_CONF']['lang']['add_new_topic']);
 			$PowerBB->_POST['text'] = str_replace('target="_blank" ','',$PowerBB->_POST['text']);
 			$PowerBB->template->assign('prev',$PowerBB->Powerparse->replace_htmlentities($PowerBB->_POST['text']));
@@ -499,8 +503,7 @@ class PowerBBTopicAddMOD
 				}
              }
 			if ($PowerBB->_POST['poll'])
-	    		{
-
+	    		{
                    // Filter Words
                    $PowerBB->_POST['question'] = $PowerBB->functions->CleanVariable($PowerBB->_POST['question'],'html');
                    $PowerBB->_POST['question'] = $PowerBB->functions->CleanVariable($PowerBB->_POST['question'],'sql');
@@ -530,8 +533,7 @@ class PowerBBTopicAddMOD
                     $TitlePost = utf8_decode($PowerBB->_POST['title']);
       				$Post_max_num = strlen($TitlePost) <= $PowerBB->_CONF['info_row']['post_title_max'];
 		     		if ($Post_max_num)
-		     		{
-                     // Continue
+		     		{                     // Continue
 		    		}
 					else
 					{
@@ -541,6 +543,7 @@ class PowerBBTopicAddMOD
 						$PowerBB->functions->error_stop();
 					}
 
+                   $TitlePost = preg_replace('/\s+/', '', $TitlePost);
   				   $Post_less_num = strlen($TitlePost) >= $PowerBB->_CONF['info_row']['post_title_min'];
 		        	if  ($Post_less_num)
 		     		{
@@ -554,9 +557,7 @@ class PowerBBTopicAddMOD
 		      			$PowerBB->functions->error_stop();
 					}
 
-				if (!$PowerBB->_CONF['group_info']['admincp_allow'])
-				{
-                    $TextPost = utf8_decode($PowerBB->_POST['text']);
+                    $TextPost = utf8_decode($PowerBB->_POST['text']);
                     $TextPost = preg_replace('#\[IMG\](.*)\[/IMG\]#siU', '', $TextPost);
 
       				$text_max_num = strlen($TextPost) <= $PowerBB->_CONF['info_row']['post_text_max'];
@@ -572,9 +573,8 @@ class PowerBBTopicAddMOD
 					$PowerBB->functions->error_stop();
 					}
 
-
-  				   $text_less_num = strlen($TextPost) >= $PowerBB->_CONF['info_row']['post_text_min'];
-		        	if  ($text_less_num)
+		           $TextPost = preg_replace('/\s+/', '', $TextPost);
+		        	if(strlen($TextPost) >= $PowerBB->_CONF['info_row']['post_text_min'])
 		     		{
                      // Continue
 		     		}
@@ -586,7 +586,8 @@ class PowerBBTopicAddMOD
 					$PowerBB->functions->error_stop();
 					}
 
-
+             	if (!$PowerBB->_CONF['group_info']['admincp_allow'])
+				{
 				     	if (!$PowerBB->_CONF['member_permission'])
 			            {
 
@@ -620,39 +621,11 @@ class PowerBBTopicAddMOD
 				//$PowerBB->_POST['text'] 	= 	$PowerBB->functions->CleanVariable($PowerBB->_POST['text'],'sql');
                    //
 
-                 // mention users tag replace
-                if($PowerBB->functions->mention_permissions())
-                {
-				  if(preg_match('/\[mention\](.*?)\[\/mention\]/s', $PowerBB->_POST['text'], $tags_w))
-					{
-					$username = trim($tags_w[1]);
-					$MemArr = $PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['member'] . " WHERE username = '$username' ");
-					$Member_row = $PowerBB->DB->sql_fetch_array($MemArr);
-                    if($Member_row)
-                    {
-						if ($Member_row['username'] == $PowerBB->_CONF['member_row']['username'])
-						{
-				        $PowerBB->_POST['text'] = str_replace("[mention]", "@", $PowerBB->_POST['text']);
-						$PowerBB->_POST['text'] = str_replace("[/mention]", "", $PowerBB->_POST['text']);
-						 $Member_row['username'] = '';
-						}
-						if (!empty($Member_row['username']))
-						{
-						$forum_url              =   $PowerBB->functions->GetForumAdress();
-						$url = $forum_url."index.php?page=profile&amp;show=1&amp;id=".$Member_row['id'];
-						$PowerBB->_POST['text'] = str_replace("[mention]", "[url=".$PowerBB->functions->rewriterule($url)."]@", $PowerBB->_POST['text']);
-						$PowerBB->_POST['text'] = str_replace("[/mention]", "[/url]", $PowerBB->_POST['text']);
-	                    // insert mention
-	                    $insert_mention = 	true;
-						}
-				    }
-                  }
 
-                }
-					$SecInfoArr 			= 	array();
-					$SecInfoArr['where'] 	= 	array('id',$this->SectionInfo['id']);
+		$SecInfoArr 			= 	array();
+		$SecInfoArr['where'] 	= 	array('id',$this->SectionInfo['id']);
 
-					$section_info = $PowerBB->core->GetInfo($SecInfoArr,'section');
+		$section_info = $PowerBB->core->GetInfo($SecInfoArr,'section');
 		       //Create last writer cache:  id & avater_path & username_style_cache
 				$cache = array();
 				$cache[1]['user_id']		 	                = 	$PowerBB->_CONF['rows']['member_row']['id'];
@@ -660,15 +633,14 @@ class PowerBBTopicAddMOD
 				$cache[3]['username_style']		 	            = 	$PowerBB->_CONF['rows']['member_row']['username_style_cache'];
 				$cache[4]['section_title']		 	            = 	$this->SectionInfo['title'];
 
-				$cache = json_encode($cache);
+				$cache = serialize($cache);
 
 		     	$SubjectArr 								= 	array();
 		     	$SubjectArr['get_id']						=	true;
 		     	$SubjectArr['field']						=	array();
 		     	$SubjectArr['field']['title'] 				= 	$PowerBB->functions->CleanVariable($PowerBB->_POST['title'],'html');
 		     	if (!$PowerBB->_CONF['member_permission'])
-				{
-		     	$SubjectArr['field']['text'] 			= 	$PowerBB->functions->CleanVariable('[color=#4000BF][i][guest_name]'.$PowerBB->_CONF['template']['_CONF']['lang']['LastsPostsWriter'].$PowerBB->_POST['guest_name'].'[/guest_name][/i][/color]<br />'.$PowerBB->_POST['text'],'nohtml');
+				{		     	$SubjectArr['field']['text'] 			= 	$PowerBB->functions->CleanVariable('[color=#4000BF][i][guest_name]'.$PowerBB->_CONF['template']['_CONF']['lang']['LastsPostsWriter'].$PowerBB->_POST['guest_name'].'[/guest_name][/i][/color]<br />'.$PowerBB->_POST['text'],'nohtml');
 				$SubjectArr['field']['writer'] 				= 	'Guest';
 				}
 		     	else
@@ -751,10 +723,8 @@ class PowerBBTopicAddMOD
 		     			and strlen($PowerBB->_POST['tags'][0]) > 0)
 		     		{
 		     			foreach ($PowerBB->_POST['tags'] as $tag)
-		     			{
-		     				if (!empty($tag))
-		     				{
-		                            $tag 	= 	$PowerBB->functions->CleanVariable($tag,'sql');
+		     			{		     				if (!empty($tag))
+		     				{		                            $tag 	= 	$PowerBB->functions->CleanVariable($tag,'sql');
 		                            if (function_exists('mb_strlen'))
 		                            {
 		                                $tag_less_num = mb_strlen($tag, 'UTF-8') >= 4;
@@ -864,25 +834,6 @@ class PowerBBTopicAddMOD
                     }
 					//////////
 
-                       // insert mention
-                      if($PowerBB->functions->mention_permissions())
-                      {
-						if ($insert_mention)
-						{
-						$InsertArr 					= 	array();
-						$InsertArr['field']			=	array();
-
-						$InsertArr['field']['user_mention_about_you'] 			= 	$PowerBB->_CONF['member_row']['username'];
-						$InsertArr['field']['you'] 			= 	$Member_row['username'];
-						$InsertArr['field']['topic_id'] 				= 	intval($PowerBB->subject->id);
-						$InsertArr['field']['reply_id'] 			= 	0;
-						$InsertArr['field']['profile_id'] 			= 	$PowerBB->_CONF['member_row']['id'];
-						$InsertArr['field']['date'] 		= 	$PowerBB->_CONF['now'];
-						$InsertArr['field']['user_read'] 		    = 	'1';
-
-						$insert = $PowerBB->core->Insert($InsertArr,'mention');
-						}
-                      }
 		     		// Upload files
                   if ($PowerBB->_CONF['member_permission'])
 				 {
@@ -891,8 +842,7 @@ class PowerBBTopicAddMOD
 						   $Attachinfo = $PowerBB->core->GetInfo($GetAttachArr,'attach');
 
 				     		if ($Attachinfo)
-				     		{
-
+				     		{
 								$SubjectArr 							= 	array();
 								$SubjectArr['field'] 					= 	array();
 								$SubjectArr['field']['attach_subject'] 	= 	'1';

@@ -1143,6 +1143,21 @@
 </td>
 </tr>
 <tr valign="top">
+		<td class="row2">{$lang['ADD']}
+		{$lang['photo_to_external_site']}</td>
+		<td class="row2">
+<select name="ajax_moderator_options" id="select_ajax_moderator_options">
+	{if {$_CONF['info_row']['ajax_moderator_options']}}
+		<option value="1" selected="selected">{$lang['yes']}</option>
+		<option value="0">{$lang['no']}</option>
+	{else}
+		<option value="1">{$lang['yes']}</option>
+		<option value="0" selected="selected">{$lang['no']}</option>
+	{/if}
+</select>
+</td>
+</tr>
+<tr valign="top">
 		<td class="row1">{$lang['max_avatar_width']}</td>
 		<td class="row1">
 <input type="text" name="max_avatar_width" id="input_max_avatar_width" value="{$_CONF['info_row']['max_avatar_width']}" size="30" />&nbsp;

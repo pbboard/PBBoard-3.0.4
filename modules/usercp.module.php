@@ -720,12 +720,33 @@ class PowerBBCoreMOD
 
 		$PowerBB->functions->AddressBar('<a href="index.php?page=usercp&index=1"> ' . $PowerBB->_CONF['template']['_CONF']['lang']['User_Control_Panel']. '</a>' .$PowerBB->_CONF['info_row']['adress_bar_separate'] . $PowerBB->_CONF['template']['_CONF']['lang']['execution_Process_Update']);
 
-            $TextPost = $PowerBB->_POST['text'];
-            $sig_len_num = strlen(utf8_decode($PowerBB->_POST['text'])) >= $PowerBB->_CONF['group_info']['sig_len'];
-    		if($sig_len_num)
-    		{
+             $TextPost = utf8_decode($PowerBB->_POST['text']);
+             $TextPost = preg_replace('/\s+/', '', $TextPost);
+		     $PowerBB->_CONF['template']['_CONF']['lang']['post_text_min'] = str_replace('المشاركة',$PowerBB->_CONF['template']['_CONF']['lang']['Signature'],$PowerBB->_CONF['template']['_CONF']['lang']['post_text_min']);
 		     $PowerBB->_CONF['template']['_CONF']['lang']['sign_max'] = str_replace('{sig_len}',$PowerBB->_CONF['group_info']['sig_len'],$PowerBB->_CONF['template']['_CONF']['lang']['sign_max']);
+
+
+			if (empty($TextPost))
+			{
+			$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['post_text_min']);
+			}
+
+    		if(strlen($TextPost) <= $PowerBB->_CONF['group_info']['sig_len'])
+    		{
+               // Continue
+            }
+            else
+    		{
              $PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['sign_max']);
+            }
+
+    		if(strlen($TextPost) >= $PowerBB->_CONF['info_row']['post_text_min'])
+    		{
+             // Continue
+            }
+            else
+    		{
+             $PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['post_text_min']);
             }
 
         $PowerBB->_POST['text'] = str_replace('target="_blank" ','',$PowerBB->_POST['text']);

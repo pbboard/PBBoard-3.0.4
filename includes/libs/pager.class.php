@@ -207,6 +207,7 @@ class PowerBBPager
 			{
 		       $align ='left';
 			}
+		$PowerBB->_CONF['template']['_CONF']['lang']['last_page'] = str_replace(' »','',$PowerBB->_CONF['template']['_CONF']['lang']['last_page']);
         $PowerBB->_CONF['template']['_CONF']['lang']['Pagenum'] = str_replace('%no%',@ceil($n_page),$PowerBB->_CONF['template']['_CONF']['lang']['Pagenum']);
         $PowerBB->_CONF['template']['_CONF']['lang']['Pagenum'] = str_replace('%pnu%',$this->pages_number,$PowerBB->_CONF['template']['_CONF']['lang']['Pagenum']);
         $string = str_replace('[align]',$align,$string);
@@ -293,6 +294,9 @@ class PowerBBPager
           }
           else
           {
+	          if($next == '1')
+	          {	          	$next = '2';
+	          }
           $pnext =  "<a href='".$this->location."&amp;".$this->var_name."=".$next."'>&gt;</a>";
           $string = str_replace('[next]',$pnext,$string);
           }

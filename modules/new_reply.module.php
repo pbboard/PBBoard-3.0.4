@@ -566,8 +566,6 @@ class PowerBBReplyAddMOD
 						}
 
 
-	                    if (!$PowerBB->_CONF['group_info']['admincp_allow'])
-	                     {
 			                    $TextPost = utf8_decode($PowerBB->_POST['text']);
 			                    $TextPost = preg_replace('#\[IMG\](.*)\[/IMG\]#siU', '', $TextPost);
 
@@ -583,8 +581,8 @@ class PowerBBReplyAddMOD
 								$PowerBB->functions->error_stop();
 								}
 
-			  				   $text_less_num = strlen($TextPost) >= $PowerBB->_CONF['info_row']['post_text_min'];
-					        	if  ($text_less_num)
+                                $TextPost = preg_replace('/\s+/', '', $TextPost);
+					        	if  (strlen($TextPost) >= $PowerBB->_CONF['info_row']['post_text_min'])
 					     		{
 			                     // Continue
 					     		}
@@ -596,7 +594,6 @@ class PowerBBReplyAddMOD
 								}
 
 
-	                     }
 				     	if (!$PowerBB->_CONF['member_permission'])
 			            {
 

@@ -86,6 +86,32 @@ class PowerBBAJAXtMOD
 			exit($PowerBB->_CONF['template']['_CONF']['lang']['no_title']);
 		}
 
+
+		$TitlePost = utf8_decode($PowerBB->_POST['title']);
+		$Post_max_num = strlen($TitlePost) <= $PowerBB->_CONF['info_row']['post_title_max'];
+		if ($Post_max_num)
+		{
+		 // Continue
+		}
+		else
+		{
+		$PowerBB->functions->msg($PowerBB->_CONF['template']['_CONF']['lang']['post_text_max_subjects']);
+		$PowerBB->functions->error_stop();
+		}
+
+		$TitlePost = preg_replace('/\s+/', '', $TitlePost);
+		$Post_less_num = strlen($TitlePost) >= $PowerBB->_CONF['info_row']['post_title_min'];
+		if  ($Post_less_num)
+		{
+		 // Continue
+		}
+		else
+		{
+		 $PowerBB->functions->msg($PowerBB->_CONF['template']['_CONF']['lang']['post_text_min_subjects']);
+		  $PowerBB->functions->error_stop();
+		}
+
+
 		$PowerBB->_POST['title'] 	= 	$PowerBB->functions->CleanVariable($PowerBB->_POST['title'],'html');
 		$PowerBB->_POST['title'] = $PowerBB->functions->CleanVariable($PowerBB->_POST['title'],'sql');
         $PowerBB->_POST['title'] = $PowerBB->Powerparse->censor_words($PowerBB->_POST['title']);

@@ -780,6 +780,7 @@ class PowerBBOptionsMOD
 
 		$update[4] = $PowerBB->info->UpdateInfo(array('value'=>$PowerBB->_POST['default_avatar'],'var_name'=>'default_avatar'));
 		$update[5] = $PowerBB->info->UpdateInfo(array('value'=>$PowerBB->_POST['avatar_columns_number'],'var_name'=>'avatar_columns_number'));
+		$update[6] = $PowerBB->info->UpdateInfo(array('value'=>$PowerBB->_POST['ajax_moderator_options'],'var_name'=>'ajax_moderator_options'));
 
 		if ($update[0]
 			and $update[1]
@@ -951,8 +952,6 @@ class PowerBBOptionsMOD
 		$update = array();
 
 		$update[0] = $PowerBB->info->UpdateInfo(array('value'=>$PowerBB->_POST['ajax_freply'],'var_name'=>'ajax_freply'));
-
-		//$update[3] = $PowerBB->info->UpdateInfo(array('value'=>$PowerBB->_POST['ajax_moderator_options'],'var_name'=>'ajax_moderator_options'));
 
 		if ($update[0])
 		{
@@ -1393,6 +1392,7 @@ class PowerBBOptionsMOD
 
 		$update[4] = $PowerBB->info->UpdateInfo(array('value'=>$PowerBB->_POST['default_avatar'],'var_name'=>'default_avatar'));
 		$update[5] = $PowerBB->info->UpdateInfo(array('value'=>$PowerBB->_POST['avatar_columns_number'],'var_name'=>'avatar_columns_number'));
+		$update[6] = $PowerBB->info->UpdateInfo(array('value'=>$PowerBB->_POST['ajax_moderator_options'],'var_name'=>'ajax_moderator_options'));
 
 
 		$update = array();
@@ -1429,7 +1429,6 @@ class PowerBBOptionsMOD
 
 		$update[0] = $PowerBB->info->UpdateInfo(array('value'=>$PowerBB->_POST['ajax_freply'],'var_name'=>'ajax_freply'));
 
-		//$update[3] = $PowerBB->info->UpdateInfo(array('value'=>$PowerBB->_POST['ajax_moderator_options'],'var_name'=>'ajax_moderator_options'));
        /*
 		if (empty($PowerBB->_POST['warning_number_to_ban']))
 		{

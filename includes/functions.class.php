@@ -1205,7 +1205,22 @@ class PowerBBFunctions
 		$page_address['pm'] 			= 	$PowerBB->_CONF['template']['_CONF']['lang']['Read_the_message'] .' - '. $PowerBB->_CONF['info_row']['title'];
 		$page_address['new_topic'] 	= 	$PowerBB->_CONF['template']['_CONF']['lang']['add_new_topic'] .' - '. $PowerBB->_CONF['info_row']['title'];
 		$page_address['new_reply'] 	= 	$PowerBB->_CONF['template']['_CONF']['lang']['add_new_reply'] .' - '. $PowerBB->_CONF['info_row']['title'];
-		$page_address['vote'] 			= 	$PowerBB->_CONF['template']['_CONF']['lang']['show_votes'] .' - '. $PowerBB->_CONF['info_row']['title'];
+		if ($page == 'vote')
+		{			$PollArr 			= 	array();
+			$PollArr['where'] 	= 	array('id',$PowerBB->_GET['id']);
+
+			$Poll = $PowerBB->core->GetInfo($PollArr,'poll');
+
+			if ($PowerBB->_GET['poll_edit'])
+			{			$page_address['vote'] 			= 	$PowerBB->_CONF['template']['_CONF']['lang']['poll_edit'] .' '. $Poll['qus'];
+			}
+			else
+			{
+			$page_address['vote'] 			= 	$PowerBB->_CONF['template']['_CONF']['lang']['show_votes'] .' '.$PowerBB->_CONF['template']['_CONF']['lang']['poll_subject'].' '.$Poll['qus'];
+			}
+			$PowerBB->template->assign('description',$PowerBB->functions->CleanText($PowerBB->_CONF['template']['_CONF']['lang']['Poll'] .' '.$Poll['qus']));
+
+		}
 		$page_address['online'] 		= 	$PowerBB->_CONF['template']['_CONF']['lang']['online_naw'] .' - '. $PowerBB->_CONF['info_row']['title'];
 		$page_address['pm_setting'] 		= 	$PowerBB->_CONF['template']['_CONF']['lang']['Settings_Private_Messages'] .' - '. $PowerBB->_CONF['info_row']['title'];
 		$page_address['warn'] 		       = 	$PowerBB->_CONF['template']['_CONF']['lang']['send_warn'];

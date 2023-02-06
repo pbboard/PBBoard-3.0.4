@@ -527,6 +527,7 @@ $PowerBB->_POST['to'][0] 	= 	$PowerBB->functions->CleanVariable($PowerBB->_POST[
 									$MsgArr['field']['title'] 		= 	$PowerBB->_CONF['template']['_CONF']['lang']['_IVR_'] . $GetToInfo['autoreply_title'];
 									$MsgArr['field']['text'] 		= 	$GetToInfo['autoreply_msg'];
 									$MsgArr['field']['date'] 		= 	$PowerBB->_CONF['now'];
+									$MsgArr['field']['icon'] 		= "look/images/icons/i1.gif";
 									$MsgArr['field']['folder'] 		= 	'inbox';
 
 									$AutoReply = $PowerBB->core->Insert($MsgArr,'pm');

@@ -265,7 +265,7 @@ class PowerBBCoreMOD
 
 		if ($PowerBB->_POST['poll_answers_count'] > 0)
 		{
-			$answers_number = $PowerBB->_POST['poll_answers_count'];
+			$answers_number = $PowerBB->_POST['poll_answers_count']+2;
 		}
 
 		$answers = array();
@@ -276,7 +276,14 @@ class PowerBBCoreMOD
 		{
 			// The text of the answer
 			$answers[$x][0] = $PowerBB->_POST['answer'][$x];
+			$answersss = str_replace('&nbsp;','',$PowerBB->_POST['answer'][$x]);
+			$answersss = str_replace(' ','',$PowerBB->_POST['answer'][$x]);
+            $answersss = preg_replace('/\s+/', '', $PowerBB->_POST['answer'][$x]);
 
+			if (empty($answersss))
+	      	{
+				$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['fill_in_answer']);
+	      	}
 			// The result
 			$answers[$x][1] = 0;
 
@@ -289,6 +296,11 @@ class PowerBBCoreMOD
 		$PowerBB->functions->CleanVariable($PowerBB->_POST['answer'],'html');
 		$PowerBB->functions->CleanVariable($PowerBB->_POST['answer'],'sql');
 
+
+		if (empty($PowerBB->_POST['question']))
+      	{
+      		$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['fill_in_question']);
+      	}
 
  		$UpdateArr 			= 	array();
 		$UpdateArr['field']	=	array();

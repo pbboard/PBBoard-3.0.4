@@ -1401,6 +1401,7 @@ class PowerBBManagementMOD
 		       			$PowerBB->functions->error_stop();
 		    		}
 
+                    $TitlePost = preg_replace('/\s+/', '', $TitlePost);
 		        	if  (!isset($TitlePost{$PowerBB->_CONF['info_row']['post_title_min']}))
 		     		{
 		     			$PowerBB->functions->ShowHeader();
@@ -1418,7 +1419,7 @@ class PowerBBManagementMOD
                          $this->_empty_bac();
 		      			$PowerBB->functions->error_stop();
 		     		}
-
+                    $TextPost = preg_replace('/\s+/', '', $TextPost);
 		     		if (!isset($TextPost{$PowerBB->_CONF['info_row']['post_text_min']}))
 		     		{
 		     			$PowerBB->functions->ShowHeader();
@@ -2094,6 +2095,7 @@ class PowerBBManagementMOD
                 $PowerBB->functions->error_stop();
 	     	 }
 
+             $TextPost = preg_replace('/\s+/', '', $TextPost);
      		 if (!isset($TextPost{$PowerBB->_CONF['info_row']['post_text_min']}))
      		{
              $PowerBB->functions->ShowHeader();

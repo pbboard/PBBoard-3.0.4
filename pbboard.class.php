@@ -583,8 +583,7 @@ class PowerBB
  	    $arr['where'][0]['name'] 		= 	'languageid';
  	    $arr['where'][0]['oper'] 		= 	'=';
  	    $arr['where'][0]['value'] 		= 	$languageid;
-
- 	    if ($page != 'chat_message')
+ 	    if ($page != 'chat_message' and $page != 'options')
  	    {
 
 		  if (defined('IN_ADMIN'))

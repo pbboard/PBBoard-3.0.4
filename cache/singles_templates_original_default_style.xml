@@ -1988,12 +1988,13 @@ function Ready()
 {
 $("#poll_table").hide();
 $("#poll_id").click(ShowPollTable);
-$(".more_answers_class").click(function() { AddMoreAnswers(2) });
+$(".more_answers_class").click(function() { AddMoreAnswers(0) });
 }
 $(document).ready(Ready);
 </script>
 <form method="post" action="index.php?page=vote&amp;poll_start_edit=1&amp;id={$Poll['id']}&amp;subject_id={$subject_id}">
-<input name="poll_answers_count" id="poll_answers_count_id" type="hidden" value="2">
+<input name="poll_answers_count" id="poll_answers_count_id" type="hidden" value="0">
+<input name="poll_answers_old" id="poll_answers_old" type="hidden" value="{$answers__number}">
 <table class="border wd70 brd1 clpc0 a-center" id="poll_question_answers">
 <tr class="center_text_align">
 <td class="thead1" colspan="2">

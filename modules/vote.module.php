@@ -196,8 +196,8 @@ class PowerBBCoreMOD
 				$PollArr['where'] 	= 	array('id',$PowerBB->_GET['id']);
 
 				$Poll = $PowerBB->core->GetInfo($PollArr,'poll');
-
-
+		      $answers__number = sizeof(json_decode($Poll['answers'], true));
+              $PowerBB->template->assign('answers__number',$answers__number);
 
 			    // Aha, there is poll in this subject
 	            $PowerBB->template->assign('Poll',$Poll);
@@ -214,7 +214,6 @@ class PowerBBCoreMOD
 					$vote_nm = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['vote'] . " WHERE answer_number = " . $answers_number . " AND subject_id = " . $subject_id . " "));
 
 					$answers = $PowerBB->Powerparse->censor_words($answers);
-
 					$PowerBB->template->assign('answers',$answers);
 					$PowerBB->template->assign('answers_number',$answers_number);
 					$PowerBB->template->assign('Vote',$vote_nm);
@@ -261,12 +260,7 @@ class PowerBBCoreMOD
 		and isset($PowerBB->_POST['answer'][1]))
 	  {
 
-		$answers_number = 2;
-
-		if ($PowerBB->_POST['poll_answers_count'] > 0)
-		{
-			$answers_number = $PowerBB->_POST['poll_answers_count']+2;
-		}
+		$answers_number = $PowerBB->_POST['poll_answers_count']+$PowerBB->_POST['poll_answers_old'];
 
 		$answers = array();
 
@@ -275,15 +269,23 @@ class PowerBBCoreMOD
 		while ($x < $answers_number)
 		{
 			// The text of the answer
+            $answersss = utf8_decode($PowerBB->_POST['answer'][$x]);
+            $answersss = preg_replace('/\s+/', '', $answersss);
 			$answers[$x][0] = $PowerBB->_POST['answer'][$x];
-			$answersss = str_replace('&nbsp;','',$PowerBB->_POST['answer'][$x]);
-			$answersss = str_replace(' ','',$PowerBB->_POST['answer'][$x]);
-            $answersss = preg_replace('/\s+/', '', $PowerBB->_POST['answer'][$x]);
 
 			if (empty($answersss))
 	      	{
 				$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['fill_in_answer']);
 	      	}
+
+			if(strlen($answersss) >= "1")
+			{
+			// Continue
+			}
+			else
+			{
+			 $PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['fill_in_answer']);
+			}
 			// The result
 			$answers[$x][1] = 0;
 

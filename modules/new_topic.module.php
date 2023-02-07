@@ -502,25 +502,73 @@ class PowerBBTopicAddMOD
 		     		$PowerBB->functions->error_stop();
 				}
              }
-			if ($PowerBB->_POST['poll'])
-	    		{
-                   // Filter Words
-                   $PowerBB->_POST['question'] = $PowerBB->functions->CleanVariable($PowerBB->_POST['question'],'html');
-                   $PowerBB->_POST['question'] = $PowerBB->functions->CleanVariable($PowerBB->_POST['question'],'sql');
+			// ADD poll
+         if ($PowerBB->_POST['poll'])
+         {
+                // Filter Words
+                  $PowerBB->_POST['question'] = $PowerBB->functions->CleanVariable($PowerBB->_POST['question'],'html');
+                 // $PowerBB->_POST['question'] = $PowerBB->functions->CleanVariable($PowerBB->_POST['question'],'sql');
+            $question = utf8_decode($PowerBB->_POST['question']);
+            $question = preg_replace('/\s+/', '', $question);
 
-	  		   if (empty($PowerBB->_POST['question']))
-				{
-                   $PowerBB->functions->ShowHeader($PowerBB->_CONF['template']['_CONF']['lang']['add_new_topic']);
-					$PowerBB->functions->msg($PowerBB->_CONF['template']['_CONF']['lang']['fill_in_question']);
-	                 $PowerBB->template->assign('ques',$PowerBB->_POST['question']);
-	                    $this->_empty_bac();
-						$PowerBB->functions->error_stop();
-				 }
+              if (empty($question))
+             {
+             	$PowerBB->functions->ShowHeader();
+                $PowerBB->functions->msg($PowerBB->_CONF['template']['_CONF']['lang']['fill_in_question']);
+                 $PowerBB->template->assign('question',$PowerBB->_POST['question']);
+                    $this->_empty_bac();
+                    $PowerBB->functions->error_stop();
+              }
 
+                    if (isset($PowerBB->_POST['question'])
+                        and isset($PowerBB->_POST['answer'][0])
+                        and isset($PowerBB->_POST['answer'][1]))
+                    {
+                        $answers_number = 2;
 
+                        if ($PowerBB->_POST['poll_answers_count'] > 0)
+                        {
+                           $answers_number = $PowerBB->_POST['poll_answers_count'];
+                        }
 
+                        $answers = array();
 
-			}
+                        $x = 0;
+
+                        while ($x < $answers_number)
+                        {
+                           // The text of the answer
+                           $answers[$x][0] = $PowerBB->_POST['answer'][$x];
+                        $PowerBB->functions->CleanVariable($PowerBB->_POST['answer'][$x],'html');
+                        $PowerBB->functions->CleanVariable($PowerBB->_POST['answer'][$x],'sql');
+						$PowerBB->_POST['answer'][$x] = $PowerBB->functions->CleanVariable($PowerBB->_POST['answer'][$x],'sql');
+
+				            $answersss = utf8_decode($PowerBB->_POST['answer'][$x]);
+				            $answersss = preg_replace('/\s+/', '', $answersss);
+							if (empty($answersss))
+							{
+							$PowerBB->functions->ShowHeader();
+							$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['fill_in_answer']);
+							}
+
+							if(strlen($answersss) >= "1")
+							{
+							// Continue
+							}
+							else
+							{
+							 $PowerBB->functions->ShowHeader();
+							 $PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['fill_in_answer']);
+							}
+                           // The result
+                           $answers[$x][1] = 0;
+
+                           $x += 1;
+                        }
+
+                    }
+
+           }
 
 
 

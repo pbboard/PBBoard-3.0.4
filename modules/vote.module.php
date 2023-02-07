@@ -298,8 +298,10 @@ class PowerBBCoreMOD
 		$PowerBB->functions->CleanVariable($PowerBB->_POST['answer'],'html');
 		$PowerBB->functions->CleanVariable($PowerBB->_POST['answer'],'sql');
 
+            $question = utf8_decode($PowerBB->_POST['question']);
+            $question = preg_replace('/\s+/', '', $question);
 
-		if (empty($PowerBB->_POST['question']))
+		if (empty($question))
       	{
       		$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['fill_in_question']);
       	}

@@ -991,6 +991,18 @@ class PowerBBManagementMOD
          $PowerBB->template->assign('prefix_subject_prev',$PowerBB->_POST['prefix_subject']);
          $PowerBB->template->assign('SRInfo',$this->Subject);
 
+        if ($PowerBB->functions->section_group_permission($PowerBB->_GET['section'],$PowerBB->_CONF['group_info']['id'],'write_poll')
+       and $PowerBB->_CONF['group_info']['write_poll'])
+       {
+          if($this->Subject['poll_subject'])
+          {
+           $PowerBB->template->assign('write_poll',false);
+          }
+          else
+          {
+           $PowerBB->template->assign('write_poll',true);
+          }
+       }
 		$PowerBB->template->display('subject_edit');
 	}
 
@@ -1141,7 +1153,14 @@ class PowerBBManagementMOD
        if ($PowerBB->functions->section_group_permission($this->SectionInfo['id'],$PowerBB->_CONF['group_info']['id'],'write_poll') == 0
        and $PowerBB->_CONF['group_info']['write_poll'])
        {
-       $PowerBB->template->assign('write_poll',true);
+          if($SubjectInfo['poll_subject'])
+          {
+           $PowerBB->template->assign('write_poll',false);
+          }
+          else
+          {
+           $PowerBB->template->assign('write_poll',true);
+          }
        }
 
 
@@ -1457,8 +1476,10 @@ class PowerBBManagementMOD
                 // Filter Words
                   $PowerBB->_POST['question'] = $PowerBB->functions->CleanVariable($PowerBB->_POST['question'],'html');
                  // $PowerBB->_POST['question'] = $PowerBB->functions->CleanVariable($PowerBB->_POST['question'],'sql');
+            $question = utf8_decode($PowerBB->_POST['question']);
+            $question = preg_replace('/\s+/', '', $question);
 
-              if (empty($PowerBB->_POST['question']))
+              if (empty($question))
              {
              	$PowerBB->functions->ShowHeader();
                 $PowerBB->functions->msg($PowerBB->_CONF['template']['_CONF']['lang']['fill_in_question']);
@@ -1467,23 +1488,54 @@ class PowerBBManagementMOD
                     $PowerBB->functions->error_stop();
               }
 
-                 $Answer = $PowerBB->_POST['answer'];
-               foreach ($Answer as $Answer_x)
-               {
-                // Filter Answer Words
-                $Answer_x = $PowerBB->functions->CleanVariable($Answer_x,'html');
-                 $Answer_x = $PowerBB->functions->CleanVariable($Answer_x,'sql');
-                $Answer_x = str_replace('<','',$Answer_x);
-                  if (empty($Answer_x))
-                {
-                	$PowerBB->functions->ShowHeader();
-                    $PowerBB->functions->msg($PowerBB->_CONF['template']['_CONF']['lang']['fill_in_answer']);
-                    $PowerBB->template->assign('question',$PowerBB->_POST['question']);
-                    $this->_empty_bac();
-                    $PowerBB->functions->error_stop();
-                }
+                    if (isset($PowerBB->_POST['question'])
+                        and isset($PowerBB->_POST['answer'][0])
+                        and isset($PowerBB->_POST['answer'][1]))
+                    {
+                        $answers_number = 2;
 
-               }
+                        if ($PowerBB->_POST['poll_answers_count'] > 0)
+                        {
+                           $answers_number = $PowerBB->_POST['poll_answers_count'];
+                        }
+
+                        $answers = array();
+
+                        $x = 0;
+
+                        while ($x < $answers_number)
+                        {
+                           // The text of the answer
+                           $answers[$x][0] = $PowerBB->_POST['answer'][$x];
+                        $PowerBB->functions->CleanVariable($PowerBB->_POST['answer'][$x],'html');
+                        $PowerBB->functions->CleanVariable($PowerBB->_POST['answer'][$x],'sql');
+						$PowerBB->_POST['answer'][$x] = $PowerBB->functions->CleanVariable($PowerBB->_POST['answer'][$x],'sql');
+
+				            $answersss = utf8_decode($PowerBB->_POST['answer'][$x]);
+				            $answersss = preg_replace('/\s+/', '', $answersss);
+							if (empty($answersss))
+							{
+							$PowerBB->functions->ShowHeader();
+							$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['fill_in_answer']);
+							}
+
+							if(strlen($answersss) >= "1")
+							{
+							// Continue
+							}
+							else
+							{
+							 $PowerBB->functions->ShowHeader();
+							 $PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['fill_in_answer']);
+							}
+                           // The result
+                           $answers[$x][1] = 0;
+
+                           $x += 1;
+                        }
+
+                    }
+
            }
 			//
                    // Filter Words
@@ -1602,9 +1654,25 @@ class PowerBBManagementMOD
                            $answers[$x][0] = $PowerBB->_POST['answer'][$x];
                         $PowerBB->functions->CleanVariable($PowerBB->_POST['answer'][$x],'html');
                         $PowerBB->functions->CleanVariable($PowerBB->_POST['answer'][$x],'sql');
-						$PowerBB->_POST['answer'][$x] = str_replace('SCRIPT','',$PowerBB->_POST['answer'][$x]);
 						$PowerBB->_POST['answer'][$x] = $PowerBB->functions->CleanVariable($PowerBB->_POST['answer'][$x],'sql');
 
+				            $answersss = utf8_decode($PowerBB->_POST['answer'][$x]);
+				            $answersss = preg_replace('/\s+/', '', $answersss);
+							if (empty($answersss))
+							{
+							$PowerBB->functions->ShowHeader();
+							$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['fill_in_answer']);
+							}
+
+							if(strlen($answersss) >= "1")
+							{
+							// Continue
+							}
+							else
+							{
+							 $PowerBB->functions->ShowHeader();
+							 $PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['fill_in_answer']);
+							}
                            // The result
                            $answers[$x][1] = 0;
 

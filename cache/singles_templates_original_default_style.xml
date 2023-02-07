@@ -646,7 +646,7 @@ src="index.php?page=download&amp;attach=1&amp;id={$SubjectAttachList['id']}" tit
 {$lang['answer']}
 </td>
 <td class="row1">
-<input name="question" type="text" size="40" value="{$ques}" />
+<input name="question" type="text" value="{$ques}" />
 </td>
 </tr>
 <tr class="center_text_align">
@@ -12481,8 +12481,8 @@ x += 1;
 var answers_max = 100;
 $("#poll_answers_count_id").val(x);
 $(".more_tr").hide();
-$("#poll_question_answers").append('<tr class="a-center"><td class="row1 rows_space">{$lang['answers_number']}' + x + '</td><td class="row1 rows_space"><input name="answer[]" type="text" id="answer' + x + '" /></td></tr>');
-$("#poll_question_answers").append('<tr class="more_tr a-center"><td class="row1 rows_space" colspan="2"><input type="button" name="more_answers" class="more_answers_class" value="{$lang['more_answers']}" /></td></tr>');
+$("#poll_question_answers").append('<tr class="a-center"><td class="row1">{$lang['answers_number']}' + x + '</td><td class="row1"><input name="answer[]" type="text" id="answer' + x + '" /></td></tr>');
+$("#poll_question_answers").append('<tr class="more_tr a-center"><td class="row1" colspan="2"><input type="button" name="more_answers" class="more_answers_class" value="{$lang['more_answers']}" /></td></tr>');
 $("#answer" + x).focus();
 $(".more_answers_class").click(function() { AddMoreAnswers(x) });
 if (function() { AddMoreAnswers(x) })

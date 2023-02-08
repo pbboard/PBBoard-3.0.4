@@ -267,19 +267,23 @@ class PowerBBCodeParse
 			$regexcode_code['[code]'] = '#\[code\](.*)\[/code\]#siU';
 			$string = preg_replace_callback($regexcode_code, function($matches) {
 			$matches[1] = base64_decode($matches[1]);
+			$matches[1] = $this->htmlspecialchars_uni($matches[1]);
 			return '<div class="maxy"></div><div class="codediv">CODE</div><pre><code class="language-php">'.$matches[1].'</code></pre><div class="maxy"></div>';
 			}, $string);
 
 			$regexcode['[php]'] = '#\[php\](.*)\[/php\]#siU';
 			$string = preg_replace_callback($regexcode, function($matches) {
 			$matches[1] = base64_decode($matches[1]);
+			$matches[1] = $this->htmlspecialchars_uni($matches[1]);
 			$matches[1] = $this->Simplereplace($matches[1]);
+
 			return '<div class="maxy"></div><div class="codediv">PHP</div><pre><code class="language-php">'.$matches[1].'</code></pre><div class="maxy"></div>';
 			}, $string);
 
 			$regexcode_html['[html]'] = '#\[html\](.*)\[/html\]#siU';
 			$string = preg_replace_callback($regexcode_html, function($matches) {
 			$matches[1] = base64_decode($matches[1]);
+			$matches[1] = $this->htmlspecialchars_uni($matches[1]);
 			$matches[1] = $this->Simplereplace($matches[1]);
 			return '<div class="maxy"></div><div class="codediv">Html</div><pre><code class="language-html">'.$matches[1].'</code></pre><div class="maxy"></div>';
 			}, $string);
@@ -288,6 +292,7 @@ class PowerBBCodeParse
 			$string = preg_replace_callback($regexcode_js, function($matches) {
 			$matches[1] = base64_decode($matches[1]);
 			$matches[1] = $this->fix_javascript($matches[1]);
+			$matches[1] = $this->htmlspecialchars_uni($matches[1]);
 			$matches[1] = $this->Simplereplace($matches[1]);
 			return '<div class="maxy"></div><div class="codediv">Java</div><pre><code class="language-java">'.$matches[1].'</code></pre><div class="maxy"></div>';
 			}, $string);
@@ -301,6 +306,7 @@ class PowerBBCodeParse
 		{
 			$string .= '<br class="clear" />';
 		}
+       $string = $this->Simplereplace($string);
 
 		return $string;
  	}
@@ -332,6 +338,7 @@ class PowerBBCodeParse
             $string = preg_replace('#\[indent\](.+)\[\/indent\]#iUs', '<indent>$1</indent>', $string);
 	        $string = preg_replace('#\[color\=(.+)\](.+)\[\/color\]#iUs', '<font color="$1">$2</font>', $string);
 	        $string = preg_replace('#\[font\=(.+)\](.+)\[\/font\]#iUs', '<font face="$1">$2</font>', $string);
+	        $string = preg_replace('#\[(.+)\=(.+)\](.+)\[\/(.+)\]#iUs', '<$1 face="$2">$3</$4>', $string);
 
         return $this->closetags($string);
 
@@ -713,46 +720,7 @@ class PowerBBCodeParse
 		 $text = str_replace("&amp;","&",$text);
          $text = str_replace('{39}',"'",$text);
 
-          // nofollow links out said
-		if (isset($PowerBB->_SERVER['HTTPS']) &&
-		    ($PowerBB->_SERVER['HTTPS'] == 'on' || $PowerBB->_SERVER['HTTPS'] == 1) ||
-		    isset($PowerBB->_SERVER['HTTP_X_FORWARDED_PROTO']) &&
-		    $PowerBB->_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https') {
-		  $protocol = 'https://';
-		}
-		else {
-		  $protocol = 'http://';
-		}
-        $text = str_ireplace('target="_blank"', '', $text);
-        $text = str_ireplace("target='_blank'", '', $text);
-        $text = str_ireplace('rel="dofollow"', '', $text);
-        $text = str_ireplace('rel="nofollow"', '', $text);
-		$GetHOSThttp  = $protocol.$PowerBB->_SERVER['HTTP_HOST'];
-		$text = str_ireplace('href="'.$GetHOSThttp,'rel="dofollow" href="'.$GetHOSThttp,$text);
-		$text = str_ireplace('href="'.!$GetHOSThttp,'rel="nofollow" href="'.!$GetHOSThttp,$text);
-		$GetHOSThttps  = $protocol.$PowerBB->_SERVER['HTTP_HOST'];
-		$text = str_ireplace('href="'.$GetHOSThttps,'rel="dofollow" href="'.$GetHOSThttps,$text);
-		$text = str_ireplace('href="'.!$GetHOSThttps,'rel="nofollow" href="'.!$GetHOSThttps,$text);
-		$GetHOSTwww  = "www.".$PowerBB->_SERVER['HTTP_HOST'];
-		$text = str_ireplace('href="'.$GetHOSTwww,'rel="dofollow" href="'.$GetHOSTwww,$text);
-		$text = str_ireplace('href="'.!$GetHOSTwww,'rel="nofollow" href="'.!$GetHOSTwww,$text);
-		$GetHOSThttpwww  = $protocol."www.".$PowerBB->_SERVER['HTTP_HOST'];
-		$text = str_ireplace('href="'.$GetHOSThttpwww,'rel="dofollow" href="'.$GetHOSThttpwww,$text);
-		$text = str_ireplace('href="'.!$GetHOSThttpwww,'rel="nofollow" href="'.!$GetHOSThttpwww,$text);
-		$GetHOSThttpswww  = $protocol."www.".$PowerBB->_SERVER['HTTP_HOST'];
-		$text = str_ireplace('href="'.$GetHOSThttpswww,'rel="dofollow" href="'.$GetHOSThttpswww,$text);
-		$text = str_ireplace('href="'.!$GetHOSThttpswww,'rel="nofollow" href="'.!$GetHOSThttpswww,$text);
-        //
-        $text = str_ireplace('rel="dofollow" rel="dofollow"', '', $text);
-        $text = str_ireplace('rel="nofollow" rel="nofollow"', '', $text);
-        $text = str_ireplace('rel="dofollow"  rel="nofollow"', 'rel="dofollow"', $text);
-        $text = str_ireplace('"   rel="', '" rel="', $text);
-        $text = str_ireplace('blank"  rel="', 'blank" rel="', $text);
-        $text = str_ireplace('rel="nofollow" href="#', 'href="#', $text);
-        $text = str_ireplace('rel="dofollow" href="#', 'href="#', $text);
-
             eval($PowerBB->functions->get_fetch_hooks('BBCodeParseHooks3'));
-       // $text = strip_tags($text);
         $censorwords = preg_split('#[ \r\n\t]+#', $PowerBB->_CONF['info_row']['censorwords'], -1, PREG_SPLIT_NO_EMPTY);
         $text = str_ireplace($censorwords,'**', $text);
          $blankasciistrip ="160 173 u8205 u8204 u8237 u8238";
@@ -793,15 +761,12 @@ class PowerBBCodeParse
 
 		$text = str_ireplace("{h-h}", "http", $text);
 		$text = str_ireplace("{w-w}", "www.", $text);
-		$text = str_replace('rel="dofollow" rel="nofollow"', '', $text);
-		$text = str_replace('  rel="dofollow"   ', ' rel="dofollow" ', $text);
-        $text = str_ireplace('a   rel=', 'a rel=', $text);
-        $text = str_ireplace('"  title=', '" title=', $text);
+
 
 		$text = str_replace("<br>", "<br />", $text);
- 		$string = str_replace('https://www.pbboard.info', 'https://pbboard.info', $string);
-		$string = str_replace('http://www.pbboard.info', 'https://pbboard.info', $string);
-		$string = str_replace('http://pbboard.info', 'https://pbboard.info', $string);
+ 		$text = str_replace('https://www.pbboard.info', 'https://pbboard.info', $text);
+		$text = str_replace('http://www.pbboard.info', 'https://pbboard.info', $text);
+		$text = str_replace('http://pbboard.info', 'https://pbboard.info', $text);
 
 		eval($PowerBB->functions->get_fetch_hooks('BBCodeParseHooks_cr'));
         return $text;

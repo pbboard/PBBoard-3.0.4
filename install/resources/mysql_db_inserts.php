@@ -131,7 +131,7 @@ $inserts[] = "INSERT INTO pbb_info (id, var_name, value) VALUES
 (57, 'last_member', ''),
 (58, 'last_member_id', '0'),
 (59, 'floodctrl', '30'),
-(60, 'description', 'هذا المنتدى يستخدم برنامج PBBoard لمعرفة المزيد عنه اذهب إلى www.pbboard.info'),
+(60, 'description', 'هذا المنتدى يستخدم برنامج PBBoard لمعرفة المزيد عنه اذهب إلى https://pbboard.info'),
 (61, 'keywords', 'منتدى,منتديات,PBBoard,Power,bulletin,board,arab,forums,forum,pbboard.info'),
 (62, 'content_language', 'ar'),
 (63, 'content_dir', 'rtl'),
@@ -212,7 +212,7 @@ $inserts[] = "INSERT INTO pbb_info (id, var_name, value) VALUES
 (138, 'chat_num_mem_posts', '5'),
 (139, 'chat_num_characters', '650'),
 (140, 'chat_hide_country', '0'),
-(141, 'characters_keyword_search', '4'),
+(141, 'characters_keyword_search', '2'),
 (142, 'flood_search', '40'),
 (143, 'allowed_emailed', '1'),
 (144, 'allowed_emailed_pm', '1'),
@@ -223,7 +223,7 @@ $inserts[] = "INSERT INTO pbb_info (id, var_name, value) VALUES
 (149, 'active_addons', '1'),
 (150, 'haid_links_for_guest', '0'),
 (151, 'guest_message_for_haid_links', 'لمشاهدة الروابط يلزمك التسجيل'),
-(152, 'add_tags_automatic', '0'),
+(152, 'add_tags_automatic', '1'),
 (153, 'mailer', 'phpmail'),
 (154, 'smtp_secure', 'TLS'),
 (155, 'smtp_port', '25'),
@@ -312,7 +312,7 @@ $inserts[] = "INSERT INTO pbb_section (id, title, section_describe, parent, sort
 (2, 'المنتدى التجريبي', 'منتدي تجريبي يمكنك حذفه وقتما تشاء ', 1, 1, '', 1, 1, '', 2, 0, 0, 0, '', 1, 0, 'admin', 'مرحباً بك في منتديات PBBoard', 1, '".$now."', 0, 0, 1, 0, '', '[]', '', '', '', 0, 'look/images/icons/i1.gif', '".$now."', 0, 0, '', 0, '', 0, 0, 0);";
 
 $inserts[] = "INSERT INTO pbb_subject (id, title, text, writer, section, write_date, stick, close, delete_topic, reply_number, visitor, write_time, native_write_time, icon, subject_describe, action_by, sec_subject, lastreply_cache, last_replier, poll_subject, attach_subject, actiondate, tags_cache, close_reason, delete_reason, review_subject, special, review_reply, rating, last_time, reason_edit, prefix_subject, close_poll_subject) VALUES
-(1, 'مرحباً بك في منتديات PBBoard', '\r\nالسلام عليكم ورحمة الله وبركاته ,,\r\n\r\nتهانينا  بنجاح تثبيت نسخة PBBoard الخاصة بك وتكوينها بشكل صحيح.\r\n\r\nتشكرك مجموعة PBBoard على دعمك في تثبيت برنامجنا ونأمل أن نراك في [url=https://www.pbboard.info/forums/]PBBoard Community Forums[/url] إذا كنت بحاجة إلى مساعدة أو ترغب في أن تصبح جزء من مجتمع PBBoard.\r\n\r\nيمكنك الآن الاستمتاع بمنتداك الجديد من PBBoard.\r\n\r\nبالتوفيق :)\r\n\r\n', 'admin', 2, '', 0, 0, 0, 0, 0, '".$now."', ".$now.", 'look/images/icons/i1.gif', '', '', 0, '{\"1\":{\"user_id\":\"1\"},\"2\":{\"avater_path\":\"\"},\"3\":{\"username_style\":\"<strong><em><span style=\\\"color: #800000;\\\">admin<\\/span><\\/em><\\/strong>\"},\"4\":{\"section_title\":\"\\u0627\\u0644\\u0645\\u0646\\u062a\\u062f\\u0649 \\u0627\\u0644\\u062a\\u062c\\u0631\\u064a\\u0628\\u064a\"}}', '', 0, 0, '', 'true', '', '', 0, 0, 0, 0, '', '', '', 0);";
+(1, 'مرحباً بك في منتديات PBBoard', '\r\nالسلام عليكم ورحمة الله وبركاته ,,\r\n\r\nتهانينا  بنجاح تثبيت نسخة PBBoard الخاصة بك وتكوينها بشكل صحيح.\r\n\r\nتشكرك مجموعة PBBoard على دعمك في تثبيت برنامجنا ونأمل أن نراك في [url=https://pbboard.info/forums/]PBBoard Community Forums[/url] إذا كنت بحاجة إلى مساعدة أو ترغب في أن تصبح جزء من مجتمع PBBoard.\r\n\r\nيمكنك الآن الاستمتاع بمنتداك الجديد من PBBoard.\r\n\r\nبالتوفيق :)\r\n\r\n', 'admin', 2, '', 0, 0, 0, 0, 0, '".$now."', ".$now.", 'look/images/icons/i1.gif', '', '', 0, '{\"1\":{\"user_id\":\"1\"},\"2\":{\"avater_path\":\"\"},\"3\":{\"username_style\":\"<strong><em><span style=\\\"color: #800000;\\\">admin<\\/span><\\/em><\\/strong>\"},\"4\":{\"section_title\":\"\\u0627\\u0644\\u0645\\u0646\\u062a\\u062f\\u0649 \\u0627\\u0644\\u062a\\u062c\\u0631\\u064a\\u0628\\u064a\"}}', '', 0, 0, '', 'true', '', '', 0, 0, 0, 0, '', '', '', 0);";
 
 $inserts[] = "INSERT INTO pbb_sectiongroup (id, section_id, group_id, view_section, view_subject, download_attach, write_subject, write_reply, upload_attach, edit_own_subject, edit_own_reply, del_own_subject, del_own_reply, write_poll, vote_poll, no_posts, main_section, group_name) VALUES
 (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 'مدير المنتدى'),

@@ -1111,15 +1111,14 @@ class PowerBBFunctions
 		 if ($PowerBB->_GET['keyword'] != '')
 		  {
 		     $search_keyword = $PowerBB->functions->CleanText($PowerBB->_GET['keyword']);
-			 $page_address['search'] 		= 	$PowerBB->_CONF['template']['_CONF']['lang']['Search_results_for']. $search_keyword;
+			 $page_address['search'] 		= 	$search_keyword;
              $PowerBB->template->assign('description',$PowerBB->functions->CleanText($PowerBB->_CONF['template']['_CONF']['lang']['Search_results_for']." ".$search_keyword));
 		     $PowerBB->template->assign('keywords',$PowerBB->functions->Getkeywords($PowerBB->_CONF['template']['_CONF']['lang']['Search_results_for']." ".$search_keyword));
 		  }
 		  elseif ($PowerBB->_GET['option'] == '3')
 		  {
 		     $search_option = $PowerBB->functions->CleanText($PowerBB->_GET['username']);
-
-			 $page_address['search'] 		= 	$PowerBB->_CONF['template']['_CONF']['lang']['Search_results_for_all_subject_user']." ".$search_option;
+			 $page_address['search'] 		= 	$search_option;
 			 $PowerBB->template->assign('keywords',$PowerBB->functions->Getkeywords($PowerBB->_CONF['template']['_CONF']['lang']['Search_results_for_all_subject_user']." ".$search_option));
 
 		  }
@@ -1129,6 +1128,14 @@ class PowerBBFunctions
 
 			 $page_address['search'] 		= 	$PowerBB->_CONF['template']['_CONF']['lang']['Search_results_for_all_reply_user']." ".$search_option;
 			 $PowerBB->template->assign('keywords',$PowerBB->functions->Getkeywords($PowerBB->_CONF['template']['_CONF']['lang']['Search_results_for_all_reply_user']." ".$search_option));
+
+		  }
+		  elseif ($PowerBB->_GET['option'] == '5')
+		  {
+		     $search_option = $PowerBB->functions->CleanText($PowerBB->_GET['tag']);
+
+			 $page_address['search'] 		= 	$search_option;
+			 $PowerBB->template->assign('keywords',$PowerBB->functions->Getkeywords($search_option));
 
 		  }
 		  else

@@ -4,9 +4,6 @@
 
 $CALL_SYSTEM			=	array();
 $CALL_SYSTEM['PAGES'] 	= 	true;
-
-
-
 define('CLASS_NAME','PowerBBPagesMOD');
 
 include('common.php');
@@ -44,7 +41,7 @@ class PowerBBPagesMOD
 		$PageArr 			= 	array();
 		$PageArr['where'] 	= 	array('id',$PowerBB->_GET['id']);
 
-		$PowerBB->_CONF['template']['GetPage'] = $PowerBB->pages->GetPageInfo($PageArr);
+		$PowerBB->_CONF['template']['GetPage'] = $PowerBB->core->GetInfo($PageArr,'pages');
         $PowerBB->_CONF['template']['GetPage']['html_code']= str_replace('../look/','look/',$PowerBB->_CONF['template']['GetPage']['html_code']);
 
 		if (!$PowerBB->_CONF['template']['GetPage'])

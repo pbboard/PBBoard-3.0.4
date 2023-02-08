@@ -405,11 +405,19 @@ class PowerBBSearchEngineMOD
          $SectionInfo = $PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['section'] . " WHERE sec_section<>1");
 		}
 
-       if  (!@isset($keyword{$PowerBB->_CONF['info_row']['characters_keyword_search']}))
-   		{
-    	 $stop = ($PowerBB->_CONF['info_row']['ajax_search'] and !$PowerBB->_POST['ajax']) ? false : true;
-		 $PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['characters_keyword_search'],$stop);
-   		}
+
+		$characters_keyword_search = $keyword;
+		$characters_keyword_search = preg_replace('/\s+/', '', $characters_keyword_search);
+		$keyword_less_num = strlen($characters_keyword_search) >= $PowerBB->_CONF['info_row']['characters_keyword_search'];
+		if  ($keyword_less_num)
+		{
+		// Continue
+		}
+		else
+		{
+		$stop = ($PowerBB->_CONF['info_row']['ajax_search'] and !$PowerBB->_POST['ajax']) ? false : true;
+		$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['characters_keyword_search'],$stop);
+		}
 
    	   if ($username)
 		{
@@ -1508,10 +1516,9 @@ class PowerBBSearchEngineMOD
 
 		}
         $limt_perpage = '32';
-
         $TotalArr 			= 	array();
 		$TotalArr['where'] 	= 	array('tag',$tag);
-        $tag_nm = $PowerBB->core->GetNumber($TotalArr,'tags');
+        $tag_nm = $PowerBB->tag->GetSubjectNumber($TotalArr);
 
         $TagArr 						= 	array();
 		$TagArr['where'] 				= 	array();

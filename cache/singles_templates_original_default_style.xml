@@ -3,9 +3,19 @@
 <address_bar_part1><![CDATA[<br />
 <div class="address_bar">
 <div class="addr_bar">
-<a href="index.php">{$_CONF['info_row']['title']} </a>
+<ol itemscope itemtype="https://schema.org/BreadcrumbList" class="itemscope-nav">
+<li itemprop="itemListElement" itemscope
+itemtype="https://schema.org/ListItem">
+<a itemprop="item" href="index.php">
+<span itemprop="name">
+{$_CONF['info_row']['title']}
+</span>
+</a>   
+<meta itemprop="position" content="1" />
+</li>          
 <div class="btn-nav"></div>]]></address_bar_part1>
-<address_bar_part2><![CDATA[</div>
+<address_bar_part2><![CDATA[</ol>
+</div>
 </div>
 <br />
 <br />
@@ -912,9 +922,21 @@ break;
 <!-- Code alerts Menu End -->]]></alerts>
 <announcement><![CDATA[<!-- action_find_addons_1 -->
 {template}address_bar_part1{/template}
-{$lang['announcement']}
+<li itemprop="itemListElement" itemscope
+itemtype="https://schema.org/ListItem">
+<span itemprop="name"> {$lang['announcement']}</span>
+<meta itemprop="position" content="2" />
+</li>
 <div class="btn-nav"></div>
-<a href="index.php?page=announcement&amp;show=1&amp;id={$AnnInfo['id']}">{$AnnInfo['title']}</a>
+<li itemprop="itemListElement" itemscope
+itemtype="https://schema.org/ListItem">
+<a itemprop="item" href="index.php?page=announcement&amp;show=1&amp;id={$AnnInfo['id']}">
+<span itemprop="name">
+{$AnnInfo['title']}
+</span>
+</a>
+<meta itemprop="position" content="3" />
+</li>
 {template}address_bar_part2{/template}
 <!-- table -->
 <div style="width:98%; border-spacing:0px;" class="table mrgTable border subcontent">
@@ -961,9 +983,11 @@ break;
 <meta name="description" content="{$section_info['title']}" />
 <link rel="shortcut icon" href="favicon.ico" />
 <link rel="stylesheet" type="text/css" href="applications/core/archive/archive.css" />
+<link rel="stylesheet" href="look/fonts/font-awesome.min.css" />
+<link rel="stylesheet" href="look/fonts/fonts.css" />
 <title> {$lang['archive']}
-- {$_CONF['info_row']['title']}
-- {$section_info['title']}
+ - {$_CONF['info_row']['title']}
+ - {$section_info['title']}
 {if {$_CONF['info_row']['allowed_powered']} == 1}
 - {$lang['powered']}
 {/if}
@@ -972,16 +996,30 @@ break;
 <body>
 <div class="pagebody">
 <div id="navbar">
-<a href="index.php?page=archive">
-{$_CONF['info_row']['title']}</a> <div class="btn-nav"></div>
-{$section_info['title']}
+<ol itemscope itemtype="https://schema.org/BreadcrumbList" class="itemscope-nav">
+<li itemprop="itemListElement" itemscope
+itemtype="https://schema.org/ListItem">
+<a itemprop="item" href="index.php?page=archive">
+<span itemprop="name">
+{$_CONF['info_row']['title']}
+</span>
+</a> 
+<meta itemprop="position" content="1" />
+</li> 
+<div class="btn-nav"></div>
+<li itemprop="itemListElement" itemscope
+itemtype="https://schema.org/ListItem">
+<a itemprop="item" href="index.php?page=forum_archive&amp;show=1&amp;id={$section_info['id']}">
+<span itemprop="name">{$section_info['title']}</span>
+</a>
+<meta itemprop="position" content="2" />
+</li> 
 </div>
 <br />
 <p class="largefont">
 {$lang['view_full_version']}
 <a href="index.php?page=forum&amp;show=1&amp;id={$section_info['id']}">
 {$section_info['title']}</a></p>
-
 <br />
 <div id="content">
 
@@ -1046,22 +1084,35 @@ break;
 <meta name="description" content="{$_CONF['info_row']['description']}" />
 <link rel="shortcut icon" href="favicon.ico" />
 <link rel="stylesheet" type="text/css" href="applications/core/archive/archive.css" />
+<link rel="stylesheet" href="look/fonts/font-awesome.min.css" />
+<link rel="stylesheet" href="look/fonts/fonts.css" />
 <title> {$lang['archive']}
-- {$_CONF['info_row']['title']}
+ - {$_CONF['info_row']['title']}
 {if {$_CONF['info_row']['allowed_powered']} == 1}
-- {$lang['powered']}
+ - {$lang['powered']}
 {/if}</title>
 </head>
 <body>
 
 <div class="pagebody">
 <div id="navbar">
-<a href="index.php?page=archive">
-{$_CONF['info_row']['title']}</a>
+<ol itemscope itemtype="https://schema.org/BreadcrumbList" class="itemscope-nav">
+<li itemprop="itemListElement" itemscope
+itemtype="https://schema.org/ListItem">
+<a itemprop="item" href="index.php?page=archive">
+<span itemprop="name">
+{$_CONF['info_row']['title']}
+</span>
+</a> 
+<meta itemprop="position" content="1" />
+</li> 
 <div class="btn-nav"></div>
-
-{$lang['archive_t']} </div>
-
+<li itemprop="itemListElement" itemscope
+itemtype="https://schema.org/ListItem">
+<span itemprop="name">{$lang['archive_t']}</span>
+<meta itemprop="position" content="2" />
+</li> 
+</ol>
 <br />
 <p class="largefont"> {$lang['view_full_version']}
 <a href="index.php">{$_CONF['info_row']['title']}</a></p>
@@ -1126,42 +1177,7 @@ break;
 {$write_time}</div></div><div class="posttext">
 {$reply_guest['text']}</div></div><hr />
 ]]></archive_reply_guest>
-<archive_subject><![CDATA[<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" dir="{$_CONF['info_row']['content_dir']}" lang="{$_CONF['info_row']['content_language']}">
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset={$_CONF['info_row']['charset']}" />
-<meta http-equiv="Content-Language" content="{$_CONF['info_row']['content_language']}" />
-<meta name="keywords" content="{$keywords}" />
-<meta name="description" content="" />
-<link rel="shortcut icon" href="favicon.ico" />
-<link rel="stylesheet" type="text/css" href="applications/core/archive/archive.css" />
-<title>{$lang['archive']}
-- {$_CONF['info_row']['title']} - {$section_info['title']} - {$Info['title']}
-{if {$_CONF['info_row']['allowed_powered']} == 1}
--  {$lang['powered']}
-{/if}</title>
-</head>
-<body>	  <div class="pagebody">
-<div id="navbar">
-<a href="index.php?page=archive">
-{$_CONF['info_row']['title']}</a> <div class="btn-nav"></div>
-<a href="index.php?page=forum_archive&amp;show=1&amp;id={$section_info['id']}{$password}">
-{$section_info['title']}
-</a>
-<a href=""><div class="btn-nav"></div>  {$Info['title']} </a>
-</div>
-<br />
-<p class="largefont">{$lang['view_full_version']}
-<a href="index.php?page=topic&amp;show=1&amp;id={$Info['subject_id']}">
-{$Info['title']}</a></p>
-<br />
-<br />
-<div class="post"><div class="posttop"><div class="username">
-<a href="index.php?page=profile&amp;show=1&amp;id={$Info['id']}">
-{$Info['display_username']}</a></div>
-<div class="date">
-{$Info['native_write_time']}</div></div><div class="posttext">
-{$Info['text']}</div></div><hr />]]></archive_subject>
+<archive_subject><![CDATA[<div id="navbar"></div>]]></archive_subject>
 <attach_show><![CDATA[{if !{$ATTACH_SHOW}}
 <div style="clear:both">&nbsp;
 {Des::while}{AttachList}
@@ -2244,9 +2260,19 @@ $(function() {
 {if {$_CONF['info_row']['allowed_powered']} == 1}
 - {$lang['powered']}
 {/if}</title>
-{template}address_bar_part1{/template}
-{$lang['Retrieve_password']}
-{template}address_bar_part2{/template}<br /><form method="post" action="index.php?page=forget&amp;start=1">
+
+
+{template}address_bar_part1{/template}    
+ <li itemprop="itemListElement" itemscope
+itemtype="https://schema.org/ListItem">
+<a itemprop="item" href="index.php?page=forget&amp;index=1">
+<span itemprop="name">{$lang['Retrieve_password']}</span></a>
+<meta itemprop="position" content="2" />
+</li>
+{template}address_bar_part2{/template}
+
+<br />
+<form method="post" action="index.php?page=forget&amp;start=1">
 <div class="center_text_align">
 <table class="border wd88 brd1 clpc0">
 <tr>
@@ -2306,21 +2332,49 @@ doc.src = "includes/captcha.php" + "?act=" + clicks;
 <br />
 </form><br />]]></forget_password_form>
 <forum><![CDATA[{template}address_bar_part1{/template}
+<?php
+ $itemprop_content = 0;
+?>
 {if {$section_parent} == '0'}
-<a href="index.php?page=forum&amp;show=1&amp;id={$sec_address_id}">
-{$sec_address_title}
+<?php
+$itemprop_content = 1;
+?>
+<li itemprop="itemListElement" itemscope
+itemtype="https://schema.org/ListItem">
+<a itemprop="item" href="index.php?page=forum&amp;show=1&amp;id={$sec_address_id}">
+<span itemprop="name">
+ {$sec_address_title}
+</span>
 </a>
+<meta itemprop="position" content="2" />
+</li>
 <div class="btn-nav"></div>
 {/if}
-{if !{$section_parent} == '0'}
-<div class="btn-nav"></div>
-<a href="index.php?page=forum&amp;show=1&amp;id={$section_info['parent']}">
+{if {$section_parent}}
+<?php
+$itemprop_content = 1;
+?>
+<li itemprop="itemListElement" itemscope
+itemtype="https://schema.org/ListItem">
+<a itemprop="item" href="index.php?page=forum&amp;show=1&amp;id={$section_info['parent']}">
+<span itemprop="name">
 {$sec_address_title}
+</span>
 </a>
+<meta itemprop="position" content="<?php echo 3-$itemprop_content;?>" />
+</li>
 <div class="btn-nav"></div>
-{/if}	<a href="index.php?page=forum&amp;show=1&amp;id={$SECTION_ID}">
+{/if}
+<li itemprop="itemListElement" itemscope
+itemtype="https://schema.org/ListItem">
+<a itemprop="item" href="index.php?page=forum&amp;show=1&amp;id={$SECTION_ID}">
+<span itemprop="name">
 {$section_info['title']}
+</span>
 </a>
+<meta itemprop="position" content="<?php echo 4-$itemprop_content;?>" />
+</li>
+
 {template}address_bar_part2{/template}<br />
 <br />
 <div class="h_tag">
@@ -3311,10 +3365,27 @@ document.write('<option value=' + i + '>{$lang['Under_Num']}  ' + i);</script></
 showFrame(1);
 </script>]]></frame_form>
 <friends_main><![CDATA[<title> {$lang['friends_list']} -
-{$_CONF['info_row']['title']}</title>{template}address_bar_part1{/template}
-<a href="index.php?page=usercp&amp;index=1">{$lang['User_Control_Panel']}</a>
+{$_CONF['info_row']['title']}</title>
+{template}address_bar_part1{/template}
+<li itemprop="itemListElement" itemscope
+itemtype="https://schema.org/ListItem">
+<a itemprop="item" href="index.php?page=usercp&amp;index=1">
+<span itemprop="name">
+{$lang['User_Control_Panel']}
+</span>
+</a>
+<meta itemprop="position" content="2" />
+</li> 
 <div class="btn-nav"></div>
+<li itemprop="itemListElement" itemscope
+itemtype="https://schema.org/ListItem">
+<a itemprop="item" href="index.php?page=usercp&amp;options=1&amp;friends=1&amp;main=1">
+<span itemprop="name">
 {$lang['friends_list']}
+</span>
+</a>
+<meta itemprop="position" content="3" />
+</li> 
 {template}address_bar_part2{/template}
 <!-- table --><div style="width:98%;border-collapse: collapse;margin: auto;" class="table">
 <dl>
@@ -4075,8 +4146,13 @@ $PowerBB->_CONF['template']['while']['Writer_subjectList'][$this->x_loop]['title
 </div>
 {/if}
 <br />]]></last_subject_writer>
-<login><![CDATA[	{template}address_bar_part1{/template}
-{$lang['Login_mem']}
+<login><![CDATA[{template}address_bar_part1{/template}
+<li itemprop="itemListElement" itemscope
+itemtype="https://schema.org/ListItem">
+<a href="index.php?page=login&amp;sign=1">
+<span itemprop="name">{$lang['Login_mem']}</span></a>
+<meta itemprop="position" content="2" />
+</li>
 {template}address_bar_part2{/template}
 <br />
 <form method="post" class="form_login" action="index.php?page=login&amp;login=1">
@@ -4109,7 +4185,7 @@ $PowerBB->_CONF['template']['while']['Writer_subjectList'][$this->x_loop]['title
 <tr>
 <td class="row1" colspan="2" class="center_text_align">
 <label for="fp1">
-<input type="checkbox" name="temporary" value="on" class="fp1" />
+<input type="checkbox" name="temporary" value="on" class="fp1" checked="checked" />
 {$lang['Temp_login']}
 </label>
 
@@ -4427,16 +4503,38 @@ echo $quote_reply_info."
 <new_reply><![CDATA[{template}address_bar_part1{/template}
 <?php $title = $PowerBB->_CONF['template']['subject_info']['title'];
 $PowerBB->_CONF['template']['subject_info']['title'] = $PowerBB->Powerparse->censor_words($PowerBB->_CONF['template']['subject_info']['title']); ?>
-<a href="index.php?page=forum&amp;show=1&amp;id={$section_id}
+<li itemprop="itemListElement" itemscope
+itemtype="https://schema.org/ListItem">
+<a itemprop="item" href="index.php?page=forum&amp;show=1&amp;id={$section_id}
 {$password} ">
-{$section_info['title']} </a>
-<div class="btn-nav"></div>
-<a href="index.php?page=topic&amp;show=1&amp;id={$id}
-{$password}">
-{$subject_info['title']}
+<span itemprop="name">
+ {$section_info['title']}
+</span>
 </a>
+<meta itemprop="position" content="2" />
+</li> 
 <div class="btn-nav"></div>
+<li itemprop="itemListElement" itemscope
+itemtype="https://schema.org/ListItem">
+<a itemprop="item" href="index.php?page=topic&amp;show=1&amp;id={$id}
+{$password}">
+<span itemprop="name">
+{$subject_info['title']}
+</span>
+</a>
+<meta itemprop="position" content="3" />
+</li> 
+<div class="btn-nav"></div>
+<li itemprop="itemListElement" itemscope
+itemtype="https://schema.org/ListItem">
+<a itemprop="item" href="index.php?page=new_reply&amp;index=1&amp;id={$id}
+{$password}">
+<span itemprop="name">
 {$lang['add_new_reply']}
+</span>
+</a>
+<meta itemprop="position" content="4" />
+</li> 
 {template}address_bar_part2{/template}
 {template}preview{/template}
 
@@ -4813,11 +4911,24 @@ document.body.addEventListener('keyup', function(event) { countlimit(thelimit,ev
 $(document).ready(Ready);
 </script>
 {template}address_bar_part1{/template}
-<a href="index.php?page=forum&amp;show=1&amp;id={$id}{$password}">
+<li itemprop="itemListElement" itemscope
+itemtype="https://schema.org/ListItem">
+<a itemprop="item" href="index.php?page=forum&amp;show=1&amp;id={$id}{$password}">
+<span itemprop="name">
 {$section_info['title']}
+</span>
 </a>
+<meta itemprop="position" content="2" />
+</li> 
 <div class="btn-nav"></div>
-{$lang['add_new_topic']}
+<li itemprop="itemListElement" itemscope
+itemtype="https://schema.org/ListItem">
+<a itemprop="item" href="index.php?page=new_topic&amp;index=1&amp;id={$id}
+{$password}">
+<span itemprop="name">{$lang['add_new_topic']}</span>
+</a>
+<meta itemprop="position" content="3" />
+</li> 
 {template}address_bar_part2{/template}
 {template}preview{/template}
 <form name="topic" method="post" enctype="multipart/form-data" action="index.php?page=new_topic&amp;start=1&amp;id={$id}{$password}">
@@ -6052,9 +6163,14 @@ border-bottom: 1px solid #d1d1e1 !important;
 <br />
 ]]></pm_show>
 <portal><![CDATA[{template}address_bar_part1{/template}
-<a href="{$Adress}
-index.php?page=portal">{$_CONF['info_row']['title_portal']}</a>
+<li itemprop="itemListElement" itemscope
+itemtype="https://schema.org/ListItem">
+<a itemprop="item" href="{$Adress}index.php?page=portal">
+<span itemprop="name">{$_CONF['info_row']['title_portal']}</span></a>
+<meta itemprop="position" content="2" />
+</li>
 {template}address_bar_part2{/template}
+
 {if {$active_right} and !{$active_left}}
 <?php
 $column = "80%" ;
@@ -6890,11 +7006,17 @@ document.write('<form> '
 </div>
 </div>
 <br />]]></print_subject>
-<profile><![CDATA[{template}address_bar_part1{/template}
-<a href="index.php?page=profile&amp;show=1&amp;id={$MemberInfo['id']}">
+<profile><![CDATA[{template}address_bar_part1{/template}    
+ <li itemprop="itemListElement" itemscope
+itemtype="https://schema.org/ListItem">
+<a itemprop="item" href="index.php?page=profile&amp;show=1&amp;id={$MemberInfo['id']}">
+<span itemprop="name">
 {$lang['View_Member_Profile']}
- <b>{$MemberInfo['username']}</b></a>
+ {$MemberInfo['username']}</span></a>
+<meta itemprop="position" content="2" />
+</li>
 {template}address_bar_part2{/template}
+
 <br />
 <br />
 {if {$GroupInfo['profile_photo']}}
@@ -7357,9 +7479,16 @@ silverlight_xap_url : '{$ForumAdress}applications/core/plupload/Moxie.xap'
 
 });
 </script>]]></profile>
-<register><![CDATA[{template}address_bar_part1{/template}
-&nbsp; {$lang['register']}
+<register><![CDATA[
+{template}address_bar_part1{/template}
+<li itemprop="itemListElement" itemscope
+itemtype="https://schema.org/ListItem">
+<a href="index.php?page=register&amp;index=1">
+<span itemprop="name">{$lang['register']}</span></a>
+<meta itemprop="position" content="2" />
+</li>
 {template}address_bar_part2{/template}
+
 <script type='text/javascript'>
 function AjaxChkName()
 {
@@ -7594,10 +7723,17 @@ id="invite_id" style="min-width: 50px;" class="max-input" size="20" dir="{$_CONF
 <!-- /table -->
 <br /></form><br />]]></register>
 <register_rules><![CDATA[<title>{$lang['Registration_requirements_forums']}
-- {$_CONF['info_row']['title']}</title>
+ - {$_CONF['info_row']['title']}</title>
+
 {template}address_bar_part1{/template}
-{$lang['Registration_requirements']}
+<li itemprop="itemListElement" itemscope
+itemtype="https://schema.org/ListItem">
+<a href="index.php?page=register&amp;index=1">
+<span itemprop="name">{$lang['Registration_requirements']}</span></a>
+<meta itemprop="position" content="2" />
+</li>
 {template}address_bar_part2{/template}
+
 <form action="index.php?page=register&amp;index=1" method="post">
 <table class="border wd80 brd1 clpc0 a-center">
 <tr>
@@ -8080,9 +8216,17 @@ $(document).ready(Ready);
 </div>
 <!-- Code reputation Menu End -->
 ]]></reply_reputation>
-<rules_board_main><![CDATA[{template}address_bar_part1{/template}
-{$lang['rules_forum']}
-{template}address_bar_part2{/template}<table class="border wd80 brd1 clpc0 a-center">
+<rules_board_main><![CDATA[
+{template}address_bar_part1{/template}
+<li itemprop="itemListElement" itemscope
+itemtype="https://schema.org/ListItem">
+<a itemprop="item" href="index.php?page=misc&amp;rules=1&amp;show=1">
+<span itemprop="name">{$lang['rules_forum']}</span></a>
+<meta itemprop="position" content="2" />
+</li>
+{template}address_bar_part2{/template}
+
+<table class="border wd80 brd1 clpc0 a-center">
 <tr class="center_text_align">
 <td class="tcat wd80" colspan="2">
 {$lang['rules_forum']}
@@ -8134,8 +8278,16 @@ $(document).ready(Ready);
 </script>
 {/if}
 {template}address_bar_part1{/template}
-<a href="index.php?page=search&amp;index=1">{$lang['Search_Engine']}</a>
-{template}address_bar_part2{/template}<form name="search" method="get"><input type="hidden" name="page" value="search">
+<li itemprop="itemListElement" itemscope
+itemtype="https://schema.org/ListItem">
+<a itemprop="item" href="index.php?page=search&amp;index=1">
+<span itemprop="name">{$lang['Search_Engine']}</span>
+</a>
+<meta itemprop="position" content="2" />
+</li>
+{template}address_bar_part2{/template}
+
+<form name="search" method="get"><input type="hidden" name="page" value="search">
 <input type="hidden" name="start" value="1">
 <table class="border wd98 brd1 clpc0 a-center">
 <tr class="center_text_align">
@@ -8250,8 +8402,13 @@ $(document).ready(Ready);
 <search_results_all><![CDATA[<title>{$lang['Search_Results']}
 - {$_CONF['info_row']['title']}</title>
 {template}address_bar_part1{/template}
-{$lang['Search_Results']}
+<li itemprop="itemListElement" itemscope
+itemtype="https://schema.org/ListItem">
+<span itemprop="name">{$lang['Search_Results']}</span>
+<meta itemprop="position" content="2" />
+</li>
 {template}address_bar_part2{/template}
+
 <br />{if !{$ReplyList}}
 <table class="border wd98 brd1 clpc0 a-center">
 <tr>
@@ -8680,13 +8837,20 @@ $(document).ready(Ready);
 </table>
 <br />
 <br />]]></search_results_one>
-<search_results_tags><![CDATA[<title>{$lang['Search_Results']}-
-{$_CONF['info_row']['title']}</title>
+<search_results_tags><![CDATA[
 {template}address_bar_part1{/template}
-{$lang['Search_results_for_tag']}
-
-<em>{$tags}</em>
+<li itemprop="itemListElement" itemscope
+itemtype="https://schema.org/ListItem">
+<a itemprop="item" href="index.php?page=search&amp;option=5&amp;tag={$tags}&amp;sort_order=DESC">
+<span itemprop="name">
+<b>{$tags}</b>
+</span>
+</a>
+<meta itemprop="position" content="2" />
+</li>
 {template}address_bar_part2{/template}
+
+
 <br /><table class="border wd70 brd1 clpc0 a-center">
 <tr class="center_text_align">
 <td class="tcat wd70" colspan="2">
@@ -8719,10 +8883,17 @@ $(document).ready(Ready);
 </table>
 <br /><br />
 ]]></search_results_tags>
-<search_results_username_reply><![CDATA[
-{template}address_bar_part1{/template}
-{$lang['Search_Results']}
+<search_results_username_reply><![CDATA[{template}address_bar_part1{/template}    
+ <li itemprop="itemListElement" itemscope
+itemtype="https://schema.org/ListItem">
+<a itemprop="item" href="index.php?page=search&amp;option=4&amp;username={$keyword}&amp;starteronly=0&amp;section=all&amp;exactname=1&amp;sort_order=DESC">
+<span itemprop="name">
+{$lang['Search_results_for_all_reply_user']}
+{$keyword}</span></a>
+<meta itemprop="position" content="2" />
+</li>
 {template}address_bar_part2{/template}
+
 <br />
 <div class="center_text_align">
 {if {$review_reply}}
@@ -8821,9 +8992,18 @@ $Forum_id = $Forum['id'];
 </tr>
 </table><br />
 <br />]]></search_results_username_reply>
-<search_results_username_subject><![CDATA[{template}address_bar_part1{/template}
-{$lang['Search_Results']}
+<search_results_username_subject><![CDATA[{template}address_bar_part1{/template}    
+ <li itemprop="itemListElement" itemscope
+itemtype="https://schema.org/ListItem">
+<a itemprop="item" href="index.php?page=search&amp;option=3&amp;username={$keyword}&amp;starteronly=0&amp;section=all&amp;exactname=1&amp;sort_order=DESC">
+<span itemprop="name">
+{$lang['Search_results_for_all_subject_user']}
+{$keyword}</span></a>
+<meta itemprop="position" content="2" />
+</li>
 {template}address_bar_part2{/template}
+
+
 <br />
 <table class="border wd98 brd1 clpc0 a-center">
 <tr>
@@ -9191,9 +9371,17 @@ imgChange.className = "collapsed";
 {if {$_CONF['info_row']['allowed_powered']} == 1}
 - {$lang['send_active_code']}
 {/if}</title>
-{template}address_bar_part1{/template}
-{$lang['send_active_code']}
-{template}address_bar_part2{/template}<br />
+
+{template}address_bar_part1{/template}    
+ <li itemprop="itemListElement" itemscope
+itemtype="https://schema.org/ListItem">
+<a itemprop="item" href="index.php?page=forget&amp;active_member=1&amp;send_active_code=1">
+<span itemprop="name">{$lang['send_active_code']}</span></a>
+<meta itemprop="position" content="2" />
+</li>
+{template}address_bar_part2{/template}
+
+<br />
 <form method="post" action="index.php?page=forget&amp;send_active_code=1">
 <table class="border wd88 brd1 clpc0 a-center">
 <tr class="center_text_align">
@@ -9250,11 +9438,16 @@ doc.src = "includes/captcha.php" + "?act=" + clicks;
 </table>
 <br />
 </form><br />]]></send_active_code>
-<send_admin><![CDATA[	<title>{$lang['Contact_Manager_forums']}
-- {$_CONF['info_row']['title']}</title>
-{template}address_bar_part1{/template}
-{$lang['Contact_Manager']}
-{template}address_bar_part2{/template}	<form method="post" action="index.php?page=send&amp;startsendmessage=1">
+<send_admin><![CDATA[{template}address_bar_part1{/template}
+<li itemprop="itemListElement" itemscope
+itemtype="https://schema.org/ListItem">
+<a itemprop="item" href="index.php?page=send&amp;sendmessage=1">
+<span itemprop="name">{$lang['Contact_Manager']}</span></a>
+<meta itemprop="position" content="2" />
+</li>
+{template}address_bar_part2{/template}
+
+<form method="post" action="index.php?page=send&amp;startsendmessage=1">
 <div class="center_text_align">
 <table class="border wd98 brd1 clpc0">
 <tr>
@@ -9326,10 +9519,17 @@ doc.src = "includes/captcha.php" + "?act=" + clicks;
 <send_email><![CDATA[<title> {$lang['Send_Email_Message_to']}
 {$MemberInfo['username']} -
 {$_CONF['info_row']['title']}</title>
-{template}address_bar_part1{/template}
-{$lang['Send_Email_Message_to']} :
-{$MemberInfo['username']}
+
+{template}address_bar_part1{/template}    
+ <li itemprop="itemListElement" itemscope
+itemtype="https://schema.org/ListItem">
+<a itemprop="item" href="index.php?page=member&amp;index=1&amp;id={$MemberInfo['id']}">
+<span itemprop="name">{$lang['Send_Email_Message_to']} :
+ {$MemberInfo['username']}</span></a>
+<meta itemprop="position" content="2" />
+</li>
 {template}address_bar_part2{/template}
+
 <form method="post" action="index.php?page=send&amp;member=1&amp;start=1&amp;id={$MemberInfo['id']}">
 <input type="hidden" name="username" value="{$_CONF['member_row']['username']}">
 <br />
@@ -9527,12 +9727,17 @@ index.php?page=topic&amp;show=1&amp;id={$SubjectInfo['id']}
 <input TYPE="hidden" id="subject_id" name="subject_id" value="{$SubjectInfo['id']}" />
 </form>
 <br />]]></send_subject_to_friend>
-<show_memberlist><![CDATA[ {template}address_bar_part1{/template}
-<a href="index.php?page=member_list&amp;index=1&amp;show=1">{$lang['memberlist']}</a>
+<show_memberlist><![CDATA[ {template}address_bar_part1{/template}    
+ <li itemprop="itemListElement" itemscope
+itemtype="https://schema.org/ListItem">
+<a itemprop="item" href="index.php?page=member_list&amp;index=1&amp;show=1">
+<span itemprop="name">{$lang['memberlist']}</span></a>
+<meta itemprop="position" content="2" />
+</li>
 {template}address_bar_part2{/template}
 <br />
 <!-- table -->
-<div style="width:98%; border-spacing:0px;" class="table mrgTable border member-lists-bar">
+<div style="width:98%; border-spacing:1px;" class="table mrgTable border member-lists-bar">
 <dl class="center_text_align">
 <dt></dt>
 <dd class="row2 wd3">
@@ -9724,7 +9929,8 @@ Z</a></dd>
 {/if}
 </dl>
 </div><!-- /table -->
-<!-- table --><div style="width:98%; border-spacing: 1px;" class="table mrgTable border">
+<!-- table -->
+<div style="width:98%; border-spacing: 1px;" class="table mrgTable border">
 <dl class="center_text_align">
 <dt></dt>
 <dd class="tcat wd20">
@@ -9841,19 +10047,26 @@ title="{$lang['no_photo']}" width="80" height="80" />
 </dd>
 </dl>
 {/Des::while}
+</div>
+<!-- table -->
 {if {$results}}
-<dl>
+<div style="width:98%; border-spacing: 1px;" class="table mrgTable border">
+<dl class="center_text_align">
+
 <dt></dt>
 <dd class="row1 center_text_align wd98">
 <br />
 {$no_search_results}
 <br />
-<br />
 </dd>
 </dl>
+</div>
 {/if}
-</div><!-- /table -->
-<!-- table --><div style="width:98%;" class="table border mrgTable">
+<!-- /table -->
+<!-- table -->
+<br />
+<br />
+<div style="width:98%; border-spacing: 1px;" class="table border mrgTable border">
 <dl>
 <dt></dt>
 <dd class="thead1"><b>{$lang['Arrangement']}  </b><span class="member-lists-search"><b>-  {$lang['search']}</b></span></dd>
@@ -9962,13 +10175,16 @@ title="{$lang['no_photo']}" width="80" height="80" />
 </td>
 </tr>
 </table>]]></show_onlain_topic>
-<show_page><![CDATA[ {template}address_bar_part1{/template}
-<a href="index.php?page=pages&amp;show=1&amp;id={$GetPage['id']}">
-{$GetPage['title']}
-</a>
+<show_page><![CDATA[{template}address_bar_part1{/template}    
+ <li itemprop="itemListElement" itemscope
+itemtype="https://schema.org/ListItem">
+<a itemprop="item" href="index.php?page=pages&amp;show=1&amp;id={$GetPage['id']}">
+<span itemprop="name">{$GetPage['title']}</span></a>
+<meta itemprop="position" content="2" />
+</li>
 {template}address_bar_part2{/template}
-<body>
-<!-- table --><div style="width:98%; border-spacing:1px;" class="table mrgTable border">
+<!-- table -->
+<div style="width:98%; border-spacing:1px;" class="table mrgTable border">
 <dl class="center_text_align">
 <dt></dt>
 <dd class="tcat">
@@ -10947,17 +11163,27 @@ $PowerBB->_CONF['template']['Voteddd'] = $PowerBB->_CONF['template']['Vote']*5;
 </table>
 <br />
 <br />]]></show_votes_down>
-<show_votes_top><![CDATA[<title> {$subject_title}
-: {$lang['show_votes']}
-: {$Poll['qus']}</title>
+<show_votes_top><![CDATA[
 {template}address_bar_part1{/template}
-<a href="index.php?page=forum&amp;show=1&amp;id={$poll_section}">{$section_title}</a>
+<li itemprop="itemListElement" itemscope
+itemtype="https://schema.org/ListItem">
+<a itemprop="item" href="index.php?page=forum&amp;show=1&amp;id={$poll_section}"><span itemprop="name">{$section_title}</span></a>
+<meta itemprop="position" content="2" />
+</li>
 <div class="btn-nav"></div>
-<a href="index.php?page=topic&amp;show=1&amp;id={$subject_id}">{$subject_title}</a>
+<li itemprop="itemListElement" itemscope
+itemtype="https://schema.org/ListItem">
+<a itemprop="item" href="index.php?page=topic&amp;show=1&amp;id={$subject_id}"><span itemprop="name">{$subject_title}</span></a>
+<meta itemprop="position" content="3" />
+</li> 
 <div class="btn-nav"></div>
-<a href="index.php?page=vote&amp;show_votes=1&amp;id={$Poll['id']}&subject_id={$subject_id}">
-{$lang['show_votes']}
-: {$Poll['qus']}</a>
+<li itemprop="itemListElement" itemscope
+itemtype="https://schema.org/ListItem">
+<a itemprop="item" href="index.php?page=vote&amp;show_votes=1&amp;id={$Poll['id']}&subject_id={$subject_id}">
+<span itemprop="name">{$lang['show_votes']}
+: {$Poll['qus']}</span></a>
+<meta itemprop="position" content="4" />
+</li> 
 {template}address_bar_part2{/template}
 <br />
 <br />
@@ -11179,8 +11405,14 @@ alt="{$lang['s_special']}" /></td>
 {/if}</table>
 <br />
 <br />]]></special_subject>
-<static><![CDATA[{template}address_bar_part1{/template}
-{$lang['statics']}
+<static><![CDATA[
+{template}address_bar_part1{/template}
+<li itemprop="itemListElement" itemscope
+itemtype="https://schema.org/ListItem">
+<a itemprop="item" href="index.php?page=static&amp;index=1">
+<span itemprop="name">{$lang['statics']}</span></a>
+<meta itemprop="position" content="2" />
+</li>
 {template}address_bar_part2{/template}
 <br />
 <div class="mrgTable center_text_align" style="width: 99%;">
@@ -12501,16 +12733,26 @@ $(document).ready(Ready);
 {template}address_bar_part1{/template}
 <?php $PowerBB->_CONF['template']['SubjectInfo']['title'] = $PowerBB->Powerparse->censor_words($PowerBB->_CONF['template']['SubjectInfo']['title']); ?>
 <?php $PowerBB->_CONF['template']['SubjectpreviewInfo']['title'] = $PowerBB->Powerparse->censor_words($PowerBB->_CONF['template']['SubjectpreviewInfo']['title']); ?>
-<a href="index.php?page=forum&amp;show=1&amp;id={$SubjectInfo['section']}{$SubjectpreviewInfo['section']}
+<li itemprop="itemListElement" itemscope
+itemtype="https://schema.org/ListItem">
+<a itemprop="item" href="index.php?page=forum&amp;show=1&amp;id={$SubjectInfo['section']}{$SubjectpreviewInfo['section']}
 {$password} ">
-{$section_info['title']} </a>
+<span itemprop="name">{$section_info['title']}</span></a>
+<meta itemprop="position" content="2" />
+</li>
 <div class="btn-nav"></div>
+<li itemprop="itemListElement" itemscope
+itemtype="https://schema.org/ListItem">
 {$lang['edit_Subject']} :
-<a href="index.php?page=topic&amp;show=1&amp;id={$SubjectInfo['id']}{$SubjectpreviewInfo['id']}
+<a itemprop="item" href="index.php?page=topic&amp;show=1&amp;id={$SubjectInfo['id']}{$SubjectpreviewInfo['id']}
 {$password}">
+<span itemprop="name">
 {$SubjectInfo['title']}
 {$SubjectpreviewInfo['title']}
+</span>
 </a>
+<meta itemprop="position" content="3" />
+</li>
 {template}address_bar_part2{/template}
 {template}preview{/template}
 <form name="topic" method="post" action="{$edit_page}">
@@ -12959,7 +13201,9 @@ $(document).ready(Ready);
 </div>
 <!-- Code reputation Menu End -->]]></subject_reputation>
 <subject_top><![CDATA[{template}address_bar_part1{/template}
+
 <?php
+$itemprop_content = 0;
 if($PowerBB->_CONF['template']['sec_main_id']){
 $SecSubject3 			= 	array();
 $SecSubject3['where'] 	= 	array('id',$PowerBB->_CONF['template']['sec_main_id']);
@@ -12979,69 +13223,79 @@ $Section_rwo5 = $PowerBB->core->GetInfo($SecSubject5,'section');
 if($Section_rwo5['id'])
 {
 ?>
-<span itemscope itemtype="http://data-vocabulary.org/Breadcrumb">
-<a href="index.php?page=forum&amp;show=1&amp;id=<?php echo $Section_rwo5['id']; ?>">
-<span itemprop="title">
+
+<li itemprop="itemListElement" itemscope
+itemtype="https://schema.org/ListItem">
+<a itemprop="item" href="index.php?page=forum&amp;show=1&amp;id=<?php echo $Section_rwo5['id']; ?>">
+<span itemprop="name">
 <?php echo $Section_rwo5['title']; ?>
 </span>
 </a>
-</span>
+<meta itemprop="position" content="5" />
+</li>
 <div class="btn-nav"></div>
 <?php
 }
 if($Section_rwo4['id'])
 {
+$itemprop_content = 1;
 ?>
-<span itemscope itemtype="http://data-vocabulary.org/Breadcrumb">
-<a href="index.php?page=forum&amp;show=1&amp;id=<?php echo $Section_rwo4['id']; ?>">
-<span itemprop="title">
+<li itemprop="itemListElement" itemscope
+itemtype="https://schema.org/ListItem">
+<a itemprop="item" href="index.php?page=forum&amp;show=1&amp;id=<?php echo $Section_rwo4['id']; ?>">
+<span itemprop="name">
 <?php echo $Section_rwo4['title']; ?>
 </span>
 </a>
-</span>
+<meta itemprop="position" content="2" />
+</li>
 <div class="btn-nav"></div>
 <?php
 }
 ?>
 {if {$Section_rwo2['id']}}
-<span itemscope itemtype="http://data-vocabulary.org/Breadcrumb">
-<a href="index.php?page=forum&amp;show=1&amp;id={$Section_rwo2['id']}">
-<span itemprop="title">
+<li itemprop="itemListElement" itemscope
+itemtype="https://schema.org/ListItem">
+<a itemprop="item" href="index.php?page=forum&amp;show=1&amp;id={$Section_rwo2['id']}">
+<span itemprop="name">
 {$Section_rwo2['title']}
 </span>
 </a>
-</span>
+<meta itemprop="position" content="3" />
+</li>
 <div class="btn-nav"></div>
 {/if}
-
 {if {$sec_main_id}}
-<span itemscope itemtype="http://data-vocabulary.org/Breadcrumb">
-<a href="index.php?page=forum&amp;show=1&amp;id={$sec_main_id}">
-<span itemprop="title">
+<li itemprop="itemListElement" itemscope
+itemtype="https://schema.org/ListItem">
+<a itemprop="item" href="index.php?page=forum&amp;show=1&amp;id={$sec_main_id}">
+<span itemprop="name">
 {$sec_main_title}
 </span>
 </a>
-</span>
+<meta itemprop="position" content="<?php echo 2+$itemprop_content;?>" />
+</li>
 <div class="btn-nav"></div>
 {/if}
-<span itemscope itemtype="http://data-vocabulary.org/Breadcrumb">
-<a href="index.php?page=forum&amp;show=1&amp;id={$section_info['id']}{$password}">
-<span itemprop="title">
+<li itemprop="itemListElement" itemscope
+itemtype="https://schema.org/ListItem">
+<a itemprop="item" href="index.php?page=forum&amp;show=1&amp;id={$section_info['id']}{$password}">
+<span itemprop="name">
 {$section_info['title']}
 </span>
 </a>
-</span>
+<meta itemprop="position" content="<?php echo 3+$itemprop_content;?>" />
+</li>
 <div class="btn-nav"></div>
-<span dir="{$_CONF['info_row']['content_dir']}">
-{$Info['prefix_subject']}
-</span>
-<span itemscope itemtype="http://data-vocabulary.org/Breadcrumb">
-<a href="index.php?page=topic&amp;show=1&amp;id={$subject_id}">
-<span itemprop="title">
+<li itemprop="itemListElement" itemscope
+itemtype="https://schema.org/ListItem">
+<a itemprop="item"href="index.php?page=topic&amp;show=1&amp;id={$subject_id}">
+<span itemprop="name">
 {$subject_title}
 </span>
 </a>
-</span>
+<meta itemprop="position" content="<?php echo 4+$itemprop_content;?>" />
+</li>
 {template}address_bar_part2{/template}
 <!-- table -->
 <div style="width:98%;" class="table center_text_align collapse">
@@ -13108,8 +13362,8 @@ $("#tags_table").fadeOut();
 function AddMoreTags(x)
 {
 x += 1;	$(".more_tag_tr").hide();
-$("#add_tags_table").append('<tr class="center_text_align"><td class="row1 rows_space">{$lang['tag']}' + x + '</td><td class="row1 rows_space"><input name="tags[]" type="text" id="tag' + x + '" size="40" /></td></tr>');
-$("#add_tags_table").append('<tr class="more_tag_tr center_text_align"><td class="row1 rows_space" colspan="2"><input type="button" name="more_tags" class="more_tags_class" value="{$lang['add_more_tag']}" /></td></tr>');	$("#tag" + x).focus();	$(".more_tags_class").click(function() { AddMoreTags(x) });	        if (function() { AddMoreTags(x) })
+$("#add_tags_table").append('<tr class="center_text_align"><td class="row1">{$lang['tag']}' + x + '</td><td class="row1"><input name="tags[]" type="text" id="tag' + x + '" size="30" /></td></tr>');
+$("#add_tags_table").append('<tr class="more_tag_tr center_text_align"><td class="row1" colspan="2"><input type="button" name="more_tags" class="more_tags_class" value="{$lang['add_more_tag']}" /></td></tr>');	$("#tag" + x).focus();	$(".more_tags_class").click(function() { AddMoreTags(x) });	        if (function() { AddMoreTags(x) })
 {
 $(".more_tag_tr").stopPropagation();
 }
@@ -13140,7 +13394,7 @@ $(document).ready(Ready);
 {$lang['tag']}{$TagSubjectList['tag_id']}
 </td>
 <td class="row1">
-<input name="tags[]" type="text" value="{$TagSubjectList['tag']}" size="40" />
+<input name="tags[]" type="text" value="{$TagSubjectList['tag']}" size="30" />
 <input name="del_tag[]" type="checkbox" value="{$TagSubjectList['id']}" />
 <input TYPE="hidden" name="id" value="{$TagSubjectList['id']}" />
 <input TYPE="hidden" name="subject_id" id="subject_id" value="{$TagSubjectList['subject_id']}" />
@@ -13150,7 +13404,7 @@ $(document).ready(Ready);
 </tr>
 {/Des::while}
 <tr class="more_tag_tr center_text_align">
-<td class="row1 rows_space" colspan="2">
+<td class="row1" colspan="2">
 <input type="button" name="more_tags" class="more_tags_class" value="{$lang['add_more_tag']}" />
 </td>
 </tr>
@@ -13210,7 +13464,12 @@ $(document).ready(Ready);
 </table></div>
 ]]></teamlist_down>
 <teamlist_top><![CDATA[{template}address_bar_part1{/template}
-{$lang['Forum_Leaders']}
+<li itemprop="itemListElement" itemscope
+itemtype="https://schema.org/ListItem">
+<a itemprop="item" href="index.php?page=team&amp;show=1">
+<span itemprop="name">{$lang['Forum_Leaders']}</span></a>
+<meta itemprop="position" content="2" />
+</li>
 {template}address_bar_part2{/template}
 <div class="center_text_align">
 <table class="row2 wd98 brd0 clp1" style="border-collapse: collapse">
@@ -13221,8 +13480,13 @@ $(document).ready(Ready);
 <td class="thead1 center_text_align wd10">{$lang['Pm_Message']}</td>
 </tr>
 </table></div>]]></teamlist_top>
-<today_reply><![CDATA[ {template}address_bar_part1{/template}
-{$lang['latest_reply']}
+<today_reply><![CDATA[{template}address_bar_part1{/template}
+<li itemprop="itemListElement" itemscope
+itemtype="https://schema.org/ListItem">
+<a itemprop="item" href="index.php?page=latest_reply&amp;today=1">
+<span itemprop="name">{$lang['latest_reply']}</span></a>
+<meta itemprop="position" content="2" />
+</li>
 {template}address_bar_part2{/template}
 <table class="border wd98 brd1 clpc0 a-center">
 <tr>
@@ -13307,7 +13571,12 @@ $Forum_id = $Forum['id'];
 <br />
 <br />]]></today_reply>
 <today_subject><![CDATA[{template}address_bar_part1{/template}
-{$lang['subject_today']}
+<li itemprop="itemListElement" itemscope
+itemtype="https://schema.org/ListItem">
+<a itemprop="item" href="index.php?page=latest&amp;today=1">
+<span itemprop="name">{$lang['subject_today']}</span></a>
+<meta itemprop="position" content="2" />
+</li>
 {template}address_bar_part2{/template}
 <table class="border wd98 brd1 clpc0 a-center">
 <tr>
@@ -16403,21 +16672,35 @@ document.write('<input type="button" value="{$lang['login']}" id="login_id" />')
 </form>
 <br/>]]></login_admittance>
 <show_post><![CDATA[{template}address_bar_part1{/template}
-<a href="index.php?page=forum&amp;show=1&amp;id={$section_info['id']}{$password}">
+<li itemprop="itemListElement" itemscope
+itemtype="https://schema.org/ListItem">
+<a itemprop="item" href="index.php?page=forum&amp;show=1&amp;id={$section_info['id']}{$password}">
+<span itemprop="name">
 {$section_info['title']}
+</span>
 </a>
+<meta itemprop="position" content="2" />
+</li>
+<div class="btn-nav"></div>
+<li itemprop="itemListElement" itemscope
+itemtype="https://schema.org/ListItem">
+<a itemprop="item" title="{$lang['post']}
+({$Info['reply_number']})" name="{$Info['reply_id']}" href="#{$Info['reply_id']}">
+<span itemprop="name">
+{$title}
+</span>
+</a>
+<meta itemprop="position" content="3" />
+</li>
+{template}address_bar_part2{/template}
+<br />
+
+{Des::while}{AdsensesList}
 <style>
 .r-nfo{
 border-bottom: 0px solid #d1d1e1 !important;
 }
 </style>
-<div class="btn-nav"></div>
-<a title="{$lang['post']}
-({$Info['reply_number']})" name="{$Info['reply_id']}" href="#{$Info['reply_id']}">
-{$title}</a>
-{template}address_bar_part2{/template}<br />
-
-{Des::while}{AdsensesList}
 {if {$AdsensesList['between_replys']} == '1'}
 <div class="center_text_align">
 {$AdsensesList['adsense']}
@@ -17275,6 +17558,17 @@ gif, jpeg, jpg, png
 {if {$_CONF['info_row']['allowed_powered']} == 1}
 - {$lang['powered']}
 {/if}</title>
+
+ {template}address_bar_part1{/template}    
+ <li itemprop="itemListElement" itemscope
+itemtype="https://schema.org/ListItem">
+<a itemprop="item" href="index.php?page=calendar&amp;show=1">
+<span itemprop="name">{$lang['Calendar']}</span></a>
+<meta itemprop="position" content="2" />
+</li>
+{template}address_bar_part2{/template}
+
+
 <?php $defaultDate = date('Y-m-d');?>
 <link href="./applications/core/calendar/fullcalendar.css" rel="stylesheet" />
 <script src="./applications/core/calendar/lib/moment.min.js"></script>

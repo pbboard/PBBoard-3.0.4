@@ -30,9 +30,7 @@ class PowerBBCalendarMOD
         }
 			$PowerBB->template->assign('calendar_page','primary_tabon');
 			$PowerBB->functions->ShowHeader();
-			$PowerBB->template->display('address_bar_part1');
-			echo ' '. $PowerBB->_CONF['template']['_CONF']['lang']['Calendar'];
-			$PowerBB->template->display('address_bar_part2');
+
 
    		/** Show Calendar form **/
 		if ($PowerBB->_GET['show'])

@@ -410,6 +410,10 @@ class PBBTemplate
 			@eval($PowerBB->functions->get_fetch_hooks('template_class_end'));
 
 			$string = $PowerBB->sys_functions->ReplaceMysqlExtension($string);
+
+             $url = $PowerBB->functions->GetForumAdress();
+             $string = str_replace('href="index.php','href="'.$url.'index.php',$string);
+
 			$string = $PowerBB->functions->rewriterule($string);
 
                $string = str_replace("php if","phpif",$string);

@@ -789,6 +789,16 @@ class PowerBBFunctions
         // Execute inctructions
         $footer_name->run();
  	}
+
+ 	function parse_keywords($keywords)
+ 	{
+	$keywords    = str_replace("..","", '|'.$keywords.'|');
+	$keywords    = str_replace(",|","", $keywords);
+	$keywords    = str_replace("|,","", $keywords);
+	$keywords    = str_replace(",,","", $keywords);
+	$keywords    = str_replace("|","", $keywords);
+	return $keywords;
+ 	}
  	/**
  	 * Show the default header of forum page
  	 */
@@ -796,7 +806,7 @@ class PowerBBFunctions
  	{
  		global $PowerBB;
  		$num = '200';
-		$titlenum = '150';
+		$titlenum = '130';
 		// visito today number  today_cookie
 		if ($PowerBB->_CONF['date'] == $PowerBB->_CONF['info_row']['today_date_cache'])
 		{
@@ -848,13 +858,13 @@ class PowerBBFunctions
 		$page_address['forum'] 		= 	$Forum_rwo['title'];
 			if($Forum_rwo['section_describe']!='')
 			{
-	          $PowerBB->template->assign('keywords',$PowerBB->functions->Getkeywords($Forum_rwo['title']));
+	          $PowerBB->template->assign('keywords',$PowerBB->functions->Getkeywords($this->parse_keywords($Forum_rwo['title'])));
 			  $PowerBB->template->assign('description',$PowerBB->functions->CleanText($Forum_rwo['section_describe']));
 			}
 			else
 			{
 			 $PowerBB->template->assign('description',$PowerBB->functions->CleanText($Forum_rwo['title']));
-			 $PowerBB->template->assign('keywords',$PowerBB->functions->Getkeywords($Forum_rwo['title']));
+			 $PowerBB->template->assign('keywords',$PowerBB->functions->Getkeywords($this->parse_keywords($Forum_rwo['title'])));
 			}
 			if($Forum_rwo['section_picture']!='')
 			{
@@ -877,7 +887,7 @@ class PowerBBFunctions
 
 		    $MemInfo = $PowerBB->core->GetInfo($MemberArr,'member');
 		     $page_address['profile'] 		= 	 $MemInfo['username'];
-		     $PowerBB->template->assign('keywords',$PowerBB->functions->Getkeywords($MemInfo['username']." ".$MemInfo['user_title']));
+		     $PowerBB->template->assign('keywords',$PowerBB->functions->Getkeywords($this->parse_keywords($MemInfo['username']." ".$MemInfo['user_title'])));
 			if($MemInfo['user_info']!='')
 			{
 			  $PowerBB->template->assign('description',$PowerBB->functions->CleanText($MemInfo['user_info']));
@@ -906,11 +916,14 @@ class PowerBBFunctions
            // $ReplyInfo['text']    = $PowerBB->Powerparse->CycleText($ReplyInfo['text']);
 
 
-            $keywords    = $PowerBB->functions->Getkeywords($ReplyInfo['text']);
-			$PowerBB->template->assign('keywords',$keywords);
+            $keywords    = $PowerBB->functions->Getkeywords(strip_tags($ReplyInfo['text']));
+            $keywords    = str_replace("..","", $keywords);
+            $keywords    = str_replace(",,","", $keywords);
+			$PowerBB->template->assign('keywords',$this->parse_keywords($keywords));
 
-            $description    = $PowerBB->functions->Getkeywords($ReplyInfo['text']);
+            $description    = strip_tags($ReplyInfo['text']);
             $description    = str_replace(","," ", $description);
+            $description    = str_replace("..","", $description);
 			$PowerBB->template->assign('description',$description);
 
 			$title    = $PowerBB->Powerparse->_wordwrap($ReplyInfo['title']." ".$description,$titlenum);
@@ -927,22 +940,15 @@ class PowerBBFunctions
 			$PowerBB->template->assign('Subject_Info_Row',$SubjectInfo);
 			if ($PowerBB->functions->section_group_permission($SubjectInfo['section'],$PowerBB->_CONF['group_info']['id'],'view_subject'))
 			 {
-					$SubjectInfo['text']    = $PowerBB->Powerparse->remove_message_quotes($SubjectInfo['text']);
-		            $SubjectInfo['text']    = $PowerBB->functions->CleanText($SubjectInfo['text']);
-				    $SubjectInfo['text']    = $PowerBB->Powerparse->_wordwrap($SubjectInfo['text'],$num);
-		            $SubjectInfo['text']    = $PowerBB->Powerparse->CycleText($SubjectInfo['text']);
 
 
-
-				 if($SubjectInfo['reply_number'] > $PowerBB->_CONF['info_row']['perpage'])
-				 {
                    $thes_page = $PowerBB->functions->CleanVariable($PowerBB->_GET['count'],'intval');
                    if($thes_page>= 2)
                     {
 					    $subject_id = $SubjectInfo['id'];
 					    if($thes_page == 2)
 					    {
-					    $column_number = $PowerBB->_CONF['info_row']['perpage']+$thes_page-1;
+					    $column_number = $PowerBB->_CONF['info_row']['perpage']+$thes_page-2;
 					    }
 					    else
 					    {
@@ -963,28 +969,30 @@ class PowerBBFunctions
 						$RepList = $PowerBB->core->GetList($RepArr,'reply');
 	                    $first_reply['text'] = $RepList[$column_number]['text'];
 
-						//$first_reply['text']    = $PowerBB->Powerparse->remove_message_quotes($first_reply['text']);
+						$first_reply['text']    = $PowerBB->Powerparse->remove_message_quotes($first_reply['text']);
 			            $first_reply['text']    = $PowerBB->functions->CleanText($first_reply['text']);
 					    $first_reply['text']    = $PowerBB->Powerparse->_wordwrap($first_reply['text'],$num);
 			           // $first_reply['text']    = $PowerBB->Powerparse->CycleText($first_reply['text']);
 
                         $keywords    = $PowerBB->functions->Getkeywords($first_reply['text']);
-			            $description    = $PowerBB->functions->Getkeywords($first_reply['text']);
+			            $description    = $first_reply['text'];
 			         }
-				 }
-				 else
-				 {
-				 	$keywords    = $PowerBB->functions->Getkeywords($SubjectInfo['text']);
-					$SubjectInfo['text']    = $PowerBB->Powerparse->remove_message_quotes($SubjectInfo['text']);
-		            $SubjectInfo['text']    = $PowerBB->functions->CleanText($SubjectInfo['text']);
-				    $SubjectInfo['text']    = $PowerBB->Powerparse->_wordwrap($SubjectInfo['text'],$num);
-		            $SubjectInfo['text']    = $PowerBB->Powerparse->CycleText($SubjectInfo['text']);
+					else
+					{
+						$SubjectInfo['text']    = $PowerBB->Powerparse->remove_message_quotes($SubjectInfo['text']);
+			            $SubjectInfo['text']    = $PowerBB->functions->CleanText($SubjectInfo['text']);
+					    $SubjectInfo['text']    = $PowerBB->Powerparse->_wordwrap($SubjectInfo['text'],$num);
+			           // $SubjectInfo['text']    = $PowerBB->Powerparse->CycleText($SubjectInfo['text']);
+				 	    $keywords    = $PowerBB->functions->Getkeywords($SubjectInfo['text']);
+			            $description    = $SubjectInfo['title']." ".$SubjectInfo['text'];
 
-		            $description    = $PowerBB->functions->Getkeywords($SubjectInfo['title']." ".$SubjectInfo['text']);
-				 }
+					}
 
-					$PowerBB->template->assign('keywords',$keywords);
-		            $description    = str_replace(","," ", $description);
+
+					$PowerBB->template->assign('keywords',$this->parse_keywords($keywords));
+
+					$description    = str_replace(","," ", $description);
+					$description    = str_replace("..","", $description);
 					$PowerBB->template->assign('description',$description);
 					$page_address['topic'] = $SubjectInfo['title'];
 					$PowerBB->template->assign('index',1);
@@ -995,14 +1003,14 @@ class PowerBBFunctions
 		$page_address['misc'] 		= 	$PowerBB->_CONF['template']['_CONF']['lang']['rules'] .' - '. $PowerBB->_CONF['info_row']['title'];
 		$num = '155';
 		 $rules = $PowerBB->functions->Getkeywords($PowerBB->functions->CleanText($PowerBB->_CONF['info_row']['rules']));
-		 $PowerBB->template->assign('keywords',$rules);
+		 $PowerBB->template->assign('keywords',$this->parse_keywords($rules));
 		 $PowerBB->template->assign('description',$rules);
          $PowerBB->template->assign('index',1);
 		}
         elseif ($PowerBB->_GET['sendmessage'] == '1')
 		{
 		$page_address['send'] 		= 	$PowerBB->_CONF['template']['_CONF']['lang']['Contact_Manager'] .' - '. $PowerBB->_CONF['info_row']['title'];
-		$PowerBB->template->assign('keywords',$PowerBB->functions->Getkeywords($PowerBB->_CONF['template']['_CONF']['lang']['Contact_Manager']));
+		$PowerBB->template->assign('keywords',$PowerBB->functions->Getkeywords($this->parse_keywords($PowerBB->_CONF['template']['_CONF']['lang']['Contact_Manager'])));
 		$PowerBB->template->assign('description',$PowerBB->functions->CleanText($PowerBB->_CONF['template']['_CONF']['lang']['Contact_Manager']) .'  '. $PowerBB->_CONF['info_row']['title']);
          $PowerBB->template->assign('index',1);
 		}
@@ -1027,7 +1035,7 @@ class PowerBBFunctions
 		 $num = '100';
 		 $PowerBB->_CONF['template']['GetPage']['html_code'] = $PowerBB->functions->words_count_replace_strip_tags_html2bb($PowerBB->_CONF['template']['GetPage']['html_code'],$num);
          $PowerBB->template->assign('description',$PowerBB->_CONF['template']['GetPage']['html_code'].' '. $PowerBB->_CONF['info_row']['title']);
-		 $PowerBB->template->assign('keywords',$PowerBB->functions->Getkeywords($PowerBB->_CONF['template']['GetPage']['title']." ".$PowerBB->_CONF['template']['GetPage']['html_code']));
+		 $PowerBB->template->assign('keywords',$PowerBB->functions->Getkeywords($this->parse_keywords($PowerBB->_CONF['template']['GetPage']['title']." ".$PowerBB->_CONF['template']['GetPage']['html_code'])));
          $PowerBB->template->assign('index',1);
 		}
 		elseif ($PowerBB->_CONF['info_row']['board_close'] == '1')
@@ -1036,7 +1044,7 @@ class PowerBBFunctions
 		 $num = '100';
 		 $title = $PowerBB->functions->words_count_replace_strip_tags_html2bb($title,$num);
          $PowerBB->template->assign('description',$title);
-		 $PowerBB->template->assign('keywords',$PowerBB->functions->Getkeywords($PowerBB->_CONF['template']['_CONF']['lang']['board_close']));
+		 $PowerBB->template->assign('keywords',$PowerBB->functions->Getkeywords($this->parse_keywords($PowerBB->_CONF['template']['_CONF']['lang']['board_close'])));
          $PowerBB->template->assign('index',1);
  		}
 		elseif ($page == 'management'
@@ -1089,21 +1097,21 @@ class PowerBBFunctions
 		{
 		$page_address['special_subject'] 		= 	$PowerBB->_CONF['template']['_CONF']['lang']['Special_Subject'] .' - '. $PowerBB->_CONF['info_row']['title'];
         $PowerBB->template->assign('description',$PowerBB->functions->CleanText($PowerBB->_CONF['template']['_CONF']['lang']['Special_Subject']));
-		$PowerBB->template->assign('keywords',$PowerBB->functions->Getkeywords($PowerBB->_CONF['template']['_CONF']['lang']['Special_Subject']));
+		$PowerBB->template->assign('keywords',$PowerBB->functions->Getkeywords($this->parse_keywords($PowerBB->_CONF['template']['_CONF']['lang']['Special_Subject'])));
 		$PowerBB->template->assign('index',1);
 		}
 		elseif ($page == 'calendar')
 		{
 		$page_address['calendar'] 		= 	$PowerBB->_CONF['template']['_CONF']['lang']['Calendar'] .' - '. $PowerBB->_CONF['info_row']['title'];
         $PowerBB->template->assign('description',$PowerBB->functions->CleanText($PowerBB->_CONF['template']['_CONF']['lang']['Calendar']));
-		$PowerBB->template->assign('keywords',$PowerBB->functions->Getkeywords($PowerBB->_CONF['template']['_CONF']['lang']['Calendar']));
+		$PowerBB->template->assign('keywords',$PowerBB->_CONF['template']['_CONF']['lang']['Calendar']);
 		$PowerBB->template->assign('index',1);
 		}
 		elseif ($page == 'static')
 		{
 		$page_address['static'] 		= 	$PowerBB->_CONF['template']['_CONF']['lang']['static'] .' - '. $PowerBB->_CONF['info_row']['title'];
         $PowerBB->template->assign('description',$PowerBB->functions->CleanText($PowerBB->_CONF['template']['_CONF']['lang']['static']) .' '. $PowerBB->_CONF['info_row']['title']);
-		$PowerBB->template->assign('keywords',$PowerBB->functions->Getkeywords($PowerBB->_CONF['template']['_CONF']['lang']['statics']));
+		$PowerBB->template->assign('keywords',$PowerBB->_CONF['template']['_CONF']['lang']['statics']);
 		$PowerBB->template->assign('index',1);
 		}
 		elseif ($page == 'search')
@@ -1113,36 +1121,37 @@ class PowerBBFunctions
 		     $search_keyword = $PowerBB->functions->CleanText($PowerBB->_GET['keyword']);
 			 $page_address['search'] 		= 	$search_keyword;
              $PowerBB->template->assign('description',$PowerBB->functions->CleanText($PowerBB->_CONF['template']['_CONF']['lang']['Search_results_for']." ".$search_keyword));
-		     $PowerBB->template->assign('keywords',$PowerBB->functions->Getkeywords($PowerBB->_CONF['template']['_CONF']['lang']['Search_results_for']." ".$search_keyword));
+		     $PowerBB->template->assign('keywords',$search_keyword);
 		  }
 		  elseif ($PowerBB->_GET['option'] == '3')
 		  {
 		     $search_option = $PowerBB->functions->CleanText($PowerBB->_GET['username']);
 			 $page_address['search'] 		= 	$search_option;
-			 $PowerBB->template->assign('keywords',$PowerBB->functions->Getkeywords($PowerBB->_CONF['template']['_CONF']['lang']['Search_results_for_all_subject_user']." ".$search_option));
-
+             $PowerBB->template->assign('description',$PowerBB->functions->CleanText($PowerBB->_CONF['template']['_CONF']['lang']['Search_results_for_all_subject_user']." ".$search_option));
+		     $PowerBB->template->assign('keywords',$search_keyword);
 		  }
 		  elseif ($PowerBB->_GET['option'] == '4')
 		  {
 		     $search_option = $PowerBB->functions->CleanText($PowerBB->_GET['username']);
-
 			 $page_address['search'] 		= 	$PowerBB->_CONF['template']['_CONF']['lang']['Search_results_for_all_reply_user']." ".$search_option;
-			 $PowerBB->template->assign('keywords',$PowerBB->functions->Getkeywords($PowerBB->_CONF['template']['_CONF']['lang']['Search_results_for_all_reply_user']." ".$search_option));
+             $PowerBB->template->assign('description',$PowerBB->functions->CleanText($PowerBB->_CONF['template']['_CONF']['lang']['Search_results_for_all_reply_user']." ".$search_option));
+		     $PowerBB->template->assign('keywords',$search_option);
 
 		  }
 		  elseif ($PowerBB->_GET['option'] == '5')
 		  {
 		     $search_option = $PowerBB->functions->CleanText($PowerBB->_GET['tag']);
-
+             $PowerBB->template->assign('description',$PowerBB->functions->CleanText($PowerBB->_CONF['template']['_CONF']['lang']['subjects_titles_use_sem_tags']." ".$search_option));
 			 $page_address['search'] 		= 	$search_option;
-			 $PowerBB->template->assign('keywords',$PowerBB->functions->Getkeywords($search_option));
+		     $PowerBB->template->assign('keywords',$search_option);
 
 		  }
 		  else
 		  {
 			$page_address['search'] 		= 	$PowerBB->_CONF['template']['_CONF']['lang']['Search_Engine'] .' - '. $PowerBB->_CONF['info_row']['title'];
             $PowerBB->template->assign('description',$PowerBB->functions->CleanText($PowerBB->_CONF['template']['_CONF']['lang']['Search_Engine']) .' '. $PowerBB->_CONF['info_row']['title']);
-		    $PowerBB->template->assign('keywords',$PowerBB->functions->Getkeywords($PowerBB->_CONF['template']['_CONF']['lang']['Search_Engine']));
+            $keywords_Search_Engine = preg_replace('/\s+/', ',', $PowerBB->_CONF['template']['_CONF']['lang']['Search_Engine']);
+		    $PowerBB->template->assign('keywords',$keywords_Search_Engine);
 		  }
 		$PowerBB->template->assign('index',1);
 		}
@@ -1150,49 +1159,45 @@ class PowerBBFunctions
 		{
 		$page_address['login'] 		    = 	$PowerBB->_CONF['template']['_CONF']['lang']['Login_mem'] .' - '. $PowerBB->_CONF['info_row']['title'];
         $PowerBB->template->assign('description',$PowerBB->functions->CleanText($PowerBB->_CONF['template']['_CONF']['lang']['Login_mem']) .' '. $PowerBB->_CONF['info_row']['title']);
-		$PowerBB->template->assign('keywords',$PowerBB->functions->Getkeywords($PowerBB->_CONF['template']['_CONF']['lang']['Login_mem']));
+        $keywords_Login_mem = preg_replace('/\s+/', ',', $PowerBB->_CONF['template']['_CONF']['lang']['Login_mem']);
+		$PowerBB->template->assign('keywords',$keywords_Login_mem);
 		$PowerBB->template->assign('index',1);
 		}
 		elseif ($page == 'register')
 		{
 		$page_address['register'] 		= 	$PowerBB->_CONF['template']['_CONF']['lang']['register'] .' - '. $PowerBB->_CONF['info_row']['title'];
         $PowerBB->template->assign('description',$PowerBB->functions->CleanText($PowerBB->_CONF['template']['_CONF']['lang']['register']) .' '. $PowerBB->_CONF['info_row']['title']);
-		$PowerBB->template->assign('keywords',$PowerBB->functions->Getkeywords($PowerBB->_CONF['template']['_CONF']['lang']['register']));
+        $keywords_register = preg_replace('/\s+/', ',', $PowerBB->_CONF['template']['_CONF']['lang']['register']);
+		$PowerBB->template->assign('keywords',$keywords_register);
 		$PowerBB->template->assign('index',1);
 		}
 		elseif ($page == 'team')
 		{
 		$page_address['team'] 			= 	$PowerBB->_CONF['template']['_CONF']['lang']['Leaders'] .' - '. $PowerBB->_CONF['info_row']['title'];
         $PowerBB->template->assign('description',$PowerBB->functions->CleanText($PowerBB->_CONF['template']['_CONF']['lang']['Leaders']));
-		$PowerBB->template->assign('keywords',$PowerBB->functions->Getkeywords($PowerBB->_CONF['template']['_CONF']['lang']['Leaders']));
+		$PowerBB->template->assign('keywords',$PowerBB->_CONF['template']['_CONF']['lang']['Leaders']);
 		$PowerBB->template->assign('index',1);
 		}
 		elseif ($page == 'latest_reply')
 		{
 		$page_address['latest_reply'] 		= 	$PowerBB->_CONF['template']['_CONF']['lang']['latest_reply'] .' - '. $PowerBB->_CONF['info_row']['title'];
         $PowerBB->template->assign('description',$PowerBB->functions->CleanText($PowerBB->_CONF['template']['_CONF']['lang']['latest_reply']));
-		$PowerBB->template->assign('keywords',$PowerBB->functions->Getkeywords($PowerBB->_CONF['template']['_CONF']['lang']['latest_reply']));
+		$PowerBB->template->assign('keywords',$PowerBB->_CONF['template']['_CONF']['lang']['latest_reply']);
 		$PowerBB->template->assign('index',1);
 		}
 		elseif ($page == 'latest')
 		{
 		$page_address['latest'] 		= 	$PowerBB->_CONF['template']['_CONF']['lang']['subject_today'];
         $PowerBB->template->assign('description',$PowerBB->functions->CleanText($PowerBB->_CONF['template']['_CONF']['lang']['subject_today']));
-		$PowerBB->template->assign('keywords',$PowerBB->functions->Getkeywords($PowerBB->_CONF['template']['_CONF']['lang']['subject_today']));
-		$PowerBB->template->assign('index',1);
-		}
-		elseif ($page == 'sitemap')
-		{
-		$page_address['sitemap'] 		= 	$PowerBB->_CONF['template']['_CONF']['lang']['Sitemap_title'] .' - '. $PowerBB->_CONF['info_row']['title'];
-        $PowerBB->template->assign('description',$PowerBB->functions->CleanText($PowerBB->_CONF['template']['_CONF']['lang']['Sitemap_title']));
-		$PowerBB->template->assign('keywords',$PowerBB->functions->Getkeywords($PowerBB->_CONF['template']['_CONF']['lang']['Sitemap_title']));
+        $keywords_subject_today = preg_replace('/\s+/', ',', $PowerBB->_CONF['template']['_CONF']['lang']['subject_today']);
+		$PowerBB->template->assign('keywords',$keywords_subject_today);
 		$PowerBB->template->assign('index',1);
 		}
 		elseif ($page == 'member_list')
 		{
 		$page_address['member_list'] 	= 	$PowerBB->_CONF['template']['_CONF']['lang']['memberlist'] .' - '. $PowerBB->_CONF['info_row']['title'];
         $PowerBB->template->assign('description',$PowerBB->functions->CleanText($PowerBB->_CONF['template']['_CONF']['lang']['memberlist']));
-		$PowerBB->template->assign('keywords',$PowerBB->functions->Getkeywords($PowerBB->_CONF['template']['_CONF']['lang']['memberlist']));
+		$PowerBB->template->assign('keywords',$PowerBB->_CONF['template']['_CONF']['lang']['memberlist']);
 		$PowerBB->template->assign('index',1);
 		}
 		elseif ($page == 'announcement')
@@ -1203,7 +1208,7 @@ class PowerBBFunctions
 		$AnnInfo = $PowerBB->core->GetInfo($AnnArr,'announcement');
 		$page_address['announcement'] 	=  $AnnInfo['title'];
         $PowerBB->template->assign('description',$PowerBB->functions->CleanText($AnnInfo['text']));
-		$PowerBB->template->assign('keywords',$PowerBB->functions->Getkeywords($AnnInfo['text']));
+		$PowerBB->template->assign('keywords',$PowerBB->functions->Getkeywords($this->parse_keywords($AnnInfo['text'])));
 		$PowerBB->template->assign('index',1);
 		}
 		$page_address['managementreply']= 	$PowerBB->_CONF['template']['_CONF']['lang']['Management_Subjects'] .' - '. $PowerBB->_CONF['info_row']['title'];
@@ -1494,7 +1499,12 @@ class PowerBBFunctions
  	function words_count_replace_strip_tags_html2bb($string,$words_count)
  	{
  	 global $PowerBB;
-		$string = $string;
+
+		$string = $PowerBB->Powerparse->Simplereplace($string);
+        $string = preg_replace('#\[(.+)\=(.+)\](.+)\[\/(.+)\]#iUs', '$3', $string);
+		$string = preg_replace(",([^]_a-z0-9-=\"'\/])((https?|ftp|gopher|news|telnet):\/\/|www\.)([^ \r\n\(\)\*\^\$!`\"'\|\[\]\{\}<>]*),i", "",$string);
+		$string = preg_replace(",^((https?|ftp|gopher|news|telnet):\/\/|\.)([^ \r\n\(\)\*\^\$!`\"'\|\[\]\{\}<>]*),i", "",$string);
+
 		$string = str_replace("\n", ' ', $string);
 		$string = str_replace("\r", '', $string);
 		$string = str_replace("\t", '', $string);
@@ -1512,46 +1522,99 @@ class PowerBBFunctions
    // Extracting keywords from text and get only the words longer than 4 letters
    function Getkeywords($text)
  	{
-
  	    $text = strtolower($text);
 	    $text = strip_tags($text);
+		$text = preg_replace(",([^]_a-z0-9-=\"'\/])((https?|ftp|gopher|news|telnet):\/\/|www\.)([^ \r\n\(\)\*\^\$!`\"'\|\[\]\{\}<>]*),i", "",$text);
+		$text = preg_replace(",^((https?|ftp|gopher|news|telnet):\/\/|\.)([^ \r\n\(\)\*\^\$!`\"'\|\[\]\{\}<>]*),i", "",$text);
+        $text = str_replace(' ..', '', $text);
 
-	    $commonWords = "'tis,'twas,a,able,about,across,after,',all,almost,also,am,among,an,and,any,are,aren't," .
-	        "as,at,be,.,وعليكم,but,by,can,<,>,could,},(,),did,=,+,-,والسلام," .
-	        ",{,],[,جزاك,اللهم,لله,وصحبه,الرحيم,الرحمن,بسم,أعضاء,اعضاء,العالمين,والله,التوفيق,والاخوات,الاخوة,الحمد,الصلاة,وبركاته,وبركاتة,الله,ورحمه,ورحمة,عليكم,السلام";
+        $excludedtext = array();
+		$excludedWords = array();
+		$censorwords = preg_split('/\s+/', $text, -1, PREG_SPLIT_NO_EMPTY);
+		$excludedWords = array_merge($excludedWords, $censorwords);
+		unset($censorwords);
+		for ($x = 0; $x < count($excludedWords); $x++)
+		{
+			$excludedWords[$x] = trim($excludedWords[$x]);
+				if (function_exists('mb_strlen'))
+				{
+				$tag_less_num = mb_strlen($excludedWords[$x], 'UTF-8') >= 4;
+				}
+				else
+				{
+				$tag_less_num = strlen(utf8_decode($excludedWords[$x])) >= 4;
+				}
 
-	    $commonWords = explode(",", $commonWords);
-	    foreach($commonWords as $commonWord)
-	        $hashWord[$commonWord] = $commonWord;
 
-	    $words = preg_split("/[\s\n\r]/", $text);
-	    foreach ($words as $value)
-	    {
-	        // Skip it is common word
-	        if (isset($hashWord[$value])) continue;
-	        // Skip if it is numeric
-	        if (is_numeric($value)) continue;
-	        // Skip if word contains less than 4 digits
-			if (function_exists('mb_strlen'))
+			if($tag_less_num)
 			{
-			if (mb_strlen(utf8_decode($value)) < 2) continue;
-			}
-			else
-			{
-			if (strlen(utf8_decode($value)) < 2) continue;
-			}
+		    $excludedWords[$x] = $this->CleanMostCommonWords($excludedWords[$x]);
 
-	        $keywords[] = preg_replace('/^[\s{Arabic}a-zA-Z0-9\s{N}]+\h?[^a-zA-Z0-9\s].+/', '', $value);
-	    }
+			$excludedtext[] = $excludedWords[$x].",";
+			}
+		}
 
-	    $str = @implode(",",$keywords);
-	    $str = str_replace(",,",",", $str);
-	    return $str;
+          $string = implode($excludedtext."|");
+          $string = str_replace(",|","", $string);
+
+
+       return implode($excludedtext);
+    }
+
+  function CleanMostCommonWords($text)
+ 	{
+	    $text = str_replace("السلام","", $text);
+		$text = str_replace("وبركاته","", $text);
+		$text = str_replace("وبركاتة","", $text);
+		$text = str_replace("الله","", $text);
+		$text = str_replace("ورحمه","", $text);
+		$text = str_replace("ورحمة","", $text);
+		$text = str_replace("عليكم","", $text);
+		$text = str_replace("tis","", $text);
+		$text = str_replace("وعليكم","", $text);
+		$text = str_replace("<","", $text);
+		$text = str_replace(">","", $text);
+		$text = str_replace("could","", $text);
+		$text = str_replace("}","", $text);
+		$text = str_replace("(","", $text);
+		$text = str_replace(")","", $text);
+		$text = str_replace("did","", $text);
+		$text = str_replace("=","", $text);
+		$text = str_replace("+","", $text);
+		$text = str_replace("-","", $text);
+		$text = str_replace("والسلام","", $text);
+		$text = str_replace("{","", $text);
+		$text = str_replace("]","", $text);
+		$text = str_replace("[","", $text);
+		$text = str_replace("جزاك","", $text);
+		$text = str_replace("اللهم","", $text);
+		$text = str_replace("لله","", $text);
+		$text = str_replace("وصحبه","", $text);
+		$text = str_replace("الرحيم","", $text);
+		$text = str_replace("الرحمن","", $text);
+		$text = str_replace("بسم","", $text);
+		$text = str_replace("أعضاء","", $text);
+		$text = str_replace("اعضاء","", $text);
+		$text = str_replace("العالمين","", $text);
+		$text = str_replace("والله","", $text);
+		$text = str_replace("التوفيق","", $text);
+		$text = str_replace("والاخوات","", $text);
+		$text = str_replace("الاخوة","", $text);
+		$text = str_replace("الحمد","", $text);
+		$text = str_replace("الصلاة","", $text);
+
+	    return $text;
     }
 
    function CleanText($string)
  	{
  	 global $PowerBB;
+
+	  $string = str_replace("&quot;", '"', $string);
+	  $string = str_replace("&lt;","<", $string);
+	  $string = str_replace("&gt;",">", $string);
+		$string = preg_replace(",([^]_a-z0-9-=\"'\/])((https?|ftp|gopher|news|telnet):\/\/|www\.)([^ \r\n\(\)\*\^\$!`\"'\|\[\]\{\}<>]*),i", "",$string);
+		$string = preg_replace(",^((https?|ftp|gopher|news|telnet):\/\/|\.)([^ \r\n\(\)\*\^\$!`\"'\|\[\]\{\}<>]*),i", "",$string);
 
 		$string = str_replace(">","> ", $string);
 		$string = str_replace("<"," <", $string);
@@ -1582,6 +1645,8 @@ class PowerBBFunctions
 	    $pattern = '|[[\/\!]*?[^\[\]]*?]|si';
 	    $replace = '';
         $originally_text = preg_replace($pattern, $replace, $originally_text);
+
+        $originally_text = strip_tags($originally_text);
 		return ($originally_text);
     }
  	function replace_strip($string)

@@ -1256,18 +1256,23 @@ class PowerBBFunctions
 		}
  		// Show header template
          $PowerBB->template->assign('title',$PowerBB->functions->CleanText($title).isset($page_num_count));
+         // is Bot Not Show java files and sum css files to speed pages
+         $isBot = $PowerBB->functions->is_bot();
+         $bot_name = $PowerBB->functions->bot_name();
+
+         if($isBot)
+         {         $PowerBB->template->assign('is_bot',false);
+         $PowerBB->template->assign('bot_name',$bot_name);
+         }
+         else
+         {         $PowerBB->template->assign('is_bot',true);
+         }
+
+        $PowerBB->template->assign('page',$page);
 
  		$PowerBB->template->display('headinclud');
-		if ($page == 'topic'
-		or $page == 'post'
-		or $page == 'new_topic'
-		or $page == 'new_reply'
-		or $page == 'print'
-		or isset($PowerBB->_GET['reply_edit'])
-		or isset($PowerBB->_GET['subject_edit']))
-		{
-         $PowerBB->template->display('js_limited_use');
-	    }
+		$PowerBB->template->display('js_limited_use');
+
  	}
  	/**
  	 * Get the forum's url adress
@@ -2345,10 +2350,8 @@ class PowerBBFunctions
              // foreach main sections
 			$PowerBB->_CONF['template']['foreach']['forumsy_list'][$caty['id'] . '_m'] = $caty;
 			unset($sectiongroup);
-		   if (is_writable('cache/forums_cache/forums_cache_'.$caty['id'].'.php'))
-		    {
 			@include("cache/forums_cache/forums_cache_".$caty['id'].".php");
-			}
+
 			if (!empty($forums_cache))
 			{
                 $forumsy = json_decode(base64_decode($forums_cache), true);
@@ -2359,11 +2362,8 @@ class PowerBBFunctions
 						{
 							$forumy['is_sub'] 	= 	0;
 							$forumy['sub']		=	'';
-							$file_forums_cache =	"cache/forums_cache/forums_cache_".$forumy['id'].".php";
-                               if (is_readable($file_forums_cache))
-                               {
-                                 @include("cache/forums_cache/forums_cache_".$forumy['id'].".php");
-                               }
+							@include("cache/forums_cache/forums_cache_".$forumy['id'].".php");
+
                                if (!empty($forums_cache))
 	                           {
 									$subs = json_decode(base64_decode($forums_cache), true);
@@ -2377,7 +2377,8 @@ class PowerBBFunctions
 												}
             		                           if ($PowerBB->functions->section_group_permission($sub['id'],$PowerBB->_CONF['group_info']['id'],'view_section'))
 											   {
-                                                  if (isset($PowerBB->_GET['page']) == 'forum' && isset($PowerBB->_GET['show']) == 1 && isset($PowerBB->_GET['id']) == $sub['id'])
+
+                                                  if ($PowerBB->_GET['page'] == 'forum' and intval($PowerBB->_GET['id']) == $sub['id'])
 											   	  {
 												   $selected = ' selected="selected"';
 											      }
@@ -2394,11 +2395,8 @@ class PowerBBFunctions
 	                                    {
 										$forumy['is_sub_sub'] 	= 	0;
 										$forumy['sub_sub']		=	'';
-										  $file_forums_cache =	"cache/forums_cache/forums_cache_".$sub['id'].".php";
-			                               if (is_readable($file_forums_cache))
-			                               {
 			                                 @include("cache/forums_cache/forums_cache_".$sub['id'].".php");
-			                               }
+
 		                                   if (!empty($forums_cache))
 				                           {
 												$subs_sub = json_decode(base64_decode($forums_cache), true);

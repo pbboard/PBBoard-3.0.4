@@ -119,16 +119,17 @@ class PowerBBMiscMOD
 	function _GetRules()
 	{
 		global $PowerBB;
-       $PowerBB->template->assign('rules_page','primary_tabon');
 
-         $PowerBB->functions->ShowHeader();
+		$PowerBB->template->assign('rules_page','primary_tabon');
+		$PowerBB->functions->ShowHeader();
 
-         $PowerBB->_CONF['info_row']['rules'] = $PowerBB->Powerparse->replace($PowerBB->_CONF['info_row']['rules']);
-         $PowerBB->Powerparse->replace_smiles($PowerBB->_CONF['info_row']['rules']);
-            $Adress = $PowerBB->functions->GetForumAdress();
+		$PowerBB->_CONF['info_row']['rules'] = $PowerBB->Powerparse->replace($PowerBB->_CONF['info_row']['rules']);
+		$PowerBB->Powerparse->replace_smiles($PowerBB->_CONF['info_row']['rules']);
+		$Adress = $PowerBB->functions->GetForumAdress();
 		$PowerBB->_CONF['info_row']['rules']  = str_ireplace("../",$Adress, $PowerBB->_CONF['info_row']['rules']);
-         $PowerBB->template->assign('rules',$PowerBB->_CONF['info_row']['rules']);
+		$PowerBB->template->assign('rules',$PowerBB->_CONF['info_row']['rules']);
 
+		$PowerBB->functions->JumpForumsList();
 		$PowerBB->template->display('rules_board_main');
 		$PowerBB->functions->GetFooter();
 

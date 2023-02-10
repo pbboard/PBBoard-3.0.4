@@ -108,7 +108,13 @@
 	    }
 
 		if (file_exists($dir."/".$PowerBB->_CONF['member_row']['profile_cover_photo'])) {
-			@unlink($dir."/".$PowerBB->_CONF['member_row']['profile_cover_photo']);
+		  if ($_SERVER['REQUEST_METHOD'] == 'POST')
+		   {
+		    if(isset($_SESSION['csrf']))
+		     {
+			   @unlink($dir."/".$PowerBB->_CONF['member_row']['profile_cover_photo']);
+			 }
+		   }
 		}
 	}
 
@@ -116,17 +122,22 @@
 		if ($PowerBB->_FILES["file"]["error"] || !is_uploaded_file($PowerBB->_FILES["file"]["tmp_name"])) {
 			die('{"jsonrpc" : "2.0", "error" : {"code": 103, "message": "Failed to move uploaded file."}, "id" : "id"}');
 		}
+		else
+		{
+				if(isset($_SESSION['csrf']))
+				{
+				     move_uploaded_file($PowerBB->_FILES['file']['tmp_name'],$targetDir.$fileName);
+					$user_id = $PowerBB->_CONF['member_row']['id'];
+					$profile_cover_photo = $PowerBB->_CONF['info_row']['download_path']."/upload_cover_photo/".$fileName;
 
+					$UPDATE_user  = $PowerBB->DB->sql_query("UPDATE " . $PowerBB->table['member'] . " SET profile_cover_photo = '$profile_cover_photo' WHERE id = '$user_id'");
+                }
+        }
 	}
 
 
 
-	move_uploaded_file($PowerBB->_FILES['file']['tmp_name'],$targetDir.$fileName);
 
-	$user_id = $PowerBB->_CONF['member_row']['id'];
-	$profile_cover_photo = $PowerBB->_CONF['info_row']['download_path']."/upload_cover_photo/".$fileName;
-
-	$UPDATE_user  = $PowerBB->DB->sql_query("UPDATE " . $PowerBB->table['member'] . " SET profile_cover_photo = '$profile_cover_photo' WHERE id = '$user_id'");
 
 	?>
 

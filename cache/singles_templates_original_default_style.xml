@@ -3511,7 +3511,7 @@ itemtype="https://schema.org/ListItem">
 <header>
 <div class="r-right">
 <a title="{$_CONF['info_row']['title']}" href="index.php" style="margin-right:15px;margin-top: 12px;">
-<img src="{$ForumAdress}styles/style_default/images/logo.png" width="200" height="80">
+<img src="{$ForumAdress}styles/style_default/images/logo.png" width="180" height="80" alt="logo">
 </a>
 </div>
 <div class="l-center"></div>
@@ -3544,7 +3544,7 @@ function my_search() {
 <div class="advancedsearch">
 <ul>
 <li><input type="submit" value="{$lang['search']}" class="advancse" name="search"></li>
-<li><input title="{$lang['advanced_search']}" type="button" class="advanc" onclick="window.open('index.php?page=search&amp;index=1','mywindow','')" value="{$lang['advanced_search']}" /></li>
+<li><input title="{$lang['advanced_search']}" type="button" class="advanc" onclick="window.open('index.php?page=search&index=1','mywindow','')" value="{$lang['advanced_search']}" /></li>
 </ul>
 </div>
 </div>
@@ -3804,8 +3804,8 @@ $(document).ready(function(){
 </div>
 </div>
 <!-- header_bar -->]]></header_bar>
-<headinclud><![CDATA[<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" dir="{$_CONF['info_row']['content_dir']}" lang="{$_CONF['info_row']['content_language']}">
+<headinclud><![CDATA[<!doctype html>
+<html dir="{$_CONF['info_row']['content_dir']}" lang="{$_CONF['info_row']['content_language']}">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset={$_CONF['info_row']['charset']}" />
 <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
@@ -3839,27 +3839,26 @@ $(document).ready(function(){
 
 <!-- End Social Media Meta Tags -->
 <title>{$title}</title>
-
+<link rel="stylesheet" href="{$ForumAdress}{$style_path}" />
+{if {$is_bot}}
 <link rel="stylesheet" href="{$ForumAdress}look/fonts/font-awesome.min.css" />
 <link rel="stylesheet" href="{$ForumAdress}look/fonts/fonts.css" />
-<link rel="stylesheet" href="{$ForumAdress}{$style_path}" />
 <link rel="stylesheet" href="{$ForumAdress}applications/core/colorbox-master/colorbox.css" />
 <!-- CSS Stylesheet -->
 <link rel="alternate" type="application/rss+xml" title="{$lang['rss_subject']}" href="
 {$ForumAdress}index.php?page=rss&subject=1" />
 <script type="text/javascript" src="{$ForumAdress}includes/js/jquery-1.10.2.js"></script>
 <script type="text/javascript" src="{$ForumAdress}includes/js/jquery-ui.js"></script>
+
 <script type="text/javascript" src="{$ForumAdress}includes/js/jquery.save.js"></script>
 <script type="text/javascript" src="{$ForumAdress}applications/core/colorbox-master/jquery.colorbox.js"></script>
 {if {$_CONF['info_row']['resize_imagesAllow']} == 1}
 {template}imgs_resize{/template}
 {/if}
-
-
 <script type="text/javascript" src="{$ForumAdress}includes/js/pbboardCode.js"></script>
 <script type="text/javascript" src="{$ForumAdress}includes/js/pbboard_global.js"></script>
 <script type="text/javascript" src="{$ForumAdress}includes/js/pbboard_toggle.js"></script>
-
+{/if}
 
 </head>
 <body>
@@ -3968,47 +3967,48 @@ if ($PowerBB->_CONF['template']['while']['AdsensesList'][$this->x_loop]['in_page
 <jump_forums_list><![CDATA[<table class="l-left wd50 brd1 clpc0">
 <tr>
 <td class="left_text_align wd50">
+
 <select class='select_jump' name='url' onchange="window.location.href=this.options[this.selectedIndex].value">
 <option selected="selected" value="index.php">»{$lang['home']}</option>
 {if {$_CONF['info_row']['active_portal']} == '1'}
-{if $PowerBB->_GET['page'] == 'portal'}
+{if {$page} == 'portal'}
 <option value='index.php?page=portal' selected='selected'>»{$_CONF['info_row']['title_portal']}</option>
 {else}
 <option value='index.php?page=portal'>»{$_CONF['info_row']['title_portal']}</option>
 {/if}
 {/if}
 {if {$_CONF['member_permission']}}
-{if $PowerBB->_GET['page'] == 'usercp'}
+{if {$page} == 'usercp'}
 <option value='index.php?page=usercp&amp;index=1' selected='selected'>»{$lang['usercp']}</option>
 {else}
 <option value='index.php?page=usercp&amp;index=1'>»{$lang['usercp']}</option>
 {/if}
 {/if}
-{if $PowerBB->_GET['page'] == 'misc'}
+{if {$page} == 'misc'}
 <option value='index.php?page=misc&amp;rules=1&amp;show=1' selected='selected'>»{$lang['rules']}</option>
 {else}
 <option value='index.php?page=misc&amp;rules=1&amp;show=1'>»{$lang['rules']}</option>
 {/if}
 
 {if {$_CONF['info_row']['active_static']} == '1'}
-{if $PowerBB->_GET['page'] == 'static'}
+{if {$page} == 'static'}
 <option value='index.php?page=static&amp;index=1' selected='selected'>»{$lang['static']}</option>
 {else}
 <option value='index.php?page=static&amp;index=1'>»{$lang['static']}</option>
 {/if}
 {/if}
-{if $PowerBB->_GET['page'] == 'latest_reply'}
+{if {$page} == 'latest_reply'}
 <option value='index.php?page=latest_reply&amp;today=1' selected='selected'>»{$lang['latest_reply']}</option>
 {else}
 <option value='index.php?page=latest_reply&amp;today=1'>»{$lang['latest_reply']}</option>
 {/if}
-{if $PowerBB->_GET['page'] == 'search'}
+{if {$page} == 'search'}
 <option value='index.php?page=search&amp;index=1' selected='selected'>»{$lang['Search_Engine']}</option>
 {else}
 <option value='index.php?page=search&amp;index=1'>»{$lang['Search_Engine']}</option>
 {/if}
 {if {$_CONF['group_info']['onlinepage_allow']}}
-{if $PowerBB->_GET['page'] == 'online'}
+{if {$page} == 'online'}
 <option value='index.php?page=online&amp;show=1' selected='selected'>»{$lang['Whos_Online']}</option>
 {else}
 <option value='index.php?page=online&amp;show=1'>»{$lang['Whos_Online']}</option>
@@ -4016,7 +4016,7 @@ if ($PowerBB->_CONF['template']['while']['AdsensesList'][$this->x_loop]['in_page
 {/if}
 {if {$_CONF['info_row']['pm_feature']}}
 {if {$_CONF['rows']['group_info']['use_pm']} == 1}
-{if $PowerBB->_GET['page'] == 'pm_list'}
+{if {$page} == 'pm_list'}
 <option value='index.php?page=pm_list&amp;list=1&amp;folder=inbox' selected='selected'>»{$lang['Private_Messages']}</option>
 {else}
 <option value='index.php?page=pm_list&amp;list=1&amp;folder=inbox'>»{$lang['Private_Messages']}</option>
@@ -4024,30 +4024,33 @@ if ($PowerBB->_CONF['template']['while']['AdsensesList'][$this->x_loop]['in_page
 {/if}
 {/if}
 {if {$_CONF['group_info']['memberlist_allow']} == '1'}
-{if $PowerBB->_GET['page'] == 'member_list'}
+{if {$page} == 'member_list'}
 <option value='index.php?page=member_list&amp;index=1&amp;show=1' selected='selected'>»{$lang['members']}</option>
 {else}
 <option value='index.php?page=member_list&amp;index=1&amp;show=1'>»{$lang['members']}</option>
 {/if}
 {/if}
 {if {$_CONF['info_row']['active_archive']} == '1'}
-{if $PowerBB->_GET['page'] == 'archive'}
+{if {$page} == 'archive'}
 <option value='index.php?page=archive' selected='selected'>»{$lang['archive']}</option>
 {else}
 <option value='index.php?page=archive'>»{$lang['archive']}</option>
 {/if}
 {/if}
 {if {$_CONF['info_row']['active_calendar']} == '1'}
-{if $PowerBB->_GET['page'] == 'calendar'}
+{if {$page} == 'calendar'}
 <option value='index.php?page=calendar&amp;show=1' selected='selected'>»{$lang['Calendar']}</option>
 {else}
 <option value='index.php?page=calendar&amp;show=1'>»{$lang['Calendar']}</option>
 {/if}
 {/if}
+
 <option disabled='disabled'>-------------------------------</option>
 {Des::foreach}{forumsy_list}{forumy}
+{if {$page} == 'forum'}
 <?php
-if ($PowerBB->_GET['page'] == 'forum' && $PowerBB->_GET['show'] == 1 && $PowerBB->_GET['id'] == $forumy['id'])
+
+if (intval($PowerBB->_GET['id']) == $forumy['id'])
 {
 $selected = ' selected="selected"';
 }
@@ -4056,6 +4059,7 @@ else
 $selected = "";
 }
 ?>
+{/if}
 {if {$forumy['parent']} == '0'}
 <option value="index.php?page=forum&amp;show=1&amp;id={$forumy['id']}" <?php echo $selected; ?> class="darkfont">- {$forumy['title']}</option>
 {else}
@@ -4073,7 +4077,6 @@ $selected = "";
 {/if}
 {/Des::foreach}
 </select>
-&nbsp;
 </td>
 </tr>
 </table>
@@ -13030,7 +13033,7 @@ function DeletAttach(id, subject_id) {
 
 function getMeta(url) {
     $("<img/>",{
-        load: function() {
+        load: function() {    
         if (this.width > {$_CONF['info_row']['default_imagesW']}) {
         window.parent.PBBEditor.wysiwygEditorInsertHtml('<img src="'+url+'" width="{$_CONF['info_row']['default_imagesW']}" height="{$_CONF['info_row']['default_imagesH']}" />');
         }
@@ -17587,7 +17590,7 @@ right: 'month,agendaWeek,agendaDay'
 },
 defaultDate: '<?php echo $defaultDate; ?>',
 editable: true,
-eventLimit: false, // allow "more" link when too many events
+eventLimit: true, // allow "more" link when too many events
 
 events: [
 {
@@ -17969,9 +17972,14 @@ $(function() {
 
 });
 </script>]]></fast_edit>
-<js_limited_use><![CDATA[<link rel="stylesheet" href="{$ForumAdress}includes/js/highlight/styles/default.min.css">
+<js_limited_use><![CDATA[{if {$is_bot}}
+{if {$page} == 'topic' or {$page} == 'post' or {$page} == 'pm_show' or {$page} == 'print'}
+<link rel="stylesheet" href="{$ForumAdress}includes/js/highlight/styles/default.min.css">
 <script src="{$ForumAdress}includes/js/highlight/highlight.min.js"></script>
-<script type='text/javascript'>hljs.highlightAll();</script>]]></js_limited_use>
+<script type='text/javascript'>hljs.highlightAll();</script>
+{/if}
+{/if}
+]]></js_limited_use>
 <usercp_mentions><![CDATA[<title>{$lang['mention']} </title>
 {template}address_bar_part1{/template}
 <a href="index.php?page=usercp&amp;index=1">{$lang['User_Control_Panel']}</a>

@@ -92,12 +92,6 @@ class PowerBBCodeParse
 
 	         $string = str_replace("http://www.youtube.com", "https://www.youtube.com", $string);
 
-                 // jwplayer tag replace
-			    $jwplayer_search= '#\[jwplayer=(.*),(.*),(.*),(.*)\](.*)\[/jwplayer\]#siU';
-				$string = preg_replace_callback($jwplayer_search, function($jwplayer) {
-				    return $this->jwplayer($jwplayer[1],$jwplayer[2],$jwplayer[3],$jwplayer[4],$jwplayer[5]);
-				}, $string);
-
 			   //replace youtube;
 			    $youtube_search = '#\[youtube\](.*)\[/youtube\]#siU';
 				$string = preg_replace_callback($youtube_search, function($youtube) {
@@ -806,39 +800,7 @@ class PowerBBCodeParse
 		$url = "<a".$Aurl.'">'.$Burl.$sfdr."</a>";
 		return $url;
 	}
-  // jwplayer run withe image url
- 	function jwplayer($width, $height, $auto, $imageUrl, $fileUrl)
-	{
-		global $PowerBB;
-			$width = str_replace('\\"', '"', $width);
-			$height = str_replace('\\"', '"', $height);
-			$auto = str_replace('\\"', '"', $auto);
-			$imageUrl = str_replace('\\"', '"', $imageUrl);
-			$fileUrl = str_replace('\\"', '"', $fileUrl);
-			$imageUrl = str_ireplace("http", "{h-h}", $imageUrl);
-			$imageUrl = str_ireplace("www.", "{w-w}", $imageUrl);
-			$fileUrl = str_ireplace("http", "{h-h}", $fileUrl);
-			$fileUrl = str_ireplace("www.", "{w-w}", $fileUrl);
-	        $imageUrl = $PowerBB->functions->CleanVariable($imageUrl,'trim');
-	        $fileUrl = $PowerBB->functions->CleanVariable($fileUrl,'trim');
-	        $imageUrl = $PowerBB->functions->CleanVariable($imageUrl,'sql');
-	        $fileUrl = $PowerBB->functions->CleanVariable($fileUrl,'sql');
-	        $width = $PowerBB->functions->CleanVariable($width,'intval');
-	        $height = $PowerBB->functions->CleanVariable($height,'intval');
-	        if( $imageUrl == "false")
-	        {
-	        $url = $PowerBB->functions->GetForumAdress();
-	         $imageUrl = $url."look/images/pbboard.png";
-	        }
-	       if ($PowerBB->functions->checkmobile())
-			{
-	        $width = '250';
-	        $height = '250';
-			}
-			// jwplayer tag replace
-			$jwplayer = "<div style=\" margin:0 auto;width:'$width'px;height:'$height'px;\" data-width=\"$width\" data-height=\"$height\" data-auto=\"$auto\" data-image=\"$imageUrl\" data-url=\"$fileUrl\" class=\"jwplayer-html5-item\"></div><br />";
-			return $jwplayer;
-	}
+
 	/** * close all open xhtml tags at the end of the string
 	* * param string $html
 	* @return string

@@ -3526,7 +3526,8 @@ itemtype="https://schema.org/ListItem">
 <input type="hidden" name="sort_order" value="desc" />
 <input type="hidden" name="section" value="all" />
 <ul>
-<li><input type="text" name="keyword" class="searchfield" value="{$lang['search_keyword']}" onkeydown="countChar(this)" onclick="my_search()" onfocus="if (this.value == '{$lang['search_keyword']}') this.value = '';"
+<li>
+<input type="text" name="keyword" class="searchfield" aria-label="Search" value="{$lang['search_keyword']}" onkeydown="countChar(this)" onclick="my_search()" onfocus="if (this.value == '{$lang['search_keyword']}') this.value = '';"
 dir="{$_CONF['info_row']['content_dir']}" autocomplete="off" /></li>
 <li><input type="submit" name="submit" class="submit_id" title="{$lang['start_search']}" /></li>
 </ul>

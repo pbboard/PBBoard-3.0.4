@@ -217,6 +217,7 @@ class PBBTemplate
 	{
 		global $PowerBB;
 
+           		$page = empty($PowerBB->_GET['page']) ? 'index' : $PowerBB->_GET['page'];
 
          	$Template_name_dont_show = array("add_this", "add_reply_link", "add_subject_link", "signature_show" , "add_tags_table", "awards", "chat", "chat_edit", "chat_main", "editor_simple", "editor_js", "fast_reply_js", "imgs_resize", "jump_forums_list", "lasts_posts_bar", "last_subject_writer", "profile_cover_photo_upload", "statistics_list", "tags_edit_subject", "topic_end_fast_reply", "visitor_messag", "info_bar", "main_static_table", "visitor_message_js", "whatis_new");
 			$string = str_replace("&#39;", "'", $string);
@@ -441,8 +442,14 @@ class PBBTemplate
 
              $string = str_replace(">time(",">_date(",$string);
              $string = str_replace(">date(",">_date(",$string);
-
-
+				if ($page == 'index')
+				{
+				$string = str_replace('<div class="btn-nav"></div>','',$string);
+				}
+                else
+				{
+				$string = str_replace('<div class="btn-nav"></div>','<li><b class="btn-nav"></b></li>',$string);
+				}
 			$write  = @eval(" ?>".$string."<?php ");
 	}
 

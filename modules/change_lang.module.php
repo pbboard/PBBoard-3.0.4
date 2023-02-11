@@ -56,8 +56,6 @@ class PowerBBChangeLangMOD
 
 			if ($change)
 			{
-                    $redirect1 = $PowerBB->functions->redirect2('index.php');
-                    $redirect2 = $PowerBB->functions->redirect2($PowerBB->_SERVER['HTTP_REFERER']);
 
 		                if (strstr($PowerBB->_SERVER['HTTP_REFERER'],$PowerBB->functions->GetForumAdress()))
 						{

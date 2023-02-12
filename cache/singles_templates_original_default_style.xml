@@ -2280,48 +2280,55 @@ itemtype="https://schema.org/ListItem">
 {$lang['Retrieve_password']}
 </td>
 </tr>
+<tr>
+<td class="row1 wd10">
+<fieldset class="fieldset" style="margin: 5px; padding: 7px;">
+<legend style="padding: 0px 7px 0px 7px;"><b>{$lang['email_Retrieve_password']}</b></legend>
+<p><small>{$lang['forget_password_Message']}</small>
+<input name="email" type="text" size="33" dir="ltr" />
+</fieldset>
+</td>
+</tr>
 {if !{$_CONF['member_permission']}}
 {if {$_CONF['info_row']['captcha_type']} == 'captcha_IMG'}
 <tr>
 <td class="row1">
-{$lang['Image_Verification']}<br />
-<small>{$lang['Verification']}</small>
+<fieldset class="fieldset" style="margin: 5px; padding: 7px;">
+<legend style="padding: 0px 7px 0px 7px;"><b>{$lang['Image_Verification']}</b></legend>
+{$lang['Verification']}
 <br />
-<input name="code" id="code_confirm" size="5" style="min-width:3%" type="text" />
-<img alt="" id="turing" src="includes/captcha.php" width="87" height="17"/>
-<a onclick="updateImg();"><small>{$lang['Image_replacement']}</small></a>
+<input name="code_confirm" id="code_confirm" type="text" size="4" maxlength="5" dir="ltr"/>
+<br /><br />
+<img alt="" id="turing" src="includes/captcha.php" width="87" height="17" />
+<input type="button" class="buttons_no_link" value="{$lang['Image_replacement']}" onclick="updateImg()">
 <script type='text/javascript'>
-var clicks = 0;
-function updateImg()
+var clicks = 0;function updateImg()
 {
 clicks++
 var doc = document.getElementById("turing");
 doc.src = "includes/captcha.php" + "?act=" + clicks;
 }
 </script>
+</fieldset>
+<br />
 </td>
 </tr>
 {else}<tr>
 <td class="row1">
-{$lang['random_question']}
+<fieldset class="fieldset" style="margin: 5px; padding: 7px;">
+<legend style="padding: 0px 7px 0px 7px;"><b>{$lang['random_question']}</b></legend>
 <span class="smallfont" dir="{$_CONF['info_row']['content_dir']}" title="{$lang['question']}">
 {$question}
 <u title="{$lang['correct_answer']}">
 {$answer}</u></span>
 <input name="code" id="code_confirm" type="text" size="8" style="min-width:5%" dir="{$_CONF['info_row']['content_dir']}"/>
 <input value="{$answer}" type="hidden" name="code_answer" id="code_answer" />
+</fieldset>
 </td>
 </tr>
 {/if}
 {/if}
-<tr>
-<td class="row1 wd10">
-{$lang['email_Retrieve_password']}
-<p><small>{$lang['forget_password_Message']}</small>
-<br />
-<input name="email" type="text" size="33" dir="ltr" />
-</td>
-</tr>
+
 <tr class="center_text_align">
 <td class="row1 rows_space">
 <input type="submit" name="submit_forget" value="{$lang['Count']}" />
@@ -3569,7 +3576,7 @@ function my_search() {
 </li>
 <!-- Start login Box-->
 <li class="tabsup">
-<a title="{$lang['login']}" id="login-trigger"><i class="g_icon fa fa-sign-in"></i> {$lang['login']} </a>
+<abbr title="{$lang['login']}" id="login-trigger"><i class="g_icon fa fa-sign-in"></i> {$lang['login']} </abbr>
 <div id="login-content">
 <form method="post" action="index.php?page=login&amp;login=1">
 <div id="inputs">
@@ -3593,9 +3600,9 @@ function my_search() {
 {/if}
 <span class="UserPhoto_tiny" style="background-image: url({$avater_path});"></span>
 </a>
-<a id="userlink-trigger">
+<abbr id="userlink-trigger">
 {$_CONF['rows']['member_row']['username']}  <i class="usermenu fa fa-caret-down"></i>
-</a>
+</abbr>
 </li>
 
 {if {$_CONF['rows']['member_row']['usergroup']} == 5}
@@ -3611,7 +3618,7 @@ function my_search() {
 </li>
 {/if}
 <li class="userbar">
-<a title="{$lang['alerts']}" id="alerts-trigger"><i class="userbar_icon fa fa-bell-o"></i><sup id="sup"><b>{$all_alerts_num}</b></sup></a>
+<abbr title="{$lang['alerts']}" id="alerts-trigger"><i class="userbar_icon fa fa-bell-o"></i><sup id="sup"><b>{$all_alerts_num}</b></sup></abbr>
 </li>
 <li class="userlogout">
 <a href="index.php?page=logout&amp;index=1" onclick="return confirm('{$lang['confirm']}')" title="{$lang['logout']}">
@@ -3670,7 +3677,7 @@ $(document).ready(function(){
 </script>
 <div class="icon-mobile-men-top-right">
 <div id="icon-mobile-menu" class=" open_menu_fixed">
-<a title="Open Mobile Menu" aria-label="Open Menu" class="fa fa-bars fa-3x"> </a>
+<abbr title="Open Mobile Menu" aria-label="Open Menu" class="fa fa-bars fa-3x"> </abbr>
 </div>
 <div id="flip">
 <ul style="display:inline;">
@@ -4311,14 +4318,14 @@ itemtype="https://schema.org/ListItem">
 <i class="fa fa-users" aria-hidden="true"></i> {$lang['memberlist']}</a></li>
 {/if}
 {if {$_CONF['member_permission']}}
-<li id="quick_options"><a id="usercptools-trigger" href="#" title="{$lang['quick_options']}">
+<li id="quick_options"><abbr id="usercptools-trigger" title="{$lang['quick_options']}">
 <i class="fa fa-bolt" aria-hidden="true"></i> {$lang['quick_options']}
-<span class="arrow_y">&#9660</span></a>{template}usercptools{/template}</li>
+<span class="arrow_y">&#9660</span></abbr>{template}usercptools{/template}</li>
 {/if}
 {if !{$No_PagesList}}
-<li id="quick_pages"><a id="pages-trigger" href="#" title="{$lang['pages']}">
+<li id="quick_pages"><abbr id="pages-trigger" title="{$lang['pages']}">
 <i class="fa fa-clone" aria-hidden="true"></i> {$lang['pages']}
-<span class="arrow_y">&#9660</span></a>{template}pages{/template}
+<span class="arrow_y">&#9660</span></abbr>{template}pages{/template}
 </li>
 {/if}
 {if {$_CONF['member_permission']}}
@@ -4999,17 +5006,22 @@ $('#charNum').text({$_CONF['info_row']['post_title_max']} - len);
 {if !{$_CONF['member_permission']}}
 <tr>
 <td class="row1" colspan="2">
-{$lang['Your_name']} <input name="guest_name" id="guest_name" type="text" size="35"/>
+{$lang['Your_name']}
+<br />
+<input name="guest_name" id="guest_name" type="text" size="35"/>
 </td>
 </tr>
 {if {$_CONF['info_row']['captcha_type']} == 'captcha_IMG'}
 <tr class="center_text_align">
 <td class="row1" colspan="2">
-{$lang['Image_Verification']}:&nbsp;&nbsp;
-<span style="font-size:10px;">{$lang['Verification']}</span>
+<fieldset class="fieldset" style="margin: 5px; padding: 7px;">
+<legend style="padding: 0px 7px 0px 7px;"><b>{$lang['Image_Verification']}</b></legend>
+{$lang['Verification']}
 <br />
-<input name="code" id="code_confirm" type="text" size="7"/>&nbsp;&nbsp;<img alt="" id="turing" src="includes/captcha.php" width="87" height="17" />
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a onclick="updateImg();">{$lang['Image_replacement']}</a>
+<input name="code" id="code_confirm" type="text" size="7"/>
+<br /><br />
+<img alt="" id="turing" src="includes/captcha.php" width="87" height="17" />
+<input type="button" class="button button_b" value="{$lang['Image_replacement']}" onclick="updateImg()">
 <script type='text/javascript'>
 var clicks = 0;function updateImg()
 {
@@ -5018,6 +5030,8 @@ var doc = document.getElementById("turing");
 doc.src = "includes/captcha.php" + "?act=" + clicks;
 }
 </script>
+</fieldset>
+<br />
 </td>
 </tr>
 {else}<tr>
@@ -9397,11 +9411,13 @@ itemtype="https://schema.org/ListItem">
 {if {$_CONF['info_row']['captcha_type']} == 'captcha_IMG'}
 <tr>
 <td class="row1">
-{$lang['Image_Verification']}:&nbsp;&nbsp;
-<span style="font-size:10px;">{$lang['Verification']}</span>
+<fieldset class="fieldset" style="margin: 5px; padding: 7px;">
+<legend style="padding: 0px 7px 0px 7px;"><b>{$lang['Image_Verification']}:</b></legend>
+{$lang['Verification']}
 <br />
 <input name="code" id="code_confirm" type="text" size="7"/>
-<img id="turing" src="includes/captcha.php" width="87" height="17" alt="" /><a onclick="updateImg();">{$lang['Image_replacement']}</a>
+<img id="turing" src="includes/captcha.php" width="87" height="17" alt="" />
+<input type="button" class="button button_b" value="{$lang['Image_replacement']}" onclick="updateImg()">
 <script type='text/javascript'>
 var clicks = 0;
 function updateImg()
@@ -9411,27 +9427,33 @@ var doc = document.getElementById("turing");
 doc.src = "includes/captcha.php" + "?act=" + clicks;
 }
 </script>
+</fieldset>
 </td>
 </tr>
 {else}<tr>
 <td class="row1">
-{$lang['random_question']}
+<fieldset class="fieldset" style="margin: 5px; padding: 7px;">
+<legend style="padding: 0px 7px 0px 7px;"><b>{$lang['random_question']}</b></legend>
 <span class="smallfont" dir="{$_CONF['info_row']['content_dir']}" title="{$lang['question']}">
 {$question}
 <u title="{$lang['correct_answer']}">
 {$answer}</u></span>
 <input name="code" id="code_confirm" type="text" size="40" dir="{$_CONF['info_row']['content_dir']}"/>
 <input value="{$answer}" type="hidden" name="code_answer" id="code_answer" />
+</fieldset>
 </td>
 </tr>
 {/if}
 {/if}
 <tr>
 <td class="row1 wd10">
-{$lang['email_Retrieve_password']}
-<p>{$lang['active_code_Message']}
+<fieldset class="fieldset" style="margin: 5px; padding: 7px;">
+<legend style="padding: 0px 7px 0px 7px;"><b>
+{$lang['email_Retrieve_password']}</b></legend>
+{$lang['active_code_Message']}
 <br />
 <input name="email" type="text" value="{$MemberEmail}" size="33" dir="ltr"/>
+</fieldset>
 </td>
 </tr>
 <tr class="center_text_align">
@@ -9453,72 +9475,91 @@ itemtype="https://schema.org/ListItem">
 
 <form method="post" action="index.php?page=send&amp;startsendmessage=1">
 <div class="center_text_align">
-<table class="border wd98 brd1 clpc0">
+<table class="border wd88 brd1 clpc0 a-center">
 <tr>
-<td class="tcat center_text_align" colspan="2">{$lang['Contact_Manager']}</td>
+<td class="tcat center_text_align">{$lang['Contact_Manager']}</td>
 </tr>
 <tr>
-<td class="row2 center_text_align">{$lang['Your_name']}</td>
-<td class="row2 center_text_align">
-<input name="username" type="text" value="{$_CONF['member_row']['username']}"/></td>
+<td class="row1 center_text_align">
+<fieldset class="fieldset" style="margin: 5px; padding: 7px;">
+<legend style="padding: 0px 7px 0px 7px;"><b>{$lang['Your_name']}</b></legend>
+<input name="username" type="text" value="{$_CONF['member_row']['username']}"/>
+</fieldset>
+</td>
 </tr>
 <tr>
-<td class="row2 center_text_align">{$lang['E-mail']}</td>
-<td class="row2 center_text_align">
-<input name="email" type="text" value="{$email}" /></td>
+<td class="row1 center_text_align">
+<fieldset class="fieldset" style="margin: 5px; padding: 7px;">
+<legend style="padding: 0px 7px 0px 7px;"><b>{$lang['E-mail']}</b></legend>
+<input name="email" type="text" value="{$email}" />
+</fieldset>
+</td>
 </tr>
 <tr>
-<td class="row2 center_text_align" colspan="2">
-<table class="border wd98 brd1 clpc0 a-center">
+<td class="row1 center_text_align">
+<table class="wd98 brd0 clpc0 a-center">
 {if !{$_CONF['member_permission']}}
 {if {$_CONF['info_row']['captcha_type']} == 'captcha_IMG'}
 <tr>
-<td class="row1 wd30">{$lang['Image_Verification']}<br />
+<td class="row1 wd30">
+<fieldset class="fieldset" style="margin: 5px; padding: 7px;">
+<legend style="padding: 0px 7px 0px 7px;"><b>{$lang['Image_Verification']}</b></legend>
+{$lang['Verification']}
 <br />
-<br />
-<span style="font-size:10px;">{$lang['Verification']}</span></td>
-<td class="row1 center_text_align wd31">
-<img id="turing" src="includes/captcha.php" alt="" /><br /><a onclick="updateImg();">{$lang['Image_replacement']}</a>
-<p>
-<script language="javascript">	     var clicks = 0;	     function updateImg()
+<input name="code" id="code_confirm" type="text" />
+<br /><br />
+<img id="turing" src="includes/captcha.php" alt="" />
+<input type="button" class="button button_b" value="{$lang['Image_replacement']}" onclick="updateImg()">
+<script language="javascript">
+var clicks = 0;
+function updateImg()
 {
 clicks++
 var doc = document.getElementById("turing");
 doc.src = "includes/captcha.php" + "?act=" + clicks;
 }
--->
 </script>
-<input name="code" id="code_confirm" type="text" />
+
+</fieldset>
 </td>
 </tr>
-{else}	<tr>
-<td class="row1" colspan="2">
-{$lang['random_question']}
+{else}	
+<tr>
+<td class="row1">
+<fieldset class="fieldset" style="margin: 5px; padding: 7px;">
+<legend style="padding: 0px 7px 0px 7px;"><b>{$lang['random_question']}</b></legend>
 <span class="smallfont" dir="{$_CONF['info_row']['content_dir']}" title="{$lang['question']}">
 {$question}
 <u title="{$lang['correct_answer']}">
 {$answer}</u></span>
+
 <input name="code" id="code_confirm" type="text" size="40" dir="{$_CONF['info_row']['content_dir']}"/>
 <input value="{$answer}" type="hidden" name="code_answer" id="code_answer" />
+</fieldset>
 </td>
-</tr>	{/if}
+</tr
+{/if}
 {/if}
 </table></td>
 </tr>
 <tr>
-<td class="row1 center_text_align" colspan="2">
-{$lang['Your_Message']}
+<td class="row1 center_text_align">
+<fieldset class="fieldset" style="margin: 5px; padding: 7px;">
+<legend style="padding: 0px 7px 0px 7px;"><b>{$lang['Your_Message']} </b></legend>
 <br />
-<textarea rows="5" name="text" cols="50" class="max-input"></textarea></td>
+<textarea rows="5" name="text" cols="35" style="width:auto"></textarea>
+</fieldset>
+</td>
 </tr>
 <tr>
-<td class="row1 center_text_align" colspan="2">
+<td class="row1 center_text_align">
 <br />
 <input name="insert" type="submit" value="{$lang['Send_Message']}" />
 </td>
 </tr>
 </table>
-</div>	</form>
+</div>	
+</form>
 <br />]]></send_admin>
 <send_email><![CDATA[<title> {$lang['Send_Email_Message_to']}
 {$MemberInfo['username']} -
@@ -9544,36 +9585,42 @@ itemtype="https://schema.org/ListItem">
 </td>
 </tr>
 <tr class="center_text_align">
-<td class="row1 center_text_align">
-{$lang['PmTitle']}: <input name="title" type="text" />
+<td class="row1">
+{$lang['PmTitle']}
+<br /> <input name="title" type="text" />
 </td>
 </tr>
 <tr class="center_text_align">
-<td class="row1 center_text_align">
-<textarea rows="6" name="text" cols="56"></textarea>
+<td class="row1">
+<textarea rows="10" name="text" cols="50" class="wd95"></textarea>
 <br />
 
 </td>
 </tr>
 <tr class="center_text_align">
-<td class="row2 center_text_align">
+<td class="row1 center_text_align">
 <table class="brd0 clpc0">
 {if {$_CONF['info_row']['captcha_type']} == 'captcha_IMG'}
 <tr>
-<td class="row1">{$lang['Image_Verification']}<br /><br /><br />
-<span style="font-size:10px;">{$lang['Verification']}</span></td>
 <td class="row1">
-<img id="turing" src="includes/captcha.php" alt="" /><br />
-<a onclick="updateImg();">{$lang['Image_replacement']}</a><script language="javascript">
-var clicks = 0;
-function updateImg()
+<fieldset class="fieldset" style="margin: 5px; padding: 7px;">
+<legend style="padding: 0px 7px 0px 7px;"><b>{$lang['Image_Verification']}</b></legend>
+{$lang['Verification']}
+<br />
+<input name="code_confirm" id="code_confirm" type="text" size="4" maxlength="5" dir="ltr"/>
+<br /><br />
+<img alt="" id="turing" src="includes/captcha.php" width="87" height="17" />
+<input type="button" class="button button_b" value="{$lang['Image_replacement']}" onclick="updateImg()">
+<script type='text/javascript'>
+var clicks = 0;function updateImg()
 {
 clicks++
 var doc = document.getElementById("turing");
 doc.src = "includes/captcha.php" + "?act=" + clicks;
 }
 </script>
-<input name="code" id="code_confirm" type="text" /> </td>
+</fieldset>
+<br /></td>
 </tr>
 {else}
 <tr>
@@ -9654,10 +9701,10 @@ doc.src = "includes/captcha.php" + "?act=" + clicks;
 </td>
 </tr>
 <tr>
-<td class="row2">
+<td class="row1">
 <table style="border-collapse: collapse" class="center_text_align wd80 brd0 clp0">
 <tr>
-<td class="row2">
+<td class="row1">
 {if !{$_CONF['member_permission']}}
 {$lang['Your_name']}<br />
 <input name="username" type="text" value="{$_CONF['member_row']['username']}" size="30"/><br />
@@ -9670,25 +9717,31 @@ doc.src = "includes/captcha.php" + "?act=" + clicks;
 <input name="title" type="text" value="{$SubjectInfo['title']}" size="30" /></td>
 </tr>
 <tr>
-<td class="row2">
-<table class="border wd60 brd1 clpc0">
+<td class="row1">
+<table class="wd60 brd0 clpc0">
 {if {$_CONF['info_row']['captcha_type']} == 'captcha_IMG'}
 <tr>
-<td class="row1 wd30">{$lang['Image_Verification']}
-<span style="font-size:10px;">{$lang['Verification']}</span><p>
-<img id="turing" src="includes/captcha.php" alt="" />
-<a onclick="updateImg();">{$lang['Image_replacement']}</a><script language="javascript">
-var clicks = 0;
-function updateImg()
+<td class="row1 wd30">
+<fieldset class="fieldset" style="margin: 5px; padding: 7px;">
+<legend style="padding: 0px 7px 0px 7px;"><b>{$lang['Image_Verification']}</b></legend>
+{$lang['Verification']}
+<br /><br />
+<input name="code_confirm" id="code_confirm" type="text" size="4" maxlength="5" dir="ltr"/>
+<br />
+<br />
+<img alt="" id="turing" src="includes/captcha.php" width="87" height="17" />
+<input type="button" class="button button_b" value="{$lang['Image_replacement']}" onclick="updateImg()">
+<script type='text/javascript'>
+var clicks = 0;function updateImg()
 {
 clicks++
 var doc = document.getElementById("turing");
 doc.src = "includes/captcha.php" + "?act=" + clicks;
 }
 </script>
+</fieldset>
 <br />
-<br />
-<input name="code" id="code_confirm" type="text" /> </td>
+ </td>
 </tr>
 {else}	<tr>
 <td class="row1">
@@ -9706,7 +9759,7 @@ doc.src = "includes/captcha.php" + "?act=" + clicks;
 </table></td>
 </tr>
 <tr>
-<td class="row2">
+<td class="row1">
 {$lang['Your_Message']}
 <br />
 <textarea rows="10" name="text" cols="50" class="wd95">
@@ -9719,7 +9772,7 @@ index.php?page=topic&amp;show=1&amp;id={$SubjectInfo['id']}
 </textarea></td>
 </tr>
 <tr>
-<td class="row2 center_text_align">
+<td class="row1 center_text_align">
 <br />
 <input name="insert" type="submit" value="{$lang['Send_Message']}" />
 </td>
@@ -13863,7 +13916,8 @@ return $("#docheck_status").html(key_values.join());
 	} else {
 	instance.val("");
 	}
-    });
+    }); 
+    $(window).scrollTop($("#status").offset().top);
 	} else {
 	alert("{$lang['post_text_min']}");
 	}
@@ -13889,23 +13943,26 @@ return $("#docheck_status").html(key_values.join());
 {if !{$_CONF['member_permission']}}
 <dl>
 <dt></dt>
-<dd class="row1 rows_space">
-{$lang['Your_name']}
+<dd class="row1 ">
+<fieldset class="fieldset" style="margin: 5px; padding: 7px;">
+<legend style="padding: 0px 7px 0px 7px;"><b>{$lang['Your_name']}</b></legend>
 <input name="guest_name" id="guest_name" type="text" size="35"/>
+</fieldset>
 </dd>
 </dl>
 {if {$_CONF['info_row']['captcha_type']} == 'captcha_IMG'}
 <dl class="center_text_align">
 <dt></dt>
-<dd class="row1 rows_space">
-{$lang['Image_Verification']}:
-<span style="font-size:10px;">
+<dd class="row1">
+<fieldset class="fieldset" style="margin: 5px; padding: 7px;">
+<legend style="padding: 0px 7px 0px 7px;"><b>{$lang['Image_Verification']}</b></legend>
 {$lang['Verification']}
-</span>
 <br />
 <input name="code" id="code_confirm" type="text" size="7" />
+<br /><br />
 <img alt="" id="turing" src="includes/captcha.php" width="87" height="17" />
-<a onclick="updateImg();">
+<input type="button" class="button button_b" value="{$lang['Image_replacement']}" onclick="updateImg()">
+<script type='text/javascript'>
 {$lang['Image_replacement']}
 </a>
 <script type='text/javascript'>
@@ -13917,6 +13974,8 @@ var doc = document.getElementById("turing");
 doc.src = "includes/captcha.php" + "?act=" + clicks;
 }
 </script>
+</fieldset>
+<br />
 </dd>
 </dl>
 {else}
@@ -14690,37 +14749,37 @@ img.src = $('#url_input').val();
 <div class="center_text_align">
 <table class="border wd100 brd1 clpc0">
 <tr>
-<td class="tcat center_text_align wd80" colspan="2">
+<td class="tcat center_text_align wd80">
 {$lang['Your_Personal_Information']}
 </td>
 </tr>
 {if {$_CONF['info_row']['active_birth_date']} == 1 }
 <tr>
 <td class="row1">
-{$lang['Birth_date']}
-</td>
-<td class="row1">
-{if {$_CONF['rows']['member_row']['bday_year']} == '' }
+<fieldset class="fieldset" style="margin: 5px; padding: 7px;">
+<legend style="padding: 0px 7px 0px 7px;"><b>
+{$lang['Birth_date']}</b></legend>
+<p>{if {$_CONF['rows']['member_row']['bday_year']} == '' }
 {template}birth_date{/template}
 {else}
 {template}usercp_birth_date{/template}
 {/if}
+</fieldset>
 </td>
 </tr>
 {/if}
 <tr>
 <td class="row1">
-{$lang['user_country']}
-</td>
-<td class="row1 wd60">
+<fieldset class="fieldset" style="margin: 5px; padding: 7px;">
+<legend style="padding: 0px 7px 0px 7px;"><b>{$lang['user_country']}</b></legend>
 <input name="country" type="text" value="{$_CONF['rows']['member_row']['user_country']}" />
+</fieldset>
 </td>
 </tr>
 <tr>
 <td class="row1">
-{$lang['user_gender']}
-</td>
-<td class="row1 wd60">
+<fieldset class="fieldset" style="margin: 5px; padding: 7px;">
+<legend style="padding: 0px 7px 0px 7px;"><b>{$lang['user_gender']}</b></legend>
 <select name="gender" id="select_gender">
 {if {$_CONF['rows']['member_row']['user_gender']} == 'm'}
 <option value="m" selected="selected">{$lang['gender_m']}</option>
@@ -14730,27 +14789,28 @@ img.src = $('#url_input').val();
 <option value="f" selected="selected">{$lang['gender_f']}</option>
 {/if}
 </select>
+</fieldset>
 </td>
 </tr>
 <tr>
 <td class="row1">
-{$lang['user_website']}
-</td>
-<td class="row1 wd60">
+<fieldset class="fieldset" style="margin: 5px; padding: 7px;">
+<legend style="padding: 0px 7px 0px 7px;"><b>{$lang['user_website']}</b></legend>
 {if {$_CONF['rows']['member_row']['user_website']} != '' }
-<input name="website" type="url" class="max-input" value="{$_CONF['rows']['member_row']['user_website']}" size="35" dir="ltr" />
+<input name="website" type="url" value="{$_CONF['rows']['member_row']['user_website']}" size="35" dir="ltr" />
 {else}
-<input name="website" type="url" class="max-input" placeholder="https://example.com" pattern="https://.*" size="35" dir="ltr" />
+<input name="website" type="url" placeholder="https://example.com" pattern="https://.*" size="35" dir="ltr" />
 {/if}
+</fieldset>
 </td>
 </tr>
 <tr>
 <td class="row1">
-{$lang['Information_about_you']}
-</td>
-<td class="row1 wd60">
+<fieldset class="fieldset" style="margin: 5px; padding: 7px;">
+<legend style="padding: 0px 7px 0px 7px;"><b>{$lang['Information_about_you']}</b></legend>
 <textarea name="info" rows="1" id="info" class="max-input" cols="46" style="width: 272px; height: 67px;">{$_CONF['rows']['member_row']['user_info']}</textarea>
 <br />
+</fieldset>
 </td>
 </tr>
 </table>
@@ -14780,15 +14840,14 @@ img.src = $('#url_input').val();
 <div class="center_text_align">
 <table class="border wd100 brd1 clpc0">
 <tr>
-<td class="tcat center_text_align wd80" colspan="3">
+<td class="tcat center_text_align wd80">
 {$lang['Absence_Settings']}
 </td>
 </tr>
 <tr>
 <td class="row1">
-{$lang['Do_you_want_to_absence']}
-</td>
-<td class="row1 wd60" colspan="2">
+<fieldset class="fieldset" style="margin: 5px; padding: 7px;">
+<legend style="padding: 0px 7px 0px 7px;"><b>{$lang['Do_you_want_to_absence']}</b></legend>
 <select name="away" size="1">
 {if {$_CONF['rows']['member_row']['away']} == 0}
 <option value="1">{$lang['Yes']}</option>
@@ -14798,29 +14857,30 @@ img.src = $('#url_input').val();
 <option value="0">{$lang['No']}</option>
 {/if}
 </select>
+</fieldset>
 </td>
 </tr>
 <tr>
 <td class="row1">
-{$lang['Reason_for_absence']}
-</td>
-<td class="row1 wd80" colspan="2">
+<fieldset class="fieldset" style="margin: 5px; padding: 7px;">
+<legend style="padding: 0px 7px 0px 7px;"><b>{$lang['Reason_for_absence']}</b></legend>
 <textarea name="away_msg" rows="1" id="away_msg" class="max-input" cols="46" style="width: 272px; height: 67px;">{$_CONF['rows']['member_row']['away_msg']}</textarea>
 <br />
 <span class="smallfont">{$lang['varchar']}</span></td>
 </tr>
 <tr>
-<td class="row1 wd80" colspan="3">
+<td class="row1 wd80">
 {$lang['you_naw']}
 {if {$_CONF['rows']['member_row']['away']} == 0}
 <strong>{$lang['No_Absent']}</strong>
 {else}
 <strong>{$lang['Absent']}</strong>
 {/if}
+</fieldset>
 </td>
 </tr>
 <tr>
-<td class="row1 wd80" colspan="3">
+<td class="row1 wd80">
 {$lang['absence_Note']}
 </td>
 </tr>
@@ -16125,21 +16185,24 @@ and $PowerBB->_CONF['template']['_CONF']['rows']['member_row']['id'] == $PowerBB
 
 <tr>
 <td class="row1 center_text_align wd60">
-<span class="smallfont">{$lang['Verification']}</span>
+<fieldset class="fieldset" style="margin: 5px; padding: 7px;">
+<legend style="padding: 0px 7px 0px 7px;"><b>{$lang['Image_Verification']}</b></legend>
+{$lang['Verification']}
 <br />
-<img alt="" id="turing" src="includes/captcha.php" />
 <input name="code_confirm" id="code_confirm" type="text" size="4" maxlength="5" dir="ltr"/>
-<br />
-<script language="javascript">
-var clicks = 0;
-function updateImg()
+<br /><br />
+<img alt="" id="turing" src="includes/captcha.php" width="87" height="17" />
+<input type="button" class="button button_b" value="{$lang['Image_replacement']}" onclick="updateImg()">
+<script type='text/javascript'>
+var clicks = 0;function updateImg()
 {
 clicks++
 var doc = document.getElementById("turing");
 doc.src = "includes/captcha.php" + "?act=" + clicks;
 }
 </script>
-<a onclick="updateImg();"><span class="smallfont">{$lang['Image_replacement']}</span></a>
+</fieldset>
+<br />
 </td>
 </tr>
 {else}

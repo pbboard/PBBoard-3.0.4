@@ -79,7 +79,7 @@ border-right: 1px solid #ddd;
 -webkit-box-shadow: 1px 0 0 #FFFFFF;
 box-shadow: 1px 0 0 #FFFFFF;
 }
-#nav_header_bar .tabsup a{
+#nav_header_bar .tabsup a,#nav_header_bar .tabsup abbr {
 display: inline-block;
 float: right;
 height:35px;
@@ -944,7 +944,7 @@ display:inline-block;
 padding-left:0px;
 list-style:none;
 }
-#subnavigation a{
+#subnavigation a,#subnavigation abbr{
 color:#1d1d1d;
 clear:both;
 min-height:28px;
@@ -954,7 +954,8 @@ margin:0;
 padding:0 5px;
 display:block;
 line-height:26px;
-
+text-decoration: none;
+cursor: pointer;
 height:1%;
 -webkit-border-radius:4px;
 border-radius:4px;
@@ -3173,6 +3174,14 @@ font-size: 15px;
 cursor: pointer;
 margin-top: 0px;
 }
+#userbar abbr ,
+#userbar span{
+color: #FFF;
+font-size: 15px;
+text-decoration: none;
+cursor: pointer;
+margin-top: 0px;
+}
 .show{
 background-color:none;
 border: 1px solid #d2d2d2;
@@ -4454,7 +4463,7 @@ margin:0px;
 padding: 0px;
 }
 
-.icon-mobile-men-top-right #icon-mobile-menu a {
+.icon-mobile-men-top-right #icon-mobile-menu abbr {
 color: #FFF;
 font-size: 22px;
 font-style: normal;
@@ -4463,6 +4472,7 @@ position:absolute;
 top: 9px;
 left: 8px;
 cursor: pointer;
+text-decoration: none;
 }
 #flip {
 display: none;
@@ -5175,8 +5185,10 @@ white-space: pre-wrap;
 .userbar #alerts-trigger
 {
 cursor: pointer;
+text-decoration: none;
 }
 #login-trigger{
+text-decoration: none;
 cursor: pointer;
 }
 .break {

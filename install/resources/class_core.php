@@ -290,7 +290,7 @@ class PBBoard {
 
 		if(isset($this->input['intcheck']) && $this->input['intcheck'] == 1)
 		{
-			die("&#077;&#089;&#066;&#066;");
+			die("PBBoard");
 		}
 	}
 

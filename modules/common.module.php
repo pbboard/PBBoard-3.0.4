@@ -800,7 +800,7 @@ class PowerBBCommon
 	function _CheckClose()
 	{
 		global $PowerBB;
-
+     $page = empty($PowerBB->_GET['page']) ? 'index' : $PowerBB->_GET['page'];
 		// This member is banned :/
 		if (!defined('CLASS_NAME') == 'PowerBBLogoutMOD')
 		{
@@ -822,20 +822,10 @@ class PowerBBCommon
 
 		$IsBanned = $PowerBB->core->GetInfo($BanInfoArr,'banned');
 
-		if ($IsBanned)
-		{
-    	     $PowerBB->_CONF['info_row']['sidebar_list_active'] = 0;
-    	     $PowerBB->_CONF['template']['_CONF']['info_row']['sidebar_list_active']= 0;
-			$stop = ($PowerBB->_CONF['ip'] and !$PowerBB->_CONF['ip']) ? false : true;
-		     $PowerBB->functions->ShowHeader($PowerBB->_CONF['template']['_CONF']['lang']['ban_IP']);
-			$PowerBB->functions->msg($PowerBB->_CONF['template']['_CONF']['lang']['ban_IP'].'<br />'.$PowerBB->_CONF['template']['_CONF']['lang']['reason_ban'].' '.$IsBanned['reason'],$stop,$stop);
-			$PowerBB->functions->GetFooter();
-			exit();
-		}
-
 		// if the forum close by admin , stop the page
-		if ($PowerBB->_CONF['info_row']['board_close'])
-    	{
+       if ($PowerBB->_CONF['info_row']['board_close'])
+    	{
+
     	     $PowerBB->_CONF['info_row']['sidebar_list_active'] = 0;
     	     $PowerBB->_CONF['template']['_CONF']['info_row']['sidebar_list_active']= 0;
   			if ($PowerBB->_CONF['group_info']['admincp_allow'] != 1
@@ -857,6 +847,32 @@ class PowerBBCommon
   			}
 
  		}
+		elseif ($IsBanned)
+		{
+            if($page !='logout' and $page !='send')
+		    {
+				$PowerBB->_CONF['info_row']['sidebar_list_active'] = 0;
+				$PowerBB->_CONF['template']['_CONF']['info_row']['sidebar_list_active']= 0;
+				$stop = ($PowerBB->_CONF['ip'] and !$PowerBB->_CONF['ip']) ? false : true;
+				$PowerBB->functions->ShowHeader($PowerBB->_CONF['template']['_CONF']['lang']['ban_IP']);
+				$PowerBB->functions->msg($PowerBB->_CONF['template']['_CONF']['lang']['ban_IP'].'<br />'.$PowerBB->_CONF['template']['_CONF']['lang']['reason_ban'].' '.$IsBanned['reason'],$stop,$stop);
+				$PowerBB->functions->GetFooter();
+				exit();
+			}
+		}
+		elseif($PowerBB->_CONF['member_row']['usergroup'] == '6')
+		{
+		    if($page !='logout' and $page !='send')
+		    {
+				$PowerBB->_CONF['info_row']['sidebar_list_active'] = 0;
+				$PowerBB->_CONF['template']['_CONF']['info_row']['sidebar_list_active']= 0;
+				$stop = ($PowerBB->_CONF['ip'] and !$PowerBB->_CONF['ip']) ? false : true;
+				$PowerBB->functions->ShowHeader($PowerBB->_CONF['template']['_CONF']['lang']['suspended_member']);
+				$PowerBB->functions->msg($PowerBB->_CONF['template']['_CONF']['lang']['suspended_member'].'<br />'.$PowerBB->_CONF['template']['_CONF']['lang']['ban_IP'],$stop,$stop);
+				$PowerBB->functions->GetFooter();
+				exit();
+			}
+		}
 
 
 

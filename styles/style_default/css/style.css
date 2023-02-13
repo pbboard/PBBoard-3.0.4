@@ -4990,7 +4990,7 @@ font-family: "Droid Arabic Kufi","tahoma",sans-serif;
 font-size: 11px;
 position: relative;
 top: 192px;
-right: -167px;
+right: -235px;
 color: #000;
 float: right;
 display: inline-block;
@@ -5510,8 +5510,11 @@ display: none !important;
 @media screen and (max-width: 650px) {
 
 .information_user_info{
-font-size: 8px;
-top: 113px;
+display: none !important;
+}
+.information_user_website {
+top: 111px;
+margin-right: 31px;
 }
 .management_profile a{
 position: relative;
@@ -5649,6 +5652,11 @@ display: none !important;
 }
 /* for 480px or less */
 @media screen and (max-width: 480px) {
+#elEditProfile {
+margin-left: -8px;
+position: relative;
+top: 10px;
+}
 .textemain {
 width: 350px !important;
 }
@@ -5824,9 +5832,6 @@ display: none;
 .information{
 display: none;
 }
-#elEditProfile{
-display: none;
-}
 .forum-stats{
 width: 320px;
 }
@@ -5857,16 +5862,14 @@ width: auto;
 .management_profile a {
 position: relative;
 left: -6px;
-top: -107px;
+top: -52px;
 }
 }
 @media screen and (max-width: 404px) {
 .information{
 display: none;
 }
-#elEditProfile{
-display: none;
-}
+
 .app_button{
 display: none;
 }
@@ -5894,9 +5897,7 @@ width: 250px !important;
 .information{
 display: none;
 }
-#elEditProfile{
-display: none;
-}
+
 .app_button{
 display: none;
 }
@@ -5951,8 +5952,18 @@ padding: 5px 5px 1px 5px;
 margin-top: -6px;
 }
 .information_user_website {
-top: 113px;
-right: -112px;
+top: 107px;
+right: -154px;
+}
+.management_profile a {
+top: -97px;
+right: 7px;
+}
+#elEditProfile {
+margin-top: -5px;
+    margin-left: -8px;
+    position: relative;
+    top: 26px;
 }
 }
 
@@ -5970,12 +5981,44 @@ top: 0;
 left: 0;
 z-index: 1;
 }
+
+.user_style_title {
+top: 55px;
+right: -61px;
+background-color: #eefefd;
+border: 1px solid #ccc;
+border-radius: 7px;
+padding: 6px 5px;
+color: #375d9e;
+}
+.information_user_website {
+    right: -222px;
+    top: 150px;
+    z-index: 999;
+}
+.management_profile a {
+    top: -35px;
+    right: 5px;
+}
+#elEditProfile {
+margin-top: -5px;
+    margin-left: -8px;
+    position: relative;
+    top: 26px;
+}
+.UserPhoto_xlarge img{
+    height: 50px;
+    width: 50px;
+}
 }
 @media screen and (max-width: 290px) {
 .forum-last-post {
 width: auto;
 padding: 5px !important;
 margin: 5px !important;
+}
+.borderwrap {
+width: auto; !important;
 }
 .nav_header_bar-top {
 position: absolute;
@@ -6001,6 +6044,69 @@ display: none !important;
 padding: 0px !important;
 margin: 0px !important;
 font-weight:normal;
+}
+#nav_header_bar li {
+width: auto;
+}
+#userlink-trigger {
+display: none !important;
+}
+.pp-contentbox-back{
+padding: 0px;
+margin: 0px;
+}
+
+div.Button_split
+{
+margin-top: -161px;
+}
+input[type="text"],input[type="url"],.max-input{
+width: 200px !important;
+}
+.wd60 select{
+width: 50px !important;
+}
+.usercp_left .wd60{
+width: auto !important;
+}
+.describe{
+    width: 240px;
+}
+.category span.block-header {
+    padding: 8px 6px !important;
+}
+.category {
+font-size: 12px;
+font-weight: normal;
+}
+.UserPhoto_xlarge img{
+    height: 50px;
+    width: 50px;
+}
+.user_style_title {
+top: 55px;
+right: -61px;
+background-color: #eefefd;
+border: 1px solid #ccc;
+border-radius: 7px;
+padding: 6px 5px;
+color: #375d9e;
+font-size: small;
+}
+#elEditProfile {
+margin-top: -61px;
+margin-left: -8px;
+position: relative;
+top: -24px;
+}
+.management_profile a {
+    top: -126px;
+    right: 5px;
+}
+.information_user_website {
+top: 64px;
+right: -35px;
+z-index: 999;
 }
 }
 @media (min-width:981px) and (max-width:1100px) {

@@ -7201,7 +7201,7 @@ alt="{$lang['no_photo']}" />
 <div class="information_user_website">
 <i class="fa fa-link"></i>
  <a title="{$lang['user_website']}" target="_blank"  class="dirc" href="{$MemberInfo['user_website']}">
- {$MemberInfo['user_website']}
+{$lang['Visit_my_website']}
 </a>
 </div>
 {/if}
@@ -14820,21 +14820,27 @@ img.src = $('#url_input').val();
 <div class="center_text_align">
 <table class="border wd100 brd1 clpc0">
 <tr>
-<td class="tcat center_text_align wd80" colspan="2">
+<td class="tcat center_text_align wd80">
 {$lang['Additional_information']}
 </td>
-</tr>    {Des::while}{extrafields}
+</tr>    
+{Des::while}{extrafields}
 <tr>
 <td class="row1">
-{$extrafields['name']}
-</td>
-<td class="row1 wd60">
+<fieldset class="fieldset" style="margin: 5px; padding: 7px;">
+<legend style="padding: 0px 7px 0px 7px;"><b>{$extrafields['name']}</b></legend>
 {$extrafields['type_html']}
 {if {$extrafields['required']} == 'yes'}
 {$lang['required']}
 {/if}
+</fieldset>
+<br />
 </td>
-</tr>  {/Des::while}  </table>	</div>	<br />
+</tr>  
+{/Des::while}  
+</table>
+</div>
+<br />
 {/if}
 {if {$_CONF['info_row']['allow_apsent']}}
 <div class="center_text_align">

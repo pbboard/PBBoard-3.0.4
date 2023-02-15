@@ -1618,9 +1618,11 @@ class PowerBBFunctions
 	  $string = str_replace("&quot;", '"', $string);
 	  $string = str_replace("&lt;","<", $string);
 	  $string = str_replace("&gt;",">", $string);
-		$string = preg_replace(",([^]_a-z0-9-=\"'\/])((https?|ftp|gopher|news|telnet):\/\/|www\.)([^ \r\n\(\)\*\^\$!`\"'\|\[\]\{\}<>]*),i", "",$string);
+	if (!isset($PowerBB->_GET['page']) == 'rss')
+	{
+	 	$string = preg_replace(",([^]_a-z0-9-=\"'\/])((https?|ftp|gopher|news|telnet):\/\/|www\.)([^ \r\n\(\)\*\^\$!`\"'\|\[\]\{\}<>]*),i", "",$string);
 		$string = preg_replace(",^((https?|ftp|gopher|news|telnet):\/\/|\.)([^ \r\n\(\)\*\^\$!`\"'\|\[\]\{\}<>]*),i", "",$string);
-
+	}
 		$string = str_replace(">","> ", $string);
 		$string = str_replace("<"," <", $string);
 		$string = strip_tags($string);
@@ -1654,6 +1656,103 @@ class PowerBBFunctions
         $originally_text = strip_tags($originally_text);
 		return ($originally_text);
     }
+
+   function CleanRSSText($string)
+ 	{
+ 	 global $PowerBB;
+
+		$string = preg_replace('#\[php\](.*)\[/php\]#siU', '[code]$1[/code]', $string);
+		$string = preg_replace('#\[js\](.*)\[/js\]#siU', '[code]$1[/code]', $string);
+		$string = preg_replace('#\[html\](.*)\[/html\]#siU', '[code]$1[/code]', $string);
+		$string = preg_replace('#\[sql\](.*)\[/sql\]#siU', '[code]$1[/code]', $string);
+		$string = preg_replace('#\[xml\](.*)\[/xml\]#siU', '[code]$1[/code]', $string);
+		$string = preg_replace('#\[css\](.*)\[/css\]#siU', '[code]$1[/code]', $string);
+
+		$regexcodew = '#\[code\](.*)\[/code\]#siU';
+		$string = preg_replace_callback($regexcodew, function($matchesw) {
+		return '{code}'.base64_encode($matchesw[1]).'{/code}';
+		}, $string);
+
+		$string = str_replace("&quot;", '"', $string);
+		$string = str_replace("&lt;","<", $string);
+		$string = str_replace("&gt;",">", $string);
+		$string = str_replace(">","> ", $string);
+		$string = str_replace("<"," <", $string);
+		$string = str_replace("[img]","{img}", $string);
+		$string = str_replace("[/img]","{/img}", $string);
+
+
+		$string = str_replace("[youtube]","{youtube}", $string);
+		$string = str_replace("[/youtube]","{/youtube}", $string);
+		$string = str_replace("[video=youtube]","{video=youtube}", $string);
+		$string = str_replace("[/video]","{/video}", $string);
+
+		$string = preg_replace('#\[quote\=(.+)\](.+)\[\/quote\]#iUs', '{quote}$2{/quote}', $string);
+		$string = preg_replace("#\[quote\](.*?)\[\/quote\](\r\n?|\n?)#si", '{quote}$1{/quote}', $string);
+
+		$string = str_replace($PowerBB->_CONF['template']['_CONF']['lang']['the_original_topic'],"the_original_topic", $string);
+        $string = preg_replace('#\[url=(.*?)\]the_original_topic\[/url\]#siU', '[ss]$1[/ss]', $string);
+
+		$string = preg_replace('#\[url\=(.+)\](.+)\[\/url\]#iUs', '{url=$1}$2{/url}', $string);
+		$string = preg_replace("#\[url\](.*?)\[\/url\](\r\n?|\n?)#si", '{url}$1{/url}', $string);
+
+
+
+		$string = strip_tags($string);
+		$string = str_replace("\r","{s}", $string);
+		$string = str_replace("\n","{s}", $string);
+		$string = str_replace("\t","{s}", $string);
+
+		$originally_text = $string;
+		// Recreate string from array
+		// See what we got
+		$originally_text = str_replace(" ",",", $originally_text);
+		$originally_text = str_replace("{s}",",", $originally_text);
+		$originally_text = str_replace(",,",",", $originally_text);
+		$originally_text = str_replace(",,",",", $originally_text);
+		$originally_text = str_replace($originally_text,"'".$originally_text."'", $originally_text);
+		$originally_text = str_replace("',","", $originally_text);
+		$originally_text = str_replace(",'","", $originally_text);
+		$originally_text = str_replace("'","", $originally_text);
+		$originally_text = str_replace(","," ", $originally_text);
+		$originally_text = str_replace("&nbsp;"," ", $originally_text);
+		$originally_text = str_replace("  "," ", $originally_text);
+		$originally_text = str_replace("&quot;","", $originally_text);
+		$originally_text = str_replace("&amp;quot;","", $originally_text);
+		$originally_text = str_replace("    "," ", $originally_text);
+		$originally_text = str_replace("   "," ", $originally_text);
+		$originally_text    = str_replace(".."," ", $originally_text);
+		$pattern = '|[[\/\!]*?[^\[\]]*?]|si';
+		$replace = '';
+		$originally_text = preg_replace($pattern, $replace, $originally_text);
+
+		$originally_text = strip_tags($originally_text);
+		$originally_text = str_replace("{img}","\n[img]", $originally_text);
+		$originally_text = str_replace("{/img}","[/img]\n", $originally_text);
+
+		$originally_text = str_replace("{youtube}","\n[youtube]", $originally_text);
+		$originally_text = str_replace("{/youtube}","[/youtube]\n", $originally_text);
+		$originally_text = str_replace("{video=youtube}","\n[video=youtube]", $originally_text);
+		$originally_text = str_replace("{/video}","[/video]\n", $originally_text);
+		$originally_text = str_replace("{quote}","\n[quote]", $originally_text);
+		$originally_text = str_replace("{/quote}","[/quote]\n", $originally_text);
+
+		$originally_text = preg_replace('#\{url\=(.+)\}(.+)\{\/url\}#iUs', '[url=$1]$2[/url]', $originally_text);
+		$originally_text = str_replace("{url}","[url]", $originally_text);
+		$originally_text = str_replace("{/url}","[/url]", $originally_text);
+
+		$regexcode_code = '#\{code\}(.*)\{/code\}#siU';
+		$originally_text = preg_replace_callback($regexcode_code, function($matchesg) {
+		$matchesg[1] = base64_decode($matchesg[1]);
+		$matchesg[1] = str_replace("<", "&lt;", $matchesg[1]);
+		$matchesg[1] = str_replace(">", "&gt;", $matchesg[1]);
+		$matchesg[1] = str_replace('"',"&quot;",$matchesg[1]);
+		return "[code]".$matchesg[1]."[/code]";
+		}, $originally_text);
+
+		return ($originally_text);
+    }
+
  	function replace_strip($string)
  	{
  	 global $PowerBB;
@@ -2506,8 +2605,8 @@ class PowerBBFunctions
 			$type = str_replace("index.php?page=rss&subject=1","rss.xml",$type);
 			$type = str_replace("index.php?page=rss&amp;section=1&amp;id=","rss_forum_",$type);
 			$type = str_replace("index.php?page=rss&section=1&id=","rss_forum_",$type);
-            $type = preg_replace('#href="rss_forum_(.*?)"#i', 'href="rss_forum_$1.xml"', $type);
-            $type = preg_replace('#href="sitemap_forum(.*?)"#i', 'href="sitemap_forum_$1.xml"', $type);
+            $type = preg_replace('#rss_forum_(.*?)"#i', 'rss_forum_$1.xml"', $type);
+            $type = preg_replace('#sitemap_forum(.*?)"#i', 'sitemap_forum_$1.xml"', $type);
             $type = str_replace("index.php?page=post&show=1&id=","post-",$type);
             $type = str_replace("index.php?page=post&amp;show=1&amp;id=","post-",$type);
 

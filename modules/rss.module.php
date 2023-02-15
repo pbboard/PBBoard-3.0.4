@@ -77,13 +77,12 @@ class PowerBBRSSMOD
 	$SubjectArr['where'][0]['oper'] 	= 	'<>';
 	$SubjectArr['where'][0]['value'] 	= 	'1';
 	$SubjectArr['order'] 		= 	array();
-	$SubjectArr['order']['field'] 	= 	'write_time';
+	$SubjectArr['order']['field'] 	= 	'native_write_time';
 	$SubjectArr['order']['type'] 	= 	'DESC';
 	$SubjectArr['limit'] 		= 	'12';
 	$SubjectArr['proc'] 		= 	array();
 	$SubjectArr['proc']['*'] 	= 	array('method'=>'clean','param'=>'html');
 	$SubjectArr['proc']['native_write_time'] 	= 	array('method'=>'date','store'=>'write_date','type'=>$datenow);
-	$SubjectArr['proc']['write_time'] 			= 	array('method'=>'date','store'=>'reply_date','type'=>$datenow);
 	$SubjectList = $PowerBB->core->GetList($SubjectArr,'subject');
 	$size 	= 	sizeof($SubjectList);
 	$x	=	0;
@@ -93,8 +92,10 @@ class PowerBBRSSMOD
 	   // $_replaceBB = "";
        	$SubjectList[$x]['text'] = str_replace($PowerBB->_CONF['template']['_CONF']['lang']['resize_image_w_h'], "", $SubjectList[$x]['text']);
 
-		$description = $PowerBB->Powerparse->ShortPhrase($PowerBB->functions->CleanText($SubjectList[$x]['text']),300);
-		$SubjectList[$x]['text'] = $PowerBB->Powerparse->ShortPhrase($PowerBB->functions->CleanText($SubjectList[$x]['text']),400);
+
+		$description = $PowerBB->functions->CleanRSSText($SubjectList[$x]['text']);
+		$SubjectList[$x]['text'] = $PowerBB->functions->CleanRSSText($SubjectList[$x]['text']);
+
 
 		//$SubjectList[$x]['text'] = @preg_replace($_searchBB,$_replaceBB,$SubjectList[$x]['text']);
 		//$SubjectList[$x]['title'] = @preg_replace($_searchBB,$_replaceBB,$SubjectList[$x]['title']);
@@ -125,11 +126,12 @@ class PowerBBRSSMOD
 		$extention = "";
 		$url = "index.php?page=topic&amp;show=1&amp;id=";
 		$url = $PowerBB->functions->rewriterule($url);
+
 		echo "<item>";
 		echo "<title>" . $PowerBB->functions->CleanText($SubjectList[$x]['title'])  . "</title>\n";
 		echo "<description>" . trim($description) . "</description>\n";
 		echo "<link>" . $PowerBB->functions->GetForumAdress() . $url . $SubjectList[$x]['id'] . $extention . "</link>\n";
-		echo '<pubDate>' . date("r", $PowerBB->functions->CleanText($SubjectList[$x]['write_time'])) . '</pubDate>' . "\n";
+		echo '<pubDate>' . date("r", $PowerBB->functions->CleanText($SubjectList[$x]['native_write_time'])) . '</pubDate>' . "\n";
 		echo "<guid>" . $PowerBB->functions->GetForumAdress() . $url . $SubjectList[$x]['id'] . $extention . "</guid>\n";
 		echo "</item>\n";
 		$x += 1;
@@ -180,7 +182,7 @@ class PowerBBRSSMOD
 	$SubjectArr['where'][1]['oper'] 	= 	'<>';
 	$SubjectArr['where'][1]['value'] 	= 	'1';
 	$SubjectArr['order'] 		= 	array();
-	$SubjectArr['order']['field'] 	= 	'write_time';
+	$SubjectArr['order']['field'] 	= 	'native_write_time';
 	$SubjectArr['order']['type'] 	= 	'DESC';
 	$SubjectArr['limit'] 		= 	'15';
 	$SubjectArr['proc'] 		= 	array();
@@ -192,8 +194,8 @@ class PowerBBRSSMOD
 	{
        $SubjectList[$x]['text'] = @preg_replace('#<img .*src="(.*)".*>#iU', "{img_s}$1{img_e}", $SubjectList[$x]['text']);
        	$SubjectList[$x]['text'] = str_replace($PowerBB->_CONF['template']['_CONF']['lang']['resize_image_w_h'], "", $SubjectList[$x]['text']);
-     	$description = $PowerBB->Powerparse->ShortPhrase($PowerBB->functions->CleanText($SubjectList[$x]['text']),300);
-        $SubjectList[$x]['text'] = $PowerBB->Powerparse->ShortPhrase($PowerBB->functions->CleanText($SubjectList[$x]['text']),400);
+     	$description = $PowerBB->functions->CleanRSSText($SubjectList[$x]['text']);
+        $SubjectList[$x]['text'] = $PowerBB->functions->CleanRSSText($SubjectList[$x]['text']);
 
 	    //$_searchBB = '#\[(.*)\]#esiU';
 	   // $_replaceBB = "";
@@ -228,7 +230,7 @@ class PowerBBRSSMOD
 		echo "<title>" . $PowerBB->functions->CleanText($SubjectList[$x]['title'])  . "</title>\n";
 		echo "<description>" . trim($description) . "</description>\n";
 		echo "<link>" . $PowerBB->functions->GetForumAdress() . $url . $SubjectList[$x]['id'] . $extention . "</link>\n";
-		echo '<pubDate>' . date("r", $PowerBB->functions->CleanText($SubjectList[$x]['write_time'])) . '</pubDate>' . "\n";
+		echo '<pubDate>' . date("r", $PowerBB->functions->CleanText($SubjectList[$x]['native_write_time'])) . '</pubDate>' . "\n";
 		echo "<guid>" . $PowerBB->functions->GetForumAdress() . $url . $SubjectList[$x]['id'] . $extention . "</guid>\n";
 		echo "</item>\n";
 		$x += 1;
@@ -242,7 +244,6 @@ class PowerBBRSSMOD
 		$content = preg_replace('/[\x00-\x1F\x7F]/', '', $content);
 		$find=array("’","“","”"); //special characters other then characters starting with & and ending with ;
 		$content=htmlspecialchars_decode($content);
-		$content=strip_tags($content);
 		$content=str_replace($find,"",$content);
 		$content=preg_replace('/\&.*\;/','',$content); //Replace all words starting with & and ending with ; with ''
 		$content=preg_replace("/(\r?\n){2,}/",'', $content); //Replace all newline characters with ''
@@ -253,6 +254,7 @@ class PowerBBRSSMOD
 		$content=str_replace(">","&gt;",$content);
 		$content=str_replace("'","&apos;",$content);
 		$content=str_replace('"',"&quot;",$content);
+		$content=strip_tags($content);
 		return $content;
 	}
 

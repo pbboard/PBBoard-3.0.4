@@ -5205,6 +5205,22 @@ padding-inline-start: 3px;
     display: inline-block;
     margin: 0;
 }
+.inner-addon i {
+    height: 24px;
+    justify-content: center;
+    align-items: center;
+    font-size: 12px;
+    color: var(--colorGrey);
+}
+
+.inner-addon .form-control {
+    height: 48px;
+    color: var(--colorDarkGreen);
+    padding: 0 20px;
+    font-size: 16px;
+    font-family: var(--mainFontN);
+    font-weight: normal;
+}
 @media (max-width:1200px) {
 .cked_fast{
 width: 80%;

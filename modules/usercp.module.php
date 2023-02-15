@@ -519,6 +519,26 @@ class PowerBBCoreMOD
         $PowerBB->_POST['info'] = strip_tags($PowerBB->_POST['info']);
         $PowerBB->_POST['year'] = strip_tags($PowerBB->_POST['year']);
 
+		if(!empty($PowerBB->_POST['birth_date']))
+		{
+       	$PowerBB->_POST['birth_date']   = 	$PowerBB->functions->CleanVariable($PowerBB->_POST['birth_date'],'sql');
+       	$PowerBB->_POST['birth_date']   = 	$PowerBB->functions->CleanVariable($PowerBB->_POST['birth_date'],'html');
+			  $birth = explode("-",$PowerBB->_POST['birth_date']);
+
+			if(intval($birth[0]))
+			{
+			$PowerBB->_POST['day'] = $birth[0];
+			}
+			if(intval($birth[1]))
+			{
+			$PowerBB->_POST['month'] = $birth[1];
+			}
+			if(intval($birth[2]))
+			{
+			$PowerBB->_POST['year'] = $birth[2];
+			}
+		}
+
 
 
 		$StartArr 			= 	array();

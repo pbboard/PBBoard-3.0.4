@@ -29,7 +29,7 @@ a:hover {
 
 /* Logo */
 #logo h1 {
-	background: #fff url('images/logo.png') no-repeat 0 5px;
+	background: #409BD9 url('images/logo.png') no-repeat 0 5px;
 	height: 82px;
 	margin: 0px;
 	padding: 3px;
@@ -42,7 +42,7 @@ a:hover {
 /* Header */
 #header {
 	clear: both;
-	background-color: #43a6df;
+	background-color: #409BD9;
 	background: url(images/primary_nav_bg.png) repeat top;
 	margin-bottom: 20px;
 	border-bottom: 1px solid #ccc;
@@ -195,8 +195,6 @@ h4 {
 	border-bottom: 1px solid #ddd;
 	padding: 8px;
 	font-size: 11px;
-	text-align: right;
-	vertical-align: middle;
 	color: #666;
 	margin-bottom: 20px;
 }

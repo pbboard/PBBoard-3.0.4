@@ -93,10 +93,10 @@
 <phrase name="moderator_has_been_updated_successfully" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1670802917" fieldname="admincp"><![CDATA[تم تحديث المشرف بنجاح !]]></phrase>
 <phrase name="members_has_been_active_successfully" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1670802917" fieldname="admincp"><![CDATA[تم التفعيل بنجاح ،،]]></phrase>
 <phrase name="You_do_not_select_any_member_of_the_deletion" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1670802917" fieldname="admincp"><![CDATA[لم تقم بتحديد اي عضو]]></phrase>
-<phrase name="mor_hours_online_today" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1670802917" fieldname="admincp"><![CDATA[زيادة وقت بقاء المتواجدين اليوم بالأيام <br /> ادخل 0 للوضع الإفتراضي ]]></phrase>
+<phrase name="mor_hours_online_today" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1670802917" fieldname="admincp"><![CDATA[زيادة وقت بقاء المتواجدون اليوم بالأيام <br /> ادخل 0 للوضع الإفتراضي ]]></phrase>
 <phrase name="sub_columns_number" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1670802917" fieldname="admincp"><![CDATA[إذا كانت المنتديات الفرعية مفعل ظهورها , كم عدد المنتديات الفرعية التي ستعرض في كل سطر]]></phrase>
 <phrase name="Settings_online" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1670802917" fieldname="admincp"><![CDATA[إعدادات المتواجدون الآن]]></phrase>
-<phrase name="mor_seconds_online" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1670802917" fieldname="admincp"><![CDATA[ وقت بقاء المتواجدين الآن بالثواني]]></phrase>
+<phrase name="mor_seconds_online" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1670802917" fieldname="admincp"><![CDATA[ وقت بقاء المتواجدون الآن بالثواني]]></phrase>
 <phrase name="input_icons_nm" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1670802917" fieldname="admincp"><![CDATA[عدد ايقونات المشاركة]]></phrase>
 <phrase name="icon_columns_number" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1670802917" fieldname="admincp"><![CDATA[كم عدد أعمدة ايقونات المشاركة]]></phrase>
 <phrase name="smil_columns_number" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1670802917" fieldname="admincp"><![CDATA[كم عدد أعمدة الأبتسامات]]></phrase>
@@ -564,13 +564,13 @@
 <phrase name="Go_to_last_post" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1670802917" fieldname="forum"><![CDATA[الذهاب إلى آخر مشاركة]]></phrase>
 <phrase name="new_subject" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1670802917" fieldname="forum"><![CDATA[يحتوي مواضيع جديدة]]></phrase>
 <phrase name="home_peg" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1670802917" fieldname="forum"><![CDATA[الصفحة الرئيسية]]></phrase>
-<phrase name="online_naw" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1670802917" fieldname="forum"><![CDATA[المتواجدين الآن]]></phrase>
+<phrase name="online_naw" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1670802917" fieldname="forum"><![CDATA[المتواجدون الآن]]></phrase>
 <phrase name="no_new_subject" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1670802917" fieldname="forum"><![CDATA[لايحتوي مواضيع جديدة]]></phrase>
 <phrase name="member_and" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1670802917" fieldname="forum"><![CDATA[عضو و]]></phrase>
 <phrase name="member_hide_and" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1670802917" fieldname="forum"><![CDATA[مخفي و]]></phrase>
 <phrase name="Guest" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1670802917" fieldname="forum"><![CDATA[زائر]]></phrase>
 <phrase name="no_login_member" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1670802917" fieldname="forum"><![CDATA[لا يوجد شخص قام بتسجيل دخوله]]></phrase>
-<phrase name="online_today" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1670802917" fieldname="forum"><![CDATA[<strong>المتواجدين اليوم </strong> :]]></phrase>
+<phrase name="online_today" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1670802917" fieldname="forum"><![CDATA[<strong>المتواجدون اليوم </strong> :]]></phrase>
 <phrase name="no_visitor_member_today" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1670802917" fieldname="forum"><![CDATA[لا يوجد عضو قام بزيارة المنتديات اليوم]]></phrase>
 <phrase name="subjects_num" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1670802917" fieldname="forum"><![CDATA[إجمالي المواضيع]]></phrase>
 <phrase name="member" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1670802917" fieldname="forum"><![CDATA[عضو]]></phrase>
@@ -1207,7 +1207,7 @@
 <phrase name="Seen_the_vote" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1670802917" fieldname="forum"><![CDATA[يشاهد استفتاء]]></phrase>
 <phrase name="Seen_the_tags" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1670802917" fieldname="forum"><![CDATA[يطلع على العلامات]]></phrase>
 <phrase name="Seen_the_new_topic" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1670802917" fieldname="forum"><![CDATA[يكتب موضوع جديد]]></phrase>
-<phrase name="Seen_the_online" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1670802917" fieldname="forum"><![CDATA[يطلع على المتواجدين حالياً]]></phrase>
+<phrase name="Seen_the_online" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1670802917" fieldname="forum"><![CDATA[يطلع على المتواجدون حالياً]]></phrase>
 <phrase name="Not_Was_style_Information" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1670802917" fieldname="forum"><![CDATA[لم يتم ايجاد معلومات النمط]]></phrase>
 <phrase name="ban_IP" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1670802917" fieldname="forum"><![CDATA[تم حظر دخولك لهذا المنتدى من قبل الإدارة ]]></phrase>
 <phrase name="Can_you_enter_the_Forum" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1670802917" fieldname="forum"><![CDATA[لايمكنك دخول المنتدى]]></phrase>
@@ -1715,7 +1715,7 @@
 <phrase name="portal_latest_posts" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1670802917" fieldname="forum"><![CDATA[آخر المشاركات]]></phrase>
 <phrase name="welcome" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1670802917" fieldname="admincp"><![CDATA[مرحباً بك يا]]></phrase>
 <phrase name="mange_forum" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1670802917" fieldname="admincp"><![CDATA[إعدادات المنتدى]]></phrase>
-<phrase name="portal_online" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1670802917" fieldname="forum"><![CDATA[المتواجدين الآن]]></phrase>
+<phrase name="portal_online" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1670802917" fieldname="forum"><![CDATA[المتواجدون الآن]]></phrase>
 <phrase name="home_admin" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1670802917" fieldname="admincp"><![CDATA[الرئيسيه للوحة التحكم]]></phrase>
 <phrase name="home_forum" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1670802917" fieldname="admincp"><![CDATA[الرئيسية للمنتدى]]></phrase>
 <phrase name="logout_admin" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1670802917" fieldname="admincp"><![CDATA[تسجيل الخروج]]></phrase>
@@ -2054,7 +2054,7 @@
 <phrase name="forums_Properties" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1670802917" fieldname="admincp"><![CDATA[خصائص الاقسام]]></phrase>
 <phrase name="Properties_Private_Messages" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1670802917" fieldname="admincp"><![CDATA[خصائص الرسائل الخاصة]]></phrase>
 <phrase name="user_download_attach_number" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1670802917" fieldname="admincp"><![CDATA[عدد المشاركات حتى يستطيع تحميل المرفق]]></phrase>
-<phrase name="see_who_on_topic" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1670802917" fieldname="admincp"><![CDATA[مشاهدة المتواجدين بالموضوع]]></phrase>
+<phrase name="see_who_on_topic" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1670802917" fieldname="admincp"><![CDATA[مشاهدة المتواجدون بالموضوع]]></phrase>
 <phrase name="view_sections" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1670802917" fieldname="admincp"><![CDATA[إمكانية الإطلاع على الأقسام]]></phrase>
 <phrase name="use_pm" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1670802917" fieldname="admincp"><![CDATA[امكانية استخدام الرسائل الخاصة]]></phrase>
 <phrase name="max_pm" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1670802917" fieldname="admincp"><![CDATA[حجم الصندوق (بالعدد)]]></phrase>
@@ -2103,9 +2103,9 @@
 <phrase name="search_allow" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1670802917" fieldname="admincp"><![CDATA[امكانية استخدام خاصية البحث]]></phrase>
 <phrase name="show_hidden" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1670802917" fieldname="admincp"><![CDATA[امكانية مشاهدة الاعضاء المتخفين]]></phrase>
 <phrase name="hide_allow" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1670802917" fieldname="admincp"><![CDATA[امكانية التصفح الخفي]]></phrase>
-<phrase name="view_usernamestyle" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1670802917" fieldname="admincp"><![CDATA[ظهور اسم المجموعة ضمن اسماء المجموعات الاخرى في جدول المتواجدين]]></phrase>
+<phrase name="view_usernamestyle" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1670802917" fieldname="admincp"><![CDATA[ظهور اسم المجموعة ضمن اسماء المجموعات الاخرى في جدول المتواجدون]]></phrase>
 <phrase name="usertitle_change" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1670802917" fieldname="admincp"><![CDATA[تغيير مسمى العضو عند زيادة المشاركات]]></phrase>
-<phrase name="onlinepage_allow" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1670802917" fieldname="admincp"><![CDATA[امكانية الاطلاع على المتواجدين]]></phrase>
+<phrase name="onlinepage_allow" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1670802917" fieldname="admincp"><![CDATA[امكانية الاطلاع على المتواجدون]]></phrase>
 <phrase name="can_warned" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1670802917" fieldname="admincp"><![CDATA[إمكانية إنذار أعضاء هذه المجموعة]]></phrase>
 <phrase name="allow_see_offstyles" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1670802917" fieldname="admincp"><![CDATA[إمكانية رؤية الانماط المعطلة]]></phrase>
 <phrase name="can_write_visitormessage" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1670802917" fieldname="admincp"><![CDATA[يستطيع كتابة رسائل زوار في الملف الشخصي لأعضاء آخرين]]></phrase>
@@ -2220,7 +2220,7 @@
 <phrase name="admin_email" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1670802917" fieldname="admincp"><![CDATA[بريد الاستقبال]]></phrase>
 <phrase name="send_email" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1670802917" fieldname="admincp"><![CDATA[بريد الارسال]]></phrase>
 <phrase name="General_Settings" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1670802917" fieldname="admincp"><![CDATA[الإعدادات العامة]]></phrase>
-<phrase name="shwo_guest_online" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1670802917" fieldname="admincp"><![CDATA[إظهار اسماء الزوار في قائمة المتواجدين الآن]]></phrase>
+<phrase name="shwo_guest_online" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1670802917" fieldname="admincp"><![CDATA[إظهار اسماء الزوار في قائمة المتواجدون الآن]]></phrase>
 <phrase name="shwo_all_generals" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1670802917" fieldname="admincp"><![CDATA[عرض كافة الأعدادات]]></phrase>
 <phrase name="ajax_moderator_options" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1670802917" fieldname="admincp"><![CDATA[تنشيطها عند التحكم في الموضوع]]></phrase>
 <phrase name="no_describe" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1670802917" fieldname="admincp"><![CDATA[تفعيل ظهور وصف المنتديات]]></phrase>
@@ -2310,7 +2310,7 @@
 <phrase name="input_default_avatar" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1670802917" fieldname="admincp"><![CDATA[عنوان الصورة]]></phrase>
 <phrase name="default_avatar" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1670802917" fieldname="admincp"><![CDATA[الصورة الشخصية الأفتراضية]]></phrase>
 <phrase name="Days_allowed_for_visitors_to_login" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1670802917" fieldname="admincp"><![CDATA[الايام المسموح للزوار دخول المنتدى بها]]></phrase>
-<phrase name="board_close" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1670802917" fieldname="admincp"><![CDATA[اغلاق المنتدى]]></phrase>
+<phrase name="board_close_forum" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1670802917" fieldname="admincp"><![CDATA[اغلاق المنتدى]]></phrase>
 <phrase name="board_msg" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1670802917" fieldname="admincp"><![CDATA[الرساله التي تظهر عند اغلاق المنتدى]]></phrase>
 <phrase name="activate_last_static_list" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1670802917" fieldname="admincp"><![CDATA[تنشيط قائمة آخر  5 احصائيات]]></phrase>
 <phrase name="Settings_last_static" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1670802917" fieldname="admincp"><![CDATA[إعدادات آخر 5 احصائيات]]></phrase>

@@ -354,7 +354,7 @@ $l['no_permision'] = "You do not have permissions to run this process. You need 
 $l['task_versioncheck_ran'] = "The version check task successfully ran.";
 $l['lang_lnsertion'] = "Lang Insertion";
 $l['languages_step_imported'] = '<p>The default theme and template sets have been successfully inserted. Click Next to insert the default PBBoard Languages.</p>';
-$l['languages_step_successfully'] = '<p>The default Arabic language and English Language have been successfully inserted Click Next to configure the basic options for your board.</p>';
+$l['languages_step_successfully'] = '<p>The default English Language have been successfully inserted Click Next to configure the basic options for your board.</p>';
 $l['password_incorrect'] = "The password you entered is incorrect. If you have forgotten your password, click <a href=\"../index.php?page=forget&index=1\">here</a>. Otherwise, go back and try again.";
 $l['username_invalid'] = "The username you have entered appears to be invalid.";
 $l['check_logoutkey'] = "Your user ID could not be verified to log you out.  This may have been because a malicious Javascript was attempting to log you out automatically.  If you intended to log out, please click the Log Out button at the top menu.";

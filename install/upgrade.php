@@ -1,11 +1,6 @@
 <?php
 error_reporting(E_ERROR | E_PARSE);
 define('SAFEMODE', (ini_get('safe_mode') == 1 OR strtolower(ini_get('safe_mode')) == 'on') ? true : false);
-// اللغة العربية اجباري
-if(!isset($_COOKIE['pbb_insall_lang']) == 'ar')
-{setcookie('pbb_insall_lang', "ar", time() + (86400 * 30), "/"); // 86400 = 1 day
-echo "<META HTTP-EQUIV=\"refresh\" CONTENT=\"0; URL=upgrade.php\">\n";
-}
 @set_time_limit(0);
 @ini_set('max_execution_time', 123456);
 $Generatekey = @sha1(@microtime());

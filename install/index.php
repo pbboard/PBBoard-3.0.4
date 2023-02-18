@@ -1,11 +1,5 @@
 <?php
 error_reporting(E_ERROR | E_PARSE);
-// اللغة العربية اجباري
-if(!isset($_COOKIE['pbb_insall_lang']) == 'ar')
-{
-setcookie('pbb_insall_lang', "ar", time() + (86400 * 30), "/"); // 86400 = 1 day
- echo "<META HTTP-EQUIV=\"refresh\" CONTENT=\"0; URL=index.php\">\n";
-}
 
 @set_time_limit(0);
 
@@ -129,7 +123,7 @@ $output->title = $lang->title;
 
 		if($c_lang)
 		 {
-		  setcookie('pbb_insall_lang', $c_lang, time() + (86400 * 30), "/"); // 86400 = 1 day
+		  setcookie('pbb_insall_lang', $c_lang, time() + (2880 * 2), "/");
 		  echo "<META HTTP-EQUIV=\"refresh\" CONTENT=\"0; URL=index.php\">\n";
 		 }
 	}
@@ -1718,8 +1712,14 @@ function language()
 	global $output, $PBBoard, $errors, $lang;
 
    	$output->print_header($lang->lang_lnsertion, 'languages');
+   	if($_COOKIE['pbb_insall_lang'] == 'ar')
+   	{
 	$ar_lang =_InsertLang_ar();
-	//$en_lang =_InsertLang_en();
+	}
+	elseif($_COOKIE['pbb_insall_lang'] == 'en')
+    {
+	$en_lang =_InsertLang_en();
+	}
     echo $lang->languages_step_successfully;
 	$output->print_footer('configuration');
 }
@@ -1787,7 +1787,7 @@ function language()
 		$Languages = $import['language']['phrasegroup'];
 		$language_number = sizeof($import['language']['phrasegroup']['phrase'])/2;
 
-			$langid_en = '2';
+			$langid_en = '1';
 		            $x = 0;
      			while ($x < $language_number)
      			{
@@ -2084,7 +2084,14 @@ function install_done()
 
 	echo $lang->done_step_usergroupsinserted;
 	$now = TIME_NOW;
-
+   	if($_COOKIE['pbb_insall_lang'] == 'ar')
+   	{
+	$user_title ='مدير المنتدى';
+	}
+	elseif($_COOKIE['pbb_insall_lang'] == 'en')
+    {
+	$user_title ='Administrators';
+	}
 
    $username_style_cache	=	'<strong><em><span style="color: #800000;">' . $db->escape_string($PBBoard->get_input('adminuser')) . '</span></em></strong>';
 
@@ -2101,7 +2108,7 @@ function install_done()
 		'register_time' => $now,
 		'style' => '1',
 		'username_style_cache' => $username_style_cache,
-		'user_title' => 'المشرف العام',
+		'user_title' => $user_title,
 		'lang' => '1',
 		'user_notes' => 'My note',
 		'user_sig' => '',

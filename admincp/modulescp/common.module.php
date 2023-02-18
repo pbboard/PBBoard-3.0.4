@@ -438,7 +438,6 @@ class PowerBBCommon
 		$IcnArr['proc']['*'] 		= 	array('method'=>'clean','param'=>'html');
 
 		$PowerBB->_CONF['template']['while']['IconRows'] = $PowerBB->icon->GetIconList($IcnArr);
-
 	           if ($PowerBB->_CONF['LangDir'] == 'ltr')
 				{
 					  $PowerBB->template->assign('align','left');
@@ -454,6 +453,8 @@ class PowerBBCommon
 					  $PowerBB->template->assign('align','right');
 					  $PowerBB->template->assign('aligndir','l-left');
 					  $PowerBB->template->assign('desalign','left');
+			         $PowerBB->_CONF['template']['_CONF']['info_row']['content_dir'] = 'rtl';
+			         $PowerBB->_CONF['template']['_CONF']['info_row']['content_language'] = 'ar';
 					$PowerBB->_CONF['info_row']['content_dir'] = 'rtl';
 					$PowerBB->_CONF['info_row']['content_language'] = 'ar';
 				}

@@ -1,4 +1,5 @@
 <?php
+error_reporting(E_ERROR | E_PARSE);
 /**
  * PBBoard 3.3
  * Copyright 2019 PBBoard Group, All Rights Reserved
@@ -40,13 +41,13 @@ class installerOutput {
 	 */
 	function print_header($title="Welcome", $image="welcome", $form=1, $error=0)
 	{
-		global $PBBoard;
+		global $PBBoard, $lang;
 
 		if($lang->title)
 		{
 			$this->title = $lang->title;
 		}
-		@header("Content-type: text/html; charset=utf-8");
+		//@header("Content-type: text/html; charset=utf-8");
 
 		$this->doneheader = 1;
 		$dbconfig_add = '';
@@ -79,10 +80,7 @@ END;
 		<div id="inner_container">
 		<div id="header">{$this->title}</div>
 END;
-		if($PBBoard->version_code >= 1700 && $PBBoard->version_code < 1800)
-		{
-			echo "<div class=\"error\"><h2 class=\"fail\">Warning</h2><p>This version of PBBoard is a development preview and is to be used for testing purposes only.</p><p>No official support, other than for plugins and theme development, will be provided for this version. By continuing with this install/upgrade you do so at your own risk.</p></div>";
-		}
+
 		if(empty($this->steps))
 		{
 			$this->steps = array();

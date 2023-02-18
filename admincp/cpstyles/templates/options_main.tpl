@@ -21,7 +21,7 @@
 <td class="row1">
 <select name="myDestination" tabindex="1" class="bginput" multiple size="12" style="width:350px" ondblclick="window.location.href=this.options[this.selectedIndex].value">
 <option value="index.php?page=options&amp;allgeneral=1&amp;main=1">-- {$lang['shwo_all_generals']} --</option>
-<option value="index.php?page=options&amp;close=1&amp;main=1">{$lang['board_close']}</option>
+<option value="index.php?page=options&amp;close=1&amp;main=1">{$lang['board_close_forum']}</option>
 <!-- action_find_addons_1 -->
 <option value="index.php?page=options&amp;general=1&amp;main=1">{$lang['General_Settings']}</option>
 <option value="index.php?page=options&amp;human_verification=1&amp;main=1">{$lang['manage_human_verification']}</option>

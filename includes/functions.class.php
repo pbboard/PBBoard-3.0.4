@@ -1559,10 +1559,6 @@ class PowerBBFunctions
 			}
 		}
 
-          $string = implode($excludedtext."|");
-          $string = str_replace(",|","", $string);
-
-
        return implode($excludedtext);
     }
 

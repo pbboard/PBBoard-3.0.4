@@ -1439,7 +1439,7 @@ class PowerBBCodeParse
 
         $string = str_replace("<br style=", "<span style=", $string);
 
-         $string = preg_replace('#<div style="(.*)">(.*)</div>#siU', '[divstyle=$1]$2[/divstyle]', $string);
+         //$string = preg_replace('#<div style="(.*)">(.*)</div>#siU', '[divstyle=$1]$2[/divstyle]', $string);
          $string = preg_replace('#<div (.*)">(.*)</div>#siU', '$2', $string);
 
          $string = preg_replace('#<span style="(.*)">(.*)</span>#siU', '[style=$1]$2[/style]', $string);

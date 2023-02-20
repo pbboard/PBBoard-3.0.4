@@ -4991,7 +4991,7 @@ font-family: "Droid Arabic Kufi","tahoma",sans-serif;
 font-size: 11px;
 position: relative;
 top: 192px;
-left: -216px;
+left: -180px;
 color: #000;
 float: left;
 display: inline-block;
@@ -6014,7 +6014,7 @@ padding: 6px 5px;
 color: #375d9e;
 }
 .information_user_website {
-    left: -222px;
+    left: -180px;
     top: 150px;
     z-index: 999;
 }

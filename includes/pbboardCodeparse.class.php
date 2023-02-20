@@ -332,7 +332,7 @@ class PowerBBCodeParse
             $string = preg_replace('#\[indent\](.+)\[\/indent\]#iUs', '<indent>$1</indent>', $string);
 	        $string = preg_replace('#\[color\=(.+)\](.+)\[\/color\]#iUs', '<font color="$1">$2</font>', $string);
 	        $string = preg_replace('#\[font\=(.+)\](.+)\[\/font\]#iUs', '<font face="$1">$2</font>', $string);
-	        $string = preg_replace('#\[(.+)\=(.+)\](.+)\[\/(.+)\]#iUs', '<$1 face="$2">$3</$4>', $string);
+	       // $string = preg_replace('#\[(.+)\=(.+)\](.+)\[\/(.+)\]#iUs', '<$1 face="$2">$3</$4>', $string);
 
         return $this->closetags($string);
 

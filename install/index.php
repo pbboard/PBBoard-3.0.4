@@ -31,7 +31,7 @@ require_once PBB_ROOT."includes/db_base.php";
 require_once PBB_ROOT."includes/functions.class.php";
 
 // Include the installation resources
-if($_COOKIE['pbb_insall_lang'] == 'ar')
+if(isset($_COOKIE['pbb_insall_lang']) == 'ar')
 {
 require_once INSTALL_ROOT.'resources/output_ar.php';
 $output = new installerOutput;
@@ -42,7 +42,7 @@ $lang->load($_COOKIE['pbb_insall_lang']);
 $output->loadlang = $_COOKIE['pbb_insall_lang'];
 $mysql_db_inserts_file = 'mysql_db_inserts.php';
 }
-elseif($_COOKIE['pbb_insall_lang'] == 'en')
+elseif(isset($_COOKIE['pbb_insall_lang']) == 'en')
 {
 require_once INSTALL_ROOT.'resources/output.php';
 $output = new installerOutput;

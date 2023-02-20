@@ -1395,7 +1395,7 @@ class PowerBBFunctions
  	function RandomCode()
     {
   		$code = rand(1,500) . rand(1,1000) . microtime();
-  		$code = @ceil($code);
+  		//$code = @ceil($code);
   		$code = base64_encode($code);
   		$code = substr($code,0,15);
   		$code = str_replace('=',rand(1,100),$code);

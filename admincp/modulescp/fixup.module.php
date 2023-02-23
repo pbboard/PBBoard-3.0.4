@@ -4,8 +4,6 @@
 
 define('IN_ADMIN',true);
 
-
-
 define('CLASS_NAME','PowerBBFixMOD');
 
 include('../common.php');
@@ -810,19 +808,48 @@ class PowerBBFixMOD
 	{
 		global $PowerBB;
 
-		$repair = $PowerBB->fixup->RepairTables();
+		$repair = $this->_RepairTables();
+
+       $br = '<br>';
+		echo('<br><br><table border="1" width="80%" cellspacing="0" cellpadding="0" bgcolor="#FFFFFF" style="border-collapse: collapse" align="center"><tr><td><font face="Tahoma" size="2">');
 
 		foreach ($repair as $table => $success)
 		{
+
 			if ($success)
 			{
-				$PowerBB->functions->msg($PowerBB->_CONF['template']['_CONF']['lang']['Has_been_fixed_table'] . $table);
+				echo(" ".$PowerBB->_CONF['template']['_CONF']['lang']['Has_been_fixed_table'] . $table .' ..'. $br);
 			}
 			else
 			{
-				$PowerBB->functions->msg($PowerBB->_CONF['template']['_CONF']['lang']['Failure_in_the_repair_of_table'] . $table);
+				echo(" ".$PowerBB->_CONF['template']['_CONF']['lang']['Failure_in_the_repair_of_table'] . $table .' ..'. $br);
 			}
 		}
+
+
+      		echo('</font><br></td></tr></table>');
+	}
+
+	function _RepairTables()
+	{
+	   global $PowerBB;
+		$returns = array();
+
+		foreach ($PowerBB->table as $k => $v)
+		{
+			$query = $PowerBB->DB->sql_query('REPAIR TABLE ' . $v);
+
+			if ($query)
+			{
+				$returns[$v] = true;
+			}
+			else
+			{
+				$returns[$v] = false;
+			}
+		}
+
+		return $returns;
 	}
 
 	function _pbboard_updates_start()

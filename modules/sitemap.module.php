@@ -228,13 +228,6 @@ class PowerBBSitemapMOD
 					$x += 1;
 					}
 				}
-				else
-	            {
-				//echo '<url>';
-				//echo '<loc>'. $PowerBB->functions->GetForumAdress() . $forum_sitemap . $PowerBB->_GET['id'] . ".xml" . '</loc>';
-				//echo '<lastmod>0000-00-00T00:00:00+00:00</lastmod>';
-				//echo '</url>'."\n";
-			    }
 				echo '</urlset>';
 		    }
 		}
@@ -277,20 +270,10 @@ class PowerBBSitemapMOD
 	      $sectiongroup = json_decode(base64_decode($sectiongroup_cache), true);
 		  if ($sectiongroup[$PowerBB->_CONF['group_info']['id']]['view_section'] and $catys[$catys_x]['section_password'] == '')
 	      {
-	      	   if ($GetNewer['native_write_time'] !='')
-	           {
 				echo '<sitemap>';
 				echo '<loc>'. $PowerBB->functions->GetForumAdress() . $forum_sitemap . $catys[$catys_x]['id'] . ".xml" . '</loc>';
 				echo '<lastmod>'.$this->lastmod_date($GetNewer['native_write_time']).'</lastmod>';
 				echo '</sitemap>'."\n";
-			   }
-			   else
-	           {
-				//echo '<sitemap>';
-				//echo '<loc>'. $PowerBB->functions->GetForumAdress() . $forum_sitemap . $catys[$catys_x]['id'] . ".xml" . '</loc>';
-				//echo '<lastmod>0000-00-00T00:00:00+00:00</lastmod>';
-				//echo '</sitemap>'."\n";
-			   }
 		  }
 		  $catys_x += 1;
 		}
@@ -299,9 +282,10 @@ class PowerBBSitemapMOD
 	function lastmod_date($time)
 	{
 		global $PowerBB;
-		$format = 'Y-m-d\TH:i:sP';
-		$x = @date($format,$time+$PowerBB->_CONF['info_row']['timestamp']);
-		return $x;
+		$returnValue = date('Y-m-d h:m', $time);
+		return $returnValue;
+
+
 	}
    // End Xml sitemap
 }

@@ -1,4 +1,5 @@
 <?php
+error_reporting(E_ERROR | E_PARSE);
 (!defined('IN_PowerBB')) ? die() : '';
 define('IN_ADMIN',true);
 define('DONT_STRIPS_SLIASHES',true);

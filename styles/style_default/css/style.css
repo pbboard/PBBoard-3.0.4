@@ -5904,7 +5904,7 @@ min-width: 100%;
 direction: rtl;
 }
 .text img{
-max-width: 100% !important;
+max-width: 90% !important;
 }
 .writer_info{
 display: none;
@@ -5925,7 +5925,7 @@ display: none;
 width: 98%;
 }
 .text img{
-max-width: 100% !important;
+max-width: 90% !important;
 }
 .writer_info{
 display: none;

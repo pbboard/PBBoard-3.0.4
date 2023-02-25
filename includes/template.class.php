@@ -323,7 +323,7 @@ class PBBTemplate
 			$string = str_replace("['template']['lang']","['template']['_CONF']['lang']",$string);
 			$string = str_replace("['lang']['addons']","['lang']",$string);
 			$string = str_replace("['mange_chat']","['chat_message']",$string);
-
+           /*
 			if ($PowerBB->functions->is_bot())
 			{
 			 $string = str_replace("['active_like_facebook']","['board_close']",$string);
@@ -337,7 +337,7 @@ class PBBTemplate
 					}
 			   }
 			}
-
+            */
 
 			if ($filename == 'multi_quote')
 			{

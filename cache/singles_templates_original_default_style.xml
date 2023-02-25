@@ -10,9 +10,9 @@ itemtype="https://schema.org/ListItem">
 <span itemprop="name">
 {$_CONF['info_row']['title']}
 </span>
-</a>   
+</a>
 <meta itemprop="position" content="1" />
-</li>          
+</li>
 <div class="btn-nav"></div>]]></address_bar_part1>
 <address_bar_part2><![CDATA[</ol>
 </div>
@@ -1003,9 +1003,9 @@ itemtype="https://schema.org/ListItem">
 <span itemprop="name">
 {$_CONF['info_row']['title']}
 </span>
-</a> 
+</a>
 <meta itemprop="position" content="1" />
-</li> 
+</li>
 <div class="btn-nav"></div>
 <li itemprop="itemListElement" itemscope
 itemtype="https://schema.org/ListItem">
@@ -1013,7 +1013,7 @@ itemtype="https://schema.org/ListItem">
 <span itemprop="name">{$section_info['title']}</span>
 </a>
 <meta itemprop="position" content="2" />
-</li> 
+</li>
 </div>
 <br />
 <p class="largefont">
@@ -1103,15 +1103,15 @@ itemtype="https://schema.org/ListItem">
 <span itemprop="name">
 {$_CONF['info_row']['title']}
 </span>
-</a> 
+</a>
 <meta itemprop="position" content="1" />
-</li> 
+</li>
 <div class="btn-nav"></div>
 <li itemprop="itemListElement" itemscope
 itemtype="https://schema.org/ListItem">
 <span itemprop="name">{$lang['archive_t']}</span>
 <meta itemprop="position" content="2" />
-</li> 
+</li>
 </ol>
 <br />
 <p class="largefont"> {$lang['view_full_version']}
@@ -1378,7 +1378,7 @@ closeText:'Select',
 changeMonth: false,
 showButtonPanel: true
 });
-} );    
+} );
 </script>
 <div class="inner-addon">
 <i class="fa fa-calendar fa-2x" aria-hidden="true"></i> <input type="text" class="form-control" name="birth_date" id="datepicker" maxlength="10" style="min-width: 15%;width: 15%;">
@@ -2132,7 +2132,7 @@ $(function() {
 {/if}</title>
 
 
-{template}address_bar_part1{/template}    
+{template}address_bar_part1{/template}
  <li itemprop="itemListElement" itemscope
 itemtype="https://schema.org/ListItem">
 <a itemprop="item" href="index.php?page=forget&amp;index=1">
@@ -2546,13 +2546,13 @@ eval("form.elements[" + i + "].checked = form.elements[0].checked");
 <table border="0" width="100%" cellspacing="0" cellpadding="0">
 	<tr>
 <td colspan="2">
-		
+
 		{if {$pager}}
 <?php echo $PowerBB->pager->show();?>
-{/if}		
-				
+{/if}
+
 		</td>
-				
+
 	</tr>
 	<tr>
 <td>
@@ -3117,7 +3117,7 @@ alt="{$lang['s_special']}" /> </span>
 <td colspan="2">
 {if {$pager}}
 <?php echo $PowerBB->pager->show();?>
-{/if}	
+{/if}
 </td>
 </tr>
 </table>
@@ -3252,7 +3252,7 @@ itemtype="https://schema.org/ListItem">
 </span>
 </a>
 <meta itemprop="position" content="2" />
-</li> 
+</li>
 <div class="btn-nav"></div>
 <li itemprop="itemListElement" itemscope
 itemtype="https://schema.org/ListItem">
@@ -3262,7 +3262,7 @@ itemtype="https://schema.org/ListItem">
 </span>
 </a>
 <meta itemprop="position" content="3" />
-</li> 
+</li>
 {template}address_bar_part2{/template}
 <!-- table --><div style="width:98%;border-collapse: collapse;margin: auto;" class="table">
 <dl>
@@ -3718,7 +3718,6 @@ $(document).ready(function(){
 <!-- End Social Media Meta Tags -->
 <title>{$title}</title>
 <link rel="stylesheet" href="{$ForumAdress}{$style_path}" />
-{if {$is_bot}}
 <link rel="stylesheet" href="{$ForumAdress}look/fonts/font-awesome.min.css" />
 <link rel="stylesheet" href="{$ForumAdress}look/fonts/fonts.css" />
 <link rel="stylesheet" href="{$ForumAdress}applications/core/colorbox-master/colorbox.css" />
@@ -3736,7 +3735,7 @@ $(document).ready(function(){
 <script type="text/javascript" src="{$ForumAdress}includes/js/pbboardCode.js"></script>
 <script type="text/javascript" src="{$ForumAdress}includes/js/pbboard_global.js"></script>
 <script type="text/javascript" src="{$ForumAdress}includes/js/pbboard_toggle.js"></script>
-{/if}
+
 
 </head>
 <body>
@@ -4393,7 +4392,7 @@ itemtype="https://schema.org/ListItem">
 </span>
 </a>
 <meta itemprop="position" content="2" />
-</li> 
+</li>
 <div class="btn-nav"></div>
 <li itemprop="itemListElement" itemscope
 itemtype="https://schema.org/ListItem">
@@ -4404,7 +4403,7 @@ itemtype="https://schema.org/ListItem">
 </span>
 </a>
 <meta itemprop="position" content="3" />
-</li> 
+</li>
 <div class="btn-nav"></div>
 <li itemprop="itemListElement" itemscope
 itemtype="https://schema.org/ListItem">
@@ -4415,7 +4414,7 @@ itemtype="https://schema.org/ListItem">
 </span>
 </a>
 <meta itemprop="position" content="4" />
-</li> 
+</li>
 {template}address_bar_part2{/template}
 {template}preview{/template}
 
@@ -4800,7 +4799,7 @@ itemtype="https://schema.org/ListItem">
 </span>
 </a>
 <meta itemprop="position" content="2" />
-</li> 
+</li>
 <div class="btn-nav"></div>
 <li itemprop="itemListElement" itemscope
 itemtype="https://schema.org/ListItem">
@@ -4809,7 +4808,7 @@ itemtype="https://schema.org/ListItem">
 <span itemprop="name">{$lang['add_new_topic']}</span>
 </a>
 <meta itemprop="position" content="3" />
-</li> 
+</li>
 {template}address_bar_part2{/template}
 {template}preview{/template}
 <form name="topic" method="post" enctype="multipart/form-data" action="index.php?page=new_topic&amp;start=1&amp;id={$id}{$password}">
@@ -5468,7 +5467,7 @@ src="{$image_path}/newfolder.gif" class="brd0" />
 ({$AllowedPmNum})
 {else}
 ({$lang['Infinite']})
-{/if}             
+{/if}
 <br />
 {if {$MsgsNum} > 0}
 {if {$folder} == 'sent'}
@@ -5476,8 +5475,8 @@ src="{$image_path}/newfolder.gif" class="brd0" />
 {/if}
 {if {$folder} == 'inbox'}
 <input class="button button_b" name="inbox_empty" type="submit" value="{$lang['Make_Inbox_Empty']}" />
-{/if}  
-{/if}           
+{/if}
+{/if}
 </td>
 </tr>
 {if {$MsgsNum} > 0}
@@ -5488,7 +5487,7 @@ src="{$image_path}/newfolder.gif" class="brd0" />
 <input class="button button_b" name="unreadable" type="submit" value="{$lang['Make_it_unreadable']}" />
 </td>
 </tr>
-{/if} 
+{/if}
 </table>
 </form>
 <table class="wd98 brd0 clpc0 a-center" style="border-collapse: collapse">
@@ -6894,7 +6893,7 @@ document.write('<form> '
 </div>
 </div>
 <br />]]></print_subject>
-<profile><![CDATA[{template}address_bar_part1{/template}    
+<profile><![CDATA[{template}address_bar_part1{/template}
  <li itemprop="itemListElement" itemscope
 itemtype="https://schema.org/ListItem">
 <a itemprop="item" href="index.php?page=profile&amp;show=1&amp;id={$MemberInfo['id']}">
@@ -7486,7 +7485,7 @@ $(document).ready(Ready);
 <dd class="row1 wd40" rowspan="2">{$lang['Image_Verification']}<br />
 <span class="smallfont">{$lang['Verification']}</span></dd>
 <dd class="row1 wd31">
-<input name="code" id="code_confirm" class="max-input" type="text" size="5" dir="ltr"/>	
+<input name="code" id="code_confirm" class="max-input" type="text" size="5" dir="ltr"/>
 <img id="turing" src="includes/captcha.php" alt="captcha" />
 <input type="button" class="button button_b" value="{$lang['Image_replacement']}" onclick="updateImg()">
 <script type='text/javascript'>
@@ -7566,7 +7565,7 @@ doc.src = "includes/captcha.php" + "?act=" + clicks;
 <span class="register_fixed wmaxy">
 {$lang['invite_form']}
 <br />
-<input type="text" name="invite" value="{$invite}" 
+<input type="text" name="invite" value="{$invite}"
 id="invite_id" style="min-width: 50px;" class="max-input" size="20" dir="{$_CONF['info_row']['content_dir']}" />
 </span>
 </dd>
@@ -8771,7 +8770,7 @@ itemtype="https://schema.org/ListItem">
 </table>
 <br /><br />
 ]]></search_results_tags>
-<search_results_username_reply><![CDATA[{template}address_bar_part1{/template}    
+<search_results_username_reply><![CDATA[{template}address_bar_part1{/template}
  <li itemprop="itemListElement" itemscope
 itemtype="https://schema.org/ListItem">
 <a itemprop="item" href="index.php?page=search&amp;option=4&amp;username={$keyword}&amp;starteronly=0&amp;section=all&amp;exactname=1&amp;sort_order=DESC">
@@ -8880,7 +8879,7 @@ $Forum_id = $Forum['id'];
 </tr>
 </table><br />
 <br />]]></search_results_username_reply>
-<search_results_username_subject><![CDATA[{template}address_bar_part1{/template}    
+<search_results_username_subject><![CDATA[{template}address_bar_part1{/template}
  <li itemprop="itemListElement" itemscope
 itemtype="https://schema.org/ListItem">
 <a itemprop="item" href="index.php?page=search&amp;option=3&amp;username={$keyword}&amp;starteronly=0&amp;section=all&amp;exactname=1&amp;sort_order=DESC">
@@ -9260,7 +9259,7 @@ imgChange.className = "collapsed";
 - {$lang['send_active_code']}
 {/if}</title>
 
-{template}address_bar_part1{/template}    
+{template}address_bar_part1{/template}
  <li itemprop="itemListElement" itemscope
 itemtype="https://schema.org/ListItem">
 <a itemprop="item" href="index.php?page=forget&amp;active_member=1&amp;send_active_code=1">
@@ -9393,7 +9392,7 @@ doc.src = "includes/captcha.php" + "?act=" + clicks;
 </fieldset>
 </td>
 </tr>
-{else}	
+{else}
 <tr>
 <td class="row1">
 <fieldset class="fieldset" style="margin: 5px; padding: 7px;">
@@ -9428,14 +9427,14 @@ doc.src = "includes/captcha.php" + "?act=" + clicks;
 </td>
 </tr>
 </table>
-</div>	
+</div>
 </form>
 <br />]]></send_admin>
 <send_email><![CDATA[<title> {$lang['Send_Email_Message_to']}
 {$MemberInfo['username']} -
 {$_CONF['info_row']['title']}</title>
 
-{template}address_bar_part1{/template}    
+{template}address_bar_part1{/template}
  <li itemprop="itemListElement" itemscope
 itemtype="https://schema.org/ListItem">
 <a itemprop="item" href="index.php?page=member&amp;index=1&amp;id={$MemberInfo['id']}">
@@ -9654,7 +9653,7 @@ index.php?page=topic&amp;show=1&amp;id={$SubjectInfo['id']}
 <input TYPE="hidden" id="subject_id" name="subject_id" value="{$SubjectInfo['id']}" />
 </form>
 <br />]]></send_subject_to_friend>
-<show_memberlist><![CDATA[ {template}address_bar_part1{/template}    
+<show_memberlist><![CDATA[ {template}address_bar_part1{/template}
  <li itemprop="itemListElement" itemscope
 itemtype="https://schema.org/ListItem">
 <a itemprop="item" href="index.php?page=member_list&amp;index=1&amp;show=1">
@@ -10102,7 +10101,7 @@ title="{$lang['no_photo']}" width="80" height="80" />
 </td>
 </tr>
 </table>]]></show_onlain_topic>
-<show_page><![CDATA[{template}address_bar_part1{/template}    
+<show_page><![CDATA[{template}address_bar_part1{/template}
  <li itemprop="itemListElement" itemscope
 itemtype="https://schema.org/ListItem">
 <a itemprop="item" href="index.php?page=pages&amp;show=1&amp;id={$GetPage['id']}">
@@ -11102,7 +11101,7 @@ itemtype="https://schema.org/ListItem">
 itemtype="https://schema.org/ListItem">
 <a itemprop="item" href="index.php?page=topic&amp;show=1&amp;id={$subject_id}"><span itemprop="name">{$subject_title}</span></a>
 <meta itemprop="position" content="3" />
-</li> 
+</li>
 <div class="btn-nav"></div>
 <li itemprop="itemListElement" itemscope
 itemtype="https://schema.org/ListItem">
@@ -11110,7 +11109,7 @@ itemtype="https://schema.org/ListItem">
 <span itemprop="name">{$lang['show_votes']}
 : {$Poll['qus']}</span></a>
 <meta itemprop="position" content="4" />
-</li> 
+</li>
 {template}address_bar_part2{/template}
 <br />
 <br />
@@ -12957,7 +12956,7 @@ function DeletAttach(id, subject_id) {
 
 function getMeta(url) {
     $("<img/>",{
-        load: function() {    
+        load: function() {
         if (this.width > {$_CONF['info_row']['default_imagesW']}) {
         window.parent.PBBEditor.wysiwygEditorInsertHtml('<img src="'+url+'" width="{$_CONF['info_row']['default_imagesW']}" height="{$_CONF['info_row']['default_imagesH']}" />');
         }
@@ -13786,7 +13785,7 @@ return $("#docheck_status").html(key_values.join());
 	} else {
 	instance.val("");
 	}
-    }); 
+    });
     $(window).scrollTop($("#status").offset().top);
 	} else {
 	alert("{$lang['post_text_min']}");
@@ -14111,7 +14110,7 @@ closeText:'Select',
 changeMonth: false,
 showButtonPanel: true
 });
-} );    
+} );
 </script>
 <div class="inner-addon">
 <i class="fa fa-calendar fa-2x" aria-hidden="true"></i> <input type="text" class="form-control" name="birth_date" id="datepicker" maxlength="10" value="{$_CONF['rows']['member_row']['bday_day']}-{$_CONF['rows']['member_row']['bday_month']}-{$_CONF['rows']['member_row']['bday_year']}" style="min-width: 15%;width: 15%;">
@@ -14391,7 +14390,7 @@ img.src = $('#url_input').val();
 <td class="tcat center_text_align wd80">
 {$lang['Additional_information']}
 </td>
-</tr>    
+</tr>
 {Des::while}{extrafields}
 <tr>
 <td class="row1">
@@ -14404,8 +14403,8 @@ img.src = $('#url_input').val();
 </fieldset>
 <br />
 </td>
-</tr>  
-{/Des::while}  
+</tr>
+{/Des::while}
 </table>
 </div>
 <br />
@@ -17200,7 +17199,7 @@ gif, jpeg, jpg, png
 - {$lang['powered']}
 {/if}</title>
 
- {template}address_bar_part1{/template}    
+ {template}address_bar_part1{/template}
  <li itemprop="itemListElement" itemscope
 itemtype="https://schema.org/ListItem">
 <a itemprop="item" href="index.php?page=calendar&amp;show=1">
@@ -17514,7 +17513,7 @@ $rows = $PowerBB->functions->retur_numbe_rows($PowerBB->_CONF['template']['text'
 $PowerBB->_CONF['template']['rows'] = $rows;
 if($rows > 20)
 {
-$PowerBB->_CONF['template']['rows'] = "20";	
+$PowerBB->_CONF['template']['rows'] = "20";
 }
 ?>
 <textarea id="message{$PostInfo['id']}" name="message{$PostInfo['id']}" rows="{$rows}" cols="100" style="width:97%;">{$text}</textarea>

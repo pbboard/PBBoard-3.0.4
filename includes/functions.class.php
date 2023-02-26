@@ -1418,10 +1418,10 @@ class PowerBBFunctions
     // hide a part of the email adress
 	function obfuscate_email($email)
 	{
-	    $em   = explode("@",$email);
-	    $name = implode(array_slice($em, 0, count($em)-1), '@');
-	    $len  = floor(strlen($name)/2);
-	    return substr($name,0, $len) . str_repeat('*', $len) . "@" . end($em);
+$pattern = "/^\w\K[^\s@]+@(\w)[^\s.@]+/";
+$replacement = "*@$1***";
+return preg_replace($pattern, $replacement, $email);
+
 	}
 	/**
 	 * Just send email for phpmail :)

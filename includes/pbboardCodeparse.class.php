@@ -1449,6 +1449,10 @@ class PowerBBCodeParse
          $string = str_replace('</span>', ' ', $string);
     	 $string = preg_replace('#<div(.*?)>#i', " ", $string);
          $string = str_replace('</div>', ' ', $string);
+    	 $string = preg_replace('#<dl(.*?)>#i', " ", $string);
+         $string = str_replace('</dl>', ' ', $string);
+    	 $string = preg_replace('#<dd(.*?)>#i', " ", $string);
+         $string = str_replace('</dd>', ' ', $string);
 
          //$string = preg_replace('#<(.*?)>#i', ' ', $string);
 

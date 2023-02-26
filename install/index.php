@@ -1374,7 +1374,7 @@ function database_info()
 			";
 
 		// Encoding selection only if supported
-
+        /*
 		if(is_array($encodings))
 		{
 			$select_options = "";
@@ -1396,7 +1396,7 @@ function database_info()
 				</tr>
 				</tbody>";
 		}
-
+        */
 	}
 	$dbconfig = implode("", $db_info);
 
@@ -1449,7 +1449,7 @@ function create_tables()
 		"username" => $config['dbuser'],
 		"password" => $config['dbpass'],
 		"database" => $config['dbname'],
-		"encoding" => $config['encoding']
+		"encoding" => 'utf8mb4'
 	);
 
 	$connection = $db->connect($connect_array);
@@ -2141,7 +2141,8 @@ echo $lang->done_step_success;
 
 $forums =  upgrade_update_section_cache();
  if ($forums)
- {   echo $lang->finish_upgrade_sections_cache;
+ {
+   echo $lang->finish_upgrade_sections_cache;
  }
 	$written = 0;
 	if(is_writable('./'))
@@ -2236,7 +2237,8 @@ function upgrade_update_section_cache()
 
 					$cache[$x]['prefix_subject']   = 	$rows['prefix_subject'];
 					while ($group = $db->fetch_array($GroupArr))
-					{				        $cache[$x]['groups'][$group['group_id']] 					=	array();
+					{
+				        $cache[$x]['groups'][$group['group_id']] 					=	array();
 						$cache[$x]['groups'][$group['group_id']]['view_section'] 	= 	$group['view_section'];
 						$cache[$x]['groups'][$group['group_id']]['main_section'] 	= 	$group['main_section'];
 					}

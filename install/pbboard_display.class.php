@@ -1,5 +1,4 @@
 <?php
-error_reporting(E_ERROR | E_PARSE);
 /**
  * PowerBBdisplay
  * Started : 17-10-2006 , 11:46 PM

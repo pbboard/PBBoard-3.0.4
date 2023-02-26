@@ -1,5 +1,4 @@
 <?php
-error_reporting(E_ERROR | E_PARSE);
 /**
  * PBBoard 3.3
  * Copyright 2019 PBBoard Group, All Rights Reserved

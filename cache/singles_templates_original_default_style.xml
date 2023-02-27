@@ -14255,7 +14255,7 @@ img.src = $('#url_input').val();
 </td>
 </tr>
 </table>	</div>	<br />
-{if {$count} != ''}
+{if {$count} != '0'}
 <div style="margin-top: 1ex; margin-bottom: 2ex;">
 {template}avatar_options_list{/template}
 </div>

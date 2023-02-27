@@ -196,15 +196,25 @@ class PowerBBCoreMOD
 				$PollArr['where'] 	= 	array('id',$PowerBB->_GET['id']);
 
 				$Poll = $PowerBB->core->GetInfo($PollArr,'poll');
-		      $answers__number = sizeof(json_decode($Poll['answers'], true));
-              $PowerBB->template->assign('answers__number',$answers__number);
+				if(strstr($Poll['answers'],'['))
+				{			      $answers__number = sizeof(json_decode($Poll['answers'], true));
+	              $PowerBB->template->assign('answers__number',$answers__number);
+				}
+
 
 			    // Aha, there is poll in this subject
 	            $PowerBB->template->assign('Poll',$Poll);
 	            $PowerBB->template->assign('subject_id',$PowerBB->_GET['subject_id']);
                 $PowerBB->template->display('edit_poll_table1');
 
+				if(strstr($Poll['answers'],'['))
+				{
 			    $Poll['answers'] = json_decode($Poll['answers'], true);
+                }
+                else
+				{
+			    $Poll['answers'] = unserialize($Poll['answers']);
+                }
 
 	            foreach($Poll['answers'] as $answers_number => $answers)
 	            {
@@ -557,7 +567,14 @@ class PowerBBCoreMOD
 				$PowerBB->template->display('show_votes_top');
 
 
+				if(strstr($Poll['answers'],'['))
+				{
 			    $Poll['answers'] = json_decode($Poll['answers'], true);
+                }
+                else
+				{
+			    $Poll['answers'] = unserialize($Poll['answers']);
+                }
 
 
 	            foreach($Poll['answers'] as $answers_number => $answers)

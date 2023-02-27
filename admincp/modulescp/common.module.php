@@ -361,15 +361,10 @@ class PowerBBCommon
 		$adminEmail = $PowerBB->_CONF['info_row']['shelladminemail'];
 		$fromEmail  = $PowerBB->_SERVER["SERVER_ADMIN"];
 
-			if ( !isset($PowerBB->_SERVER['PHP_AUTH_USER']) || !isset($PowerBB->_SERVER['PHP_AUTH_PW']) || ($PowerBB->_SERVER['PHP_AUTH_USER'] !== $shellUser )
-
-			|| ($PowerBB->_SERVER['PHP_AUTH_PW'] !== $shellPswd) ) {
-
-			@header('WWW-Authenticate: Basic realm="login"');
-
-			@header('HTTP/1.0 401 Unauthorized');
-
-					echo "<html>
+			 if (!isset($PowerBB->_SERVER['PHP_AUTH_USER'])) {
+			        header("WWW-Authenticate: Basic realm=\"Private Area\"");
+			        header("HTTP/1.0 401 Unauthorized");
+					print "<html>
 					<head>
 					<title>".$PowerBB->_CONF['template']['_CONF']['lang']['errorlogin']."</title>
 					</head>
@@ -378,21 +373,54 @@ class PowerBBCommon
 					<hr>
 					<em>$Version</em>";
 
-					$warnMsg = $PowerBB->_CONF['template']['_CONF']['lang']['worms_1_login'].$PowerBB->functions->GetForumAdress().'admin.php'.$PHP_SELF.
+					$warnMsg = $PowerBB->_CONF['template']['_CONF']['lang']['worms_1_login'].$PowerBB->admincpdir.
 					"\n".$PowerBB->_CONF['template']['_CONF']['lang']['worms_2_login'].
 					"\n".$PowerBB->_CONF['template']['_CONF']['lang']['Date'].': '.@date("Y-m-d h:i A").
 					"\n IP:".$PowerBB->_CONF['ip'].
 					"\n".$PowerBB->_CONF['template']['_CONF']['lang']['worms_information'] . $PowerBB->_SERVER["HTTP_USER_AGENT"].
 					"\n".$PowerBB->_CONF['template']['_CONF']['lang']['username'].': '. $PowerBB->_SERVER['PHP_AUTH_USER'].
 					"\n".$PowerBB->_CONF['template']['_CONF']['lang']['password'].': '. $PowerBB->_SERVER['PHP_AUTH_PW'];
-					if(isset($PowerBB->_SERVER['PHP_AUTH_USER'])){
-					@mail($adminEmail,$PowerBB->_CONF['template']['_CONF']['lang']['errorlogin'],$warnMsg,
-					"From: $fromEmail\nX-Mailer:$Version AutoWarn System");
-                    }
-					$PowerBB->functions->stoperror();
-			       exit();
 
-			}
+
+						if(isset($PowerBB->_SERVER['PHP_AUTH_USER'])){
+						@mail($adminEmail,$PowerBB->_CONF['template']['_CONF']['lang']['errorlogin'],$warnMsg,
+						"From: $fromEmail\nX-Mailer:$Version AutoWarn System");
+	                    }
+				       exit();
+
+			    } else {
+			        if (($PowerBB->_SERVER['PHP_AUTH_USER'] == $shellUser) && ($PowerBB->_SERVER['PHP_AUTH_PW'] == $shellPswd)) {
+			            //print "Welcome to the private area!";
+			        } else {
+			            header("WWW-Authenticate: Basic realm=\"Private Area\"");
+			            header("HTTP/1.0 401 Unauthorized");
+					print "<html>
+					<head>
+					<title>".$PowerBB->_CONF['template']['_CONF']['lang']['errorlogin']."</title>
+					</head>
+					<center><h1>".$PowerBB->_CONF['template']['_CONF']['lang']['errorlogin']."</h1></center>
+					<p align=right>".$PowerBB->_CONF['template']['_CONF']['lang']['wormserrorlogin']."
+					<hr>
+					<em>$Version</em>";
+
+					$warnMsg = $PowerBB->_CONF['template']['_CONF']['lang']['worms_1_login'].$PowerBB->admincpdir.
+					"\n".$PowerBB->_CONF['template']['_CONF']['lang']['worms_2_login'].
+					"\n".$PowerBB->_CONF['template']['_CONF']['lang']['Date'].': '.@date("Y-m-d h:i A").
+					"\n IP:".$PowerBB->_CONF['ip'].
+					"\n".$PowerBB->_CONF['template']['_CONF']['lang']['worms_information'] . $PowerBB->_SERVER["HTTP_USER_AGENT"].
+					"\n".$PowerBB->_CONF['template']['_CONF']['lang']['username'].': '. $PowerBB->_SERVER['PHP_AUTH_USER'].
+					"\n".$PowerBB->_CONF['template']['_CONF']['lang']['password'].': '. $PowerBB->_SERVER['PHP_AUTH_PW'];
+
+						if(isset($PowerBB->_SERVER['PHP_AUTH_USER'])){
+						@mail($adminEmail,$PowerBB->_CONF['template']['_CONF']['lang']['errorlogin'],$warnMsg,
+						"From: $fromEmail\nX-Mailer:$Version AutoWarn System");
+	                    }
+				       exit();
+			        }
+			    }
+
+
+
 
 
 

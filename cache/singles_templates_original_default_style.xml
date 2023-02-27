@@ -4599,7 +4599,9 @@ function uploadFile() {
 	var percentComplete = parseInt((e.loaded / e.total) * 100);
 	$("#progress-bar").width(percentComplete + '%');
 	$("#progress-bar").html('<div id="progress-status">' + percentComplete +' %</div>');
-	$('#progress-div').hide();
+	if (percentComplete == 100) {
+	$('#progress-div').hide("slow");
+	}
 	}
 	}, false);
 	}
@@ -4640,7 +4642,9 @@ function DeletAttach(id, subject_id) {
 	var percentComplete = parseInt((e.loaded / e.total) * 100);
 	$("#progress-bar").width(percentComplete + '%');
 	$("#progress-bar").html('<div id="progress-status">' + percentComplete +' %</div>');
-	$('#progress-div').hide();
+	if (percentComplete == 100) {
+	$('#progress-div').hide("slow");
+	}
 	}
 	}, false);
 	}
@@ -5046,7 +5050,9 @@ function uploadFile() {
 	var percentComplete = parseInt((e.loaded / e.total) * 100);
 	$("#progress-bar").width(percentComplete + '%');
 	$("#progress-bar").html('<div id="progress-status">' + percentComplete +' %</div>');
-	//$('#progress-div').hide();
+	if (percentComplete == 100) {
+	$('#progress-div').hide("slow");
+	}
 	}
 	}, false);
 	}
@@ -5087,7 +5093,9 @@ function DeletAttach(id, subject_id) {
 	var percentComplete = parseInt((e.loaded / e.total) * 100);
 	$("#progress-bar").width(percentComplete + '%');
 	$("#progress-bar").html('<div id="progress-status">' + percentComplete +' %</div>');
-	$('#progress-div').hide();
+	if (percentComplete == 100) {
+	$('#progress-div').hide("slow");
+	}
 	}
 	}, false);
 	}
@@ -5822,7 +5830,9 @@ function uploadFile() {
 	var percentComplete = parseInt((e.loaded / e.total) * 100);
 	$("#progress-bar").width(percentComplete + '%');
 	$("#progress-bar").html('<div id="progress-status">' + percentComplete +' %</div>');
-    $('#progress-div').hide();
+	if (percentComplete == 100) {
+	$('#progress-div').hide("slow");
+	}
 	}
 	}, false);
 	}
@@ -5862,7 +5872,9 @@ function DeletAttach(id, subject_id) {
 	var percentComplete = parseInt((e.loaded / e.total) * 100);
 	$("#progress-bar").width(percentComplete + '%');
 	$("#progress-bar").html('<div id="progress-status">' + percentComplete +' %</div>');
-    $('#progress-div').hide();
+	if (percentComplete == 100) {
+	$('#progress-div').hide("slow");
+	}
 	}
 	}, false);
 	}
@@ -7971,7 +7983,9 @@ function uploadFile() {
 	var percentComplete = parseInt((e.loaded / e.total) * 100);
 	$("#progress-bar").width(percentComplete + '%');
 	$("#progress-bar").html('<div id="progress-status">' + percentComplete +' %</div>');
-	$('#progress-div').hide();
+	if (percentComplete == 100) {
+	$('#progress-div').hide("slow");
+	}
 	}
 	}, false);
 	}
@@ -8011,7 +8025,9 @@ function DeletAttach(id, subject_id) {
 	var percentComplete = parseInt((e.loaded / e.total) * 100);
 	$("#progress-bar").width(percentComplete + '%');
 	$("#progress-bar").html('<div id="progress-status">' + percentComplete +' %</div>');
-	$('#progress-div').hide();
+	if (percentComplete == 100) {
+	$('#progress-div').hide("slow");
+	}
 	}
 	}, false);
 	}
@@ -12898,7 +12914,9 @@ function uploadFile() {
 	var percentComplete = parseInt((e.loaded / e.total) * 100);
 	$("#progress-bar").width(percentComplete + '%');
 	$("#progress-bar").html('<div id="progress-status">' + percentComplete +' %</div>');
-	$('#progress-div').hide();
+	if (percentComplete == 100) {
+	$('#progress-div').hide("slow");
+	}
 	}
 	}, false);
 	}
@@ -12940,7 +12958,9 @@ function DeletAttach(id, subject_id) {
 	var percentComplete = parseInt((e.loaded / e.total) * 100);
 	$("#progress-bar").width(percentComplete + '%');
 	$("#progress-bar").html('<div id="progress-status">' + percentComplete +' %</div>');
-	$('#progress-div').hide();
+	if (percentComplete == 100) {
+	$('#progress-div').hide("slow");
+	}
 	}
 	}, false);
 	}

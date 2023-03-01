@@ -855,7 +855,14 @@ class PowerBBTopicMOD
 				$PowerBB->template->display('show_poll_top');
 
 
+				if(strstr($Poll['answers'],'['))
+				{
 			    $Poll['answers'] = json_decode($Poll['answers'], true);
+                }
+                else
+				{
+			    $Poll['answers'] = unserialize($Poll['answers']);
+                }
 				// Kill XSS
            if ($Poll['answers'])
 		    {

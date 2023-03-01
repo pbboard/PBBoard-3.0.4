@@ -270,10 +270,13 @@ class PowerBBSitemapMOD
 	      $sectiongroup = json_decode(base64_decode($sectiongroup_cache), true);
 		  if ($sectiongroup[$PowerBB->_CONF['group_info']['id']]['view_section'] and $catys[$catys_x]['section_password'] == '')
 	      {
+	           if (isset($GetNewer['native_write_time']) !='')
+	           {
 				echo '<sitemap>';
 				echo '<loc>'. $PowerBB->functions->GetForumAdress() . $forum_sitemap . $catys[$catys_x]['id'] . ".xml" . '</loc>';
 				echo '<lastmod>'.$this->lastmod_date($GetNewer['native_write_time']).'</lastmod>';
 				echo '</sitemap>'."\n";
+				}
 		  }
 		  $catys_x += 1;
 		}
@@ -282,7 +285,7 @@ class PowerBBSitemapMOD
 	function lastmod_date($time)
 	{
 		global $PowerBB;
-		$returnValue = date('Y-m-d h:m', $time);
+		$returnValue = date('Y-m-d\TH:i:sP', $time);
 		return $returnValue;
 
 

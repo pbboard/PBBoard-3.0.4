@@ -1,4 +1,5 @@
 <?php
+error_reporting(E_ERROR | E_PARSE);
 // ##############################################################################||
 // #   PowerBB Version 2.0.0
 // #   https://pbboard.info

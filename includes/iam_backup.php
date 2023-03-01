@@ -1,4 +1,5 @@
 <?php
+error_reporting(E_ERROR | E_PARSE);
  class iam_backup
 	{
 		/**
@@ -227,7 +228,7 @@
 						$def .= " default $row[Default]";
 					}
 				}
-				if ( $row[Extra] != "" ) $def .= " $row[Extra]";
+				if ( isset($row['Extra']) != "" ) $def .= " $row[Extra]";
 				$def .= ",$this->newline";
 			}
 			$def = str_replace( ",$this->newline$", "", $def );
@@ -235,18 +236,19 @@
 			$result_query = mysqli_query( $result,"SHOW KEYS FROM `$tablename`" );
 			while ( $row = mysqli_fetch_array($result_query) )
 			{
-				$kname = $row[Key_name];
-				if ( ($kname != "PRIMARY") && ($row[Non_unique] == 0) ) $kname = "UNIQUE|$kname";
+				$kname = $row['Key_name'];
+				if ( ($kname != "PRIMARY") && ($row['Non_unique'] == 0) ) $kname = "UNIQUE|$kname";
 				if ( !isset($index[$kname]) ) $index[$kname] = array();
-				$index[$kname][] = $row[Column_name];
+				$index[$kname][] = $row['Column_name'];
 			}
-
-			while ( list($x, $columns) = each($index) )
+           $x = 0;
+			foreach ($columns as $index)
 			{
 				if ( $x == "PRIMARY" ) $def .= "   PRIMARY KEY (`" . implode( $columns, "`, `" ) . "`)";
 				else
 					if ( substr($x, 0, 6) == "UNIQUE" ) $def .= "   UNIQUE " . substr( $x, 7 ) . " (" . implode( $columns, ", " ) . ")";
 					else  $def .= "   KEY $x (`" . implode( $columns, "`, `" ) . "`)";
+			$x++;
 			}
             $resultField = mysqli_query($result,"SELECT * FROM `$tablename`" );
 			$Field = mysqli_num_rows($resultField);

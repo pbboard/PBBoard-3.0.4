@@ -368,6 +368,23 @@ class PowerBBTopicAddMOD
 				$PowerBB->template->assign('answer',$answer);
 		     }
 
+			$AttachArr 							= 	array();
+			$AttachArr['where']					= 	array();
+			$AttachArr['where'][0] 				=	array();
+			$AttachArr['where'][0]['name'] 		=	'subject_id';
+			$AttachArr['where'][0]['oper'] 		=	'=';
+			$AttachArr['where'][0]['value'] 	=	-1;
+			$AttachArr['where'][1] 				=	array();
+			$AttachArr['where'][1]['con']		=	'AND';
+			$AttachArr['where'][1]['name'] 		=	'u_id';
+			$AttachArr['where'][1]['oper'] 		=	'=';
+			$AttachArr['where'][1]['value'] 	=	$PowerBB->_CONF['member_row']['id'];
+			$AttachArr['order'] 				=	 array();
+			$AttachArr['order']['field'] 		= 	'id';
+			$AttachArr['order']['type'] 	    = 	'DESC';
+
+			$PowerBB->_CONF['template']['while']['AttachList'] = $PowerBB->core->GetList($AttachArr,'attach');
+
      	$PowerBB->template->display('new_topic');
 
 	}

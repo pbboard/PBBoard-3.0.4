@@ -111,9 +111,9 @@ class PowerBBBackupMOD
 						$GetForumAdress = $PowerBB->functions->GetForumAdress();
 				        $GetForumAdress = str_replace($PowerBB->admincpdir."/", '', $GetForumAdress);
                         $Adressbackup = $GetForumAdress.$filename;
+                        $PowerBB->template->display('header');
                        	$PowerBB->functions->msg($PowerBB->_CONF['template']['_CONF']['lang']['msg_backup1'].' <br />'.$Adressbackup.'<br /><a href="index.php?page=backup&amp;backup=1&amp;main=1"><b>'.$PowerBB->_CONF['template']['_CONF']['lang']['Return'].'</b></a>');
                        	$linkfilename	= 	'<b><a href="'.$Adressbackup.'">'.$PowerBB->_CONF['template']['_CONF']['lang']['msg_backup2'].'</a></b>';
-			            $PowerBB->template->display('header');
                        	$PowerBB->functions->msg($linkfilename);
 
 

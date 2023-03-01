@@ -1,5 +1,4 @@
 <?php
-error_reporting(E_ERROR | E_PARSE);
 // check Requirements
 if (function_exists('idate')) {
 $check_PHP ='0';
@@ -39,14 +38,6 @@ $check_gd ='0';
 else
 {
 $check_gd ='1';
-}
-if ($check_PHP
-or $check_mysql_connect
-or $check_base64
-or $check_allow_url_fopen
-or $check_gd)
-{
-include('install/check.php');
 }
 
 $DIR = dirname( __FILE__ );

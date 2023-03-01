@@ -1478,7 +1478,7 @@ function create_tables()
 
 	if(($db->engine == 'mysql' || $db->engine == 'mysqli') && $config['encoding'] == 'utf8mb4' && version_compare($db->get_version(), '5.5.3', '<'))
 	{
-		$errors[] = $lang->db_step_error_utf8mb4_error;
+		//$errors[] = $lang->db_step_error_utf8mb4_error;
 	}
 
 	if(is_array($errors))
@@ -2046,6 +2046,43 @@ EOF;
 	$output->print_footer('final');
 }
 
+	function create_password($password, $salt = false, $user = false)
+	{
+		$fields = null;
+
+		$parameters = compact('password', 'salt', 'user', 'fields');
+
+		 if(!is_null($parameters['fields']))
+		 {
+			$fields = $parameters['fields'];
+		 }
+		else
+		 {
+			if(!$salt)
+			{
+			$salt = generate_salt();
+			}
+			$hash = md5(md5($salt).md5($password));
+
+			$fields = array(
+				'salt' => $salt,
+				'password' => $hash,
+			);
+		 }
+		return $fields;
+	}
+
+	function generate_salt() {
+		$charset = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#%!_';
+		$randStringLen = 8;
+
+		$randString = "";
+		for ($i = 0; $i < $randStringLen; $i++) {
+		$randString .= $charset[mt_rand(0, strlen($charset) - 1)];
+		}
+
+		return $randString;
+	}
 /**
  * Installation is finished
  */
@@ -2094,12 +2131,12 @@ function install_done()
 
    $username_style_cache	=	'<strong><em><span style="color: #800000;">' . $db->escape_string($PBBoard->get_input('adminuser')) . '</span></em></strong>';
 
-	$saltedpw = md5($PBBoard->get_input('adminpass'));
-
+    $password_fields = create_password($PBBoard->get_input('adminpass'), false);
 	$newuser = array(
 		'id' => '1',
 		'username' => $db->escape_string($PBBoard->get_input('adminuser')),
-		'password' => $saltedpw,
+		'password' => $password_fields['password'],
+		'active_number' => $password_fields['salt'],
 		'email' => $db->escape_string($PBBoard->get_input('adminemail')),
 		'usergroup' => '1', // assigned above
 		'user_gender' => 'm',

@@ -164,7 +164,7 @@ class errorHandler {
 
 		// For some reason in the installer this setting is set to "<"
 		$accepted_error_types = array('both', 'error', 'warning', 'none');
-		if(!in_array($PBBoard->settings['errortypemedium'], $accepted_error_types))
+		if(!in_array(isset($PBBoard->settings['errortypemedium']), $accepted_error_types))
 		{
 			$PBBoard->settings['errortypemedium'] = "both";
 		}
@@ -172,13 +172,13 @@ class errorHandler {
 
 
 		// Saving error to log file.
-		if($PBBoard->settings['errorlogmedium'] == "log" || $PBBoard->settings['errorlogmedium'] == "both")
+		if(isset($PBBoard->settings['errorlogmedium']) == "log" || isset($PBBoard->settings['errorlogmedium']) == "both")
 		{
 			$this->log_error($type, $message, $file, $line);
 		}
 
 		// Are we emailing the Admin a copy?
-		if($PBBoard->settings['errorlogmedium'] == "mail" || $PBBoard->settings['errorlogmedium'] == "both")
+		if(isset($PBBoard->settings['errorlogmedium']) == "mail" || isset($PBBoard->settings['errorlogmedium']) == "both")
 		{
 			$this->email_error($type, $message, $file, $line);
 		}
@@ -198,9 +198,9 @@ class errorHandler {
 			// PHP Error
 			else
 			{
-				if($PBBoard->settings['errortypemedium'] == "none" || $PBBoard->settings['errortypemedium'] == "error")
+				if(isset($PBBoard->settings['errortypemedium']) == "none" || isset($PBBoard->settings['errortypemedium']) == "error")
 				{
-					echo "<div class=\"php_warning\">PBBoard  Internal: One or more warnings occurred. Please contact your administrator for assistance.</div>";
+					//echo "<div class=\"php_warning\">PBBoard  Internal: One or more warnings occurred. Please contact your administrator for assistance.</div>";
 				}
 				else
 				{
@@ -339,7 +339,7 @@ class errorHandler {
 		{
 			$title = "PBBoard  SQL Error";
 			$error_message = "<p>PBBoard  has experienced an internal SQL error and cannot continue.</p>";
-			if($PBBoard->settings['errortypemedium'] == "both" || $PBBoard->settings['errortypemedium'] == "error" || defined("IN_INSTALL") || defined("IN_UPGRADE"))
+			if(isset($PBBoard->settings['errortypemedium']) == "both" || isset($PBBoard->settings['errortypemedium']) == "error" || defined("IN_INSTALL") || defined("IN_UPGRADE"))
 			{
 				$message['query'] = htmlspecialchars_uni($message['query']);
 				$message['error'] = htmlspecialchars_uni($message['error']);
@@ -356,7 +356,7 @@ class errorHandler {
 		{
 			$title = "PBBoard  Internal Error";
 			$error_message = "<p>PBBoard  has experienced an internal error and cannot continue.</p>";
-			if($PBBoard->settings['errortypemedium'] == "both" || $PBBoard->settings['errortypemedium'] == "error" || defined("IN_INSTALL") || defined("IN_UPGRADE"))
+			if(isset($PBBoard->settings['errortypemedium']) == "both" || isset($PBBoard->settings['errortypemedium']) == "error" || defined("IN_INSTALL") || defined("IN_UPGRADE"))
 			{
 				$error_message .= "<dl>\n";
 				$error_message .= "<dt>Error Type:</dt>\n<dd>{$this->error_types[$type]} ($type)</dd>\n";

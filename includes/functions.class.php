@@ -3776,5 +3776,77 @@ function dec_to_utf8($src)
 
 	   return $rows;
 	}
+
+	function create_password($password, $salt = false, $user = false)
+	{
+		$fields = null;
+
+		$parameters = compact('password', 'salt', 'user', 'fields');
+
+		 if(!is_null($parameters['fields']))
+		 {
+			$fields = $parameters['fields'];
+		 }
+		else
+		 {
+			if(!$salt)
+			{
+			$salt = $this->generate_salt();
+			}
+			$hash = md5(md5($salt).md5($password));
+
+			$fields = array(
+				'salt' => $salt,
+				'password' => $hash,
+			);
+		 }
+		return $fields;
+	}
+
+	function update_password($uid, $password)
+	{		global $PowerBB;
+
+		$salt = $this->generate_salt();
+
+		$hash = md5(md5($salt).md5($password));
+
+		$UpdateArr						=	array();
+		$UpdateArr['field']				=	array();
+
+		$UpdateArr['field']['password'] 		= 	$hash;
+		$UpdateArr['field']['active_number'] 	= 	$salt;
+		$UpdateArr['where']						=	array('id',$uid);
+
+		$update_password_salt = $PowerBB->core->Update($UpdateArr,'member');
+
+			if ($update_password_salt)
+			{
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+
+	}
+
+	function generate_salt() {
+		$charset = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#%!_';
+		$randStringLen = 8;
+
+		$randString = "";
+		for ($i = 0; $i < $randStringLen; $i++) {
+		$randString .= $charset[mt_rand(0, strlen($charset) - 1)];
+		}
+
+		return $randString;
+	}
+
+	function verify_user_password($salt, $password)
+	{
+		$password_fields = $this->create_password($password, $salt);
+		return ($password_fields);
+	}
+
  }
 ?>

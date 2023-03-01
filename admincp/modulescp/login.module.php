@@ -43,25 +43,36 @@ class PowerBBLoginMOD
 		}
 
 		$username = $PowerBB->functions->CleanVariable($PowerBB->_POST['username'],'trim');
-		$password = $PowerBB->functions->CleanVariable(md5($PowerBB->_POST['password']),'trim');
-        $username	= 	$PowerBB->functions->CleanVariable($username,'html');
+		$password = $PowerBB->functions->CleanVariable($PowerBB->_POST['password'],'trim');
         $username	= 	$PowerBB->functions->CleanVariable($username,'sql');
-        $password	= 	$PowerBB->functions->CleanVariable($password,'html');
         $password	= 	$PowerBB->functions->CleanVariable($password,'sql');
+
+
+		$MemberArr 				= 	array();
+		$MemberArr['where']		=	array('username',$username);
+
+		$MemberInfo = $PowerBB->core->GetInfo($MemberArr,'member');
+
+      	$password_fields = $PowerBB->functions->verify_user_password($MemberInfo['active_number'], $password);
+
+		$GroupArr 				= 	array();
+		$GroupArr['where']		=	array('id',$MemberInfo['usergroup']);
+
+		$GroupInfo = $PowerBB->core->GetInfo($GroupArr,'group');
 
 		$expire = time() + 3600;
 		$IsMember = $PowerBB->member->LoginAdmin(array(	'username'	=>	$username,
-															'password'	=>	$password,
-															'expire'	=>	$expire));
+		'password'	=>	$password_fields['password'],
+		'expire'	=>	$expire));
 
-		if ($IsMember)
-		{
+        if ($IsMember and $GroupInfo['admincp_allow'])
+        {
+
 			@header("Location:".$PowerBB->_SERVER['HTTP_REFERER']);
 			exit;
 		}
-		else
+	  else
 		{
-
              if (empty($PowerBB->_COOKIE['pbb_entries_error']))
              {
              $PowerBB->_COOKIE['pbb_entries_error'] = "1";

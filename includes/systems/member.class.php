@@ -190,21 +190,40 @@ class PowerBBMember
 			trigger_error('ERROR::NEED_PARAMETER -- FROM LoginMember() -- EMPTY username or password',E_USER_ERROR);
 		}
 
-		$CheckMember = $this->CheckMember(array('username'	=>	$param['username'],
-		       									'password'	=>	$param['password']));
 
-		if (!$CheckMember)
+     	$MemberArr['get'] = '*';
+
+		if (!empty($param['username'])
+			and !empty($param['password']))
 		{
-			return false;
+			$MemberArr['where'] 				= 	array();
+			$MemberArr['where'][0] 				= 	array();
+			$MemberArr['where'][0]['name'] 		= 	'username';
+			$MemberArr['where'][0]['oper'] 		= 	'=';
+			$MemberArr['where'][0]['value'] 	= 	$param['username'];
+
+			$MemberArr['where'][1] 				= 	array();
+			$MemberArr['where'][1]['con'] 		= 	'AND';
+			$MemberArr['where'][1]['name'] 		= 	'password';
+			$MemberArr['where'][1]['oper'] 		= 	'=';
+			$MemberArr['where'][1]['value'] 	= 	$param['password'];
 		}
-		else
+
+		$CheckMember = $this->GetMemberInfo($MemberArr);
+
+
+		if ($CheckMember)
 		{
     		@session_start();
     		$_SESSION[$this->Engine->_CONF['username_cookie']] = $param['username'];
     		$_SESSION[$this->Engine->_CONF['password_cookie']] = $param['password'];
     		$_SESSION['expire'] = $param['expire'];
             $_SESSION['HTTP_USER_AGENT'] = strtolower(md5($this->Engine->_SERVER['HTTP_USER_AGENT']));
-       		return $CheckMember;
+       		return true;
+		}
+		else
+		{
+         return false;
        	}
 	}
 
@@ -226,8 +245,7 @@ class PowerBBMember
 
 		$MemberArr['get'] = '*';
 
-		if (!empty($param['username'])
-			and !empty($param['password']))
+		if (!empty($param['username']))
 		{
 			$MemberArr['where'] 				= 	array();
 			$MemberArr['where'][0] 				= 	array();
@@ -235,16 +253,37 @@ class PowerBBMember
 			$MemberArr['where'][0]['oper'] 		= 	'=';
 			$MemberArr['where'][0]['value'] 	= 	$param['username'];
 
-			$MemberArr['where'][1] 				= 	array();
-			$MemberArr['where'][1]['con'] 		= 	'AND';
-			$MemberArr['where'][1]['name'] 		= 	'password';
-			$MemberArr['where'][1]['oper'] 		= 	'=';
-			$MemberArr['where'][1]['value'] 	= 	$param['password'];
 		}
 
-		$CheckMember = $this->GetMemberInfo($MemberArr);
+		$CheckMemberUsername = $this->GetMemberInfo($MemberArr);
 
-		return (!$CheckMember) ? false : $CheckMember;
+        $salt = $CheckMemberUsername['active_number'];
+        $password_verify = $this->Engine->functions->verify_user_password($salt,$param['password']);
+
+		if($CheckMemberUsername and !empty($param['password']))
+		{			if(md5($param['password']) == $CheckMemberUsername['password']
+			or empty($CheckMemberUsername['active_number']))
+			{
+          	$UpdatePassword = $this->Engine->functions->update_password($CheckMemberUsername['id'], $param['password']);
+
+			 $CheckMember = $UpdatePassword;
+			}
+			elseif($password_verify['password'] == $CheckMemberUsername['password'])
+			{
+             $CheckMember = true;
+
+			}
+			else
+			{
+			$CheckMember = false;
+			}
+        }
+		else
+		{
+		$CheckMember = false;
+		}
+
+		return $CheckMember;
 	}
 
 	/**
@@ -380,33 +419,43 @@ class PowerBBMember
  			trigger_error('ERROR::NEED_PARAMETER -- FROM CheckAdmin() -- EMPTY username OR password',E_USER_ERROR);
  		}
 
- 		$MemberArr 					= 	array();
- 		$MemberArr['username']		=	$param['username'];
- 		$MemberArr['password']		=	$param['password'];
+    	$MemberArr['get'] = '*';
 
-		$CheckMember = $this->CheckMember($MemberArr);
-
-		// Well , this is a member
-		if ($CheckMember != false)
+		if (!empty($param['username'])
+			and !empty($param['password']))
 		{
+			$MemberArr['where'] 				= 	array();
+			$MemberArr['where'][0] 				= 	array();
+			$MemberArr['where'][0]['name'] 		= 	'username';
+			$MemberArr['where'][0]['oper'] 		= 	'=';
+			$MemberArr['where'][0]['value'] 	= 	$param['username'];
+
+			$MemberArr['where'][1] 				= 	array();
+			$MemberArr['where'][1]['con'] 		= 	'AND';
+			$MemberArr['where'][1]['name'] 		= 	'password';
+			$MemberArr['where'][1]['oper'] 		= 	'=';
+			$MemberArr['where'][1]['value'] 	= 	$param['password'];
+		}
+
+		$CheckMember = $this->GetMemberInfo($MemberArr);
+
+
 			$GroupArr 			= 	array();
 			$GroupArr['where'] 	= 	array('id',$CheckMember['usergroup']);
 
 			$GroupInfo = $this->Engine->core->GetInfo($GroupArr,'group');
 
-			if ($GroupInfo != false)
+			if ($CheckMember and $GroupInfo['admincp_allow'] and !empty($param['password']))
 			{
-				return ($GroupInfo['admincp_allow']) ? $CheckMember : false;
-			}
+		      $CheckMember = true;
+
+             }
 			else
 			{
-				return false;
+				$CheckMember = false;
 			}
-		}
-		else
-		{
-			return false;
-		}
+
+			return $CheckMember;
 	}
 
 	function LoginAdmin($param)
@@ -417,21 +466,21 @@ class PowerBBMember
  			trigger_error('ERROR::NEED_PARAMETER -- FROM LoginAdmin() -- EMPTY username OR password',E_USER_ERROR);
  		}
 
-		$Check = $this->CheckAdmin($param);
-
-		if ($Check != false)
-		{
+			$Check = $this->CheckAdmin($param);
+		   if ($Check)
+		   {
     		@session_start();
     		$_SESSION[$this->Engine->_CONF['admin_username_cookie']] = $param['username'];
     		$_SESSION[$this->Engine->_CONF['admin_password_cookie']] = $param['password'];
     		$_SESSION['admin_expire'] = $param['expire'];
             $_SESSION['HTTP_USER_AGENT_CP'] = strtolower(md5($this->Engine->_SERVER['HTTP_USER_AGENT']));
        		return true;
-		}
-		else
-		{
-			return false;
-		}
+       		}
+			else
+			{
+				return false;
+			}
+
 	}
 
 	/**

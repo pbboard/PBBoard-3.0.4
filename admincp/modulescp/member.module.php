@@ -197,8 +197,7 @@ class PowerBBMemberMOD extends _functions
       		$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['You_can_not_register_this_name']);
       	}
 
-
-		$PowerBB->_POST['password'] = md5($PowerBB->_POST['password']);
+        $password_fields = $PowerBB->functions->create_password($PowerBB->_POST['password'], false);
 
       	//////////
 
@@ -218,7 +217,8 @@ class PowerBBMemberMOD extends _functions
 		$InsertArr['field']			=	array();
 
 		$InsertArr['field']['username']				= 	$PowerBB->_POST['username'];
-		$InsertArr['field']['password']				= 	$PowerBB->_POST['password'];
+		$InsertArr['field']['password']				= 	$password_fields['password'];
+		$InsertArr['field']['active_number']		= 	$password_fields['salt'];
 		$InsertArr['field']['email']				= 	$PowerBB->_POST['email'];
 		$InsertArr['field']['usergroup']			= 	4;
 		$InsertArr['field']['user_gender']			= 	$PowerBB->_POST['gender'];
@@ -707,12 +707,14 @@ class PowerBBMemberMOD extends _functions
      	 $user_title = $PowerBB->_POST['user_title'];
         }
 		//////////
+        $password_fields = $PowerBB->functions->create_password($PowerBB->_POST['new_password'], false);
 
 		$UpdateArr 				= 	array();
 		$UpdateArr['field'] 	= 	array();
 
 		$UpdateArr['field']['username'] 			= 	$username;
-		$UpdateArr['field']['password'] 			= 	(!empty($PowerBB->_POST['new_password'])) ? md5($PowerBB->_POST['new_password']) : $MemInfo['password'];
+		$UpdateArr['field']['password'] 			= 	(!empty($PowerBB->_POST['new_password'])) ? $password_fields['password'] : $MemInfo['password'];
+		$UpdateArr['field']['active_number'] 		= 	(!empty($PowerBB->_POST['new_password'])) ? $password_fields['salt'] : $MemInfo['active_number'];
 		$UpdateArr['field']['email'] 				= 	$PowerBB->_POST['email'];
 		$UpdateArr['field']['user_gender'] 			= 	$PowerBB->_POST['gender'];
 		$UpdateArr['field']['style'] 				= 	$PowerBB->_POST['style'];

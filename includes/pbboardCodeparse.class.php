@@ -327,11 +327,12 @@ class PowerBBCodeParse
             $string = preg_replace("#\[(left|center|right|justify)\](.*?)\[/(left|center|right|justify)\]#si", "<div style=\"text-align: $1;\" class=\"mycode_align\">$2</div>", $string);
             $string = preg_replace("#\[align=(left|center|right|justify)\](.*?)\[/align\]#si", "<div style=\"text-align: $1;\" class=\"mycode_align\">$2</div>", $string);
             $string = preg_replace('#\[highlight\=(.+)\](.+)\[\/highlight\]#iUs', '<span style="background:$1">$2</span>', $string);
-            $string = preg_replace('#\[size\=(.+)\](.+)\[\/size\]#iUs', '<font size="$1">$2</font>', $string);
+       	    $string = preg_replace('#\[size\=(.+)\](.+)\[\/size\]#iUs', "<font size=\"$1\" style=\"font-size: $1;\" class=\"mycode_size\">$2</font>", $string);
             $string = preg_replace('#\[blockquote\](.+)\[\/blockquote\]#iUs', '<blockquote class=\"quotemain\">$1</blockquote>', $string);
             $string = preg_replace('#\[indent\](.+)\[\/indent\]#iUs', '<indent>$1</indent>', $string);
-	        $string = preg_replace('#\[color\=(.+)\](.+)\[\/color\]#iUs', '<font color="$1">$2</font>', $string);
-	        $string = preg_replace('#\[font\=(.+)\](.+)\[\/font\]#iUs', '<font face="$1">$2</font>', $string);
+	        $string = preg_replace('#\[color\=(.+)\](.+)\[\/color\]#iUs', "<span style=\"color: $1;\" class=\"mycode_color\">$2</span>", $string);
+            $string = preg_replace('#\[font\=(.+)\](.+)\[\/font\]#iUs', "<font face=\"$1\" style=\"font-family: $1;\" class=\"mycode_font\">$2</font>", $string);
+
 	       // $string = preg_replace('#\[(.+)\=(.+)\](.+)\[\/(.+)\]#iUs', '<$1 face="$2">$3</$4>', $string);
 
         return $this->closetags($string);
@@ -807,7 +808,34 @@ class PowerBBCodeParse
 	* @author Milian <mailmili.de>
 	*/
 	 function closetags($html)
-	 {
+    {
+       global $PowerBB;
+		$html = preg_replace('#\[b\](.+)\[\/b\]#iUs', '<b>$1</b>', $html);
+		$html = preg_replace('#\[u\](.+)\[\/u\]#iUs', '<u>$1</u>', $html);
+		$html = preg_replace('#\[i\](.+)\[\/i\]#iUs', '<i>$1</i>', $html);
+		$html = preg_replace('#\[s\](.+)\[\/s\]#iUs', '<s>$1</s>', $html);
+		$html = preg_replace('#\[h1\](.+)\[\/h1\]#iUs', '<h1>$1</h1>', $html);
+		$html = preg_replace('#\[h2\](.+)\[\/h2\]#iUs', '<h2>$1</h2>', $html);
+		$html = preg_replace('#\[h3\](.+)\[\/h3\]#iUs', '<h1>$1</h1>', $html);
+		$html = preg_replace('#\[h4\](.+)\[\/h4\]#iUs', '<h1>$1</h1>', $html);
+		$html = preg_replace('#\[h5\](.+)\[\/h5\]#iUs', '<h1>$1</h1>', $html);
+		$html = preg_replace('#\[h6\](.+)\[\/h6\]#iUs', '<h1>$1</h1>', $html);
+		$html = preg_replace('#\[hr\]\[\/hr\]#iUs', '<HR id=null>', $html);
+		$html = preg_replace('#\[hr\]#iUs', '<HR id=null>', $html);
+		$html = preg_replace('#\[sub\](.+)\[\/sub\]#iUs', '<SUB>$1</SUB>', $html);
+		$html = preg_replace('#\[sup\](.+)\[\/sup\]#iUs', '<SUP>$1</SUP>', $html);
+		$html = preg_replace('#\[guest_name\](.+)\[\/guest_name\]#iUs', '<br>$1</br>', $html);
+		$html = preg_replace("#\[(left|center|right|justify)\](.*?)\[/(left|center|right|justify)\]#si", "<div style=\"text-align: $1;\" class=\"mycode_align\">$2</div>", $html);
+		$html = preg_replace("#\[align=(left|center|right|justify)\](.*?)\[/align\]#si", "<div style=\"text-align: $1;\" class=\"mycode_align\">$2</div>", $html);
+		$html = preg_replace('#\[highlight\=(.+)\](.+)\[\/highlight\]#iUs', '<span style="background:$1">$2</span>', $html);
+		$html = preg_replace('#\[size\=(.+)\](.+)\[\/size\]#iUs', "<font size=\"$1\" style=\"font-size: $1;\" class=\"mycode_size\">$2</font>", $html);
+		$html = preg_replace('#\[blockquote\](.+)\[\/blockquote\]#iUs', '<blockquote class=\"quotemain\">$1</blockquote>', $html);
+		$html = preg_replace('#\[indent\](.+)\[\/indent\]#iUs', '<indent>$1</indent>', $html);
+		$html = preg_replace('#\[color\=(.+)\](.+)\[\/color\]#iUs', "<span style=\"color: $1;\" class=\"mycode_color\">$2</span>", $html);
+		$html = preg_replace('#\[font\=(.+)\](.+)\[\/font\]#iUs', "<font face=\"$1\" style=\"font-family: $1;\" class=\"mycode_font\">$2</font>", $html);
+        $html = str_replace($PowerBB->_CONF['template']['_CONF']['lang']['resize_image_w_h'],'',$html);
+
+
 	  #put all opened tags into an array
 	  preg_match_all('#<([a-z]+)(?: .*)?(?<![/|/ ])>#iU', $html, $result);
 	  $openedtags = $result[1];   #put all closed tags into an array
@@ -1351,9 +1379,7 @@ class PowerBBCodeParse
 	  $string = preg_replace('#<img(.*?)src="(.*?)">#i', " [img]$2[/img] ", $string);
 	  $string = preg_replace('#<img(.*?)src="(.*?)" />#i', " [img]$2[/img] ", $string);
 	  $string = preg_replace('#<p>(.*?)</p>#i', " $1 <br />\r\n", $string);
-	  $string = preg_replace('#<font color="(.*?)">(.*?)</font>#i', "[color=$1]$2[/$1] ", $string);
-	  $string = preg_replace('#<font size="(.*?)">(.*?)</font>#i', "[size=$1]$2[/$1] ", $string);
-	  $string = preg_replace('#<font face="(.*?)">(.*?)</font>#i', "[size=$1]$2[/$1] ", $string);
+	  $string = preg_replace('#<font (.*?)="(.*?)">(.*?)</font>#i', "[$1=$2]$3[/$1] ", $string);
 	  $string = preg_replace('#<p align="(.*?)">(.*?)</p>#i', "[$1]$2[/$1]", $string);
 
         $string = str_replace('\\"', '"', $string);
@@ -1702,6 +1728,8 @@ class PowerBBCodeParse
     // Delete all tags from text and along sort.
 	function deletedalltags($text, $num)
 	{
+		$text = preg_replace('#\[img](.+)\[/img]#iUs', '', $text);
+		$text = preg_replace('#\[youtube](.+)\[/youtube]#iUs', '', $text);
 		$text = preg_replace('#\[(.+)](.+)\[(.+)]#iUs', '$2', $text);
 		$text = preg_replace('#\[(.+)]#iUs', '', $text);
 		$text = preg_replace('#\[]#iUs', '', $text);
@@ -1712,6 +1740,9 @@ class PowerBBCodeParse
 		$text = strip_tags($text);
 		$text = str_replace('<br>',"",$text);
 		$text = str_replace('<br />',"",$text);
+        $text = str_replace("\n", '',$text);
+        $text = str_replace("\t", '',$text);
+        $text = str_replace("\r", '',$text);
 		$text = $this->censor_words($text);
 		$text = $this->ShortPhrase($text,$num);
 

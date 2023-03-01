@@ -824,11 +824,20 @@ class PowerBBCoreMOD
 		//////////
 
 		// Check old password
-		if (md5($PowerBB->_POST['old_password']) != $PowerBB->_CONF['member_row']['password'])
-		{
-			$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['bad_password']);
-		}
-
+          if(empty($PowerBB->_CONF['member_row']['active_number']))
+          {			if (md5($PowerBB->_POST['old_password']) != $PowerBB->_CONF['member_row']['password'])
+			{
+				$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['bad_password']);
+			}
+          }
+          else
+          {
+            $password_fields = $PowerBB->functions->verify_user_password($PowerBB->_CONF['member_row']['active_number'], $PowerBB->_POST['old_password']);
+			if ($password_fields['password'] != $PowerBB->_CONF['member_row']['password'])
+			{
+				$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['bad_password']);
+			}
+          }
 		// Clean the information from white spaces (only in the begin and in the end)
 		$PowerBB->_POST['new_password'] = $PowerBB->functions->CleanVariable($PowerBB->_POST['new_password'],'trim');
 
@@ -906,19 +915,12 @@ class PowerBBCoreMOD
 		else
 		{
 
-		   // Convert password to md5
-		  $PowerBB->_POST['new_password'] = md5($PowerBB->_POST['new_password']);
-
-			$PassArr 				= 	array();
-			$PassArr['field']		=	array();
-			$PassArr['field']['password'] 			= 	$PowerBB->_POST['new_password'];
-			$PassArr['where'] = array('id',$PowerBB->_CONF['member_row']['id']);
-
-			$UpdatePassword = $PowerBB->core->Update($PassArr,'member');
+		   // Convert password to hash md5 add salt
+      	$UpdatePassword = $PowerBB->functions->update_password($PowerBB->_CONF['member_row']['id'], $PowerBB->_POST['new_password']);
 
 			if ($UpdatePassword)
 			{
-				$PowerBB->functions->msg($PowerBB->_CONF['template']['_CONF']['lang']['Updated_successfully']);
+			   $PowerBB->functions->msg($PowerBB->_CONF['template']['_CONF']['lang']['Updated_successfully']);
                $PowerBB->functions->redirect('index.php?page=login&sign=1');
 			}
 		}
@@ -955,12 +957,23 @@ class PowerBBCoreMOD
 
         $PowerBB->_POST['check_password'] 	= 	$PowerBB->functions->CleanVariable($PowerBB->_POST['check_password'],'sql');
 
-		// Check old password
-		if (md5($PowerBB->_POST['check_password']) != $PowerBB->_CONF['member_row']['password'])
-		{
-			$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['bad_password']);
-		}
+         // Check old password
+          if(empty($PowerBB->_CONF['member_row']['active_number']))
+          {
+			if (md5($PowerBB->_POST['check_password']) != $PowerBB->_CONF['member_row']['password'])
+			{
+				$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['bad_password']);
+			}
+          }
+          else
+          {
+            $password_fields = $PowerBB->functions->verify_user_password($PowerBB->_CONF['member_row']['active_number'], $PowerBB->_POST['check_password']);
 
+			if ($password_fields['password'] != $PowerBB->_CONF['member_row']['password'])
+			{
+				$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['bad_password']);
+			}
+          }
 		if ($PowerBB->_POST['new_email'] == $PowerBB->_CONF['member_row']['email'])
 		{
 			$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['E-mail_is_registered_please_type_the_other']);

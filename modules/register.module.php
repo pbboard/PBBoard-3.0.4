@@ -559,8 +559,10 @@ class PowerBBRegisterMOD
 
 	    }
 
-
-      	$md5_password = md5($PowerBB->_POST['password']);
+        $_SESSION['register_password'] = $PowerBB->_POST['password'];
+        $_SESSION['register_username'] = $PowerBB->_POST['username'];
+      	$password_fields = $PowerBB->functions->create_password($PowerBB->_POST['password'], false);
+        $_SESSION['register_salt'] = $password_fields['salt'];
 
       	//////////
 
@@ -584,7 +586,8 @@ class PowerBBRegisterMOD
       	$InsertArr['field']			=	array();
 
       	$InsertArr['field']['username'] 			= 	$PowerBB->_POST['username'];
-      	$InsertArr['field']['password'] 			= 	$md5_password;
+      	$InsertArr['field']['password'] 			= 	$password_fields['password'];
+      	$InsertArr['field']['active_number'] 		= 	$password_fields['salt'];
       	$InsertArr['field']['email'] 				= 	$PowerBB->_POST['email'];
       	$InsertArr['field']['usergroup'] 			= 	$PowerBB->_CONF['info_row']['def_group'];
       	$InsertArr['field']['user_gender'] 			= 	$PowerBB->_POST['gender'];
@@ -779,14 +782,11 @@ class PowerBBRegisterMOD
 						$PowerBB->template->assign('email',$GetMemberInfo['email']);
 						$PowerBB->template->display('register_mail_message');
 						$PowerBB->functions->GetFooter();
-
 				}
 			}
 			else
       		{
-                    //$PowerBB->functions->msg($PowerBB->_CONF['template']['_CONF']['lang']['Registered_successfully']);
-      			    $PowerBB->functions->header_redirect('index.php?page=login&register_login=1&username='.$PowerBB->_POST['username'] .'&password='.$md5_password);
-      			    //$PowerBB->functions->GetFooter();
+      			    $PowerBB->functions->header_redirect('index.php?page=login&register_login=1');
              }
 
 

@@ -91,7 +91,7 @@ class PowerBBForgetMOD
 			     }
 		        if($PowerBB->_CONF['info_row']['captcha_type'] == 'captcha_IMG')
 				 {
-			        if(md5($PowerBB->_POST['code']) != $_SESSION['captcha_key'])
+			        if(md5($PowerBB->_POST['code_confirm']) != $_SESSION['captcha_key'])
 					 {
 			            $PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['Code_that_you_enter_the_wrong']);
 				     }
@@ -130,7 +130,6 @@ class PowerBBForgetMOD
 
 		$ChangeAdress = $Adress . 'index.php?page=new_password&index=1&code=' . $Code;
 		$CancelAdress = $Adress . 'index.php?page=cancel_requests&index=1&type=1&code=' . $Code;
-
 		$ReqArr 				= 	array();
 		$ReqArr['field']		=	array();
 

@@ -399,7 +399,15 @@ class PBBTemplate
 			$replace_coordination_array[] = "";
 			$string = str_replace($search_coordination_array,$replace_coordination_array,$string);
 			}
-
+			elseif ($filename == 'show_subject_control'
+			or $filename == 'subject_close_index'
+			or $filename == 'subject_move_index'
+			or $filename == 'subject_repeat_index')
+			{
+			$first_search = 'ajax_moderator_options';
+			$first_replace = 'ajax_search"';
+			$string = str_replace($first_search,$first_replace,$string);
+			}
 			$string = str_replace('alt=""','alt="icon"',$string);
 			$string = str_replace("alt=''","alt='icon'",$string);
 			$string = str_replace("<!--copyright-->",$PowerBB->functions->copyright(),$string);

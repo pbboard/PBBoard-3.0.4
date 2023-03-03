@@ -1165,11 +1165,10 @@ class PowerBBManagementMOD
 
 
        // $GetSubjectInfo['text'] = $PowerBB->Powerparse->censor_words($GetSubjectInfo['text']);
-        if(strstr($GetSubjectInfo['text'],"<br />"))
-        {
+
 		 $GetSubjectInfo['text'] = $PowerBB->Powerparse->html2bb($GetSubjectInfo['text']);
          $PowerBB->_CONF['template']['ReplyInfo']['text'] = $PowerBB->Powerparse->remove_strings($PowerBB->_CONF['template']['ReplyInfo']['text']);
-		}
+
 		//$GetSubjectInfo['text'] = str_replace('<br />', "", $GetSubjectInfo['text']);
 		$GetSubjectInfo['title'] 	= 	$PowerBB->functions->CleanVariable($GetSubjectInfo['title'],'html');
 		$GetSubjectInfo['title'] 	= 	$PowerBB->functions->CleanVariable($GetSubjectInfo['title'],'sql');
@@ -2009,11 +2008,9 @@ class PowerBBManagementMOD
 		$PowerBB->_CONF['template']['ReplyInfo'] = $PowerBB->core->GetInfo($ReplyArr,'reply');
 
 
-        if(strstr($PowerBB->_CONF['template']['ReplyInfo']['text'],"<br />"))
-        {
-         $PowerBB->_CONF['template']['ReplyInfo']['text'] = $PowerBB->Powerparse->html2bb($PowerBB->_CONF['template']['ReplyInfo']['text']);
-         $PowerBB->_CONF['template']['ReplyInfo']['text'] = $PowerBB->Powerparse->remove_strings($PowerBB->_CONF['template']['ReplyInfo']['text']);
-		}
+        $PowerBB->_CONF['template']['ReplyInfo']['text'] = $PowerBB->Powerparse->html2bb($PowerBB->_CONF['template']['ReplyInfo']['text']);
+        $PowerBB->_CONF['template']['ReplyInfo']['text'] = $PowerBB->Powerparse->remove_strings($PowerBB->_CONF['template']['ReplyInfo']['text']);
+
 
 		$SubjectArr = array();
 		$SubjectArr['where'] = array('id',$PowerBB->_GET['subject_id']);

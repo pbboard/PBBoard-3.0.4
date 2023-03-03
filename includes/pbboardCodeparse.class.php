@@ -229,6 +229,7 @@ class PowerBBCodeParse
 	        $string = str_replace('[/table]', '</table>', $string);
 	        $string = str_replace('[/tbody]', '</tbody>', $string);
 	        $string = str_replace('[/thead]', '</thead>', $string);
+            $string = preg_replace('#\[iframe\](.+)\[\/iframe\]#iUs', '<iframe width="560" height="315" src="$1" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>', $string);
 
             $string = preg_replace("#\[(left|center|right|justify)\](.*?)\[/(left|center|right|justify)\]#si", "<div style=\"text-align: $1;\" class=\"mycode_align\">$2</div>", $string);
             $string = preg_replace("#\[align=(left|center|right|justify)\](.*?)\[/align\]#si", "<div style=\"text-align: $1;\" class=\"mycode_align\">$2</div>", $string);
@@ -1339,6 +1340,16 @@ class PowerBBCodeParse
       $string = str_replace("&nbsp;", ' ', $string);
       $string = str_replace("<br />", " ", $string);
 
+		$regexcode_iframe['[iframe]'] = '#<iframe (.*)src="(.*)">(.*)</iframe>#siU';
+		$string = preg_replace_callback($regexcode_iframe, function($matches_iframe) {
+        $matches_iframe[2] = str_replace("url", "iframe", $matches_iframe[2]);
+        $matches_iframe[2] = preg_replace('#\[iframe\=(.+)\"](.+)\[\/iframe\]#iUs', '$1@', $matches_iframe[2]);
+        $matches_iframe[2] = '[iframe]'.$matches_iframe[2].'[/iframe]';
+        $matches_iframe[2] = preg_replace('#\@(.+)\[\/iframe\]#iUs', '[/iframe]', $matches_iframe[2]);
+
+		return $matches_iframe[2];
+		}, $string);
+
 
 		  $tags = array(
             '#<strong>(.*?)</strong>#si' => '[b]\\1[/b]',
@@ -1479,11 +1490,17 @@ class PowerBBCodeParse
          $string = str_replace('</dl>', ' ', $string);
     	 $string = preg_replace('#<dd(.*?)>#i', " ", $string);
          $string = str_replace('</dd>', ' ', $string);
+         $string = preg_replace('#<mark (.*)">(.*)</mark>#siU', '$2', $string);
+
 
          //$string = preg_replace('#<(.*?)>#i', ' ', $string);
 
+		 eval($PowerBB->functions->get_fetch_hooks('convert_html2bb'));
+
 		// Convert HTML quotes
 		$string = $this->htmlspecialchars_uni($string);
+
+         eval($PowerBB->functions->get_fetch_hooks('convert_html_off'));
 
 	  return $string;
 	}
@@ -2248,6 +2265,33 @@ function htmlspecialchars_off($message)
 
 	function remove_strings($string)
 	{
+        if(strstr($string,"[/style]")
+        or strstr($string,"[/font]")
+        or strstr($string,"[/size]")
+        or strstr($string,"[/color]"))
+        {
+	         $string = preg_replace('#\[style\=font-size:(.+)\](.+)\[\/style\]#iUs', "[size=$1]$2[/size]", $string);
+		     $string = preg_replace('#\[style\=color:(.+)\;](.+)\[\/style\]#iUs', "[color=$1]$2[/color]", $string);
+	         $string = preg_replace('#\[style\=font-size:(.+)\]#iUs', "", $string);
+	         $string = preg_replace('#\[style\=color:(.+)\]#iUs', "", $string);
+
+			$regexcode_size['[size]'] = '#\[size\=(.+)\]#iUs';
+			$string = preg_replace_callback($regexcode_size, function($matches_size) {
+			$matches_size[1] = str_replace("px", "", $matches_size[1]);
+			$matches_size[1] = str_replace(";", "", $matches_size[1]);
+			if($matches_size[1] > 6)
+			{
+			$matches_size[1] = 4;
+			}
+			return '[size='.$matches_size[1].']';
+			}, $string);
+
+
+		 eval($PowerBB->functions->get_fetch_hooks('remove_strings'));
+
+        }
+        else
+        {
 		$string = str_replace("&amp;", "&", $string);
 		$find_matches1 = array("\n&lt;br&gt;","\n&lt;br /&gt;","\n&lt;hr&gt;");
 		$find_matches2 = array("&lt;br&gt;\r","&lt;br /&gt;\r","&lt;hr&gt;\r");
@@ -2257,7 +2301,7 @@ function htmlspecialchars_off($message)
 		$string =  str_replace($find_matches2,$replace_find_matches, $string);
 
 		$string = strip_tags($string);
-
+        }
 		return $string;
 	}
 

@@ -2286,9 +2286,6 @@ function htmlspecialchars_off($message)
 			return '[size='.$matches_size[1].']';
 			}, $string);
 
-
-		 eval($PowerBB->functions->get_fetch_hooks('remove_strings'));
-
         }
         else
         {

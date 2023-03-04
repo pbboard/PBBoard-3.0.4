@@ -4860,6 +4860,7 @@ padding: 20px;
 font-family: "Droid Arabic Kufi","tahoma",sans-serif;
 font-size: 12px;
 text-align: center;
+width: 100px;
 }
 
 .Code_table td:first-child.td:nth-child(1) {
@@ -5522,9 +5523,9 @@ margin-top: 50px;
 }
 .Code_table td {
 display: block;
-border: 1px solid #ebebeb;
 padding: 10px;
-margin: 0px;
+width: 97%;
+word-break: break-word;
 }
 .Code_table tr {
 display: table-row;

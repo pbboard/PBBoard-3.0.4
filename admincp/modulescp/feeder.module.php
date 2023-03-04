@@ -23,6 +23,11 @@ class PowerBBCoreMOD
 			}
 
 
+            if($PowerBB->_POST['ttl'] > 7200)
+            {
+             $Upttl_INT = $PowerBB->DB->sql_query("ALTER TABLE " . $PowerBB->table['feeds'] . " CHANGE ttl ttl INT(15) UNSIGNED NOT NULL DEFAULT '1500'");
+            }
+
 			if ($PowerBB->_GET['control'])
 			{
 				if ($PowerBB->_GET['main'])
@@ -340,7 +345,6 @@ class PowerBBCoreMOD
     		$UpdateArr['where']					= 	array('id',$PowerBB->_POST['section']);
 
     		$UpdateSubjectNumber = $PowerBB->core->Update($UpdateArr,'section');
-
 
 
 			$FeedsArr	                    =	array();

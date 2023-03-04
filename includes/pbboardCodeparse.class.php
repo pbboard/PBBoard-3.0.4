@@ -140,30 +140,32 @@ class PowerBBCodeParse
 	        {
               foreach ($Custom_bbcodes as $getbbcode_row)
 		      {
-
 		      	$bbcode_tag = $getbbcode_row['bbcode_tag'];
 		      	$bbcode_replace = $getbbcode_row['bbcode_replace'];
-                $bbcode_replace = str_ireplace("'","&#39;",$bbcode_replace);
-				if ($getbbcode_row['bbcode_useoption'] == '1')
-				{
-
-					if(preg_match("#\[".$bbcode_tag."=(.*?)\](.*?)\[/".$bbcode_tag."\](\r\n?|\n?)#is", $string, $matches))
+                $bbcode_replace = str_replace("'","&#39;",$bbcode_replace);
+				$bbcode_replace = $this->htmlspecialchars_off($bbcode_replace);
+                while (strstr($string, "[/".$bbcode_tag."]") !== false)
+	             {
+					if ($getbbcode_row['bbcode_useoption'] == '1')
 					{
-					 $matches[1] = $this->htmlspecialchars_off($matches[1]);
-		              $stringbcode = $this->PowerCode_BBcode($matches[1],$matches[2],$bbcode_tag);
-                      $string = str_replace("[".$bbcode_tag."=".$matches[1]."]".$matches[2]."[/".$bbcode_tag."]",$stringbcode, $string);
-		            }
-				}
-				else
-				{
-					if(preg_match("#\[".$bbcode_tag."\](.*?)\[/".$bbcode_tag."\]#is", $string, $matches))
+						if(preg_match("#\[".$bbcode_tag."=(.*)\](.*)\[/".$bbcode_tag."\]#siU", $string, $matches))
+						{
+						  $matches[1] = $this->htmlspecialchars_off($matches[1]);
+			              $stringbcode = $this->PowerCode_BBcode($matches[1],$matches[2],$bbcode_tag);
+	                      $string = str_replace("[".$bbcode_tag."=".$matches[1]."]".$matches[2]."[/".$bbcode_tag."]",$stringbcode, $string);
+			            }
+					}
+					else
 					{
-					   $matches[1] = $this->htmlspecialchars_off($matches[1]);
-		               $stringbcode  = $this->PowerCode_Tag_BBcode($bbcode_replace,$bbcode_tag,$matches[1]);
-                       $string = str_replace("[".$bbcode_tag."]".$matches[1]."[/".$bbcode_tag."]",$stringbcode, $string);
+						if(preg_match("#\[".$bbcode_tag."\](.*)\[/".$bbcode_tag."\]#siU", $string, $matches))
+						{
+						   $matches[1] = $this->htmlspecialchars_off($matches[1]);
+			               $stringbcode  = $this->PowerCode_Tag_BBcode($bbcode_replace,$bbcode_tag,$matches[1]);
+	                       $string = str_replace("[".$bbcode_tag."]".$matches[1]."[/".$bbcode_tag."]",$stringbcode, $string);
+			            }
+			          }
 
-		            }
-			    }
+				 }
 		      }
 
             }
@@ -629,8 +631,6 @@ class PowerBBCodeParse
 			return $this->PowerCode_Tag_Url('mailto:'.$xxxx_email[0],$xxxx_email[0]);
 			}, $string);
 
-
-
             $string = str_replace('"<a', '"><a', $string);
            // $string = str_replace('href="www.', 'href="http://www.', $string);
             eval($PowerBB->functions->get_fetch_hooks('BBCodeParseHooks4'));
@@ -667,7 +667,7 @@ class PowerBBCodeParse
 				$bbcode_row1 = $PowerBB->DB->sql_fetch_array($querybbcode1);
 				$bbcode_replace = $bbcode_row1['bbcode_replace'];
                 $bbcode_replace = str_replace("&#39;","'",$bbcode_replace);
-                $bbcode_replace = str_replace( "{option}",$option , $bbcode_replace );
+                $bbcode_replace = str_replace("{option}",$option , $bbcode_replace );
                 $bbcode_replace = str_replace("{content}", $content, $bbcode_replace);
                 return $bbcode_replace;
          }
@@ -1029,7 +1029,7 @@ class PowerBBCodeParse
           $register_link = ('index.php?page=register&index=1');
                 if (trim($message) == '')
                 {
-                    $message = $link;
+                    $message = '';
 
                 }
                 $message = str_replace('\\"', '"', $message);
@@ -1491,6 +1491,8 @@ class PowerBBCodeParse
     	 $string = preg_replace('#<dd(.*?)>#i', " ", $string);
          $string = str_replace('</dd>', ' ', $string);
          $string = preg_replace('#<mark (.*)">(.*)</mark>#siU', '$2', $string);
+                         $Adress = $PowerBB->functions->GetForumAdress();
+                 $string = str_replace('[url=download/', '[url='.$Adress.'download/', $string);
 
 
          //$string = preg_replace('#<(.*?)>#i', ' ', $string);

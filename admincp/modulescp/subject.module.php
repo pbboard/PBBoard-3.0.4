@@ -152,16 +152,24 @@ class PowerBBSubjectMOD extends _functions
 	{
 		global $PowerBB;
 
-		$SecArr 					= 	array();
-		$SecArr['get_from']			=	'db';
-		$SecArr['type']				=	'forums';
-		$SecArr['proc'] 			= 	array();
-		$SecArr['proc']['*'] 		= 	array('method'=>'clean','param'=>'html');
-		$SecArr['order']			=	array();
-		$SecArr['order']['field']	=	'id';
-		$SecArr['order']['type']	=	'ASC';
+		$SecArr 						= 	array();
+		$SecArr['get_from']				=	'db';
 
-		$PowerBB->_CONF['template']['while']['SectionList'] = $PowerBB->core->GetList($SecArr,'section');
+		$SecArr['proc'] 				= 	array();
+		$SecArr['proc']['*'] 			= 	array('method'=>'clean','param'=>'html');
+
+		$SecArr['order']				=	array();
+		$SecArr['order']['field']		=	'sort';
+		$SecArr['order']['type']		=	'ASC';
+
+		$SecArr['where']				=	array();
+		$SecArr['where'][0]['name']		= 	'parent';
+		$SecArr['where'][0]['oper']		= 	'!=';
+		$SecArr['where'][0]['value']	= 	'0';
+
+		// Get main sections
+		$PowerBB->_CONF['template']['while']['SectionList'] = $PowerBB->section->GetSectionsList($SecArr);
+
 
 		$PowerBB->template->display('subjects_mass_del');
 	}
@@ -218,6 +226,7 @@ class PowerBBSubjectMOD extends _functions
 
 				$this->SectionInfo = $PowerBB->core->GetInfo($SecArr,'section');
 				$cache = $PowerBB->section->UpdateSectionsCache(array('parent'=>$this->SectionInfo['parent']));
+                $UpdateSectionCache = $PowerBB->functions->UpdateSectionCache($SectionInf['id']);
 
 				$PowerBB->functions->msg($PowerBB->_CONF['template']['_CONF']['lang']['Topic_has_been_deleted_successfully']);
 				$PowerBB->functions->redirect('index.php?page=subject&amp;mass_del=1&amp;main=1');

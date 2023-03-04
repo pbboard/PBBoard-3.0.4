@@ -151,7 +151,7 @@
 </option>
 {/if}
 {if {$FeedEdit['ttl']} == 28800}
-<option value="21600" selected="selected">
+<option value="28800" selected="selected">
 8 {$lang['hours']}
 </option>
 {else}

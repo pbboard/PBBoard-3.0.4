@@ -2616,7 +2616,7 @@ return preg_replace($pattern, $replacement, $email);
             $type = preg_replace('#index.php?page=new_reply&amp;index=1&amp;count=(.*?)&amp;id=#i', 'count=$1&new_reply-', $type);
 
 
-            $type = str_replace("index.php?page=tags&amp;show=1&amp;id=","tag-",$type);
+            $type = str_replace("index.php?page=tags&amp;show=1&amp;tag=","tag-",$type);
 
             $type = str_replace('index.php?page=latest_reply&amp;today=1', 'whats_new', $type);
             $type = str_replace('index.php?page=latest_reply&today=1', 'whats_new', $type);

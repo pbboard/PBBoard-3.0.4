@@ -78,9 +78,9 @@ RewriteRule ^new_reply-([0-9]+)&qu_Reply=([0-9]+)&user=(.*) index.php?page=new_r
 RewriteRule ^new_reply-([0-9]+)&qu_Subject=([0-9]+)&user=(.*) index.php?page=new_reply&index=1&id=$1&qu_Subject=$2&user=$3 [L]
 RewriteRule ^new_reply-([0-9]+) index.php?page=new_reply&index=1&id=$1 [L]
 
-RewriteRule ^tag-([0-9]+)&count=([0-9]+) index.php?page=tags&show=1&id=$1&count=$2 [L]
+RewriteRule ^tag-(.*)&count=([0-9]+) index.php?page=tags&show=1&tag=$1&count=$2 [L]
 
-RewriteRule ^tag-([0-9]+) index.php?page=tags&show=1&id=$1 [L]
+RewriteRule ^tag-(.*) index.php?page=tags&show=1&tag=$1 [L]
 
 RewriteRule ^whats_new-([0-9]+) index.php?page=latest_reply&today=1&count=$1 [L]
 RewriteRule ^whats_new index.php?page=latest_reply&today=1 [L]

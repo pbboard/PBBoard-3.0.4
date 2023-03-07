@@ -11071,7 +11071,7 @@ title="{$lang['addsubscription']}" class="brd0" alt="" />
 {$lang['no_tags']}
 {else}
 {Des::while}{tags}
-<a href="index.php?page=tags&amp;show=1&amp;id={$tags['id']}">{$tags['tag']}</a> ،
+<a href="index.php?page=tags&amp;show=1&amp;tag={$tags['tag']}">{$tags['tag']}</a> ،
 {/Des::while}
 {/if}
 </td>

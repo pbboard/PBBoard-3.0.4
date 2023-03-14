@@ -417,6 +417,7 @@ class PBBTemplate
 			$string = str_replace('alt=""','alt="icon"',$string);
 			$string = str_replace("alt=''","alt='icon'",$string);
 			$string = str_replace("<!--copyright-->",$PowerBB->functions->copyright(),$string);
+             $string = str_replace('emoticons/','look/sceditor/emoticons/',$string);
 
 			$string = str_replace("Jsvk","",$string);
 			$string = str_replace('action="index.php?page=login','name="login" action="index.php?page=login',$string);

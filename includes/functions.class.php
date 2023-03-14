@@ -256,6 +256,56 @@ class PowerBBFunctions
 
 		                                                            }
 
+
+																	   // subs forum ++++
+												                        @include("cache/forums_cache/forums_cache_".$subforum['id'].".php");
+			 						                                   if (!empty($forums_cache))
+											                           {
+																			$subs5forum = json_decode(base64_decode($forums_cache), true);
+											                               foreach($subs5forum  as $sub5forum)
+																			{
+																			    if ($subforum['id'] == $sub5forum['parent'])
+																			    {
+																			        if (!empty($sub5forum['last_date']))
+																			         {
+																			            $forum['subject_num'] += $sub5forum['subject_num'];
+													                                    $forum['reply_num'] += $sub5forum['reply_num'];
+			            														        $forum['num_subjects_awaiting_approval'] += $sub5forum['subjects_review_num'];
+																	                    $forum['num_replys_awaiting_approval'] += $sub5forum['replys_review_num'];
+
+																				           if ($sub5forum['last_time'] > $sub['last_time'] and $sub5forum['last_time'] > $subforum['last_time'] and $sub5forum['last_time'] > $forum['last_time'])
+																				           {
+											                                             	$forum_last_time1 = $sub5forum['last_date'];
+																							$forum['last_subject'] = $PowerBB->Powerparse->censor_words($sub5forum['last_subject']);
+																							$forum['last_subject_title'] =  $forum['last_subject'];
+																							$forum['last_subject'] =  $PowerBB->Powerparse->_wordwrap($sub5forum['last_subject'],'35');
+																							$forum['last_post_date'] = $PowerBB->sys_functions->_date($forum_last_time1);
+														                                    $forum['l_date'] = $forum_last_time1;
+																							$forum['last_date'] = $PowerBB->sys_functions->time_ago($forum_last_time1);
+																							$forum['last_time_ago'] = $PowerBB->sys_functions->time_ago($forum_last_time1);
+																							$forum['last_date_ago'] = $PowerBB->sys_functions->_time($forum_last_time1);
+																							$forum['last_subjectid'] = $sub5forum['last_subjectid'];
+																							$forum['last_time'] = $sub5forum['last_time'];
+																							$forum['last_reply'] = $sub5forum['last_reply'];
+																							$forum['icon'] = $sub5forum['icon'];
+																							$forum['review_subject'] = $sub5forum['review_subject'];
+																							$forum['last_berpage_nm'] = $sub5forum['last_berpage_nm'];
+																							$forum['last_writer']= $sub5forum['last_writer'];
+					                                       							        $forum['username_style_cache'] = $sub5forum['username_style_cache'];
+					                                       							        $forum['writer_photo']= $sub5forum['writer_photo'];
+					                                       							        $forum['avater_path']= $sub5forum['avater_path'];
+																		                    $forum['last_subject'] =  $sub5forum['prefix_subject']." ".$PowerBB->functions->pbb_stripslashes($sub5forum['last_subject']);
+																		                    $forum['sec_section']= $sub5forum['sec_section'];
+																		                    $forum['last_writer_id']= $sub5forum['last_writer_id'];
+						                                                                   }
+
+									                                                 }
+
+					                                                            }
+
+																			}
+									                                   }
+
 																}
 						                                   }
 
@@ -3847,6 +3897,102 @@ function dec_to_utf8($src)
 		$password_fields = $this->create_password($password, $salt);
 		return ($password_fields);
 	}
+
+
+	/**
+	 * Sets a value
+	 *
+	 * @param   string   $name      Name of the value to set.
+	 * @param   mixed    $value     Value to assign to the input.
+	 * @param   array    $options   An associative array which may have any of the keys expires, path, domain,
+	 *                              secure, httponly and samesite. The values have the same meaning as described
+	 *                              for the parameters with the same name. The value of the samesite element
+	 *                              should be either Lax or Strict. If any of the allowed options are not given,
+	 *                              their default values are the same as the default values of the explicit
+	 *                              parameters. If the samesite element is omitted, no SameSite cookie attribute
+	 *                              is set.
+	 *
+	 * @return  void
+	 *
+	 * @link    https://www.ietf.org/rfc/rfc2109.txt
+	 * @link    https://php.net/manual/en/function.setcookie.php
+	 *
+	 * @note    As of 1.4.0, the (name, value, expire, path, domain, secure, httpOnly, samesite) signature is deprecated and will not be supported
+	 *          when support for PHP 7.2 and earlier is dropped
+	 */
+   function pbb_set_cookie($name, $value, $options = [])
+	{
+	   global $PowerBB;
+
+		if ($PowerBB->functions->GetServerProtocol() == 'https://')
+		{
+		 $secure = true;
+		}
+		else
+		{
+		 $secure = false;
+		}
+	    // BC layer to convert old method parameters.
+		$options = [
+			'expires'  => $options['expires'] ?? 0,
+			'path'     => $options['path'] ?? '/',
+			'domain'   => $options['domain'] ?? $PowerBB->_SERVER["HTTP_HOST"],
+			'secure'   => $options['secure'] ?? $secure,
+			'httponly' => $options['httponly'] ?? true,
+			'samesite' => $options['samesite'] ?? 'lax',
+		];
+		// Set the cookie
+		if (version_compare(PHP_VERSION, '7.3.0') >= 0)
+		{
+			setcookie($name, $value, $options);
+		}
+		else
+		{
+			// Using the setcookie function before php 7.3, make sure we have default values.
+			if (array_key_exists('expires', $options) === false)
+			{
+				$options['expires'] = 0;
+			}
+
+			if (array_key_exists('path', $options) === false)
+			{
+				$options['path'] = '';
+			}
+
+			if (array_key_exists('domain', $options) === false)
+			{
+				$options['domain'] = '';
+			}
+
+			if (array_key_exists('secure', $options) === false)
+			{
+				if ($this->GetServerProtocol() == 'https://')
+				{
+					$options['secure'] = true;
+				}
+				else
+				{				   $options['secure'] = false;
+				}
+			}
+
+			if (array_key_exists('httponly', $options) === false)
+			{
+				$options['httponly'] = false;
+			}
+			if (array_key_exists('samesite', $options) === false)
+			{
+				$options['samesite'] = 'lax';
+			}
+
+			setcookie($name, $value, $options['expires'], $options['path'], $options['domain'], $options['secure'], $options['httponly'], $options['samesite']);
+
+           //$samesite .= "; SameSite=" . $options['samesite'];
+           //header("Set-Cookie: " . urlencode($name) . "=" . urlencode($value) . "; expires=" . gmdate("D, d M Y H:i:s", $options['expires']) . " GMT" . "; path=" . $options['path'] . "; domain=" . $options['domain'] . ($options['secure'] ? "; Secure" : "") . ($options['httponly'] ? "; HttpOnly" : "") . $samesite);
+        }
+
+		$PowerBB->_COOKIE[$name] = $value;
+	}
+
 
  }
 ?>

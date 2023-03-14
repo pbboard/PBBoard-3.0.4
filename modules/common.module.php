@@ -57,7 +57,13 @@ class PowerBBCommon
 
 		$this->_GeneralProc();
 
-		$this->_CheckMember();
+        if($PowerBB->_CONF['user_session_login'])
+        {
+		$this->_CheckSessionMember();
+		}
+		else
+		{		$this->_CheckMember();
+		}
 
 		$this->_SetInformation();
 
@@ -152,11 +158,88 @@ class PowerBBCommon
 		$PowerBB->template->assign('url',$url);
 	}
 
-
 	function _CheckMember()
 	{
 		global $PowerBB;
 
+		////////////
+		if ($PowerBB->functions->IsCookie($PowerBB->_CONF['username_cookie'])
+			and $PowerBB->functions->IsCookie($PowerBB->_CONF['password_cookie']))
+		{
+			////////////
+
+			$username = $PowerBB->_COOKIE[$PowerBB->_CONF['username_cookie']];
+			$username = $PowerBB->functions->CleanVariable($username,'trim');
+			$username = $PowerBB->functions->CleanVariable($username,'html');
+			$username = $PowerBB->functions->CleanVariable($username,'sql');
+			$password = $PowerBB->_COOKIE[$PowerBB->_CONF['password_cookie']];
+           	$page = empty($PowerBB->_GET['page']) ? 'index' : $PowerBB->_GET['page'];
+		       if ($page != 'login')
+				{
+				  if (empty($username))
+		          {
+		            session_start();
+					if (isset($_SESSION['HTTP_USER_AGENT']))
+					{
+						if ($_SESSION['HTTP_USER_AGENT'] != strtolower(md5($PowerBB->_SERVER['HTTP_USER_AGENT'])))
+						{
+						 $Logout = $PowerBB->member->Logout();
+						 header("Location: index.php");
+			         	 exit;
+						}
+					}
+					else
+					{
+                         $Logout = $PowerBB->member->Logout();
+						 header("Location: index.php");
+			         	 exit;
+				    }
+		          }
+				}
+
+			// Check if the visitor is member or not ?
+ 			$MemberArr 			= 	array();
+			$MemberArr['get']	= 	'*';
+
+			$MemberArr['where']	=	array();
+
+			$MemberArr['where'][0]				=	array();
+			$MemberArr['where'][0]['name']		=	'username';
+			$MemberArr['where'][0]['oper']		=	'=';
+			$MemberArr['where'][0]['value']		=	$username;
+
+			$MemberArr['where'][1]				=	array();
+			$MemberArr['where'][1]['con']		=	'AND';
+			$MemberArr['where'][1]['name']		=	'password';
+			$MemberArr['where'][1]['oper']		=	'=';
+			$MemberArr['where'][1]['value']		=	$password;
+
+			// If the information isn't valid CheckMember's value will be false
+			// otherwise the value will be an array
+			$this->CheckMember = $PowerBB->core->GetInfo($MemberArr,'member');
+
+			// This is a member :)
+			if ($this->CheckMember != false)
+			{
+				$this->__MemberProcesses();
+			}
+			// This is visitor
+			else
+			{
+				$this->__VisitorProcesses();
+			}
+		}
+		else
+		{
+			$this->__VisitorProcesses();
+		}
+
+		////////////
+	}
+
+	function _CheckSessionMember()
+	{
+		global $PowerBB;
 		////////////
 		if ($PowerBB->functions->IsSession($PowerBB->_CONF['username_cookie'])
 			and $PowerBB->functions->IsSession($PowerBB->_CONF['password_cookie']))

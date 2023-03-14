@@ -190,6 +190,7 @@ class PowerBBMember
 			trigger_error('ERROR::NEED_PARAMETER -- FROM LoginMember() -- EMPTY username or password',E_USER_ERROR);
 		}
 
+        $sessionLogin = false;
 
      	$MemberArr['get'] = '*';
 
@@ -214,11 +215,28 @@ class PowerBBMember
 
 		if ($CheckMember)
 		{
-    		@session_start();
+            if($sessionLogin)
+            {
     		$_SESSION[$this->Engine->_CONF['username_cookie']] = $param['username'];
     		$_SESSION[$this->Engine->_CONF['password_cookie']] = $param['password'];
     		$_SESSION['expire'] = $param['expire'];
+    		}
+    		else
+    		{
+
+			$options 			 = 	array();
+			$options['expires']	 =	$param['expire'];
+			//$options['path'] 	 = 	'/';
+			//$options['domain']   = 	$this->Engine->_SERVER["HTTP_HOST"];
+			//$options['secure'] 	 = 	true;
+			//$options['httponly'] = 	true;
+			//$options['samesite'] = 	'lax';
+			$this->Engine->functions->pbb_set_cookie($this->Engine->_CONF['username_cookie'],$param['username'],$options);
+			$this->Engine->functions->pbb_set_cookie($this->Engine->_CONF['password_cookie'],$param['password'],$options);
+    		}
+    		 @session_start();
             $_SESSION['HTTP_USER_AGENT'] = strtolower(md5($this->Engine->_SERVER['HTTP_USER_AGENT']));
+
        		return true;
 		}
 		else
@@ -291,12 +309,19 @@ class PowerBBMember
 	 *
 	 */
 	function Logout()
-	{        @session_start();
+	{
+        session_start();
     	$_SESSION['expire'] = '';
 		$_SESSION[$this->Engine->_CONF['username_cookie']] = '';
      	$_SESSION[$this->Engine->_CONF['password_cookie']] = '';
+
+		 $this->Engine->functions->pbb_set_cookie($this->Engine->_CONF['username_cookie'],'');
+		 $this->Engine->functions->pbb_set_cookie($this->Engine->_CONF['password_cookie'],'');
+
+     	session_destroy();
      	return true;
 	}
+
 
 	/**
 	 * Get username with group style
@@ -342,7 +367,9 @@ class PowerBBMember
 	{
 
 		// TODO :: store the name of cookie in a variable like username,password cookies.
-		$cookie = setcookie('PowerBB_lastvisit',$param['last_visit'],time()+85200, NULL ,NULL, NULL, TRUE);
+			$options 			 = 	array();
+			$options['expires']	 =	time()+85200;
+            $this->Engine->functions->pbb_set_cookie('PowerBB_lastvisit',$param['last_visit'],$options);
 
 		$UpdateArr 					= 	array();
 

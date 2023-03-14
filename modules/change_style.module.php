@@ -36,17 +36,18 @@ class PowerBBChangeStyleMOD
 				$change = $PowerBB->core->Update($StyleArr,'member');
 
                $Style_id = $PowerBB->_GET['id'];
+				$options 			 = 	array();
+				$options['expires']	 =	time()+2592000;
+	            $PowerBB->functions->pbb_set_cookie('PowerBB_style',$Style_id,$options);
 
-                ob_start();
-                setcookie("PowerBB_style", $Style_id, time()+2592000);
-                ob_end_flush();
 			}
 			else
 			{
 				$Style_id = $PowerBB->_GET['id'];
-                ob_start();
-                setcookie("PowerBB_style", $Style_id, time()+2592000);
-                ob_end_flush();
+				$options 			 = 	array();
+				$options['expires']	 =	time()+2592000;
+	            $PowerBB->functions->pbb_set_cookie('PowerBB_style',$Style_id,$options);
+
 		                if (strstr($PowerBB->_SERVER['HTTP_REFERER'],$PowerBB->functions->GetForumAdress()))
 						{
 							$PowerBB->functions->redirect2($PowerBB->_SERVER['HTTP_REFERER']);

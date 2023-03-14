@@ -189,8 +189,7 @@ class PowerBBMember
 		{
 			trigger_error('ERROR::NEED_PARAMETER -- FROM LoginMember() -- EMPTY username or password',E_USER_ERROR);
 		}
-
-        $sessionLogin = false;
+       $Logout = $this->Logout();
 
      	$MemberArr['get'] = '*';
 
@@ -215,7 +214,7 @@ class PowerBBMember
 
 		if ($CheckMember)
 		{
-            if($sessionLogin)
+            if($this->Engine->_CONF['user_session_login'])
             {
     		$_SESSION[$this->Engine->_CONF['username_cookie']] = $param['username'];
     		$_SESSION[$this->Engine->_CONF['password_cookie']] = $param['password'];

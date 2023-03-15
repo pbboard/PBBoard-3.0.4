@@ -1166,9 +1166,11 @@ class PowerBBManagementMOD
 
        // $GetSubjectInfo['text'] = $PowerBB->Powerparse->censor_words($GetSubjectInfo['text']);
 
+         if (!preg_match('#\[code\](.*)\[/code\]#siU', $GetSubjectInfo['text']) )
+         {
 		 $GetSubjectInfo['text'] = $PowerBB->Powerparse->html2bb($GetSubjectInfo['text']);
          $PowerBB->_CONF['template']['ReplyInfo']['text'] = $PowerBB->Powerparse->remove_strings($PowerBB->_CONF['template']['ReplyInfo']['text']);
-
+         }
 		//$GetSubjectInfo['text'] = str_replace('<br />', "", $GetSubjectInfo['text']);
 		$GetSubjectInfo['title'] 	= 	$PowerBB->functions->CleanVariable($GetSubjectInfo['title'],'html');
 		$GetSubjectInfo['title'] 	= 	$PowerBB->functions->CleanVariable($GetSubjectInfo['title'],'sql');
@@ -2007,9 +2009,11 @@ class PowerBBManagementMOD
 
 		$PowerBB->_CONF['template']['ReplyInfo'] = $PowerBB->core->GetInfo($ReplyArr,'reply');
 
-
-        $PowerBB->_CONF['template']['ReplyInfo']['text'] = $PowerBB->Powerparse->html2bb($PowerBB->_CONF['template']['ReplyInfo']['text']);
-        $PowerBB->_CONF['template']['ReplyInfo']['text'] = $PowerBB->Powerparse->remove_strings($PowerBB->_CONF['template']['ReplyInfo']['text']);
+         if (!preg_match('#\[code\](.*)\[/code\]#siU', $PowerBB->_CONF['template']['ReplyInfo']['text']) )
+         {
+         $PowerBB->_CONF['template']['ReplyInfo']['text'] = $PowerBB->Powerparse->html2bb($PowerBB->_CONF['template']['ReplyInfo']['text']);
+         $PowerBB->_CONF['template']['ReplyInfo']['text'] = $PowerBB->Powerparse->remove_strings($PowerBB->_CONF['template']['ReplyInfo']['text']);
+         }
 
 
 		$SubjectArr = array();

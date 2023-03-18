@@ -1,4 +1,5 @@
 <?php
+error_reporting(E_ERROR | E_PARSE);
 /**
  * PowerBBdisplay
  * Started : 17-10-2006 , 11:46 PM
@@ -91,7 +92,7 @@ class PowerBBdisplay
 			$class = "t_style_b";
 		}
 
-		echo "<table cellpadding=\"$cellpadding\" cellspacing=\"$cellspacing\" width=\"$width\" class=\"$class\" border=\"$border\" align=\"$align\"" . (count($param) > 0 ? ' ' . $this->elements($elements) : '') . ">\n";
+		echo "<table cellpadding=\"$cellpadding\" cellspacing=\"$cellspacing\" width=\"$width\" class=\"$class\" border=\"$border\" align=\"$align\"" . (($param) > 0 ? ' ' . $this->elements($elements) : '') . ">\n";
 	}
 
 	function close_table($text = '', $class = '')

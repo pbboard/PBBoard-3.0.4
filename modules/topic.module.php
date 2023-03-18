@@ -652,7 +652,6 @@ class PowerBBTopicMOD
 		// Convert smiles in subject to nice images :)
 
 		$PowerBB->Powerparse->replace_smiles($PowerBB->_CONF['template']['SubjectInfo']['text']);
-        $PowerBB->Powerparse->replace_wordwrap($PowerBB->_CONF['template']['SubjectInfo']['text']);
 
 		// feltr Subject Text
          $this->Info['text'] = $PowerBB->Powerparse->censor_words($PowerBB->_CONF['template']['SubjectInfo']['text']);
@@ -1144,7 +1143,6 @@ class PowerBBTopicMOD
 
 			// Convert the smiles to image
 			$PowerBB->Powerparse->replace_smiles($this->RInfo[$this->x]['text']);
-			 $PowerBB->Powerparse->replace_wordwrap($this->RInfo[$this->x]['text']);
 
 			// feltr Subject Text
 	         $this->RInfo[$this->x]['text'] = $PowerBB->Powerparse->censor_words($this->RInfo[$this->x]['text']);

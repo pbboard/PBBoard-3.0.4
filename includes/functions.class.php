@@ -2661,8 +2661,13 @@ return preg_replace($pattern, $replacement, $email);
 
             $type = str_replace("index.php?page=new_reply&index=1&id=", "new_reply-", $type);
             $type = str_replace("index.php?page=new_reply&amp;index=1&amp;id=", "new_reply-", $type);
-            $type = preg_replace('#new_reply-(.*?)&qu_Reply=(.*?)&user=(.*?)#i', 'new_reply-$1&qu_Reply=$2&user=$3', $type);
-            $type = preg_replace('#new_reply-(.*?)&qu_Subject=(.*?)&user=(.*?)#i', 'new_reply-$1&qu_Reply=$2&user=$3', $type);
+
+            $type = preg_replace('#new_reply-(.*?)&amp;qu_Reply=(.*?)&amp;(\r\n?|\n?)user=(.*?)"#si', 'new_reply-$1&qu_Reply=$2&user=$4"', $type);
+            $type = preg_replace('#new_reply-(.*?)&amp;qu_Subject=(.*?)&amp;(\r\n?|\n?)user=(.*?)"#si', 'new_reply-$1&qu_Subject=$2&user=$4"', $type);
+
+            $type = preg_replace('#new_reply-(.*?)&qu_Reply=(.*?)&user=(.*?)"#si', 'index.php?page=new_reply&index=1&id=$1&user=$3&qu_Reply=$2"', $type);
+            $type = preg_replace('#new_reply-(.*?)&qu_Subject=(.*?)&user=(.*?)"#si', 'index.php?page=new_reply&index=1&id=$1&user=$3&qu_Subject=$2"', $type);
+
             $type = preg_replace('#index.php?page=new_reply&amp;index=1&amp;count=(.*?)&amp;id=#i', 'count=$1&new_reply-', $type);
 
 

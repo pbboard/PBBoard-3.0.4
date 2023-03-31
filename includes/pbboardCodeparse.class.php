@@ -49,7 +49,7 @@ class PowerBBCodeParse
 
 
        // replace html tags to bbcode
-      // $string = $this->html2bb($string);
+       $string = $this->html2bb($string);
 
 		$regexcode_html['[html]'] = '#\[html\](.*)\[/html\]#siU';
 		$string = preg_replace_callback($regexcode_html, function($matcheshtml) {

@@ -49,7 +49,7 @@ class PowerBBCodeParse
 
 
        // replace html tags to bbcode
-       $string = $this->html2bb($string);
+      // $string = $this->html2bb($string);
 
 		$regexcode_html['[html]'] = '#\[html\](.*)\[/html\]#siU';
 		$string = preg_replace_callback($regexcode_html, function($matcheshtml) {
@@ -94,7 +94,6 @@ class PowerBBCodeParse
  		$brackets = (strpos($string,'[') !== false) and (strpos($string,']') !== false);
         if ($brackets)
  		{
-
 	         $string = str_replace("http://www.youtube.com", "https://www.youtube.com", $string);
 
 			   //replace youtube;
@@ -266,21 +265,19 @@ class PowerBBCodeParse
 			return '<div class="maxy"></div><div class="codediv">Java</div><pre><code class="language-java">'.$matches[1].'</code></pre><div class="maxy"></div>';
 			}, $string);
 
-        $string = nl2br($string);
 
-		// Fix up new lines and block level elements
-		$string = preg_replace("#(</?(?:html|head|body|div|p|form|table|thead|tbody|tfoot|tr|td|th|ul|ol|li|div|p|blockquote|cite|hr)[^>]*>)\s*#i", "$1", $string);
-		$string = preg_replace("#(&nbsp;)+(</?(?:html|head|body|div|p|form|table|thead|tbody|tfoot|tr|td|th|ul|ol|li|div|p|blockquote|cite|hr)[^>]*>)#i", "$2", $string);
-		if($this->clear_needed)
-		{
-			$string .= '<br class="clear" />';
-		}
-
+      $bracknl2br = '[/-</';
+        if(preg_split('#[-]+#', $bracknl2br, -1, PREG_SPLIT_NO_EMPTY))
+        {
+         $string = nl2br($string);
+        }
         $string = $this->Simplereplace($string);
         if ($brackets)
  		{
          $string = $this->Simplereplace($string);
         }
+
+
 			//replace Custom bbcode
 	        $Custom_bbcodes = $PowerBB->functions->GetCachedCustom_bbcode();
 	        if(!empty($Custom_bbcodes))
@@ -348,6 +345,9 @@ class PowerBBCodeParse
             $string = preg_replace('#\[indent\](.+)\[\/indent\]#iUs', '<indent>$1</indent>', $string);
 	        $string = preg_replace('#\[color\=(.+)\](.+)\[\/color\]#iUs', "<span style=\"color: $1;\" class=\"mycode_color\">$2</span>", $string);
             $string = preg_replace('#\[font\=(.+)\](.+)\[\/font\]#iUs', "<font face=\"$1\" style=\"font-family: $1;\" class=\"mycode_font\">$2</font>", $string);
+
+	        $string = str_replace('<div style="text-align: center;" class="mycode_align"></div>', '<br />', $string);
+	        $string = str_replace('</div><br />', '', $string);
 
         return $this->closetags($string);
 

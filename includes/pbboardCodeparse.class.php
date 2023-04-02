@@ -30,7 +30,10 @@ class PowerBBCodeParse
  	function replace($string)
  	{
  		global $PowerBB;
-
+        $oldstring = $string;
+        if(strstr($oldstring,"[/code]<br />"))
+        {        $string = str_replace("[/code]", "<br />\r\n[/code]", $string);
+        }
 		// start replaces code
 		$regexcode_htmlcode['[code]'] = '#<code (.*)>(.*)</code>#siU';
 		$string = preg_replace_callback($regexcode_htmlcode, function($matches_htmlcode) {
@@ -228,43 +231,6 @@ class PowerBBCodeParse
 
         $string = $this->text_with_hyperlink($string);
 
-			// end replaces codes
-			$regexcode_code['[code]'] = '#\[code\](.*)\[/code\]#siU';
-			$string = preg_replace_callback($regexcode_code, function($matches) {
-			$matches[1] = base64_decode($matches[1]);
-			//$matches[1] = str_replace('<br />', '&nbsp;', $matches[1]);
-			$matches[1] = $this->htmlspecialchars_uni($matches[1]);
-			$matches[1] = str_replace('&amp;', '&amp;amp;', $matches[1]);
-			$matches[1] = str_replace('&amp;nbsp;', '&nbsp;', $matches[1]);
-			return '<div class="maxy"></div><div class="codediv">CODE</div><pre><code class="language-php">'.$matches[1].'</code></pre><div class="maxy"></div>';
-			}, $string);
-
-			$regexcode['[php]'] = '#\[php\](.*)\[/php\]#siU';
-			$string = preg_replace_callback($regexcode, function($matches) {
-			$matches[1] = base64_decode($matches[1]);
-			$matches[1] = $this->htmlspecialchars_uni($matches[1]);
-            $matches[1] = str_replace('&amp;', '&amp;amp;', $matches[1]);
-			return '<div class="maxy"></div><div class="codediv">PHP</div><pre><code class="language-php">'.$matches[1].'</code></pre><div class="maxy"></div>';
-			}, $string);
-
-			$regexcode_html['[html]'] = '#\[html\](.*)\[/html\]#siU';
-			$string = preg_replace_callback($regexcode_html, function($matches) {
-			$matches[1] = base64_decode($matches[1]);
-			$matches[1] = $this->htmlspecialchars_uni($matches[1]);
-			$matches[1] = $this->Simplereplace($matches[1]);
-            $matches[1] = str_replace('&amp;', '&amp;amp;', $matches[1]);
-			return '<div class="maxy"></div><div class="codediv">Html</div><pre><code class="language-html">'.$matches[1].'</code></pre><div class="maxy"></div>';
-			}, $string);
-
-			$regexcode_js['[js]'] = '#\[js\](.*)\[/js\]#siU';
-			$string = preg_replace_callback($regexcode_js, function($matches) {
-			$matches[1] = base64_decode($matches[1]);
-			$matches[1] = $this->fix_javascript($matches[1]);
-			$matches[1] = $this->htmlspecialchars_uni($matches[1]);
-			$matches[1] = $this->Simplereplace($matches[1]);
-			return '<div class="maxy"></div><div class="codediv">Java</div><pre><code class="language-java">'.$matches[1].'</code></pre><div class="maxy"></div>';
-			}, $string);
-
 
       $bracknl2br = '[/-</';
         if(preg_split('#[-]+#', $bracknl2br, -1, PREG_SPLIT_NO_EMPTY))
@@ -276,6 +242,10 @@ class PowerBBCodeParse
  		{
          $string = $this->Simplereplace($string);
         }
+
+     // Fix up new lines and block level elements
+     $string = preg_replace("#(</?(?:html|head|body|div|p|form|table|thead|tbody|tfoot|tr|td|th|ul|ol|li|div|p|blockquote|cite|hr)[^>]*>)\s*<br />#i", "$1", $string);
+	 $string = preg_replace("#(&nbsp;)+(</?(?:html|head|body|div|p|form|table|thead|tbody|tfoot|tr|td|th|ul|ol|li|div|p|blockquote|cite|hr)[^>]*>)#i", "$2", $string);
 
 
 			//replace Custom bbcode
@@ -315,6 +285,66 @@ class PowerBBCodeParse
             }
 
 
+			// end replaces codes
+			$regexcode_code['[code]'] = '#\[code\](.*)\[/code\]#siU';
+			$string = preg_replace_callback($regexcode_code, function($matches) {
+
+				if(strstr($matches[1],'span style='))
+				{
+	             // thes is 3.0.3 codes  [code][/code]
+	             $matches[1] = base64_decode($matches[1]);
+				$matches[1] = $this->htmlspecialchars_off($matches[1]);
+				}
+				elseif(strstr(base64_decode($matches[1]),"<br />\r\n"))
+				{
+				// thes is 3.0.3 codes [code][/code]
+			    $matches[1] = base64_decode($matches[1]);				$matches[1] = str_replace('<br />', '', $matches[1]);
+				$matches[1] = str_replace('&lt;br /&gt;', '', $matches[1]);
+				}
+				else
+				{
+				// thes is 3.0.4 codes [code][/code]
+					if(strstr(base64_decode($matches[1]),'&lt;/')
+					or strstr(base64_decode($matches[1]),';&'))
+					{
+				    $matches[1] = base64_decode($matches[1]);
+					}
+					else
+					{
+				     $matches[1] = htmlspecialchars(base64_decode($matches[1]));
+				     $matches[1] = $this->htmlspecialchars_uni($matches[1]);
+					}
+				}
+			return '<div class="maxy"></div><div class="codediv">CODE</div><pre><code class="language-php">'.$matches[1].'</code></pre><div class="maxy"></div>';
+			}, $string);
+
+			$regexcode['[php]'] = '#\[php\](.*)\[/php\]#siU';
+			$string = preg_replace_callback($regexcode, function($matches) {
+			$matches[1] = htmlspecialchars(base64_decode($matches[1]));
+			$matches[1] = $this->htmlspecialchars_uni($matches[1]);
+           // $matches[1] = str_replace('&amp;', '&amp;amp;', $matches[1]);
+			return '<div class="maxy"></div><div class="codediv">PHP</div><pre><code class="language-php">'.$matches[1].'</code></pre><div class="maxy"></div>';
+			}, $string);
+
+			$regexcode_html['[html]'] = '#\[html\](.*)\[/html\]#siU';
+			$string = preg_replace_callback($regexcode_html, function($matches) {
+			$matches[1] = base64_decode($matches[1]);
+			$matches[1] = $this->htmlspecialchars_uni($matches[1]);
+			$matches[1] = $this->Simplereplace($matches[1]);
+            $matches[1] = str_replace('&amp;', '&amp;amp;', $matches[1]);
+			return '<div class="maxy"></div><div class="codediv">Html</div><pre><code class="language-html">'.$matches[1].'</code></pre><div class="maxy"></div>';
+			}, $string);
+
+			$regexcode_js['[js]'] = '#\[js\](.*)\[/js\]#siU';
+			$string = preg_replace_callback($regexcode_js, function($matches) {
+			$matches[1] = base64_decode($matches[1]);
+			$matches[1] = $this->fix_javascript($matches[1]);
+			$matches[1] = $this->htmlspecialchars_uni($matches[1]);
+			$matches[1] = $this->Simplereplace($matches[1]);
+			return '<div class="maxy"></div><div class="codediv">Java</div><pre><code class="language-java">'.$matches[1].'</code></pre><div class="maxy"></div>';
+			}, $string);
+
+
 		return $string;
  	}
 
@@ -346,8 +376,9 @@ class PowerBBCodeParse
 	        $string = preg_replace('#\[color\=(.+)\](.+)\[\/color\]#iUs', "<span style=\"color: $1;\" class=\"mycode_color\">$2</span>", $string);
             $string = preg_replace('#\[font\=(.+)\](.+)\[\/font\]#iUs', "<font face=\"$1\" style=\"font-family: $1;\" class=\"mycode_font\">$2</font>", $string);
 
-	        $string = str_replace('<div style="text-align: center;" class="mycode_align"></div>', '<br />', $string);
-	        $string = str_replace('</div><br />', '', $string);
+	        $string = str_replace('<div style="text-align: center;" class="mycode_align"></div>', '<br class="clear" />', $string);
+	        $string = str_replace('</div><br />', '</div>', $string);
+	        $string = str_replace('<br class="clear" /><br />', '<br class="clear" />', $string);
 
         return $this->closetags($string);
 
@@ -1447,14 +1478,14 @@ class PowerBBCodeParse
 		$string = str_replace('<table>', '[table]', $string);
 		$string = str_replace('</table>', '[/table]', $string);
 
-		$string = str_replace('<tbody>', '[tbody]', $string);
-		$string = str_replace('</tbody>', '[/tbody]', $string);
+		$string = str_replace('<tbody>', '', $string);
+		$string = str_replace('</tbody>', '', $string);
 
         $string = preg_replace('#<td(| .*)>#siU', '[td]',  $string);
         $string = preg_replace('#<th(| .*)>#siU', '[th]',  $string);
 		$string = preg_replace('#<tr(| .*)>#siU', '[tr]',  $string);
 		$string = preg_replace('#<table(| .*)>#siU', '[table]',  $string);
-		$string = preg_replace('#<tbody(| .*)>#siU', '[tbody]',  $string);
+		$string = preg_replace('#<tbody(| .*)>#siU', '',  $string);
 
 
         $string = preg_replace('#<h1(| .*)>#siU', '[h1]',  $string);
@@ -1495,7 +1526,7 @@ class PowerBBCodeParse
          //$string = preg_replace('#<div style="(.*)">(.*)</div>#siU', '[divstyle=$1]$2[/divstyle]', $string);
          $string = preg_replace('#<div (.*)">(.*)</div>#siU', '$2', $string);
 
-         $string = preg_replace('#<span style="(.*)">(.*)</span>#siU', '[style=$1]$2[/style]', $string);
+        //$string = preg_replace('#<span style="(.*)">(.*)</span>#siU', '[style=$1]$2[/style]', $string);
          $string = preg_replace('#<span (.*)">(.*)</span>#siU', '$2', $string);
 
     	 $string = preg_replace('#<span(.*?)>#i', " ", $string);
@@ -2243,7 +2274,7 @@ function htmlspecialchars_off($message)
 {
 	$message = str_replace("&amp;", "&", $message);
 	$message = str_replace("&lt;", "<", $message);
-	$message = str_replace("&gt", ">;", $message);
+	$message = str_replace("&gt;", ">", $message);
 	$message = str_replace("&quot;", "\"", $message);
 	$message = str_replace("<br />", "\n", $message);
 

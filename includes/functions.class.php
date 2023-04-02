@@ -2302,12 +2302,27 @@ return preg_replace($pattern, $replacement, $email);
 		$UpdateArr['field']['subject_num'] 	= 	$subject_nm;
 		$UpdateArr['where']					= 	array('id',$SectionCache);
 		$UpdateSubjectNumber = $PowerBB->core->Update($UpdateArr,'section');
+
 		$GetLastqueryReplyForm = $PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['reply'] . " WHERE section = '$SectionCache' AND delete_topic<>1 AND review_reply<>1 ORDER by write_time DESC LIMIT 0 , 30");
 		$GetLastReplyForm = $PowerBB->DB->sql_fetch_array($GetLastqueryReplyForm);
+
 		$GetLastSubjectInfoQuery = $PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['subject'] . " WHERE section = '$SectionCache' AND delete_topic<>1 AND review_subject<>1 ORDER by native_write_time DESC LIMIT 0 , 30 ");
 		$GetLastSubjectInf = $PowerBB->DB->sql_fetch_array($GetLastSubjectInfoQuery);
-        if (isset($PowerBB->_GET['page']) != 'new_topic')
+
+        if ($PowerBB->_GET['page'] == 'new_topic')
         {
+			// Get info subject
+			$last_subjectid = $GetLastSubjectInf['id'];
+			$icon = $GetLastSubjectInf['icon'];
+			$last_reply = $GetLastSubjectInf['last_reply'];
+			$last_berpage_nm = $GetLastSubjectInf['last_berpage_nm'];
+			$last_writer = $GetLastSubjectInf['writer'];
+			$title = $GetLastSubjectInf['title'];
+			$last_date = $GetLastSubjectInf['native_write_time'];
+		}
+		else
+        {
+
 		 if($GetLastReplyForm['write_time'] > $GetLastSubjectInf['native_write_time'])
 		 {
 			$GetSubjectInfoQuery = $PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['subject'] . " WHERE id = '".$GetLastReplyForm['subject_id']."' AND delete_topic<>1 AND review_subject<>1 ");
@@ -2332,17 +2347,6 @@ return preg_replace($pattern, $replacement, $email);
 			$title = $GetLastSubjectInf['title'];
 			$last_date = $GetLastSubjectInf['write_time'];
 		 }
-		}
-        if (isset($PowerBB->_GET['page']) == 'new_topic')
-        {
-			// Get info subject
-			$last_subjectid = $GetLastSubjectInf['id'];
-			$icon = $GetLastSubjectInf['icon'];
-			$last_reply = $GetLastSubjectInf['last_reply'];
-			$last_berpage_nm = $GetLastSubjectInf['last_berpage_nm'];
-			$last_writer = $GetLastSubjectInf['writer'];
-			$title = $GetLastSubjectInf['title'];
-			$last_date = $GetLastSubjectInf['native_write_time'];
 		}
  		// Get Section Info
 		$SecArr 			= 	array();

@@ -148,6 +148,10 @@ class PowerBBCodeParse
 				$string = str_replace('[/ol]', '[/list]', $string);
 				$string = str_replace('[li]', '[*]', $string);
 				$string = str_replace('[/li]', '', $string);
+                $string = str_replace("[left]\r\n", "\r\n<br />[left]\r\n", $string);
+                $string = str_replace("[center]\r\n", "\r\n<br />[center]\r\n", $string);
+                $string = str_replace("[right]\r\n", "\r\n<br />[right]\r\n", $string);
+                $string = str_replace("[justify]\r\n", "\r\n<br />[justify]\r\n", $string);
 
 				$this->list_elements = array();
 				$this->list_count = 0;
@@ -343,7 +347,6 @@ class PowerBBCodeParse
 			$matches[1] = $this->Simplereplace($matches[1]);
 			return '<div class="maxy"></div><div class="codediv">Java</div><pre><code class="language-java">'.$matches[1].'</code></pre><div class="maxy"></div>';
 			}, $string);
-
 
 		return $string;
  	}

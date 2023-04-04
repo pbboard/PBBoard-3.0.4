@@ -1302,10 +1302,13 @@ class PowerBBFunctions
 		if($page_num > 1)
 		{
 		 $page_num = str_replace("&count=","", $page_num);
-		 $page_num_count = " | Page ".$page_num;
+		 $page_num_count = " | ".$PowerBB->_CONF['template']['_CONF']['lang']['Pagenum']." ".$page_num;
+		 $page_num_count = str_replace(" %no% من %pnu%", '', $page_num_count);
+		 $page_num_count = str_replace(" %no% of %pnu%", '', $page_num_count);
 		}
+
  		// Show header template
-         $PowerBB->template->assign('title',$PowerBB->functions->CleanText($title).isset($page_num_count));
+         $PowerBB->template->assign('title',$PowerBB->functions->CleanText($title).$page_num_count);
          // is Bot Not Show java files and sum css files to speed pages
          $isBot = $PowerBB->functions->is_bot();
          $bot_name = $PowerBB->functions->bot_name();

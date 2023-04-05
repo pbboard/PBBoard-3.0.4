@@ -972,8 +972,8 @@ class PowerBBFunctions
 			$PowerBB->template->assign('keywords',$this->parse_keywords($keywords));
 
             $description    = strip_tags($ReplyInfo['text']);
-            $description    = str_replace(","," ", $description);
-            $description    = str_replace("..","", $description);
+            $description = str_replace(" .. ","", $description);
+
 			if(empty($description))
 			{
 			$PowerBB->template->assign('description',$ReplyInfo['title']);
@@ -1047,8 +1047,7 @@ class PowerBBFunctions
 
 					$PowerBB->template->assign('keywords',$this->parse_keywords($keywords));
 
-					$description    = str_replace(","," ", $description);
-					$description    = str_replace("..","", $description);
+                    $description = str_replace(" .. ","", $description);
 					if(empty($description))
 					{					$PowerBB->template->assign('description',$SubjectInfo['title']);
 					}
@@ -1692,36 +1691,21 @@ return preg_replace($pattern, $replacement, $email);
 
 		$string = str_replace("[","<", $string);
 		$string = str_replace("]",">", $string);
-		$string = str_replace(">","> ", $string);
-		$string = str_replace("<"," <", $string);
+		$string = str_replace(">",">", $string);
+		$string = str_replace("<","<", $string);
 		$string = strip_tags($string);
-		$string = str_replace("\r","{s}", $string);
-		$string = str_replace("\n","{s}", $string);
-		$string = str_replace("\t","{s}", $string);
+		$string = str_replace("\r\n","", $string);
+        $string = str_replace(","," ", $string);
+        $string = str_replace(" .. ","", $string);
+        $string = str_replace("  "," ", $string);
 
 		$originally_text = $string;
-		// Recreate string from array
+   		// Recreate string from array
 		// See what we got
 	    $pattern = '|[[\/\!]*?[^\[\]]*?]|si';
 	    $replace = '';
         $originally_text = preg_replace($pattern, $replace, $originally_text);
 
-		$originally_text = str_replace(" ",",", $originally_text);
-		$originally_text = str_replace("{s}",",", $originally_text);
-		$originally_text = str_replace(",,",",", $originally_text);
-		$originally_text = str_replace(",,",",", $originally_text);
-		$originally_text = str_replace($originally_text,"'".$originally_text."'", $originally_text);
-		$originally_text = str_replace("',","", $originally_text);
-		$originally_text = str_replace(",'","", $originally_text);
-		$originally_text = str_replace("'","", $originally_text);
-		$originally_text = str_replace(","," ", $originally_text);
-		$originally_text = str_replace("&nbsp;"," ", $originally_text);
-		$originally_text = str_replace("  "," ", $originally_text);
-		$originally_text = str_replace("&quot;","", $originally_text);
-		$originally_text = str_replace("&amp;quot;","", $originally_text);
-		$originally_text = str_replace("    "," ", $originally_text);
-		$originally_text = str_replace("   "," ", $originally_text);
-		$originally_text    = str_replace(".."," ", $originally_text);
 
         $originally_text = strip_tags($originally_text);
         $originally_text = htmlspecialchars($originally_text);

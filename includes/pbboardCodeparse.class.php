@@ -120,6 +120,8 @@ class PowerBBCodeParse
 					$regeximg= '#\[IMG\](.*)\[/IMG\]#siU';
 					$regeximg= '#\[img\](.*)\[/img\]#siU';
 					$string = preg_replace_callback($regeximg, function($img_array) {
+					$img_array[1] = str_replace('[color=#ff0000]', "", $img_array[1]);
+					$img_array[1] = str_replace('[/color]', "", $img_array[1]);
 					return $this->resize_image($img_array[1]);
 					}, $string);
 
@@ -1204,6 +1206,8 @@ class PowerBBCodeParse
     {
         global $PowerBB;
         $img = str_replace('\\"', '"', $img);
+		$img = str_replace('[color=#ff0000]', "", $img);
+		$img = str_replace('[/color]', "", $img);
         $img = trim($img);
         $height = intval($height);
         $width = intval($width);

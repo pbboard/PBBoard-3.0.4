@@ -855,8 +855,8 @@ class PowerBBFunctions
  	function ShowHeader($title = null)
  	{
  		global $PowerBB;
- 		$num = '200';
-		$titlenum = '130';
+ 		$num = '150';
+		$titlenum = '90';
 		// visito today number  today_cookie
 		if ($PowerBB->_CONF['date'] == $PowerBB->_CONF['info_row']['today_date_cache'])
 		{
@@ -974,8 +974,14 @@ class PowerBBFunctions
             $description    = strip_tags($ReplyInfo['text']);
             $description    = str_replace(","," ", $description);
             $description    = str_replace("..","", $description);
+			if(empty($description))
+			{
+			$PowerBB->template->assign('description',$ReplyInfo['title']);
+			}
+			else
+			{
 			$PowerBB->template->assign('description',$description);
-
+			}
 			$title    = $PowerBB->Powerparse->_wordwrap($ReplyInfo['title']." ".$description,$titlenum);
 
 			$page_address['post'] = $title;
@@ -1034,7 +1040,7 @@ class PowerBBFunctions
 					    $SubjectInfo['text']    = $PowerBB->Powerparse->_wordwrap($SubjectInfo['text'],$num);
 			           // $SubjectInfo['text']    = $PowerBB->Powerparse->CycleText($SubjectInfo['text']);
 				 	    $keywords    = $PowerBB->functions->Getkeywords($SubjectInfo['text']);
-			            $description    = $SubjectInfo['title']." ".$SubjectInfo['text'];
+			            $description    = $SubjectInfo['text'];
 
 					}
 
@@ -1043,7 +1049,13 @@ class PowerBBFunctions
 
 					$description    = str_replace(","," ", $description);
 					$description    = str_replace("..","", $description);
+					if(empty($description))
+					{					$PowerBB->template->assign('description',$SubjectInfo['title']);
+					}
+					else
+					{
 					$PowerBB->template->assign('description',$description);
+					}
 					$page_address['topic'] = $SubjectInfo['title'];
 					$PowerBB->template->assign('index',1);
 	          }
@@ -1051,7 +1063,6 @@ class PowerBBFunctions
 		elseif ($PowerBB->_GET['rules'] == '1')
 		{
 		$page_address['misc'] 		= 	$PowerBB->_CONF['template']['_CONF']['lang']['rules'] .' - '. $PowerBB->_CONF['info_row']['title'];
-		$num = '155';
 		 $rules = $PowerBB->functions->Getkeywords($PowerBB->functions->CleanText($PowerBB->_CONF['info_row']['rules']));
 		 $PowerBB->template->assign('keywords',$this->parse_keywords($rules));
 		 $PowerBB->template->assign('description',$rules);
@@ -1082,7 +1093,6 @@ class PowerBBFunctions
 		$PageArr['where'] 	= 	array('id',$PowerBB->_GET['id']);
 		$PowerBB->_CONF['template']['GetPage'] = $PowerBB->core->GetInfo($PageArr,'pages');
 		 $page_address['pages'] 		= 	$PowerBB->Powerparse->censor_words($PowerBB->_CONF['template']['GetPage']['title']);
-		 $num = '100';
 		 $PowerBB->_CONF['template']['GetPage']['html_code'] = $PowerBB->functions->words_count_replace_strip_tags_html2bb($PowerBB->_CONF['template']['GetPage']['html_code'],$num);
          $PowerBB->template->assign('description',$PowerBB->_CONF['template']['GetPage']['html_code'].' '. $PowerBB->_CONF['info_row']['title']);
 		 $PowerBB->template->assign('keywords',$PowerBB->functions->Getkeywords($this->parse_keywords($PowerBB->_CONF['template']['GetPage']['title']." ".$PowerBB->_CONF['template']['GetPage']['html_code'])));
@@ -1091,7 +1101,6 @@ class PowerBBFunctions
 		elseif ($PowerBB->_CONF['info_row']['board_close'] == '1')
     	{
 		 $title 		= 	$PowerBB->_CONF['template']['_CONF']['lang']['board_close'];
-		 $num = '100';
 		 $title = $PowerBB->functions->words_count_replace_strip_tags_html2bb($title,$num);
          $PowerBB->template->assign('description',$title);
 		 $PowerBB->template->assign('keywords',$PowerBB->functions->Getkeywords($this->parse_keywords($PowerBB->_CONF['template']['_CONF']['lang']['board_close'])));
@@ -1667,11 +1676,22 @@ return preg_replace($pattern, $replacement, $email);
 	  $string = str_replace("&quot;", '"', $string);
 	  $string = str_replace("&lt;","<", $string);
 	  $string = str_replace("&gt;",">", $string);
-	if (!isset($PowerBB->_GET['page']) == 'rss')
+	if ($PowerBB->_GET['page'] != 'rss')
 	{
 	 	$string = preg_replace(",([^]_a-z0-9-=\"'\/])((https?|ftp|gopher|news|telnet):\/\/|www\.)([^ \r\n\(\)\*\^\$!`\"'\|\[\]\{\}<>]*),i", "",$string);
 		$string = preg_replace(",^((https?|ftp|gopher|news|telnet):\/\/|\.)([^ \r\n\(\)\*\^\$!`\"'\|\[\]\{\}<>]*),i", "",$string);
 	}
+
+     $PowerBB->Powerparse->replace_smiles_print($string);
+     $string = preg_replace('#\[img\](.*)\[/img\]#siU', '', $string);
+     $string = preg_replace('#\[code\](.*)\[/code\]#siU', '', $string);
+     $string = preg_replace('#\[php\](.*)\[/php\]#siU', '', $string);
+     $string = preg_replace('#\[html\](.*)\[/html\]#siU', '', $string);
+     $string = preg_replace('#\[xml\](.*)\[/xml\]#siU', '', $string);
+     $string = preg_replace('#\[css\](.*)\[/css\]#siU', '', $string);
+
+		$string = str_replace("[","<", $string);
+		$string = str_replace("]",">", $string);
 		$string = str_replace(">","> ", $string);
 		$string = str_replace("<"," <", $string);
 		$string = strip_tags($string);
@@ -1682,6 +1702,10 @@ return preg_replace($pattern, $replacement, $email);
 		$originally_text = $string;
 		// Recreate string from array
 		// See what we got
+	    $pattern = '|[[\/\!]*?[^\[\]]*?]|si';
+	    $replace = '';
+        $originally_text = preg_replace($pattern, $replace, $originally_text);
+
 		$originally_text = str_replace(" ",",", $originally_text);
 		$originally_text = str_replace("{s}",",", $originally_text);
 		$originally_text = str_replace(",,",",", $originally_text);
@@ -1698,11 +1722,9 @@ return preg_replace($pattern, $replacement, $email);
 		$originally_text = str_replace("    "," ", $originally_text);
 		$originally_text = str_replace("   "," ", $originally_text);
 		$originally_text    = str_replace(".."," ", $originally_text);
-	    $pattern = '|[[\/\!]*?[^\[\]]*?]|si';
-	    $replace = '';
-        $originally_text = preg_replace($pattern, $replace, $originally_text);
 
         $originally_text = strip_tags($originally_text);
+        $originally_text = htmlspecialchars($originally_text);
 		return ($originally_text);
     }
 

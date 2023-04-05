@@ -238,6 +238,17 @@ class PBBTemplate
 			 $catsort = $PowerBB->DB->sql_fetch_array($CatArr);
 			 $string = str_replace("!= 1}", "!=". $catsort['sort']."}", $string);
             }
+
+            if ($filename == 'info_bar')
+			{
+			 if($PowerBB->functions->is_bot())
+			  {
+				$first_search = "!{$_CONF['member_permission']}";
+				$first_replace = "{$_CONF['member_permission']}";
+				$string = str_replace($first_search,$first_replace,$string);
+			  }
+			}
+
 			$string = str_replace('<label for="emailed_id">',"\n", $string);
 			$string = str_replace("ForumAdress}look/","ForumAdress}look/", $string);
 

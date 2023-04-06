@@ -3764,16 +3764,16 @@ function dec_to_utf8($src)
 		global $PowerBB;
 
          // Get forum id
-		if (isset($PowerBB->_GET['page']) == "new_topic")
+		if($PowerBB->_GET['page'] == "new_topic")
 		{
 		$exforumid = intval($PowerBB->_GET['id']);
 		}
-		elseif (isset($PowerBB->_GET['page']) == "management")
+		elseif($PowerBB->_GET['page'] == "management")
 		{
 		$exforumid = intval($PowerBB->_GET['section']);
 		}
-		elseif (isset($PowerBB->_GET['page']) == "new_reply"
-		or isset($PowerBB->_GET['page']) == "topic")
+		elseif ($PowerBB->_GET['page'] == "new_reply"
+		or $PowerBB->_GET['page'] == "topic")
 		{
 		$topic_id= intval($PowerBB->_GET['id']);
 		$TopicArr = $PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['subject'] . " WHERE id = '$topic_id' ");

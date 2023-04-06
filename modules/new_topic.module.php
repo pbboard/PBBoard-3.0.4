@@ -703,7 +703,36 @@ class PowerBBTopicAddMOD
 				$PowerBB->_POST['text'] = str_replace('target="_blank" ','',$PowerBB->_POST['text']);
 				$PowerBB->_POST['title'] 	= 	$PowerBB->functions->CleanVariable($PowerBB->_POST['title'],'sql');
 				//$PowerBB->_POST['text'] 	= 	$PowerBB->functions->CleanVariable($PowerBB->_POST['text'],'sql');
-                   //
+
+                  // mention users tag replace
+                if($PowerBB->functions->mention_permissions())
+                {
+				  if(preg_match('/\[mention\](.*?)\[\/mention\]/s', $PowerBB->_POST['text'], $tags_w))
+					{
+					$username = trim($tags_w[1]);
+					$MemArr = $PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['member'] . " WHERE username = '$username' ");
+					$Member_row = $PowerBB->DB->sql_fetch_array($MemArr);
+                    if($Member_row)
+                    {
+						if ($Member_row['username'] == $PowerBB->_CONF['member_row']['username'])
+						{
+				        $PowerBB->_POST['text'] = str_replace("[mention]", "@", $PowerBB->_POST['text']);
+						$PowerBB->_POST['text'] = str_replace("[/mention]", "", $PowerBB->_POST['text']);
+						 $Member_row['username'] = '';
+						}
+						if (!empty($Member_row['username']))
+						{
+						$forum_url              =   $PowerBB->functions->GetForumAdress();
+						$url = $forum_url."index.php?page=profile&amp;show=1&amp;id=".$Member_row['id'];
+						$PowerBB->_POST['text'] = str_replace("[mention]", "[url=".$PowerBB->functions->rewriterule($url)."]@", $PowerBB->_POST['text']);
+						$PowerBB->_POST['text'] = str_replace("[/mention]", "[/url]", $PowerBB->_POST['text']);
+	                    // insert mention
+	                    $insert_mention = 	true;
+						}
+				    }
+                  }
+
+                }
 
 
 		$SecInfoArr 			= 	array();
@@ -916,7 +945,26 @@ class PowerBBTopicAddMOD
                           }
 						}
                     }
-					//////////
+
+                       // insert mention
+                      if($PowerBB->functions->mention_permissions())
+                      {
+						if ($insert_mention)
+						{
+						$InsertArr 					= 	array();
+						$InsertArr['field']			=	array();
+
+						$InsertArr['field']['user_mention_about_you'] 			= 	$PowerBB->_CONF['member_row']['username'];
+						$InsertArr['field']['you'] 			= 	$Member_row['username'];
+						$InsertArr['field']['topic_id'] 				= 	intval($PowerBB->subject->id);
+						$InsertArr['field']['reply_id'] 			= 	0;
+						$InsertArr['field']['profile_id'] 			= 	$PowerBB->_CONF['member_row']['id'];
+						$InsertArr['field']['date'] 		= 	$PowerBB->_CONF['now'];
+						$InsertArr['field']['user_read'] 		    = 	'1';
+
+						$insert = $PowerBB->core->Insert($InsertArr,'mention');
+						}
+                      }
 
 		     		// Upload files
                   if ($PowerBB->_CONF['member_permission'])

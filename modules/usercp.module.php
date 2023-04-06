@@ -514,8 +514,15 @@ class PowerBBCoreMOD
         $PowerBB->_POST['info'] = $PowerBB->functions->CleanVariable($PowerBB->_POST['info'],'trim');
         $PowerBB->_POST['year'] = $PowerBB->functions->CleanVariable($PowerBB->_POST['year'],'trim');
 
+        $PowerBB->_POST['away_msg'] = $PowerBB->functions->CleanVariable($PowerBB->_POST['away_msg'],'html');
+        $PowerBB->_POST['website'] = $PowerBB->functions->CleanVariable($PowerBB->_POST['website'],'html');
+        $PowerBB->_POST['country'] = $PowerBB->functions->CleanVariable($PowerBB->_POST['country'],'html');
+        $PowerBB->_POST['info'] = $PowerBB->functions->CleanVariable($PowerBB->_POST['info'],'html');
+        $PowerBB->_POST['year'] = $PowerBB->functions->CleanVariable($PowerBB->_POST['year'],'html');
+
         $PowerBB->_POST['away_msg'] = strip_tags($PowerBB->_POST['away_msg']);
         $PowerBB->_POST['website'] = strip_tags($PowerBB->_POST['website']);
+        $PowerBB->_POST['country'] = strip_tags($PowerBB->_POST['country']);
         $PowerBB->_POST['info'] = strip_tags($PowerBB->_POST['info']);
         $PowerBB->_POST['year'] = strip_tags($PowerBB->_POST['year']);
 

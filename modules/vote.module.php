@@ -181,21 +181,30 @@ class PowerBBCoreMOD
 			$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['path_not_true']);
 		}
 
+			$PollArr 			= 	array();
+			$PollArr['where'] 	= 	array('id',$PowerBB->_GET['id']);
 
-	  if ($PowerBB->functions->ModeratorCheck($PowerBB->_GET['poll_section'])
-	  or !$PowerBB->_CONF['member_row']['username'] == $PowerBB->_GET['user']
-	  or $PowerBB->_CONF['member_row']['username'] == $PowerBB->_GET['user'])
+			$Poll = $PowerBB->core->GetInfo($PollArr,'poll');
+			if (!$Poll)
+			{
+			$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['path_not_true']);
+			}
+
+			$SubjectArr = array();
+			$SubjectArr['where'] = array('id',$Poll['subject_id']);
+			$SubjectInfo = $PowerBB->core->GetInfo($SubjectArr,'subject');
+			if (!$SubjectInfo)
+			{
+			 $PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['Sorry_requested_topic_does_not_exist']);
+			}
+
+	  if ($PowerBB->functions->ModeratorCheck($SubjectInfo['section'])
+	  or $PowerBB->_CONF['member_row']['username'] == $SubjectInfo['writer'])
 		{
 
 		$PowerBB->_GET['id'] = $PowerBB->functions->CleanVariable($PowerBB->_GET['id'],'intval');
 
-   		$PowerBB->_GET['subject_id'] = $PowerBB->functions->CleanVariable($PowerBB->_GET['subject_id'],'intval');
 
-
-				$PollArr 			= 	array();
-				$PollArr['where'] 	= 	array('id',$PowerBB->_GET['id']);
-
-				$Poll = $PowerBB->core->GetInfo($PollArr,'poll');
 				if(strstr($Poll['answers'],'['))
 				{			      $answers__number = sizeof(json_decode($Poll['answers'], true));
 	              $PowerBB->template->assign('answers__number',$answers__number);
@@ -204,7 +213,7 @@ class PowerBBCoreMOD
 
 			    // Aha, there is poll in this subject
 	            $PowerBB->template->assign('Poll',$Poll);
-	            $PowerBB->template->assign('subject_id',$PowerBB->_GET['subject_id']);
+	            $PowerBB->template->assign('subject_id',$Poll['subject_id']);
                 $PowerBB->template->display('edit_poll_table1');
 
 				if(strstr($Poll['answers'],'['))
@@ -220,7 +229,7 @@ class PowerBBCoreMOD
 	            {
                  if (!empty($answers))
                  {
-					$subject_id  = $PowerBB->_GET['id'];
+					$subject_id  = $Poll['subject_id'];
 					$vote_nm = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['vote'] . " WHERE answer_number = " . $answers_number . " AND subject_id = " . $subject_id . " "));
 
 					$answers = $PowerBB->Powerparse->censor_words($answers);
@@ -233,7 +242,7 @@ class PowerBBCoreMOD
 					$CheckArr['where'][0] 			= 	array();
 					$CheckArr['where'][0]['name'] 	= 	'subject_id';
 					$CheckArr['where'][0]['oper'] 	= 	'=';
-					$CheckArr['where'][0]['value'] 	= 	$PowerBB->_GET['id'];
+					$CheckArr['where'][0]['value'] 	= 	$Poll['subject_id'];
 
 
 					$CheckArr['where'][1] 			= 	array();
@@ -340,82 +349,71 @@ class PowerBBCoreMOD
 		global $PowerBB;
 		$PowerBB->functions->ShowHeader();
 
-		$PowerBB->_GET['subject_id'] = $PowerBB->functions->CleanVariable($PowerBB->_GET['subject_id'],'intval');
 		$PowerBB->_GET['id'] = $PowerBB->functions->CleanVariable($PowerBB->_GET['id'],'intval');
 
-		if (!empty($PowerBB->_GET['id']))
-		{
-		$PollArr = array();
-		$PollArr['where'] = array('id',$PowerBB->_GET['id']);
+			$PollArr 			= 	array();
+			$PollArr['where'] 	= 	array('id',$PowerBB->_GET['id']);
 
-		$Poll = $PowerBB->poll->GetPollInfo($PollArr);
-
+			$Poll = $PowerBB->core->GetInfo($PollArr,'poll');
 			if (!$Poll)
 			{
-				$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['Vote_be_non-existent']);
+			 $PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['Vote_be_non-existent']);
 			}
 
-        }
-
-		if (!empty($PowerBB->_GET['subject_id']))
-		{
-	  	    $SubjectArr = array();
-			$SubjectArr['where'] = array('id',$PowerBB->_GET['subject_id']);
-
+			$SubjectArr = array();
+			$SubjectArr['where'] = array('id',$Poll['subject_id']);
 			$SubjectInfo = $PowerBB->core->GetInfo($SubjectArr,'subject');
-
-				if (!$SubjectInfo)
-				{
-				 $PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['Sorry_requested_topic_does_not_exist']);
-				}
-
-
-			    if (!$PowerBB->functions->ModeratorCheck($SubjectInfo['section'])
-			    or $PowerBB->_CONF['member_row']['username'] != $SubjectInfo['writer'])
-				{
-	              $PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['not_allowed_access']);
-				}
-
-
-
-			    $UpdateArr 					= 	array();
-			    $UpdateArr['field'] 				= 	array();
-			    $UpdateArr['field']['poll_subject'] 		= 	'0';
-				$UpdateArr['where'] 				= 	array('id',$PowerBB->_GET['subject_id']);
-
-				$update = $PowerBB->core->Update($UpdateArr,'subject');
-		}
-
-	 		$DeleteArr 			= 	array();
-			$DeleteArr['where']				=	array('subject_id',$PowerBB->_GET['subject_id']);
-			$DeletePoll = $PowerBB->poll->DeletePoll($DeleteArr);
-
-			if ($DeletePoll)
+			if (!$SubjectInfo)
 			{
-			$VoteId = $PowerBB->_GET['id'];
-	        $GetVoteInfo = $PowerBB->DB->sql_query("SELECT  *   FROM " . $PowerBB->table['vote'] . " WHERE id = '$VoteId' ");
-	        while ($getvoteInfo_row = $PowerBB->DB->sql_fetch_array($GetVoteInfo))
-	        {
-	 		$DeleteArr 			            = 	array();
-			$DeleteArr['where']				=	array('poll_id',$getvoteInfo_row['id']);
+			 $PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['Sorry_requested_topic_does_not_exist']);
+			}
 
-			$DeleteVote = $PowerBB->vote->DeleteVote($DeleteArr);
-	        }
+	  if ($PowerBB->functions->ModeratorCheck($SubjectInfo['section'])
+	  or $PowerBB->_CONF['member_row']['username'] == $SubjectInfo['writer'])
+		{
 
+					$UpdateArr 					= 	array();
+					$UpdateArr['field'] 				= 	array();
+					$UpdateArr['field']['poll_subject'] 		= 	'0';
+					$UpdateArr['where'] 				= 	array('id',$PowerBB->_GET['subject_id']);
 
-			$UpdateArr = array();
-			$UpdateArr['poll_subject'] = "0";
-			$UpdateArr['where'] = array('id',$PowerBB->_GET['subject_id']);
-
-			$update = $PowerBB->subject->CloseSubject($UpdateArr);
+					$update = $PowerBB->core->Update($UpdateArr,'subject');
 
 
-	       }
+			 		$DeleteArr 			= 	array();
+					$DeleteArr['where']				=	array('subject_id',$PowerBB->_GET['subject_id']);
+					$DeletePoll = $PowerBB->poll->DeletePoll($DeleteArr);
 
-		$PowerBB->functions->msg($PowerBB->_CONF['template']['_CONF']['lang']['poll_delet_successfully']);
-		$PowerBB->functions->redirect('index.php?page=topic&amp;show=1&amp;id=' . $PowerBB->_GET['subject_id']);
+					if ($DeletePoll)
+					{
+					$VoteId = $PowerBB->_GET['id'];
+			        $GetVoteInfo = $PowerBB->DB->sql_query("SELECT  *   FROM " . $PowerBB->table['vote'] . " WHERE id = '$VoteId' ");
+			        while ($getvoteInfo_row = $PowerBB->DB->sql_fetch_array($GetVoteInfo))
+			        {
+			 		$DeleteArr 			            = 	array();
+					$DeleteArr['where']				=	array('poll_id',$getvoteInfo_row['id']);
+
+					$DeleteVote = $PowerBB->vote->DeleteVote($DeleteArr);
+			        }
 
 
+					$UpdateArr = array();
+					$UpdateArr['poll_subject'] = "0";
+					$UpdateArr['where'] = array('id',$PowerBB->_GET['subject_id']);
+
+					$update = $PowerBB->subject->CloseSubject($UpdateArr);
+
+
+			       }
+
+				$PowerBB->functions->msg($PowerBB->_CONF['template']['_CONF']['lang']['poll_delet_successfully']);
+				$PowerBB->functions->redirect('index.php?page=topic&amp;show=1&amp;id=' . $PowerBB->_GET['subject_id']);
+
+        }
+		else
+		{
+			$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['not_allowed_access']);
+		}
 
 	}
 
@@ -424,14 +422,28 @@ class PowerBBCoreMOD
 		global $PowerBB;
 		$PowerBB->functions->ShowHeader();
 
-		$PowerBB->_GET['subject_id'] = $PowerBB->functions->CleanVariable($PowerBB->_GET['subject_id'],'intval');
+		$PowerBB->_GET['id'] = $PowerBB->functions->CleanVariable($PowerBB->_GET['id'],'intval');
 
-		if (empty($PowerBB->_GET['subject_id']))
+			$PollArr 			= 	array();
+			$PollArr['where'] 	= 	array('id',$PowerBB->_GET['id']);
+
+			$Poll = $PowerBB->core->GetInfo($PollArr,'poll');
+			if (!$Poll)
+			{
+			 $PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['Vote_be_non-existent']);
+			}
+
+			$SubjectArr = array();
+			$SubjectArr['where'] = array('id',$Poll['subject_id']);
+			$SubjectInfo = $PowerBB->core->GetInfo($SubjectArr,'subject');
+			if (!$SubjectInfo)
+			{
+			 $PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['Sorry_requested_topic_does_not_exist']);
+			}
+
+	  if ($PowerBB->functions->ModeratorCheck($SubjectInfo['section'])
+	  or $PowerBB->_CONF['member_row']['username'] == $SubjectInfo['writer'])
 		{
-			$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['path_not_true']);
-		}
-
-
 			// INSERT moderators Action
 			$EditAction				=	array();
 		    $EditAction['where'] 	= 	array('id',$PowerBB->_GET['subject_id']);
@@ -463,6 +475,12 @@ class PowerBBCoreMOD
 
 			$PowerBB->functions->msg($PowerBB->_CONF['template']['_CONF']['lang']['Has_been_poll_close']);
 			$PowerBB->functions->redirect('index.php?page=topic&amp;show=1&amp;id=' . $PowerBB->_GET['subject_id']);
+
+        }
+		else
+		{
+			$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['not_allowed_access']);
+		}
 	}
 
 	function _StartPollOpen()
@@ -470,13 +488,28 @@ class PowerBBCoreMOD
 		global $PowerBB;
 		$PowerBB->functions->ShowHeader();
 
-		$PowerBB->_GET['subject_id'] = $PowerBB->functions->CleanVariable($PowerBB->_GET['subject_id'],'intval');
+		$PowerBB->_GET['id'] = $PowerBB->functions->CleanVariable($PowerBB->_GET['id'],'intval');
 
-		if (empty($PowerBB->_GET['subject_id']))
+			$PollArr 			= 	array();
+			$PollArr['where'] 	= 	array('id',$PowerBB->_GET['id']);
+
+			$Poll = $PowerBB->core->GetInfo($PollArr,'poll');
+			if (!$Poll)
+			{
+			 $PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['Vote_be_non-existent']);
+			}
+
+			$SubjectArr = array();
+			$SubjectArr['where'] = array('id',$Poll['subject_id']);
+			$SubjectInfo = $PowerBB->core->GetInfo($SubjectArr,'subject');
+			if (!$SubjectInfo)
+			{
+			 $PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['Sorry_requested_topic_does_not_exist']);
+			}
+
+	  if ($PowerBB->functions->ModeratorCheck($SubjectInfo['section'])
+	  or $PowerBB->_CONF['member_row']['username'] == $SubjectInfo['writer'])
 		{
-			$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['path_not_true']);
-		}
-
 
 			// INSERT moderators Action
 			$EditAction				=	array();
@@ -509,6 +542,11 @@ class PowerBBCoreMOD
 
 			$PowerBB->functions->msg($PowerBB->_CONF['template']['_CONF']['lang']['Has_been_poll_open']);
 			$PowerBB->functions->redirect('index.php?page=topic&amp;show=1&amp;id=' . $PowerBB->_GET['subject_id']);
+        }
+		else
+		{
+			$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['not_allowed_access']);
+		}
 	}
 
 	function _StartShowVotes()

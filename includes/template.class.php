@@ -425,6 +425,18 @@ class PBBTemplate
 			$first_replace = 'ajax_search"';
 			$string = str_replace($first_search,$first_replace,$string);
 			}
+			elseif ($filename == 'forum_subject_table')
+			{
+			$search_coordination_array 	= 	array();
+			$replace_coordination_array 	= 	array();
+			$search_coordination_array[] = "forum_sub_vis wd4";
+			$replace_coordination_array[] = "forum_sub_vis wd6";
+
+			$search_coordination_array[] = "forum_sub_rep wd4";
+			$replace_coordination_array[] = "forum_sub_rep wd6";
+
+			$string = str_replace($search_coordination_array,$replace_coordination_array,$string);
+			}
 			$string = str_replace('alt=""','alt="icon"',$string);
 			$string = str_replace("alt=''","alt='icon'",$string);
 			$string = str_replace("<!--copyright-->",$PowerBB->functions->copyright(),$string);

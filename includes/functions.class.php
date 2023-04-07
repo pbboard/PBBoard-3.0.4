@@ -1593,7 +1593,7 @@ return preg_replace($pattern, $replacement, $email);
 		$text = preg_replace(",([^]_a-z0-9-=\"'\/])((https?|ftp|gopher|news|telnet):\/\/|www\.)([^ \r\n\(\)\*\^\$!`\"'\|\[\]\{\}<>]*),i", "",$text);
 		$text = preg_replace(",^((https?|ftp|gopher|news|telnet):\/\/|\.)([^ \r\n\(\)\*\^\$!`\"'\|\[\]\{\}<>]*),i", "",$text);
         $text = str_replace(' ..', '', $text);
-
+       	$text = implode(' ', array_unique(explode(' ', $text)));
         $excludedtext = array();
 		$excludedWords = array();
 		$censorwords = preg_split('/\s+/', $text, -1, PREG_SPLIT_NO_EMPTY);
@@ -1602,6 +1602,7 @@ return preg_replace($pattern, $replacement, $email);
 		for ($x = 0; $x < count($excludedWords); $x++)
 		{
 			$excludedWords[$x] = trim($excludedWords[$x]);
+
 				if (function_exists('mb_strlen'))
 				{
 				$tag_less_num = mb_strlen($excludedWords[$x], 'UTF-8') >= 4;
@@ -1694,7 +1695,7 @@ return preg_replace($pattern, $replacement, $email);
 		$string = str_replace(">",">", $string);
 		$string = str_replace("<","<", $string);
 		$string = strip_tags($string);
-		$string = str_replace("\r\n","", $string);
+		$string = str_replace("\r\n"," ", $string);
         $string = str_replace(","," ", $string);
         $string = str_replace(" .. ","", $string);
         $string = str_replace("  "," ", $string);

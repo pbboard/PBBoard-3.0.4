@@ -847,6 +847,8 @@ class PowerBBFunctions
 	$keywords    = str_replace("|,","", $keywords);
 	$keywords    = str_replace(",,","", $keywords);
 	$keywords    = str_replace("|","", $keywords);
+    $keywords     = preg_replace('/\s+/', '', $keywords);
+
 	return $keywords;
  	}
  	/**
@@ -1588,11 +1590,12 @@ return preg_replace($pattern, $replacement, $email);
    // Extracting keywords from text and get only the words longer than 4 letters
    function Getkeywords($text)
  	{
- 	    $text = strtolower($text);
 	    $text = strip_tags($text);
 		$text = preg_replace(",([^]_a-z0-9-=\"'\/])((https?|ftp|gopher|news|telnet):\/\/|www\.)([^ \r\n\(\)\*\^\$!`\"'\|\[\]\{\}<>]*),i", "",$text);
 		$text = preg_replace(",^((https?|ftp|gopher|news|telnet):\/\/|\.)([^ \r\n\(\)\*\^\$!`\"'\|\[\]\{\}<>]*),i", "",$text);
-        $text = str_replace(' ..', '', $text);
+        $text = str_replace(' .. ', '', $text);
+        $text = str_replace(","," ", $text);
+
        	$text = implode(' ', array_unique(explode(' ', $text)));
         $excludedtext = array();
 		$excludedWords = array();
@@ -1676,6 +1679,8 @@ return preg_replace($pattern, $replacement, $email);
 	  $string = str_replace("&quot;", '"', $string);
 	  $string = str_replace("&lt;","<", $string);
 	  $string = str_replace("&gt;",">", $string);
+	  $string = str_replace("&nbsp;", "", $string);
+
 	if ($PowerBB->_GET['page'] != 'rss')
 	{
 	 	$string = preg_replace(",([^]_a-z0-9-=\"'\/])((https?|ftp|gopher|news|telnet):\/\/|www\.)([^ \r\n\(\)\*\^\$!`\"'\|\[\]\{\}<>]*),i", "",$string);
@@ -1689,16 +1694,14 @@ return preg_replace($pattern, $replacement, $email);
      $string = preg_replace('#\[html\](.*)\[/html\]#siU', '', $string);
      $string = preg_replace('#\[xml\](.*)\[/xml\]#siU', '', $string);
      $string = preg_replace('#\[css\](.*)\[/css\]#siU', '', $string);
+     $string = preg_replace('/\n+/ ', ' ', $string);
 
 		$string = str_replace("[","<", $string);
 		$string = str_replace("]",">", $string);
 		$string = str_replace(">",">", $string);
 		$string = str_replace("<","<", $string);
 		$string = strip_tags($string);
-		$string = str_replace("\r\n"," ", $string);
-        $string = str_replace(","," ", $string);
         $string = str_replace(" .. ","", $string);
-        $string = str_replace("  "," ", $string);
 
 		$originally_text = $string;
    		// Recreate string from array
@@ -1710,7 +1713,6 @@ return preg_replace($pattern, $replacement, $email);
 
         $originally_text = strip_tags($originally_text);
         $originally_text = htmlspecialchars($originally_text);
-        $originally_text = str_replace("\n"," ", $originally_text);
 
 		return ($originally_text);
     }

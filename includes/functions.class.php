@@ -1139,12 +1139,10 @@ class PowerBBFunctions
  		}
 		elseif ($page == 'tags')
 		{
-		$TagInfoArr 			= 	array();
-		$TagInfoArr['where'] 	= 	array('id',intval($PowerBB->_GET['id']));
-		$TagInfo = $PowerBB->core->GetInfo($TagInfoArr,'tags_subject');
-		$page_address['tags'] 			= 	$TagInfo['tag'];
-        $PowerBB->template->assign('description',$PowerBB->functions->CleanText($TagInfo['tag']));
-		$PowerBB->template->assign('keywords',$PowerBB->functions->Getkeywords($TagInfo['tag']).$title_keywords);
+
+		$page_address['tags'] 			= 	$PowerBB->_GET['tag'];
+        $PowerBB->template->assign('description',$PowerBB->functions->CleanText($PowerBB->_GET['tag']));
+		$PowerBB->template->assign('keywords',$PowerBB->functions->Getkeywords($PowerBB->_GET['tag']).$title_keywords);
         $PowerBB->template->assign('index',1);
 		}
 		elseif ($page == 'portal')

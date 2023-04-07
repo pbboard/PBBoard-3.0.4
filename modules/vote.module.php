@@ -274,73 +274,99 @@ class PowerBBCoreMOD
 
 		$PowerBB->_GET['id'] = $PowerBB->functions->CleanVariable($PowerBB->_GET['id'],'intval');
 
-	    if (isset($PowerBB->_POST['question'])
-		and isset($PowerBB->_POST['answer'][0])
-		and isset($PowerBB->_POST['answer'][1]))
-	  {
+			$PollArr 			= 	array();
+			$PollArr['where'] 	= 	array('id',$PowerBB->_GET['id']);
 
-		$answers_number = $PowerBB->_POST['poll_answers_count']+$PowerBB->_POST['poll_answers_old'];
+			$Poll = $PowerBB->core->GetInfo($PollArr,'poll');
+			if (!$Poll)
+			{
+			$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['path_not_true']);
+			}
 
-		$answers = array();
+			$SubjectArr = array();
+			$SubjectArr['where'] = array('id',$Poll['subject_id']);
+			$SubjectInfo = $PowerBB->core->GetInfo($SubjectArr,'subject');
+			if (!$SubjectInfo)
+			{
+			 $PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['Sorry_requested_topic_does_not_exist']);
+			}
 
-		$x = 0;
-
-		while ($x < $answers_number)
+	  if ($PowerBB->functions->ModeratorCheck($SubjectInfo['section'])
+	  or $PowerBB->_CONF['member_row']['username'] == $SubjectInfo['writer'])
 		{
-			// The text of the answer
-            $answersss = utf8_decode($PowerBB->_POST['answer'][$x]);
-            $answersss = preg_replace('/\s+/', '', $answersss);
-			$answers[$x][0] = $PowerBB->_POST['answer'][$x];
 
-			if (empty($answersss))
+		    if (isset($PowerBB->_POST['question'])
+			and isset($PowerBB->_POST['answer'][0])
+			and isset($PowerBB->_POST['answer'][1]))
+		  {
+
+			$answers_number = $PowerBB->_POST['poll_answers_count']+$PowerBB->_POST['poll_answers_old'];
+
+			$answers = array();
+
+			$x = 0;
+
+			while ($x < $answers_number)
+			{
+				// The text of the answer
+	            $answersss = utf8_decode($PowerBB->_POST['answer'][$x]);
+	            $answersss = preg_replace('/\s+/', '', $answersss);
+				$answers[$x][0] = $PowerBB->_POST['answer'][$x];
+
+				if (empty($answersss))
+		      	{
+					$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['fill_in_answer']);
+		      	}
+
+				if(strlen($answersss) >= "1")
+				{
+				// Continue
+				}
+				else
+				{
+				 $PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['fill_in_answer']);
+				}
+				// The result
+				$answers[$x][1] = 0;
+
+				$x += 1;
+			}
+	         // Kill XSS
+			$PowerBB->functions->CleanVariable($PowerBB->_POST['question'],'html');
+			$PowerBB->functions->CleanVariable($PowerBB->_POST['question'],'sql');
+
+			$PowerBB->functions->CleanVariable($PowerBB->_POST['answer'],'html');
+			$PowerBB->functions->CleanVariable($PowerBB->_POST['answer'],'sql');
+
+	            $question = utf8_decode($PowerBB->_POST['question']);
+	            $question = preg_replace('/\s+/', '', $question);
+
+			if (empty($question))
 	      	{
-				$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['fill_in_answer']);
+	      		$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['fill_in_question']);
 	      	}
 
-			if(strlen($answersss) >= "1")
-			{
-			// Continue
-			}
-			else
-			{
-			 $PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['fill_in_answer']);
-			}
-			// The result
-			$answers[$x][1] = 0;
+	 		$UpdateArr 			= 	array();
+			$UpdateArr['field']	=	array();
 
-			$x += 1;
+			$UpdateArr['field']['qus']   	= 	$PowerBB->_POST['question'];
+			$UpdateArr['field']['answers'] 	= 	$PowerBB->_POST['answer'];
+			$UpdateArr['where']				=	array('id',$PowerBB->_GET['id']);
+
+			$UpdatePoll = $PowerBB->poll->UpdatePoll($UpdateArr);
+
+			if ($UpdatePoll)
+			{
+			$PowerBB->functions->msg($PowerBB->_CONF['template']['_CONF']['lang']['Updated_successfully']);
+			$PowerBB->functions->redirect('index.php?page=topic&amp;show=1&amp;id=' . $PowerBB->_GET['subject_id']);
+
+			}
+		  }
 		}
-         // Kill XSS
-		$PowerBB->functions->CleanVariable($PowerBB->_POST['question'],'html');
-		$PowerBB->functions->CleanVariable($PowerBB->_POST['question'],'sql');
-
-		$PowerBB->functions->CleanVariable($PowerBB->_POST['answer'],'html');
-		$PowerBB->functions->CleanVariable($PowerBB->_POST['answer'],'sql');
-
-            $question = utf8_decode($PowerBB->_POST['question']);
-            $question = preg_replace('/\s+/', '', $question);
-
-		if (empty($question))
-      	{
-      		$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['fill_in_question']);
-      	}
-
- 		$UpdateArr 			= 	array();
-		$UpdateArr['field']	=	array();
-
-		$UpdateArr['field']['qus']   	= 	$PowerBB->_POST['question'];
-		$UpdateArr['field']['answers'] 	= 	$PowerBB->_POST['answer'];
-		$UpdateArr['where']				=	array('id',$PowerBB->_GET['id']);
-
-		$UpdatePoll = $PowerBB->poll->UpdatePoll($UpdateArr);
-
-		if ($UpdatePoll)
+		else
 		{
-		$PowerBB->functions->msg($PowerBB->_CONF['template']['_CONF']['lang']['Updated_successfully']);
-		$PowerBB->functions->redirect('index.php?page=topic&amp;show=1&amp;id=' . $PowerBB->_GET['subject_id']);
-
+			$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['not_allowed_access']);
 		}
-	  }
 
 	}
 

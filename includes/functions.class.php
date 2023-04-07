@@ -1710,6 +1710,8 @@ return preg_replace($pattern, $replacement, $email);
 
         $originally_text = strip_tags($originally_text);
         $originally_text = htmlspecialchars($originally_text);
+        $originally_text = str_replace("\n"," ", $originally_text);
+
 		return ($originally_text);
     }
 

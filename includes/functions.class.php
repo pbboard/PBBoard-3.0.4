@@ -1065,9 +1065,9 @@ class PowerBBFunctions
 		elseif ($PowerBB->_GET['rules'] == '1')
 		{
 		$page_address['misc'] 		= 	$PowerBB->_CONF['template']['_CONF']['lang']['rules'] .' - '. $PowerBB->_CONF['info_row']['title'];
-		 $rules = $PowerBB->functions->CleanText($PowerBB->_CONF['info_row']['rules']);
-		 $keywords = $PowerBB->functions->Getkeywords($PowerBB->functions->CleanText($rules).",".$title_keywords.",");
-		 $PowerBB->template->assign('keywords',$keywords.$PowerBB->_CONF['template']['_CONF']['lang']['rules']);
+		 $rules = $PowerBB->functions->CleanText($PowerBB->_CONF['template']['_CONF']['lang']['rules'])." ".$PowerBB->_CONF['info_row']['title'];
+		 $keywords = $PowerBB->_CONF['template']['_CONF']['lang']['rules'].",".$title_keywords.",";
+		 $PowerBB->template->assign('keywords',$keywords);
 		 $PowerBB->template->assign('description',$rules);
          $PowerBB->template->assign('index',1);
 		}
@@ -1094,10 +1094,11 @@ class PowerBBFunctions
 		{
 		$PageArr 			= 	array();
 		$PageArr['where'] 	= 	array('id',$PowerBB->_GET['id']);
+
 		$PowerBB->_CONF['template']['GetPage'] = $PowerBB->core->GetInfo($PageArr,'pages');
 		 $page_address['pages'] 		= 	$PowerBB->Powerparse->censor_words($PowerBB->_CONF['template']['GetPage']['title']);
 		 $PowerBB->_CONF['template']['GetPage']['html_code'] = $PowerBB->functions->words_count_replace_strip_tags_html2bb($PowerBB->_CONF['template']['GetPage']['html_code'],$num);
-         $PowerBB->template->assign('description',$PowerBB->_CONF['template']['GetPage']['html_code'].' '. $PowerBB->_CONF['info_row']['title']);
+         $PowerBB->template->assign('description',$PowerBB->Powerparse->_wordwrap($PowerBB->_CONF['template']['GetPage']['html_code'],$num));
 		 $PowerBB->template->assign('keywords',$PowerBB->functions->Getkeywords($PowerBB->_CONF['template']['GetPage']['title']." ".$PowerBB->_CONF['template']['GetPage']['html_code']).$title_keywords);
          $PowerBB->template->assign('index',1);
 		}

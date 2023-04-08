@@ -248,6 +248,14 @@ class PBBTemplate
 				$string = str_replace($first_search,$first_replace,$string);
 			  }
 			}
+            if ($filename == 'writer_info')
+			{
+              $string = str_replace("search_for_all_replys']}", "search_for_all_replys']} ", $string);
+              $string = str_replace("search_for_all_posts']}", "search_for_all_posts']} ", $string);
+              $string = str_replace("send_a_private_message_to']}", "send_a_private_message_to']} ", $string);
+              $string = str_replace("send_a_message_to_the_mailing']}", "send_a_private_message_to']} ", $string);
+              $string = str_replace("edit_member_data']}", "edit_member_data']} ", $string);
+			}
 
 			$string = str_replace('<label for="emailed_id">',"\n", $string);
 			$string = str_replace("ForumAdress}look/","ForumAdress}look/", $string);

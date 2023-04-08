@@ -112,8 +112,8 @@ class PowerBBCoreMOD
 
           $PowerBB->_POST['answer'] = $PowerBB->Powerparse->censor_words($PowerBB->_POST['answer']);
          // Kill XSS
-		$PowerBB->functions->CleanVariable($PowerBB->_POST['answer'],'html');
-		$PowerBB->functions->CleanVariable($PowerBB->_POST['answer'],'sql');
+		$PowerBB->_POST['answer'] = $PowerBB->functions->CleanVariable($PowerBB->_POST['answer'],'html');
+		$PowerBB->_POST['answer'] = $PowerBB->functions->CleanVariable($PowerBB->_POST['answer'],'sql');
 		$CheckArr 						= 	array();
 
 		$CheckArr['where'][0] 			= 	array();
@@ -185,6 +185,7 @@ class PowerBBCoreMOD
 			$PollArr['where'] 	= 	array('id',$PowerBB->_GET['id']);
 
 			$Poll = $PowerBB->core->GetInfo($PollArr,'poll');
+
 			if (!$Poll)
 			{
 			$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['path_not_true']);
@@ -212,6 +213,8 @@ class PowerBBCoreMOD
 
 
 			    // Aha, there is poll in this subject
+			    $Poll['qus']= $PowerBB->functions->CleanVariable($Poll['qus'],'html');
+
 	            $PowerBB->template->assign('Poll',$Poll);
 	            $PowerBB->template->assign('subject_id',$Poll['subject_id']);
                 $PowerBB->template->display('edit_poll_table1');
@@ -233,6 +236,8 @@ class PowerBBCoreMOD
 					$vote_nm = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['vote'] . " WHERE answer_number = " . $answers_number . " AND subject_id = " . $subject_id . " "));
 
 					$answers = $PowerBB->Powerparse->censor_words($answers);
+  		            $answers = $PowerBB->functions->CleanVariable($answers,'html');
+
 					$PowerBB->template->assign('answers',$answers);
 					$PowerBB->template->assign('answers_number',$answers_number);
 					$PowerBB->template->assign('Vote',$vote_nm);
@@ -252,6 +257,7 @@ class PowerBBCoreMOD
 					$CheckArr['where'][1]['value'] 	= 	$PowerBB->_CONF['member_row']['username'];
 
 					$ShowVote = $PowerBB->core->GetInfo($CheckArr,'vote');
+
 
 					$PowerBB->template->assign('ShowVote',$ShowVote);
 					$PowerBB->template->display('edit_poll_table2');
@@ -282,7 +288,7 @@ class PowerBBCoreMOD
 			{
 			$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['path_not_true']);
 			}
-
+            $PowerBB->functions->CleanVariable($PowerBB->_POST['question'],'html');
 			$SubjectArr = array();
 			$SubjectArr['where'] = array('id',$Poll['subject_id']);
 			$SubjectInfo = $PowerBB->core->GetInfo($SubjectArr,'subject');
@@ -311,6 +317,9 @@ class PowerBBCoreMOD
 				// The text of the answer
 	            $answersss = utf8_decode($PowerBB->_POST['answer'][$x]);
 	            $answersss = preg_replace('/\s+/', '', $answersss);
+	            $PowerBB->functions->CleanVariable($answersss,'html');
+	            $PowerBB->_POST['answer'][$x] = $PowerBB->functions->CleanVariable($PowerBB->_POST['answer'][$x],'html');
+
 				$answers[$x][0] = $PowerBB->_POST['answer'][$x];
 
 				if (empty($answersss))
@@ -335,7 +344,7 @@ class PowerBBCoreMOD
 			$PowerBB->functions->CleanVariable($PowerBB->_POST['question'],'html');
 			$PowerBB->functions->CleanVariable($PowerBB->_POST['question'],'sql');
 
-			$PowerBB->functions->CleanVariable($PowerBB->_POST['answer'],'html');
+			$PowerBB->functions->CleanVariable($PowerBB->_POST['question'],'html');
 			$PowerBB->functions->CleanVariable($PowerBB->_POST['answer'],'sql');
 
 	            $question = utf8_decode($PowerBB->_POST['question']);
@@ -349,7 +358,7 @@ class PowerBBCoreMOD
 	 		$UpdateArr 			= 	array();
 			$UpdateArr['field']	=	array();
 
-			$UpdateArr['field']['qus']   	= 	$PowerBB->_POST['question'];
+			$UpdateArr['field']['qus']   	= 	$PowerBB->functions->CleanVariable($PowerBB->_POST['question'],'html');
 			$UpdateArr['field']['answers'] 	= 	$PowerBB->_POST['answer'];
 			$UpdateArr['where']				=	array('id',$PowerBB->_GET['id']);
 

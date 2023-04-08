@@ -546,7 +546,7 @@ class PowerBBTopicAddMOD
                  // $PowerBB->_POST['question'] = $PowerBB->functions->CleanVariable($PowerBB->_POST['question'],'sql');
             $question = utf8_decode($PowerBB->_POST['question']);
             $question = preg_replace('/\s+/', '', $question);
-
+            $PowerBB->functions->CleanVariable($question,'html');
               if (empty($question))
              {
              	$PowerBB->functions->ShowHeader();
@@ -581,6 +581,7 @@ class PowerBBTopicAddMOD
 
 				            $answersss = utf8_decode($PowerBB->_POST['answer'][$x]);
 				            $answersss = preg_replace('/\s+/', '', $answersss);
+				            $PowerBB->functions->CleanVariable($answersss,'html');
 							if (empty($answersss))
 							{
 							$PowerBB->functions->ShowHeader();

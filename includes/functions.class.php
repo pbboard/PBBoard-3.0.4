@@ -1066,7 +1066,7 @@ class PowerBBFunctions
 		{
 		$page_address['misc'] 		= 	$PowerBB->_CONF['template']['_CONF']['lang']['rules'] .' - '. $PowerBB->_CONF['info_row']['title'];
 		 $rules = $PowerBB->functions->CleanText($PowerBB->_CONF['template']['_CONF']['lang']['rules'])." ".$PowerBB->_CONF['info_row']['title'];
-		 $keywords = $PowerBB->_CONF['template']['_CONF']['lang']['rules'].",".$title_keywords.",";
+		 $keywords = $PowerBB->_CONF['template']['_CONF']['lang']['rules'].",".$title_keywords;
 		 $PowerBB->template->assign('keywords',$keywords);
 		 $PowerBB->template->assign('description',$rules);
          $PowerBB->template->assign('index',1);

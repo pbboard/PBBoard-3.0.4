@@ -55,7 +55,9 @@ function _StartLogin() {
   $username = $PowerBB->functions->CleanVariable($PowerBB->_POST['username'], 'trim');
   $username = $PowerBB->functions->CleanVariable($PowerBB->_POST['username'], 'sql');
   $password = $PowerBB->functions->CleanVariable($PowerBB->_POST['password'], 'sql');
-  $password = $PowerBB->functions->CleanVariable(md5($PowerBB->_POST['password']), 'trim');
+  $password = $PowerBB->functions->CleanVariable($PowerBB->_POST['password'], 'trim');
+  $password_fields = $PowerBB->functions->verify_user_password($PowerBB->_CONF['member_row']['active_number'], $password);
+  $password = $password_fields['password'];
 
   if (!$PowerBB->member->IsMember(array('where' => array('username', $username)))) {
     $this->_AjaxTxt("#username_id");

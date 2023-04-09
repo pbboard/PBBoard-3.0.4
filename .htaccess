@@ -74,13 +74,15 @@ RewriteRule ^user-([0-9]+) index.php?page=profile&show=1&id=$1 [L]
 RewriteRule ^post-([0-9]+)&num=([0-9]+) index.php?page=post&show=1&id=$1&num=$2 [L]
 RewriteRule ^post-([0-9]+) index.php?page=post&show=1&id=$1 [L]
 RewriteRule ^new_topic-([0-9]+) index.php?page=new_topic&index=1&id=$1 [L]
-RewriteRule ^new_reply-([0-9]+)&qu_Reply=([0-9]+)&user=(.*) index.php?page=new_reply&index=1&id=$1&qu_Reply=$2&user=$3 [L]
-RewriteRule ^new_reply-([0-9]+)&qu_Subject=([0-9]+)&user=(.*) index.php?page=new_reply&index=1&id=$1&qu_Subject=$2&user=$3 [L]
+
+RewriteRule ^new_reply-([0-9]+)&user=(.*)&qu_Reply=([0-9]+) index.php?page=new_reply&index=1&id=$1&user=$2&qu_Reply=$3 [L]
+RewriteRule ^new_reply-([0-9]+)&user=(.*)&qu_Subject=([0-9]+) index.php?page=new_reply&index=1&id=$1&user=$2&qu_Subject=$3 [L]
+
 RewriteRule ^new_reply-([0-9]+) index.php?page=new_reply&index=1&id=$1 [L]
 
-RewriteRule ^tag-([0-9]+)&count=([0-9]+) index.php?page=tags&show=1&id=$1&count=$2 [L]
+RewriteRule ^tag-(.*)&count=([0-9]+) index.php?page=tags&show=1&tag=$1&count=$2 [L]
 
-RewriteRule ^tag-([0-9]+) index.php?page=tags&show=1&id=$1 [L]
+RewriteRule ^tag-(.*) index.php?page=tags&show=1&tag=$1 [L]
 
 RewriteRule ^whats_new-([0-9]+) index.php?page=latest_reply&today=1&count=$1 [L]
 RewriteRule ^whats_new index.php?page=latest_reply&today=1 [L]
@@ -91,10 +93,6 @@ RewriteRule ^today_topics index.php?page=latest&today=1 [L]
 RewriteRule ^forget.html index.php?page=forget&index=1 [L]
 RewriteRule ^active_user.html index.php?page=forget&active_member=1&send_active_code=1 [L]
 RewriteRule ^ads-([0-9]+) index.php?page=ads&goto=1&id=$1 [L]
-
-
-
-
 
 
 

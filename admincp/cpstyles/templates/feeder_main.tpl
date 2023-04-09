@@ -61,6 +61,42 @@ $PowerBB->_CONF['template']['while']['feedersList'][$this->x_loop]['title2'] = "
 		</td>
 		<td class="row2">
 		{$feedersList['feeds_time']}
+		 <br />
+<?php
+$PowerBB->_CONF['template']['_CONF']['lang']['Check_the_feed_of_all'] = str_replace("...","",$PowerBB->_CONF['template']['_CONF']['lang']['Check_the_feed_of_all']);
+$PowerBB->_CONF['template']['_CONF']['lang']['Check_the_feed_of_all'] = str_replace("اف","ف",$PowerBB->_CONF['template']['_CONF']['lang']['Check_the_feed_of_all']);
+?>
+		{$lang['Check_the_feed_of_all']}:
+{if {$feedersList['ttl']} == 600}
+10 {$lang['minutes']}
+{elseif {$feedersList['ttl']} == 1200}
+20 {$lang['minutes']}
+{elseif {$feedersList['ttl']} == 1800}
+30 {$lang['minutes']}
+{elseif {$feedersList['ttl']} == 3600}
+60 {$lang['minutes']}
+{elseif {$feedersList['ttl']} == 7200}
+2 {$lang['hours']}
+{elseif {$feedersList['ttl']} == 14400}
+4 {$lang['hours']}
+{elseif {$feedersList['ttl']} == 21600}
+6 {$lang['hours']}
+{elseif {$feedersList['ttl']} == 28800}
+8 {$lang['hours']}
+{elseif {$feedersList['ttl']} == 36000}
+10 {$lang['hours']}
+{elseif {$feedersList['ttl']} == 43200}
+12 {$lang['hours']}
+{elseif {$feedersList['ttl']} == 86400}
+24 {$lang['hours']}
+{elseif {$feedersList['ttl']} == 172800}
+48 {$lang['hours']}
+{elseif {$feedersList['ttl']} == 259200}
+72 {$lang['hours']}
+{elseif {$feedersList['ttl']} == 604800}
+7 {$lang['Day']}
+{/if}
+
 		</td>
 		<td class="row2">
 			<a href="index.php?page=feeder&amp;edit=1&amp;main=1&amp;id={$feedersList['id']}">{$lang['edit']}</a>

@@ -236,49 +236,23 @@ class PowerBBSitemapMOD
 	function _SubjectSitemap()
 	{
 		global $PowerBB;
-	    $SecArr 						= 	array();
-		$SecArr['get_from']				=	'db';
-		$SecArr['proc'] 				= 	array();
-		$SecArr['proc']['*'] 			= 	array('method'=>'clean','param'=>'html');
-		$SecArr['order']				=	array();
-		$SecArr['order']['field']		=	'id';
-		$SecArr['order']['type']		=	'ASC';
-		$SecArr['where']				=	array();
-		$SecArr['where'][0]['name']		= 	'sec_section<>1 AND hide_subject<>1 AND linksection<>1 AND parent';
-		$SecArr['where'][0]['oper']		= 	'>';
-		$SecArr['where'][0]['value']	= 	'0';
-		// Get main sections
-		$catys = $PowerBB->core->GetList($SecArr,'section');
-		$catys_size 	= 	sizeof($catys);
-		$catys_x		=	0;
+
+       $catys= $PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['section'] . " WHERE sec_section<>1 AND hide_subject<>1 AND linksection<>1 AND parent > 0 AND subject_num > 0 ORDER BY id ASC");
+
 		$forum_sitemap = "index.php?page=sitemap&amp;section=1&amp;id=";
 		$forum_sitemap = $PowerBB->functions->rewriterule($forum_sitemap);
-		while ($catys_x < $catys_size)
-		{				$NewerArr 						= 	array();
-				$NewerArr['order'] 				= 	array();
-				$NewerArr['order']['field'] 	= 	'id';
-				$NewerArr['order']['type'] 		= 	'DESC';
-				$NewerArr['limit'] 				= 	'1';
-				$NewerArr['where']				=	array();
-				$NewerArr['where'][0]['name']		= 	'review_subject<>1 AND sec_subject<>1 AND delete_topic<>1 and section';
-				$NewerArr['where'][0]['oper']		= 	'=';
-				$NewerArr['where'][0]['value']	= 	$catys[$catys_x]['id'];
-
-				$GetNewer = $PowerBB->core->GetInfo($NewerArr,'subject');
-			@include("cache/sectiongroup_cache/sectiongroup_cache_".$catys[$catys_x]['id'].".php");
+		while ($getSections_row = $PowerBB->DB->sql_fetch_array($catys))
+		{			@include("cache/sectiongroup_cache/sectiongroup_cache_".$getSections_row['id'].".php");
 	       // Get the groups information to know view this section or not
 	      $sectiongroup = json_decode(base64_decode($sectiongroup_cache), true);
-		  if ($sectiongroup[$PowerBB->_CONF['group_info']['id']]['view_section'] and $catys[$catys_x]['section_password'] == '')
+		  if ($sectiongroup[$PowerBB->_CONF['group_info']['id']]['view_section'] and $getSections_row['section_password'] == '')
 	      {
-	           if (isset($GetNewer['native_write_time']) !='')
-	           {
 				echo '<sitemap>';
-				echo '<loc>'. $PowerBB->functions->GetForumAdress() . $forum_sitemap . $catys[$catys_x]['id'] . ".xml" . '</loc>';
-				echo '<lastmod>'.$this->lastmod_date($GetNewer['native_write_time']).'</lastmod>';
+				echo '<loc>'. $PowerBB->functions->GetForumAdress() . $forum_sitemap . $getSections_row['id'] . ".xml" . '</loc>';
+				echo '<lastmod>'.$this->lastmod_date($getSections_row['native_write_time']).'</lastmod>';
 				echo '</sitemap>'."\n";
-				}
+
 		  }
-		  $catys_x += 1;
 		}
 	}
 

@@ -30,8 +30,16 @@ class PowerBBCodeParse
  	function replace($string)
  	{
  		global $PowerBB;
-
+        $oldstring = $string;
+        if(strstr($oldstring,"[/code]<br />"))
+        {        $string = str_replace("[/code]", "<br />\r\n[/code]", $string);
+        }
 		// start replaces code
+		$regexcode_htmlcode['[code]'] = '#<code (.*)>(.*)</code>#siU';
+		$string = preg_replace_callback($regexcode_htmlcode, function($matches_htmlcode) {
+        return $matches_htmlcode[2];
+		}, $string);
+
 		$regexcodew['[code]'] = '#\[code\](.*)\[/code\]#siU';
 		$string = preg_replace_callback($regexcodew, function($matchesw) {
 		return '[code]'.base64_encode($matchesw[1]).'[/code]';
@@ -89,7 +97,6 @@ class PowerBBCodeParse
  		$brackets = (strpos($string,'[') !== false) and (strpos($string,']') !== false);
         if ($brackets)
  		{
-
 	         $string = str_replace("http://www.youtube.com", "https://www.youtube.com", $string);
 
 			   //replace youtube;
@@ -113,6 +120,8 @@ class PowerBBCodeParse
 					$regeximg= '#\[IMG\](.*)\[/IMG\]#siU';
 					$regeximg= '#\[img\](.*)\[/img\]#siU';
 					$string = preg_replace_callback($regeximg, function($img_array) {
+					$img_array[1] = str_replace('[color=#ff0000]', "", $img_array[1]);
+					$img_array[1] = str_replace('[/color]', "", $img_array[1]);
 					return $this->resize_image($img_array[1]);
 					}, $string);
 
@@ -134,40 +143,6 @@ class PowerBBCodeParse
 			$string = preg_replace_callback("#\[video=(.*?)\](.*?)\[/video\]#i", array($this, 'mycode_parse_video_callback'), $string);
 
 
-			//replace Custom bbcode
-	        $Custom_bbcodes = $PowerBB->functions->GetCachedCustom_bbcode();
-	        if(!empty($Custom_bbcodes))
-	        {
-              foreach ($Custom_bbcodes as $getbbcode_row)
-		      {
-
-		      	$bbcode_tag = $getbbcode_row['bbcode_tag'];
-		      	$bbcode_replace = $getbbcode_row['bbcode_replace'];
-                $bbcode_replace = str_ireplace("'","&#39;",$bbcode_replace);
-				if ($getbbcode_row['bbcode_useoption'] == '1')
-				{
-
-					if(preg_match("#\[".$bbcode_tag."=(.*?)\](.*?)\[/".$bbcode_tag."\](\r\n?|\n?)#is", $string, $matches))
-					{
-					 $matches[1] = $this->htmlspecialchars_off($matches[1]);
-		              $stringbcode = $this->PowerCode_BBcode($matches[1],$matches[2],$bbcode_tag);
-                      $string = str_replace("[".$bbcode_tag."=".$matches[1]."]".$matches[2]."[/".$bbcode_tag."]",$stringbcode, $string);
-		            }
-				}
-				else
-				{
-					if(preg_match("#\[".$bbcode_tag."\](.*?)\[/".$bbcode_tag."\]#is", $string, $matches))
-					{
-					   $matches[1] = $this->htmlspecialchars_off($matches[1]);
-		               $stringbcode  = $this->PowerCode_Tag_BBcode($bbcode_replace,$bbcode_tag,$matches[1]);
-                       $string = str_replace("[".$bbcode_tag."]".$matches[1]."[/".$bbcode_tag."]",$stringbcode, $string);
-
-		            }
-			    }
-		      }
-
-            }
-
 				// Find all lists
 				$string = str_replace('[ul]', '[list]', $string);
 				$string = str_replace('[/ul]', '[/list]', $string);
@@ -175,6 +150,10 @@ class PowerBBCodeParse
 				$string = str_replace('[/ol]', '[/list]', $string);
 				$string = str_replace('[li]', '[*]', $string);
 				$string = str_replace('[/li]', '', $string);
+                $string = str_replace("[left]\r\n", "\r\n<br />[left]\r\n", $string);
+                $string = str_replace("[center]\r\n", "\r\n<br />[center]\r\n", $string);
+                $string = str_replace("[right]\r\n", "\r\n<br />[right]\r\n", $string);
+                $string = str_replace("[justify]\r\n", "\r\n<br />[justify]\r\n", $string);
 
 				$this->list_elements = array();
 				$this->list_count = 0;
@@ -229,6 +208,7 @@ class PowerBBCodeParse
 	        $string = str_replace('[/table]', '</table>', $string);
 	        $string = str_replace('[/tbody]', '</tbody>', $string);
 	        $string = str_replace('[/thead]', '</thead>', $string);
+            $string = preg_replace('#\[iframe\](.+)\[\/iframe\]#iUs', '<iframe width="560" height="315" src="$1" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>', $string);
 
             $string = preg_replace("#\[(left|center|right|justify)\](.*?)\[/(left|center|right|justify)\]#si", "<div style=\"text-align: $1;\" class=\"mycode_align\">$2</div>", $string);
             $string = preg_replace("#\[align=(left|center|right|justify)\](.*?)\[/align\]#si", "<div style=\"text-align: $1;\" class=\"mycode_align\">$2</div>", $string);
@@ -257,20 +237,98 @@ class PowerBBCodeParse
 
         $string = $this->text_with_hyperlink($string);
 
+
+      $bracknl2br = '[/-</';
+        if(preg_split('#[-]+#', $bracknl2br, -1, PREG_SPLIT_NO_EMPTY))
+        {
+         $string = nl2br($string);
+        }
+        $string = $this->Simplereplace($string);
+        if ($brackets)
+ 		{
+         $string = $this->Simplereplace($string);
+        }
+
+     // Fix up new lines and block level elements
+     $string = preg_replace("#(</?(?:html|head|body|div|p|form|table|thead|tbody|tfoot|tr|td|th|ul|ol|li|div|p|blockquote|cite|hr)[^>]*>)\s*<br />#i", "$1", $string);
+	 $string = preg_replace("#(&nbsp;)+(</?(?:html|head|body|div|p|form|table|thead|tbody|tfoot|tr|td|th|ul|ol|li|div|p|blockquote|cite|hr)[^>]*>)#i", "$2", $string);
+
+
+			//replace Custom bbcode
+	        $Custom_bbcodes = $PowerBB->functions->GetCachedCustom_bbcode();
+	        if(!empty($Custom_bbcodes))
+	        {
+              foreach ($Custom_bbcodes as $getbbcode_row)
+		      {
+		      	$bbcode_tag = $getbbcode_row['bbcode_tag'];
+		      	$bbcode_replace = $getbbcode_row['bbcode_replace'];
+                $bbcode_replace = str_replace("'","&#39;",$bbcode_replace);
+				$bbcode_replace = $this->htmlspecialchars_off($bbcode_replace);
+                while (strstr($string, "[/".$bbcode_tag."]") !== false)
+	             {
+					if ($getbbcode_row['bbcode_useoption'] == '1')
+					{
+						if(preg_match("#\[".$bbcode_tag."=(.*)\](.*)\[/".$bbcode_tag."\]#siU", $string, $matches))
+						{
+						  $matches[1] = $this->htmlspecialchars_off($matches[1]);
+			              $stringbcode = $this->PowerCode_BBcode($matches[1],$matches[2],$bbcode_tag);
+	                      $string = str_replace("[".$bbcode_tag."=".$matches[1]."]".$matches[2]."[/".$bbcode_tag."]",$stringbcode, $string);
+			            }
+					}
+					else
+					{
+						if(preg_match("#\[".$bbcode_tag."\](.*)\[/".$bbcode_tag."\]#siU", $string, $matches))
+						{
+						   $matches[1] = $this->htmlspecialchars_off($matches[1]);
+			               $stringbcode  = $this->PowerCode_Tag_BBcode($bbcode_replace,$bbcode_tag,$matches[1]);
+	                       $string = str_replace("[".$bbcode_tag."]".$matches[1]."[/".$bbcode_tag."]",$stringbcode, $string);
+			            }
+			          }
+
+				 }
+		      }
+
+            }
+
+
 			// end replaces codes
 			$regexcode_code['[code]'] = '#\[code\](.*)\[/code\]#siU';
 			$string = preg_replace_callback($regexcode_code, function($matches) {
-			$matches[1] = base64_decode($matches[1]);
-			$matches[1] = $this->htmlspecialchars_uni($matches[1]);
+
+				if(strstr($matches[1],'span style='))
+				{
+	             // thes is 3.0.3 codes  [code][/code]
+	             $matches[1] = base64_decode($matches[1]);
+				$matches[1] = $this->htmlspecialchars_off($matches[1]);
+				}
+				elseif(strstr(base64_decode($matches[1]),"<br />\r\n"))
+				{
+				// thes is 3.0.3 codes [code][/code]
+			    $matches[1] = base64_decode($matches[1]);				$matches[1] = str_replace('<br />', '', $matches[1]);
+				$matches[1] = str_replace('&lt;br /&gt;', '', $matches[1]);
+				}
+				else
+				{
+				// thes is 3.0.4 codes [code][/code]
+					if(strstr(base64_decode($matches[1]),'&lt;/')
+					or strstr(base64_decode($matches[1]),';&'))
+					{
+				    $matches[1] = base64_decode($matches[1]);
+					}
+					else
+					{
+				     $matches[1] = htmlspecialchars(base64_decode($matches[1]));
+				     $matches[1] = $this->htmlspecialchars_uni($matches[1]);
+					}
+				}
 			return '<div class="maxy"></div><div class="codediv">CODE</div><pre><code class="language-php">'.$matches[1].'</code></pre><div class="maxy"></div>';
 			}, $string);
 
 			$regexcode['[php]'] = '#\[php\](.*)\[/php\]#siU';
 			$string = preg_replace_callback($regexcode, function($matches) {
-			$matches[1] = base64_decode($matches[1]);
+			$matches[1] = htmlspecialchars(base64_decode($matches[1]));
 			$matches[1] = $this->htmlspecialchars_uni($matches[1]);
-			$matches[1] = $this->Simplereplace($matches[1]);
-
+           // $matches[1] = str_replace('&amp;', '&amp;amp;', $matches[1]);
 			return '<div class="maxy"></div><div class="codediv">PHP</div><pre><code class="language-php">'.$matches[1].'</code></pre><div class="maxy"></div>';
 			}, $string);
 
@@ -279,6 +337,7 @@ class PowerBBCodeParse
 			$matches[1] = base64_decode($matches[1]);
 			$matches[1] = $this->htmlspecialchars_uni($matches[1]);
 			$matches[1] = $this->Simplereplace($matches[1]);
+            $matches[1] = str_replace('&amp;', '&amp;amp;', $matches[1]);
 			return '<div class="maxy"></div><div class="codediv">Html</div><pre><code class="language-html">'.$matches[1].'</code></pre><div class="maxy"></div>';
 			}, $string);
 
@@ -291,17 +350,6 @@ class PowerBBCodeParse
 			return '<div class="maxy"></div><div class="codediv">Java</div><pre><code class="language-java">'.$matches[1].'</code></pre><div class="maxy"></div>';
 			}, $string);
 
-        $string = nl2br($string);
-
-		// Fix up new lines and block level elements
-		$string = preg_replace("#(</?(?:html|head|body|div|p|form|table|thead|tbody|tfoot|tr|td|th|ul|ol|li|div|p|blockquote|cite|hr)[^>]*>)\s*<br />#i", "$1", $string);
-		$string = preg_replace("#(&nbsp;)+(</?(?:html|head|body|div|p|form|table|thead|tbody|tfoot|tr|td|th|ul|ol|li|div|p|blockquote|cite|hr)[^>]*>)#i", "$2", $string);
-		if($this->clear_needed)
-		{
-			$string .= '<br class="clear" />';
-		}
-       $string = $this->Simplereplace($string);
-
 		return $string;
  	}
 
@@ -309,7 +357,7 @@ class PowerBBCodeParse
  	function Simplereplace($string)
  	{
 
-	       $string = preg_replace('#\[b\](.+)\[\/b\]#iUs', '<b>$1</b>', $string);
+	        $string = preg_replace('#\[b\](.+)\[\/b\]#iUs', '<b>$1</b>', $string);
             $string = preg_replace('#\[u\](.+)\[\/u\]#iUs', '<u>$1</u>', $string);
             $string = preg_replace('#\[i\](.+)\[\/i\]#iUs', '<i>$1</i>', $string);
             $string = preg_replace('#\[s\](.+)\[\/s\]#iUs', '<s>$1</s>', $string);
@@ -327,12 +375,15 @@ class PowerBBCodeParse
             $string = preg_replace("#\[(left|center|right|justify)\](.*?)\[/(left|center|right|justify)\]#si", "<div style=\"text-align: $1;\" class=\"mycode_align\">$2</div>", $string);
             $string = preg_replace("#\[align=(left|center|right|justify)\](.*?)\[/align\]#si", "<div style=\"text-align: $1;\" class=\"mycode_align\">$2</div>", $string);
             $string = preg_replace('#\[highlight\=(.+)\](.+)\[\/highlight\]#iUs', '<span style="background:$1">$2</span>', $string);
-            $string = preg_replace('#\[size\=(.+)\](.+)\[\/size\]#iUs', '<font size="$1">$2</font>', $string);
+       	    $string = preg_replace('#\[size\=(.+)\](.+)\[\/size\]#iUs', "<font size=\"$1\" style=\"font-size: $1;\" class=\"mycode_size\">$2</font>", $string);
             $string = preg_replace('#\[blockquote\](.+)\[\/blockquote\]#iUs', '<blockquote class=\"quotemain\">$1</blockquote>', $string);
             $string = preg_replace('#\[indent\](.+)\[\/indent\]#iUs', '<indent>$1</indent>', $string);
-	        $string = preg_replace('#\[color\=(.+)\](.+)\[\/color\]#iUs', '<font color="$1">$2</font>', $string);
-	        $string = preg_replace('#\[font\=(.+)\](.+)\[\/font\]#iUs', '<font face="$1">$2</font>', $string);
-	       // $string = preg_replace('#\[(.+)\=(.+)\](.+)\[\/(.+)\]#iUs', '<$1 face="$2">$3</$4>', $string);
+	        $string = preg_replace('#\[color\=(.+)\](.+)\[\/color\]#iUs', "<span style=\"color: $1;\" class=\"mycode_color\">$2</span>", $string);
+            $string = preg_replace('#\[font\=(.+)\](.+)\[\/font\]#iUs', "<font face=\"$1\" style=\"font-family: $1;\" class=\"mycode_font\">$2</font>", $string);
+
+	        $string = str_replace('<div style="text-align: center;" class="mycode_align"></div>', '<br class="clear" />', $string);
+	        $string = str_replace('</div><br />', '</div>', $string);
+	        $string = str_replace('<br class="clear" /><br />', '<br class="clear" />', $string);
 
         return $this->closetags($string);
 
@@ -364,7 +415,7 @@ class PowerBBCodeParse
                 {
                         return '';
                 }
-                $bbcode_replace = ($bbcode_replace);
+                $bbcode_replace = $this->htmlspecialchars_off($bbcode_replace);
                 $bbcode_replace = str_replace("&#39;","'",$bbcode_replace);
                 $message = str_replace('\\"', '"', $message);
                 $bbcode_replace = str_replace("#", '', $bbcode_replace);
@@ -627,8 +678,6 @@ class PowerBBCodeParse
 			return $this->PowerCode_Tag_Url('mailto:'.$xxxx_email[0],$xxxx_email[0]);
 			}, $string);
 
-
-
             $string = str_replace('"<a', '"><a', $string);
            // $string = str_replace('href="www.', 'href="http://www.', $string);
             eval($PowerBB->functions->get_fetch_hooks('BBCodeParseHooks4'));
@@ -665,7 +714,7 @@ class PowerBBCodeParse
 				$bbcode_row1 = $PowerBB->DB->sql_fetch_array($querybbcode1);
 				$bbcode_replace = $bbcode_row1['bbcode_replace'];
                 $bbcode_replace = str_replace("&#39;","'",$bbcode_replace);
-                $bbcode_replace = str_replace( "{option}",$option , $bbcode_replace );
+                $bbcode_replace = str_replace("{option}",$option , $bbcode_replace );
                 $bbcode_replace = str_replace("{content}", $content, $bbcode_replace);
                 return $bbcode_replace;
          }
@@ -708,60 +757,62 @@ class PowerBBCodeParse
  	function censor_words($text)
 	{
 		global $PowerBB;
-       // feltr words
-    	 static $blanks = null;
+		if (!preg_match('#\[code\](.*)\[/code\]#siU', $text) )
+         {
+			// feltr words
+			static $blanks = null;
 
-		 $text = str_replace("&amp;","&",$text);
-         $text = str_replace('{39}',"'",$text);
+			$text = str_replace("&amp;","&",$text);
+			$text = str_replace('{39}',"'",$text);
 
-            eval($PowerBB->functions->get_fetch_hooks('BBCodeParseHooks3'));
-        $censorwords = preg_split('#[ \r\n\t]+#', $PowerBB->_CONF['info_row']['censorwords'], -1, PREG_SPLIT_NO_EMPTY);
-        $text = str_ireplace($censorwords,'**', $text);
-         $blankasciistrip ="160 173 u8205 u8204 u8237 u8238";
-		if ($blanks === null AND trim($blankasciistrip) != '')
-		{
+			eval($PowerBB->functions->get_fetch_hooks('BBCodeParseHooks3'));
+			$censorwords = preg_split('#[ \r\n\t]+#', $PowerBB->_CONF['info_row']['censorwords'], -1, PREG_SPLIT_NO_EMPTY);
+			$text = str_ireplace($censorwords,'**', $text);
+			$blankasciistrip ="160 173 u8205 u8204 u8237 u8238";
+			if ($blanks === null AND trim($blankasciistrip) != '')
+			{
 			$blanks = array();
 			$charset_unicode = (strtolower($PowerBB->_CONF['info_row']['charset']) == 'utf-8');
 			$raw_blanks = preg_split('#\s+#', $blankasciistrip, -1, PREG_SPLIT_NO_EMPTY);
 			foreach ($raw_blanks AS $code_point)
 			{
-				if ($code_point[0] == 'u')
-				{
-					// this is a unicode character to remove
-					$code_point = intval(substr($code_point, 1));
-					$force_unicode = true;
-				}
-				else
-				{
-					$code_point = intval($code_point);
-					$force_unicode = false;
-				}
-				if ($code_point > 255 OR $force_unicode OR $charset_unicode)
-				{
-					// outside ASCII range or forced Unicode, so the chr function wouldn't work anyway
-					$blanks[] = '&#' . $code_point . ';';
-					$blanks[] = $this->convert_int_to_utf8($code_point);
-				}
-				else
-				{
-					$blanks[] = chr($code_point);
-				}
+			if ($code_point[0] == 'u')
+			{
+			// this is a unicode character to remove
+			$code_point = intval(substr($code_point, 1));
+			$force_unicode = true;
 			}
-		}
-		if ($blanks)
-		{
+			else
+			{
+			$code_point = intval($code_point);
+			$force_unicode = false;
+			}
+			if ($code_point > 255 OR $force_unicode OR $charset_unicode)
+			{
+			// outside ASCII range or forced Unicode, so the chr function wouldn't work anyway
+			$blanks[] = '&#' . $code_point . ';';
+			$blanks[] = $this->convert_int_to_utf8($code_point);
+			}
+			else
+			{
+			$blanks[] = chr($code_point);
+			}
+			}
+			}
+			if ($blanks)
+			{
 			//$text = str_replace($blanks, '**', $text);
-		}
+			}
 
-		$text = str_ireplace("{h-h}", "http", $text);
-		$text = str_ireplace("{w-w}", "www.", $text);
+			$text = str_ireplace("{h-h}", "http", $text);
+			$text = str_ireplace("{w-w}", "www.", $text);
 
 
-		$text = str_replace("<br>", "<br />", $text);
- 		$text = str_replace('https://www.pbboard.info', 'https://pbboard.info', $text);
-		$text = str_replace('http://www.pbboard.info', 'https://pbboard.info', $text);
-		$text = str_replace('http://pbboard.info', 'https://pbboard.info', $text);
-
+			$text = str_replace("<br>", "<br />", $text);
+			$text = str_replace('https://www.pbboard.info', 'https://pbboard.info', $text);
+			$text = str_replace('http://www.pbboard.info', 'https://pbboard.info', $text);
+			$text = str_replace('http://pbboard.info', 'https://pbboard.info', $text);
+        }
 		eval($PowerBB->functions->get_fetch_hooks('BBCodeParseHooks_cr'));
         return $text;
 	}
@@ -807,7 +858,34 @@ class PowerBBCodeParse
 	* @author Milian <mailmili.de>
 	*/
 	 function closetags($html)
-	 {
+    {
+       global $PowerBB;
+		$html = preg_replace('#\[b\](.+)\[\/b\]#iUs', '<b>$1</b>', $html);
+		$html = preg_replace('#\[u\](.+)\[\/u\]#iUs', '<u>$1</u>', $html);
+		$html = preg_replace('#\[i\](.+)\[\/i\]#iUs', '<i>$1</i>', $html);
+		$html = preg_replace('#\[s\](.+)\[\/s\]#iUs', '<s>$1</s>', $html);
+		$html = preg_replace('#\[h1\](.+)\[\/h1\]#iUs', '<h1>$1</h1>', $html);
+		$html = preg_replace('#\[h2\](.+)\[\/h2\]#iUs', '<h2>$1</h2>', $html);
+		$html = preg_replace('#\[h3\](.+)\[\/h3\]#iUs', '<h1>$1</h1>', $html);
+		$html = preg_replace('#\[h4\](.+)\[\/h4\]#iUs', '<h1>$1</h1>', $html);
+		$html = preg_replace('#\[h5\](.+)\[\/h5\]#iUs', '<h1>$1</h1>', $html);
+		$html = preg_replace('#\[h6\](.+)\[\/h6\]#iUs', '<h1>$1</h1>', $html);
+		$html = preg_replace('#\[hr\]\[\/hr\]#iUs', '<HR id=null>', $html);
+		$html = preg_replace('#\[hr\]#iUs', '<HR id=null>', $html);
+		$html = preg_replace('#\[sub\](.+)\[\/sub\]#iUs', '<SUB>$1</SUB>', $html);
+		$html = preg_replace('#\[sup\](.+)\[\/sup\]#iUs', '<SUP>$1</SUP>', $html);
+		$html = preg_replace('#\[guest_name\](.+)\[\/guest_name\]#iUs', '<br>$1</br>', $html);
+		$html = preg_replace("#\[(left|center|right|justify)\](.*?)\[/(left|center|right|justify)\]#si", "<div style=\"text-align: $1;\" class=\"mycode_align\">$2</div>", $html);
+		$html = preg_replace("#\[align=(left|center|right|justify)\](.*?)\[/align\]#si", "<div style=\"text-align: $1;\" class=\"mycode_align\">$2</div>", $html);
+		$html = preg_replace('#\[highlight\=(.+)\](.+)\[\/highlight\]#iUs', '<span style="background:$1">$2</span>', $html);
+		$html = preg_replace('#\[size\=(.+)\](.+)\[\/size\]#iUs', "<font size=\"$1\" style=\"font-size: $1;\" class=\"mycode_size\">$2</font>", $html);
+		$html = preg_replace('#\[blockquote\](.+)\[\/blockquote\]#iUs', '<blockquote class=\"quotemain\">$1</blockquote>', $html);
+		$html = preg_replace('#\[indent\](.+)\[\/indent\]#iUs', '<indent>$1</indent>', $html);
+		$html = preg_replace('#\[color\=(.+)\](.+)\[\/color\]#iUs', "<span style=\"color: $1;\" class=\"mycode_color\">$2</span>", $html);
+		$html = preg_replace('#\[font\=(.+)\](.+)\[\/font\]#iUs', "<font face=\"$1\" style=\"font-family: $1;\" class=\"mycode_font\">$2</font>", $html);
+        $html = str_replace($PowerBB->_CONF['template']['_CONF']['lang']['resize_image_w_h'],'',$html);
+
+
 	  #put all opened tags into an array
 	  preg_match_all('#<([a-z]+)(?: .*)?(?<![/|/ ])>#iU', $html, $result);
 	  $openedtags = $result[1];   #put all closed tags into an array
@@ -919,7 +997,7 @@ class PowerBBCodeParse
 			$text = str_replace("smiles//","smiles/", $text);
 		}
 	}
-	function replace_wordwrap(&$text)
+	function replace_wordwrap($text)
 	{
 		global $PowerBB;
 		/*
@@ -935,6 +1013,7 @@ class PowerBBCodeParse
 		 return $text;
 		}
 		*/
+		return $text;
 	}
  	function _wordwrap($text,$lg_max)
 	{
@@ -1000,13 +1079,13 @@ class PowerBBCodeParse
           $register_link = ('index.php?page=register&index=1');
                 if (trim($message) == '')
                 {
-                    $message = $link;
+                    $message = '';
 
                 }
                 $message = str_replace('\\"', '"', $message);
                 $message = str_ireplace("&quot;", '"', $message);
                 $link = str_ireplace("&quot;", '"', $link);
-
+                $link = htmlspecialchars($link);
 
                 $link = preg_replace('#<a href="(.*?)" (.*?)</a>#i', "$1", $link);
 
@@ -1014,13 +1093,15 @@ class PowerBBCodeParse
 
 				if ($PowerBB->_CONF['info_row']['haid_links_for_guest'] == 0)
 				{
-				 $url = "<a href=\"$link\" target=\"_blank\" title=\"$link\">$message</a>";
+                 $link = strip_tags($link);
+				 $url = "<a href='$link' target='_blank' title='$link'>$message</a>";
 				}
 				else
 				{
 	                 if ($PowerBB->_CONF['member_permission'])
 					 {
-						$url = "<a href=\"$link\" target=\"_blank\" title=\"$link\">$message</a>";
+					 $link = strip_tags($link);
+					 $url = "<a href='$link' target='_blank' title='$link'>$message</a>";
 					 }
 	                if (!$PowerBB->_CONF['member_permission'])
 					{
@@ -1125,6 +1206,8 @@ class PowerBBCodeParse
     {
         global $PowerBB;
         $img = str_replace('\\"', '"', $img);
+		$img = str_replace('[color=#ff0000]', "", $img);
+		$img = str_replace('[/color]', "", $img);
         $img = trim($img);
         $height = intval($height);
         $width = intval($width);
@@ -1311,6 +1394,16 @@ class PowerBBCodeParse
       $string = str_replace("&nbsp;", ' ', $string);
       $string = str_replace("<br />", " ", $string);
 
+		$regexcode_iframe['[iframe]'] = '#<iframe (.*)src="(.*)">(.*)</iframe>#siU';
+		$string = preg_replace_callback($regexcode_iframe, function($matches_iframe) {
+        $matches_iframe[2] = str_replace("url", "iframe", $matches_iframe[2]);
+        $matches_iframe[2] = preg_replace('#\[iframe\=(.+)\"](.+)\[\/iframe\]#iUs', '$1@', $matches_iframe[2]);
+        $matches_iframe[2] = '[iframe]'.$matches_iframe[2].'[/iframe]';
+        $matches_iframe[2] = preg_replace('#\@(.+)\[\/iframe\]#iUs', '[/iframe]', $matches_iframe[2]);
+
+		return $matches_iframe[2];
+		}, $string);
+
 
 		  $tags = array(
             '#<strong>(.*?)</strong>#si' => '[b]\\1[/b]',
@@ -1351,9 +1444,7 @@ class PowerBBCodeParse
 	  $string = preg_replace('#<img(.*?)src="(.*?)">#i', " [img]$2[/img] ", $string);
 	  $string = preg_replace('#<img(.*?)src="(.*?)" />#i', " [img]$2[/img] ", $string);
 	  $string = preg_replace('#<p>(.*?)</p>#i', " $1 <br />\r\n", $string);
-	  $string = preg_replace('#<font color="(.*?)">(.*?)</font>#i', "[color=$1]$2[/$1] ", $string);
-	  $string = preg_replace('#<font size="(.*?)">(.*?)</font>#i', "[size=$1]$2[/$1] ", $string);
-	  $string = preg_replace('#<font face="(.*?)">(.*?)</font>#i', "[size=$1]$2[/$1] ", $string);
+	  $string = preg_replace('#<font (.*?)="(.*?)">(.*?)</font>#i', "[$1=$2]$3[/$1] ", $string);
 	  $string = preg_replace('#<p align="(.*?)">(.*?)</p>#i', "[$1]$2[/$1]", $string);
 
         $string = str_replace('\\"', '"', $string);
@@ -1394,14 +1485,14 @@ class PowerBBCodeParse
 		$string = str_replace('<table>', '[table]', $string);
 		$string = str_replace('</table>', '[/table]', $string);
 
-		$string = str_replace('<tbody>', '[tbody]', $string);
-		$string = str_replace('</tbody>', '[/tbody]', $string);
+		$string = str_replace('<tbody>', '', $string);
+		$string = str_replace('</tbody>', '', $string);
 
         $string = preg_replace('#<td(| .*)>#siU', '[td]',  $string);
         $string = preg_replace('#<th(| .*)>#siU', '[th]',  $string);
 		$string = preg_replace('#<tr(| .*)>#siU', '[tr]',  $string);
 		$string = preg_replace('#<table(| .*)>#siU', '[table]',  $string);
-		$string = preg_replace('#<tbody(| .*)>#siU', '[tbody]',  $string);
+		$string = preg_replace('#<tbody(| .*)>#siU', '',  $string);
 
 
         $string = preg_replace('#<h1(| .*)>#siU', '[h1]',  $string);
@@ -1442,7 +1533,7 @@ class PowerBBCodeParse
          //$string = preg_replace('#<div style="(.*)">(.*)</div>#siU', '[divstyle=$1]$2[/divstyle]', $string);
          $string = preg_replace('#<div (.*)">(.*)</div>#siU', '$2', $string);
 
-         $string = preg_replace('#<span style="(.*)">(.*)</span>#siU', '[style=$1]$2[/style]', $string);
+        //$string = preg_replace('#<span style="(.*)">(.*)</span>#siU', '[style=$1]$2[/style]', $string);
          $string = preg_replace('#<span (.*)">(.*)</span>#siU', '$2', $string);
 
     	 $string = preg_replace('#<span(.*?)>#i', " ", $string);
@@ -1453,11 +1544,19 @@ class PowerBBCodeParse
          $string = str_replace('</dl>', ' ', $string);
     	 $string = preg_replace('#<dd(.*?)>#i', " ", $string);
          $string = str_replace('</dd>', ' ', $string);
+         $string = preg_replace('#<mark (.*)">(.*)</mark>#siU', '$2', $string);
+                         $Adress = $PowerBB->functions->GetForumAdress();
+                 $string = str_replace('[url=download/', '[url='.$Adress.'download/', $string);
+
 
          //$string = preg_replace('#<(.*?)>#i', ' ', $string);
 
+		 eval($PowerBB->functions->get_fetch_hooks('convert_html2bb'));
+
 		// Convert HTML quotes
 		$string = $this->htmlspecialchars_uni($string);
+
+         eval($PowerBB->functions->get_fetch_hooks('convert_html_off'));
 
 	  return $string;
 	}
@@ -1702,6 +1801,8 @@ class PowerBBCodeParse
     // Delete all tags from text and along sort.
 	function deletedalltags($text, $num)
 	{
+		$text = preg_replace('#\[img](.+)\[/img]#iUs', '', $text);
+		$text = preg_replace('#\[youtube](.+)\[/youtube]#iUs', '', $text);
 		$text = preg_replace('#\[(.+)](.+)\[(.+)]#iUs', '$2', $text);
 		$text = preg_replace('#\[(.+)]#iUs', '', $text);
 		$text = preg_replace('#\[]#iUs', '', $text);
@@ -1712,6 +1813,9 @@ class PowerBBCodeParse
 		$text = strip_tags($text);
 		$text = str_replace('<br>',"",$text);
 		$text = str_replace('<br />',"",$text);
+        $text = str_replace("\n", '',$text);
+        $text = str_replace("\t", '',$text);
+        $text = str_replace("\r", '',$text);
 		$text = $this->censor_words($text);
 		$text = $this->ShortPhrase($text,$num);
 
@@ -2166,6 +2270,9 @@ function htmlspecialchars_uni($message)
 	$message = str_replace(">", "&gt;", $message);
 	$message = str_replace('"', "&quot;", $message);
 	$message = str_replace("\"", "&quot;", $message);
+	$message = str_replace("&amp;lt;", "&lt;", $message);
+	$message = str_replace("&amp;quot;", "&quot;", $message);
+	$message = str_replace("&amp;gt;", "&gt;", $message);
 
 	return $message;
 }
@@ -2174,7 +2281,7 @@ function htmlspecialchars_off($message)
 {
 	$message = str_replace("&amp;", "&", $message);
 	$message = str_replace("&lt;", "<", $message);
-	$message = str_replace("&gt", ">;", $message);
+	$message = str_replace("&gt;", ">", $message);
 	$message = str_replace("&quot;", "\"", $message);
 	$message = str_replace("<br />", "\n", $message);
 
@@ -2217,16 +2324,43 @@ function htmlspecialchars_off($message)
 
 	function remove_strings($string)
 	{
-		$string = str_replace("&amp;", "&", $string);
-		$find_matches1 = array("\n&lt;br&gt;","\n&lt;br /&gt;","\n&lt;hr&gt;");
-		$find_matches2 = array("&lt;br&gt;\r","&lt;br /&gt;\r","&lt;hr&gt;\r");
+	  if (!preg_match('#\[code\](.*)\[/code\]#siU', $string) )
+       {
+	        if(strstr($string,"[/style]")
+	        or strstr($string,"[/font]")
+	        or strstr($string,"[/size]")
+	        or strstr($string,"[/color]"))
+	        {
+		         $string = preg_replace('#\[style\=font-size:(.+)\](.+)\[\/style\]#iUs', "[size=$1]$2[/size]", $string);
+			     $string = preg_replace('#\[style\=color:(.+)\;](.+)\[\/style\]#iUs', "[color=$1]$2[/color]", $string);
+		         $string = preg_replace('#\[style\=font-size:(.+)\]#iUs', "", $string);
+		         $string = preg_replace('#\[style\=color:(.+)\]#iUs', "", $string);
 
-		$replace_find_matches = array("");
-		$string =  str_replace($find_matches1,$replace_find_matches, $string);
-		$string =  str_replace($find_matches2,$replace_find_matches, $string);
+				$regexcode_size['[size]'] = '#\[size\=(.+)\]#iUs';
+				$string = preg_replace_callback($regexcode_size, function($matches_size) {
+				$matches_size[1] = str_replace("px", "", $matches_size[1]);
+				$matches_size[1] = str_replace(";", "", $matches_size[1]);
+				if($matches_size[1] > 6)
+				{
+				$matches_size[1] = 4;
+				}
+				return '[size='.$matches_size[1].']';
+				}, $string);
 
-		$string = strip_tags($string);
+	        }
+	        else
+	        {
+			$string = str_replace("&amp;", "&", $string);
+			$find_matches1 = array("\n&lt;br&gt;","\n&lt;br /&gt;","\n&lt;hr&gt;");
+			$find_matches2 = array("&lt;br&gt;\r","&lt;br /&gt;\r","&lt;hr&gt;\r");
 
+			$replace_find_matches = array("");
+			$string =  str_replace($find_matches1,$replace_find_matches, $string);
+			$string =  str_replace($find_matches2,$replace_find_matches, $string);
+
+			$string = strip_tags($string);
+	        }
+       }
 		return $string;
 	}
 

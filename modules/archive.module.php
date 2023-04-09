@@ -114,7 +114,7 @@ class PowerBBCoreMOD
 															$forum['is_sub_archive'] = 1;
 														}
                                                         $forum_url = "index.php?page=forum_archive&amp;show=1&amp;id=";
-														$forum['sub_archive'] .= '<li><a href="'.$PowerBB->functions->rewriterule($forum_url).$sub['id'].'">'.$sub['title'].'</a></li>';
+														$forum['sub_archive'] .= '<ul><li><a href="'.$PowerBB->functions->rewriterule($forum_url).$sub['id'].'">'.$sub['title'].'</a></li></ul>';
 
                                                        // subs forum ++
 														@include("cache/forums_cache/forums_cache_".$sub['id'].".php");
@@ -125,17 +125,10 @@ class PowerBBCoreMOD
 														    {
 														      if ($sub['id'] == $subforum['parent'])
 														     {
+ 														      $forum['sub_archive'] .= '<ul><li style="padding-right: 20px;"><a href="'.$PowerBB->functions->rewriterule($forum_url).$subforum['id'].'">'.$subforum['title'].'</a></li></ul>';
+ 														     }
 
-														$forum['sub_archive'] .= '<ul><li><a href="'.$PowerBB->functions->rewriterule($forum_url).$subforum['id'].'">'.$subforum['title'].'</a></li></ul>';
-
-
-														     }
-
-														    }
-
-														}
-
-		                                                   // subs forum +++
+		                                                        // subs forum +++
 																@include("cache/forums_cache/forums_cache_".$subforum['id'].".php");
 																if (!empty($forums_cache))
 								                                {
@@ -145,13 +138,37 @@ class PowerBBCoreMOD
 																      if ($subforum['id'] == $sub4forum['parent'])
 																     {
 
-														              $forum['sub_archive'] .= '<ul><li><a href="'.$PowerBB->functions->rewriterule($forum_url).$sub4forum['id'].'">'.$sub4forum['title'].'</a></li></ul>';
+														              $forum['sub_archive'] .= '<ul><li style="padding-right: 60px;"><a href="'.$PowerBB->functions->rewriterule($forum_url).$sub4forum['id'].'">'.$sub4forum['title'].'</a></li></ul>';
 
 																     }
+
+
+																               @include("cache/forums_cache/forums_cache_".$sub4forum['id'].".php");
+																				if (!empty($forums_cache))
+												                                {
+																				    $subs5forum = json_decode(base64_decode($forums_cache), true);
+												                                   foreach($subs5forum  as $sub5forum)
+																				    {
+																				      if ($sub4forum['id'] == $sub5forum['parent'])
+																				     {
+
+																		              $forum['sub_archive'] .= '<ul><li style="padding-right: 80px;"><a href="'.$PowerBB->functions->rewriterule($forum_url).$sub5forum['id'].'">'.$sub5forum['title'].'</a></li></ul>';
+
+																				     }
+
+																				    }
+
+																				}
 
 																    }
 
 																}
+
+															}
+
+														}
+
+
 											        }
 											  }
 										 }

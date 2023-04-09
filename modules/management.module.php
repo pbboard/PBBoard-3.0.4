@@ -967,7 +967,6 @@ class PowerBBManagementMOD
 
 		$this->Subject = $PowerBB->core->GetInfo($SubjectArr,'subject');
 
-
 		$PowerBB->template->assign('SubjectpreviewInfo',$this->Subject);
 
 		// Get section information and set it in $this->Section
@@ -978,6 +977,7 @@ class PowerBBManagementMOD
 		$PowerBB->template->assign('section_info',$this->Section);
 
          $previewtext = $PowerBB->_POST['text'];
+
          $previewtext = $PowerBB->Powerparse->replace($previewtext);
          $previewtext = $PowerBB->Powerparse->censor_words($previewtext);
          $PowerBB->Powerparse->replace_smiles($previewtext);
@@ -985,6 +985,13 @@ class PowerBBManagementMOD
          // $PowerBB->_POST['text'] = $PowerBB->Powerparse->censor_words($PowerBB->_POST['text']);
             $PowerBB->_POST['title'] = $PowerBB->Powerparse->censor_words($PowerBB->_POST['title']);
             $PowerBB->_POST['describe'] = $PowerBB->Powerparse->censor_words($PowerBB->_POST['describe']);
+			$regexcodeww = array();
+			$regexcodeww['[code]'] = '#\[code\](.*)\[/code\]#siU';
+			$regexcodeww['[php]'] = '#\[php\](.*)\[/php\]#siU';
+			$PowerBB->_POST['text'] = preg_replace_callback($regexcodeww, function($matchesww) {
+			return '[code]'.htmlspecialchars($matchesww[1]).'[/code]';
+			}, $PowerBB->_POST['text']);
+
          $PowerBB->template->assign('prev',$PowerBB->_POST['text']);
          $PowerBB->template->assign('title_prev',$PowerBB->_POST['title']);
          $PowerBB->template->assign('describe_prev',$PowerBB->_POST['describe']);
@@ -1018,16 +1025,11 @@ class PowerBBManagementMOD
             $PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['path_not_true']);
 		}
 
-
-
         // Moderator And admin Editing Subject any time limit
-
 	     if (!$PowerBB->functions->ModeratorCheck($PowerBB->_GET['section']))
 	     {
 
-
              // time_out For Editing Subject
-
 				$SubjectArr = array();
 				$SubjectArr['where'] = array('id',$PowerBB->_GET['subject_id']);
 
@@ -1091,9 +1093,8 @@ class PowerBBManagementMOD
  	function __SubjectEdit()
 	{
 		global $PowerBB;
-
+       define('DONT_STRIPS_SLIASHES',true);
 		$PowerBB->_GET['subject_id'] = $PowerBB->functions->CleanVariable($PowerBB->_GET['subject_id'],'intval');
-
 
 		if (empty($PowerBB->_GET['subject_id']))
 		{
@@ -1105,6 +1106,10 @@ class PowerBBManagementMOD
 				$SubjectArr['where'] = array('id',$PowerBB->_GET['subject_id']);
 
 				$SubjectInfo  = $PowerBB->core->GetInfo($SubjectArr,'subject');
+
+
+
+
          $SubjectInfo['title']    =   $PowerBB->Powerparse->censor_words($SubjectInfo['title']);
          $SubjectInfo['reason_edit']    =   $PowerBB->Powerparse->censor_words($SubjectInfo['reason_edit']);
          $SubjectInfo['subject_describe']    =   $PowerBB->Powerparse->censor_words($SubjectInfo['subject_describe']);
@@ -1114,6 +1119,7 @@ class PowerBBManagementMOD
 
 				$PowerBB->_CONF['template']['SubjectInfo'] = $SubjectInfo;
 		        $GetSubjectInfo = $SubjectInfo;
+
 
 		if ($PowerBB->_CONF['group_info']['group_mod'] == '1')
 		{
@@ -1163,18 +1169,30 @@ class PowerBBManagementMOD
           }
        }
 
+		$regexcodew = array();
+		$regexcodew['[code]'] = '#\[code\](.*)\[/code\]#siU';
+		$regexcodew['[php]'] = '#\[php\](.*)\[/php\]#siU';
+		$GetSubjectInfo['text'] = preg_replace_callback($regexcodew, function($matchesw) {
+		return '[code]'.base64_encode($matchesw[1]).'[/code]';
+		}, $GetSubjectInfo['text']);
 
-       // $GetSubjectInfo['text'] = $PowerBB->Powerparse->censor_words($GetSubjectInfo['text']);
-        if(strstr($GetSubjectInfo['text'],"<br />"))
-        {
-		 $GetSubjectInfo['text'] = $PowerBB->Powerparse->html2bb($GetSubjectInfo['text']);
-         $PowerBB->_CONF['template']['ReplyInfo']['text'] = $PowerBB->Powerparse->remove_strings($PowerBB->_CONF['template']['ReplyInfo']['text']);
-		}
-		//$GetSubjectInfo['text'] = str_replace('<br />', "", $GetSubjectInfo['text']);
+        $GetSubjectInfo['text']    =   $PowerBB->Powerparse->html2bb($GetSubjectInfo['text']);
+     // Fix up new lines and block level elements
+     $GetSubjectInfo['text'] = preg_replace("#(</?(?:html|head|body|div|p|form|table|thead|tbody|tfoot|tr|td|th|ul|ol|li|div|p|blockquote|cite|hr)[^>]*>)\s*<br />#i", "$1", $GetSubjectInfo['text']);
+	 $GetSubjectInfo['text'] = preg_replace("#(&nbsp;)+(</?(?:html|head|body|div|p|form|table|thead|tbody|tfoot|tr|td|th|ul|ol|li|div|p|blockquote|cite|hr)[^>]*>)#i", "$2", $GetSubjectInfo['text']);
+
 		$GetSubjectInfo['title'] 	= 	$PowerBB->functions->CleanVariable($GetSubjectInfo['title'],'html');
 		$GetSubjectInfo['title'] 	= 	$PowerBB->functions->CleanVariable($GetSubjectInfo['title'],'sql');
          $GetSubjectInfo['title']    =   $PowerBB->Powerparse->censor_words($GetSubjectInfo['title']);
-        // $GetSubjectInfo['text'] = @strip_tags($GetSubjectInfo['text']);
+
+		$regexcodeww = array();
+		$regexcodeww['[code]'] = '#\[code\](.*)\[/code\]#siU';
+		$regexcodeww['[php]'] = '#\[php\](.*)\[/php\]#siU';
+		$GetSubjectInfo['text'] = preg_replace_callback($regexcodeww, function($matchesww) {
+		return '[code]'.htmlspecialchars(base64_decode($matchesww[1])).'[/code]';
+		}, $GetSubjectInfo['text']);
+
+
         $PowerBB->template->assign('GetSubjectInfo',$GetSubjectInfo['text']);
 
 		$MemberArr 				= 	array();
@@ -1360,11 +1378,20 @@ class PowerBBManagementMOD
 		if ($PowerBB->_POST['preview'])
        {
             define('DONT_STRIPS_SLIASHES',true);
-			$PowerBB->_POST['text'] = str_replace('target="_blank" ','',$PowerBB->_POST['text']);
+
+            $PowerBB->_POST['text'] = str_replace('target="_blank" ','',$PowerBB->_POST['text']);
+            $preview = $PowerBB->_POST['text'];
+			$regexcodew = array();
+			$regexcodew['[code]'] = '#\[code\](.*)\[/code\]#siU';
+			$regexcodew['[php]'] = '#\[php\](.*)\[/php\]#siU';
+			$PowerBB->_POST['text'] = preg_replace_callback($regexcodew, function($matchesw) {
+			return '[code]'.htmlspecialchars($matchesw[1]).'[/code]';
+			}, $PowerBB->_POST['text']);
+
 			$PowerBB->template->assign('prev',$PowerBB->_POST['text']);
-			$PowerBB->_POST['text'] = $PowerBB->Powerparse->replace($PowerBB->_POST['text']);
-			$PowerBB->Powerparse->replace_smiles($PowerBB->_POST['text']);
-            $PowerBB->_POST['text'] = $PowerBB->Powerparse->censor_words($PowerBB->_POST['text']);
+			$preview = $PowerBB->Powerparse->replace($preview);
+			$PowerBB->Powerparse->replace_smiles($preview);
+            $preview = $PowerBB->Powerparse->censor_words($preview);
          $PowerBB->_POST['title']    =   $PowerBB->Powerparse->censor_words($PowerBB->_POST['title']);
          $PowerBB->_POST['reason_edit']    =   $PowerBB->Powerparse->censor_words($PowerBB->_POST['reason_edit']);
          $PowerBB->_POST['close_reason']    =   $PowerBB->Powerparse->censor_words($PowerBB->_POST['close_reason']);
@@ -1372,17 +1399,20 @@ class PowerBBManagementMOD
          $PowerBB->_POST['prefix_subject']    =   $PowerBB->Powerparse->censor_words($PowerBB->_POST['prefix_subject']);
          $PowerBB->_POST['describe']    =   $PowerBB->Powerparse->censor_words($PowerBB->_POST['describe']);
 
+
 			$PowerBB->template->assign('title_prev',$PowerBB->_POST['title']);
 			$PowerBB->template->assign('describe_prev',$PowerBB->_POST['describe']);
-			$PowerBB->template->assign('preview',$PowerBB->_POST['text']);
+			$PowerBB->template->assign('preview',$preview);
 
-			$PowerBB->template->assign('view_preview',$PowerBB->_POST['text']);
+			$PowerBB->template->assign('view_preview',$preview);
 			$PowerBB->template->assign('reason_edit',$PowerBB->_POST['reason_edit']);
 
 			$PowerBB->template->assign('prefix_subject_prev',$PowerBB->_POST['prefix_subject']);
 			$PowerBB->template->assign('subject_id',$PowerBB->_GET['subject_id']);
 
 			$this->_SubjectEditpreview();
+
+
 
 
         }
@@ -1914,7 +1944,7 @@ class PowerBBManagementMOD
 	function __ReplyEdit()
 	{
 		global $PowerBB;
-
+      define('DONT_STRIPS_SLIASHES',true);
 		if ($PowerBB->_CONF['group_info']['group_mod'] == '1')
 		{
 			if ($PowerBB->_CONF['group_info']['edit_reply'] == '0')
@@ -2008,12 +2038,19 @@ class PowerBBManagementMOD
 
 		$PowerBB->_CONF['template']['ReplyInfo'] = $PowerBB->core->GetInfo($ReplyArr,'reply');
 
+			$regexcodew = array();
+			$regexcodew['[code]'] = '#\[code\](.*)\[/code\]#siU';
+			$regexcodew['[php]'] = '#\[php\](.*)\[/php\]#siU';
+			$PowerBB->_CONF['template']['ReplyInfo']['text'] = preg_replace_callback($regexcodew, function($matchesw) {
+			return '[code]'.base64_encode($matchesw[1]).'[/code]';
+			}, $PowerBB->_CONF['template']['ReplyInfo']['text']);
 
-        if(strstr($PowerBB->_CONF['template']['ReplyInfo']['text'],"<br />"))
-        {
-         $PowerBB->_CONF['template']['ReplyInfo']['text'] = $PowerBB->Powerparse->html2bb($PowerBB->_CONF['template']['ReplyInfo']['text']);
-         $PowerBB->_CONF['template']['ReplyInfo']['text'] = $PowerBB->Powerparse->remove_strings($PowerBB->_CONF['template']['ReplyInfo']['text']);
-		}
+			$PowerBB->_CONF['template']['ReplyInfo']['text']    =   $PowerBB->Powerparse->html2bb($PowerBB->_CONF['template']['ReplyInfo']['text']);
+			// Fix up new lines and block level elements
+			$PowerBB->_CONF['template']['ReplyInfo']['text'] = preg_replace("#(</?(?:html|head|body|div|p|form|table|thead|tbody|tfoot|tr|td|th|ul|ol|li|div|p|blockquote|cite|hr)[^>]*>)\s*<br />#i", "$1", $PowerBB->_CONF['template']['ReplyInfo']['text']);
+			$PowerBB->_CONF['template']['ReplyInfo']['text'] = preg_replace("#(&nbsp;)+(</?(?:html|head|body|div|p|form|table|thead|tbody|tfoot|tr|td|th|ul|ol|li|div|p|blockquote|cite|hr)[^>]*>)#i", "$2", $PowerBB->_CONF['template']['ReplyInfo']['text']);
+
+
 
 		$SubjectArr = array();
 		$SubjectArr['where'] = array('id',$PowerBB->_GET['subject_id']);
@@ -2049,7 +2086,13 @@ class PowerBBManagementMOD
           $PowerBB->template->assign('Admin',$Admin);
           $PowerBB->template->assign('SRInfo',$PowerBB->_CONF['template']['ReplyInfo']);
 
-		//$PowerBB->_CONF['template']['ReplyInfo']['text'] = $PowerBB->Powerparse->replace_htmlentities($PowerBB->_CONF['template']['ReplyInfo']['text']);
+
+			$regexcodeww = array();
+			$regexcodeww['[code]'] = '#\[code\](.*)\[/code\]#siU';
+			$regexcodeww['[php]'] = '#\[php\](.*)\[/php\]#siU';
+			$PowerBB->_CONF['template']['ReplyInfo']['text'] = preg_replace_callback($regexcodeww, function($matchesww) {
+			return '[code]'.htmlspecialchars(base64_decode($matchesww[1])).'[/code]';
+			}, $PowerBB->_CONF['template']['ReplyInfo']['text']);
 
          $PowerBB->template->assign('GetReplyInfo',$PowerBB->_CONF['template']['ReplyInfo']['text']);
 		$PowerBB->template->display('reply_edit');
@@ -2115,17 +2158,26 @@ class PowerBBManagementMOD
 		if ($PowerBB->_POST['preview'])
        {
          define('DONT_STRIPS_SLIASHES',true);
-		$PowerBB->_POST['text'] = str_replace('target="_blank" ','',$PowerBB->_POST['text']);
+         $PowerBB->_POST['text'] = str_replace('target="_blank" ','',$PowerBB->_POST['text']);
+            $preview = $PowerBB->_POST['text'];
+			$regexcodew = array();
+			$regexcodew['[code]'] = '#\[code\](.*)\[/code\]#siU';
+			$regexcodew['[php]'] = '#\[php\](.*)\[/php\]#siU';
+			$PowerBB->_POST['text'] = preg_replace_callback($regexcodew, function($matchesw) {
+			return '[code]'.htmlspecialchars($matchesw[1]).'[/code]';
+			}, $PowerBB->_POST['text']);
+
+
 		$PowerBB->template->assign('prev',$PowerBB->_POST['text']);
-		$PowerBB->_POST['text'] = $PowerBB->Powerparse->replace($PowerBB->_POST['text']);
-		$PowerBB->Powerparse->replace_smiles($PowerBB->_POST['text']);
-        $PowerBB->_POST['text'] = $PowerBB->Powerparse->censor_words($PowerBB->_POST['text']);
+		$preview = $PowerBB->Powerparse->replace($preview);
+		$PowerBB->Powerparse->replace_smiles($preview);
+        $preview = $PowerBB->Powerparse->censor_words($preview);
 
 
 		$PowerBB->template->assign('reply_id',$PowerBB->_GET['reply_id']);
 		$PowerBB->template->assign('subject_id',$PowerBB->_GET['subject_id']);
-		$PowerBB->template->assign('preview',$PowerBB->_POST['text']);
-		$PowerBB->template->assign('view_preview',$PowerBB->_POST['text']);
+		$PowerBB->template->assign('preview',$preview);
+		$PowerBB->template->assign('view_preview',$preview);
 
 		$PowerBB->_POST['reason_edit'] = $PowerBB->Powerparse->censor_words($PowerBB->_POST['reason_edit']);
 		$PowerBB->_POST['reason_edit'] 	= 	$PowerBB->functions->CleanVariable($PowerBB->_POST['reason_edit'],'html');

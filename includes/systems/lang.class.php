@@ -128,7 +128,9 @@ class PowerBBLang
 			trigger_error('ERROR::NEED_PARAMETER -- FROM ChangeLang() -- EMPTY lang',E_USER_ERROR);
 		}
 
-		$update = setcookie($this->Engine->_CONF['lang_cookie'],$param['lang'],$param['expire']);
+		   $options 			 = 	array();
+		   $options['expires']	 =	$param['expire'];
+           $update = $this->Engine->functions->pbb_set_cookie($this->Engine->_CONF['lang_cookie'],$param['lang'],$options);
 
 		return ($update) ? true : false;
 	}

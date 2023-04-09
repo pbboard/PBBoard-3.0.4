@@ -248,7 +248,6 @@ class PowerBBCommon
 	 {
 		$username = $_SESSION[$PowerBB->_CONF['admin_username_cookie']];
 		$password = $_SESSION[$PowerBB->_CONF['admin_password_cookie']];
-
 		$PowerBB->_CONF['member_permission'] = false;
 
 		if (!empty($username)
@@ -288,9 +287,9 @@ class PowerBBCommon
 			$CheckArr['username'] 	= 	$username;
 			$CheckArr['password'] 	= 	$password;
 
-			$CheckMember = $PowerBB->member->CheckAdmin($CheckArr);
+			$CheckMember = $PowerBB->member->GetMemberInfo($CheckArr);
 
-			if ($CheckMember != false)
+			if ($CheckMember)
 			{
 				$PowerBB->_CONF['rows']['member_row'] = 	$CheckMember;
 				$PowerBB->_CONF['member_permission'] 	= 	true;

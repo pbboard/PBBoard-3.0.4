@@ -19,6 +19,24 @@ exit;
 //Generate a key, print a form:
 $Generatekey = @sha1(@microtime());
 $_SESSION['csrf'] = $Generatekey;
+
+// check session authenticated by HTTP_USER_AGENT
+if(!empty($_SESSION['PowerBB_username']))
+{
+	if ($_SESSION['HTTP_USER_AGENT'] == strtolower(md5($_SERVER['HTTP_USER_AGENT'])))
+	{
+	  //safe Continue..
+	}
+	else
+	{
+	  //sessionانهاء ال
+	    session_destroy();
+	    echo "you are not authenticated.";
+	    exit();
+	}
+}
+
+
 //Set no caching
 // Make sure is not cached (as it happens for example on iOS devices)
 header("Expires: 0");
@@ -186,6 +204,8 @@ class PowerBBLocalCommon
  		$PowerBB->_CONF['template']				=	array();
  		$PowerBB->_CONF['template']['while']		=	array();
  		$PowerBB->_CONF['template']['foreach']	=	array();
+ 		$PowerBB->_CONF['user_session_login']	=	false;
+
  		//////////
  		// Make life easy for developers :)
  		//$PowerBB->DB->SetDebug(true);

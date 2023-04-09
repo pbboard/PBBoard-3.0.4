@@ -94,7 +94,7 @@ class PowerBBPasswordMOD
 
 		if ($ForgetMemberInfo)
 		{
-		    $new_password = md5($ForgetMemberInfo['new_password']);
+		      $password_fields = $PowerBB->functions->create_password($ForgetMemberInfo['new_password'], false);
 		      $GetForumAdress = $PowerBB->functions->GetForumAdress();
              if ($PowerBB->_CONF['template']['_CONF']['lang']['lostpw'] !='')
               {               $MassegeInfo['text'] = $PowerBB->_CONF['template']['_CONF']['lang']['lostpw'];
@@ -135,7 +135,8 @@ class PowerBBPasswordMOD
 			{			$PassArr 			= 	array();
 			$PassArr['field'] 	= 	array();
 
-			$PassArr['field']['password'] 	= 	$new_password;
+			$PassArr['field']['password'] 	    = 	$password_fields['password'];
+			$PassArr['field']['active_number'] 	= 	$password_fields['salt'];
 			$PassArr['field']['new_password'] 	= 	"";
 			$PassArr['where'] 				= 	array('username',$RequestInfo['username']);
 

@@ -238,6 +238,25 @@ class PBBTemplate
 			 $catsort = $PowerBB->DB->sql_fetch_array($CatArr);
 			 $string = str_replace("!= 1}", "!=". $catsort['sort']."}", $string);
             }
+
+            if ($filename == 'info_bar')
+			{
+			 if($PowerBB->functions->is_bot())
+			  {
+				$first_search = "!{$_CONF['member_permission']}";
+				$first_replace = "{$_CONF['member_permission']}";
+				$string = str_replace($first_search,$first_replace,$string);
+			  }
+			}
+            if ($filename == 'writer_info')
+			{
+              $string = str_replace("search_for_all_replys']}", "search_for_all_replys']} ", $string);
+              $string = str_replace("search_for_all_posts']}", "search_for_all_posts']} ", $string);
+              $string = str_replace("send_a_private_message_to']}", "send_a_private_message_to']} ", $string);
+              $string = str_replace("send_a_message_to_the_mailing']}", "send_a_private_message_to']} ", $string);
+              $string = str_replace("edit_member_data']}", "edit_member_data']} ", $string);
+			}
+
 			$string = str_replace('<label for="emailed_id">',"\n", $string);
 			$string = str_replace("ForumAdress}look/","ForumAdress}look/", $string);
 
@@ -387,6 +406,12 @@ class PBBTemplate
 			$first_replace = "last_post=1&amp;count=";
 			$string = str_replace($first_search,$first_replace,$string);
 			}
+			elseif ($filename == 'show_tags_topic')
+			{
+			$first_search = "id";
+			$first_replace = "tag";
+			$string = str_replace($first_search,$first_replace,$string);
+			}
 			elseif ($filename == 'usercp_menu')
 			{
 			$search_coordination_array 	= 	array();
@@ -399,10 +424,31 @@ class PBBTemplate
 			$replace_coordination_array[] = "";
 			$string = str_replace($search_coordination_array,$replace_coordination_array,$string);
 			}
+			elseif ($filename == 'show_subject_control'
+			or $filename == 'subject_close_index'
+			or $filename == 'subject_move_index'
+			or $filename == 'subject_repeat_index')
+			{
+			$first_search = 'ajax_moderator_options';
+			$first_replace = 'ajax_search"';
+			$string = str_replace($first_search,$first_replace,$string);
+			}
+			elseif ($filename == 'forum_subject_table')
+			{
+			$search_coordination_array 	= 	array();
+			$replace_coordination_array 	= 	array();
+			$search_coordination_array[] = "forum_sub_vis wd4";
+			$replace_coordination_array[] = "forum_sub_vis wd6";
 
+			$search_coordination_array[] = "forum_sub_rep wd4";
+			$replace_coordination_array[] = "forum_sub_rep wd6";
+
+			$string = str_replace($search_coordination_array,$replace_coordination_array,$string);
+			}
 			$string = str_replace('alt=""','alt="icon"',$string);
 			$string = str_replace("alt=''","alt='icon'",$string);
 			$string = str_replace("<!--copyright-->",$PowerBB->functions->copyright(),$string);
+             $string = str_replace('emoticons/','look/sceditor/emoticons/',$string);
 
 			$string = str_replace("Jsvk","",$string);
 			$string = str_replace('action="index.php?page=login','name="login" action="index.php?page=login',$string);

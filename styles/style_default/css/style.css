@@ -4860,11 +4860,12 @@ padding: 20px;
 font-family: "Droid Arabic Kufi","tahoma",sans-serif;
 font-size: 12px;
 text-align: center;
+width: 100px;
 }
 
-.Code_table tr:first-child.td:nth-child(1) {
+.Code_table td:first-child.td:nth-child(1) {
 text-align:right;
-background-color: #FFCCCC;
+background-color: #409bd9;
 }
 
 .Code_table tr  {
@@ -4872,16 +4873,16 @@ background-color: #F0F0F0;
 color: #000;
 font-weight: bold;
 }
-.Code_table tr:first-child  {
-background-color: #409BD9;
+.Code_table td:first-child  {
+background-color: #409bd9;
 color: white;
 padding: 6px;
 font-family: "Droid Arabic Kufi","tahoma",sans-serif;
 font-size: 11px;
 text-align: center;
 }
-.Code_table tr:first-child:hover {
-background-color: #3682b6;
+.Code_table td:first-child:hover {
+background-color: #409bd9;
 }
 
 .bbcodes-list{
@@ -5520,7 +5521,26 @@ border-bottom:0px solid #000;
 header {
 margin-top: 50px;
 }
-
+.Code_table td {
+display: block;
+padding: 10px;
+width: 97%;
+word-break: break-word;
+}
+.Code_table tr {
+display: table-row;
+}
+table.Code_table{
+display: table;
+}
+.Code_table td:first-child {
+    background-color: #409bd9;
+    color: #fff;
+}
+.Code_table tr:first-child {
+    background-color: #fff;
+    color: #000;
+}
 }
 @media (min-width:651px) {
 .forum_sub_n_rep, .forum_sub_n_vis{

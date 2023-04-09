@@ -10,7 +10,7 @@ class PowerBBCoreMOD
 	function run()
 	{
 		global $PowerBB;
-       $PowerBB->_GET['id']	= 	$PowerBB->functions->CleanVariable($PowerBB->_GET['id'],'intval');
+       // $PowerBB->_GET['id']	= 	$PowerBB->functions->CleanVariable($PowerBB->_GET['id'],'intval');
 
 		// Show header with page title
 		if ($PowerBB->_GET['show'])
@@ -40,29 +40,21 @@ class PowerBBCoreMOD
 	{
 		global $PowerBB;
 
-		// Clean the id from any strings
-		$PowerBB->_GET['id'] = $PowerBB->functions->CleanVariable($PowerBB->_GET['id'],'intval');
+       $PowerBB->_GET['tag'] = $PowerBB->functions->CleanVariable($PowerBB->_GET['tag'],'trim');
 
-		if (empty($PowerBB->_GET['id']))
+	   $PowerBB->_GET['tag'] = $PowerBB->functions->CleanVariable($PowerBB->_GET['tag'],'html');
+
+      	if (empty($PowerBB->_GET['tag']))
 		{
 			$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['path_not_true']);
 		}
-
 		$PowerBB->_GET['count'] = (!isset($PowerBB->_GET['count'])) ? 0 : $PowerBB->_GET['count'];
 		$PowerBB->_GET['count'] = $PowerBB->functions->CleanVariable($PowerBB->_GET['count'],'intval');
 
 
-		$TagInfoArr 			= 	array();
-		$TagInfoArr['where'] 	= 	array('id',$PowerBB->_GET['id']);
-		$TagInfo = $PowerBB->tag_subject->GetSubjectInfo($TagInfoArr);
-
-		if (!$TagInfo)
-		{
-         $PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['taag_requested_does_not_exist']);
-		}
 
 		$TotalArr 			= 	array();
-		$TotalArr['where'] 	= 	array('tag',$TagInfo['tag']);
+		$TotalArr['where'] 	= 	array('tag',$PowerBB->_GET['tag']);
 
 
 		// Pager setup
@@ -72,7 +64,7 @@ class PowerBBCoreMOD
 		$TagArr['where'][0] 				= 	array();
 		$TagArr['where'][0]['name'] 		= 	'tag';
 		$TagArr['where'][0]['oper'] 		= 	'=';
-		$TagArr['where'][0]['value'] 		= 	$TagInfo['tag'];
+		$TagArr['where'][0]['value'] 		= 	$PowerBB->_GET['tag'];
 
 		$TagArr['proc'] 			= 	array();
 		$TagArr['proc']['*'] 		= 	array('method'=>'clean','param'=>'html');
@@ -82,9 +74,9 @@ class PowerBBCoreMOD
 
 		$TagArr['pager'] 				= 	array();
 		$TagArr['pager']['total']		= 	$PowerBB->tag_subject->GetSubjectNumber($TotalArr);
-		$TagArr['pager']['perpage'] 	= 	32; // TODO
+		$TagArr['pager']['perpage'] 	= 	$PowerBB->_CONF['info_row']['subject_perpage']; // TODO
 		$TagArr['pager']['count'] 		= 	$PowerBB->_GET['count'];
-		$TagArr['pager']['location'] 	= 	'index.php?page=tags&amp;show=1&amp;id=' . $PowerBB->_GET['id'];
+		$TagArr['pager']['location'] 	= 	'index.php?page=tags&amp;show=1&amp;tag=' . $PowerBB->_GET['tag'];
 		$TagArr['pager']['var'] 		= 	'count';
 
 		$PowerBB->_CONF['template']['while']['Subject'] = $PowerBB->tag_subject->GetSubjectList($TagArr);
@@ -94,7 +86,7 @@ class PowerBBCoreMOD
 			$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['taag_requested_does_not_exist']);
 		}
 
-		$PowerBB->template->assign('tag',$TagInfo['tag']);
+		$PowerBB->template->assign('tag',$PowerBB->_GET['tag']);
 		if ($PowerBB->tag_subject->GetSubjectNumber($TotalArr) > $PowerBB->_CONF['info_row']['subject_perpage'])
 		{
 		$PowerBB->template->assign('pager',$PowerBB->pager->show());

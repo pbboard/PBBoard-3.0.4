@@ -325,8 +325,7 @@ class PowerBBAJAXtMOD
 
 		$SubjectArr 			= 	array();
 		$SubjectArr['field'] 	= 	array();
-
-		$SubjectArr['field']['text'] 	    = 	$PowerBB->Powerparse->replace_htmlentities($PowerBB->_POST['message']);
+        $SubjectArr['field']['text'] 	        = 	$PowerBB->functions->CleanVariable($PowerBB->_POST['message'],'nohtml');
 		$SubjectArr['field']['actiondate'] 	= 	$PowerBB->_CONF['now'];
      	$SubjectArr['field']['action_by'] 	= 	$PowerBB->_CONF['member_row']['username'];
 		$SubjectArr['where']			    = 	array('id',$PowerBB->_POST['subject_id']);

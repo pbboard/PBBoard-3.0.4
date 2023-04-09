@@ -47,6 +47,13 @@ class PowerBBTopicMOD
 
 		$PowerBB->_CONF['template']['SubjectInfo'] = $PowerBB->core->GetInfo($SubjectArr,'subject');
 
+		$regexcodew = array();
+		$regexcodew['[code]'] = '#\[code\](.*)\[/code\]#siU';
+		$regexcodew['[php]'] = '#\[php\](.*)\[/php\]#siU';
+		$PowerBB->_CONF['template']['SubjectInfo']['text'] = preg_replace_callback($regexcodew, function($matchesw) {
+		return '[code]'.base64_encode($matchesw[1]).'[/code]';
+		}, $PowerBB->_CONF['template']['SubjectInfo']['text']);
+
 		if (!$PowerBB->functions->ModeratorCheck($PowerBB->_CONF['template']['SubjectInfo']['section']))
 		{
 		   if ($PowerBB->_CONF['member_row']['username'] != $PowerBB->_CONF['template']['SubjectInfo']['writer'])
@@ -65,8 +72,18 @@ class PowerBBTopicMOD
 
 		$PowerBB->template->assign('PostInfo',$PowerBB->_CONF['template']['SubjectInfo']);
 		$PowerBB->template->assign('subject','1');
+
+			$regexcodeww = array();
+			$regexcodeww['[code]'] = '#\[code\](.*)\[/code\]#siU';
+			$regexcodeww['[php]'] = '#\[php\](.*)\[/php\]#siU';
+			$PowerBB->_CONF['template']['SubjectInfo']['text'] = preg_replace_callback($regexcodeww, function($matchesww) {
+			return '[code]'.htmlspecialchars(base64_decode($matchesww[1])).'[/code]';
+			}, $PowerBB->_CONF['template']['SubjectInfo']['text']);
+
         $PowerBB->template->assign('text',$PowerBB->_CONF['template']['SubjectInfo']['text']);
          $PowerBB->_CONF['template']['while']['SmileRows'] = $PowerBB->icon->GetCachedSmiles();
+
+
         $PowerBB->template->display('fast_edit');
    }
  	function _ShowfastEdit()
@@ -78,6 +95,14 @@ class PowerBBTopicMOD
 		$ReplyArr['where'] = array('id',$PowerBB->_GET['id']);
 
 		$PowerBB->_CONF['template']['ReplyInfo'] = $PowerBB->core->GetInfo($ReplyArr,'reply');
+
+		$regexcodew = array();
+		$regexcodew['[code]'] = '#\[code\](.*)\[/code\]#siU';
+		$regexcodew['[php]'] = '#\[php\](.*)\[/php\]#siU';
+		$PowerBB->_CONF['template']['ReplyInfo']['text'] = preg_replace_callback($regexcodew, function($matchesw) {
+		return '[code]'.base64_encode($matchesw[1]).'[/code]';
+		}, $PowerBB->_CONF['template']['ReplyInfo']['text']);
+
 
 		if (!$PowerBB->functions->ModeratorCheck($PowerBB->_CONF['template']['ReplyInfo']['section']))
 		{
@@ -95,6 +120,14 @@ class PowerBBTopicMOD
         $PowerBB->_CONF['template']['ReplyInfo']['text'] = $PowerBB->Powerparse->remove_strings($PowerBB->_CONF['template']['ReplyInfo']['text']);
 
 		$PowerBB->template->assign('PostInfo',$PowerBB->_CONF['template']['ReplyInfo']);
+
+			$regexcodeww = array();
+			$regexcodeww['[code]'] = '#\[code\](.*)\[/code\]#siU';
+			$regexcodeww['[php]'] = '#\[php\](.*)\[/php\]#siU';
+			$PowerBB->_CONF['template']['ReplyInfo']['text'] = preg_replace_callback($regexcodeww, function($matchesww) {
+			return '[code]'.htmlspecialchars(base64_decode($matchesww[1])).'[/code]';
+			}, $PowerBB->_CONF['template']['ReplyInfo']['text']);
+
         $PowerBB->template->assign('text',$PowerBB->_CONF['template']['ReplyInfo']['text']);
          $PowerBB->_CONF['template']['while']['SmileRows'] = $PowerBB->icon->GetCachedSmiles();
         $PowerBB->template->display('fast_edit');
@@ -652,7 +685,6 @@ class PowerBBTopicMOD
 		// Convert smiles in subject to nice images :)
 
 		$PowerBB->Powerparse->replace_smiles($PowerBB->_CONF['template']['SubjectInfo']['text']);
-        $PowerBB->Powerparse->replace_wordwrap($PowerBB->_CONF['template']['SubjectInfo']['text']);
 
 		// feltr Subject Text
          $this->Info['text'] = $PowerBB->Powerparse->censor_words($PowerBB->_CONF['template']['SubjectInfo']['text']);
@@ -1144,7 +1176,6 @@ class PowerBBTopicMOD
 
 			// Convert the smiles to image
 			$PowerBB->Powerparse->replace_smiles($this->RInfo[$this->x]['text']);
-			 $PowerBB->Powerparse->replace_wordwrap($this->RInfo[$this->x]['text']);
 
 			// feltr Subject Text
 	         $this->RInfo[$this->x]['text'] = $PowerBB->Powerparse->censor_words($this->RInfo[$this->x]['text']);

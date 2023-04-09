@@ -392,12 +392,13 @@ class PowerBBRecords
  	 	{
  	 	   $r['tag'] = @stripslashes($r['tag']);
  	 	   $r['title'] = @stripslashes($r['title']);
+ 	 	   $r['filepath'] = @htmlspecialchars($r['filepath']);
+ 	 	   $r['filename'] = @htmlspecialchars($r['filename']);
+          $r['title'] = str_replace('amp;','',$r['title']);
  	 	   $r['subject_describe'] = @stripslashes($r['subject_describe']);
  	 	   $r['tag'] = str_replace('&amp;','&',$r['tag']);
  	 	   $r['tag'] = str_replace('&#39;',"'",$r['tag']);
  	 	   $r['title'] = str_replace('&#39;',"'",$r['title']);
- 	 	   $r['title'] = @htmlspecialchars($r['title']);
-
  	 		$rows[$x] = $r;
 
  	 		if (!empty($param['proc'])

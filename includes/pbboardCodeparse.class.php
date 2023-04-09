@@ -190,12 +190,24 @@ class PowerBBCodeParse
             $string = preg_replace('#\[highlight\=(.+)\](.+)\[\/highlight\]#iUs', '<span style="background:$1">$2</span>', $string);
             $string = preg_replace('#\[blockquote\](.+)\[\/blockquote\]#iUs', '<blockquote class=\"quotemain\">$1</blockquote>', $string);
             $string = preg_replace('#\[indent\](.+)\[\/indent\]#iUs', '<indent>$1</indent>', $string);
+			$regexcode_table['[table]'] = '#\[table\=(.+)\]#iUs';
+			$string = preg_replace_callback($regexcode_table, function($matches_table) {
+			$matches_table[1] = $this->htmlspecialchars_off($matches_table[1]);
+			$matches_table[1] = strip_tags($matches_table[1]);
+			return "<table ".$matches_table[1]." class='Code_table'>";
+			}, $string);
 	        $string = preg_replace('#\[table\](.*)\[\/table\]#iUs', '<table border="1" cellspacing="1" class="Code_table">$1</table>', $string);
 	       	$string = preg_replace('#\[tbody\](.*)\[\/tbody\]#iUs', '<tbody>$1</tbody>', $string);
 	       	$string = preg_replace('#\[thead\](.*)\[\/thead\]#iUs', '<thead>$1</thead>', $string);
 	        $string = preg_replace('#\[tr\](.*)\[\/tr\]#iUs', '<tr>$1</tr>', $string);
 	        $string = preg_replace('#\[td\](.*)\[\/td\]#iUs', '<td>$1</td>', $string);
 	        $string = preg_replace('#\[th\](.+)\[\/th\]#iUs', '<th>$1</th>', $string);
+			$regexcode_td['[td]'] = '#\[td\=(.+)\]#iUs';
+			$string = preg_replace_callback($regexcode_td, function($matches_td) {
+			$matches_td[1] = $this->htmlspecialchars_off($matches_td[1]);
+			$matches_table[1] = strip_tags($matches_table[1]);
+			return "<td ".$matches_td[1].">";
+			}, $string);
 	        $string = str_replace('[td]', '<td>', $string);
 	        $string = str_replace('[th]', '<th>', $string);
 	        $string = str_replace('[tr]', '<tr>', $string);
@@ -1381,11 +1393,14 @@ class PowerBBCodeParse
 		}
 		return $string;
 	}
-	// Converts an HTML email into bbcode
+	// Converts HTML into bbcode
 	// This function is loosely based on cbparser.php by corz.org
 	function html2bb($string)
 	{
         global $PowerBB;
+
+	 eval($PowerBB->functions->get_fetch_hooks('convert_html_start'));
+
 	  $string = str_replace("&quot;", '"', $string);
 	  $string = str_replace("&lt;","<", $string);
 	  $string = str_replace("&gt;",">", $string);
@@ -1487,11 +1502,20 @@ class PowerBBCodeParse
 
 		$string = str_replace('<tbody>', '', $string);
 		$string = str_replace('</tbody>', '', $string);
+		$regexcode_td['[td]'] = '#<td(| .*)>#siU';
+		$string = preg_replace_callback($regexcode_td, function($matches_td) {
+		return "[td=".$matches_td[1]."]";
+		}, $string);
+        //$string = preg_replace('#<td(| .*)>#siU', '[td]',  $string);
 
-        $string = preg_replace('#<td(| .*)>#siU', '[td]',  $string);
         $string = preg_replace('#<th(| .*)>#siU', '[th]',  $string);
 		$string = preg_replace('#<tr(| .*)>#siU', '[tr]',  $string);
-		$string = preg_replace('#<table(| .*)>#siU', '[table]',  $string);
+		$regexcode_table['[table]'] = '#<table(| .*)>#siU';
+		$string = preg_replace_callback($regexcode_table, function($matches_table) {
+		return "[table=".$matches_table[1]."]";
+		}, $string);
+
+		//$string = preg_replace('#<table(| .*)>#siU', '[table]',  $string);
 		$string = preg_replace('#<tbody(| .*)>#siU', '',  $string);
 
 
@@ -1551,7 +1575,6 @@ class PowerBBCodeParse
 
          //$string = preg_replace('#<(.*?)>#i', ' ', $string);
 
-		 eval($PowerBB->functions->get_fetch_hooks('convert_html2bb'));
 
 		// Convert HTML quotes
 		$string = $this->htmlspecialchars_uni($string);

@@ -1094,10 +1094,14 @@ class PowerBBCodeParse
                     $message = '';
 
                 }
+
+                $link = htmlspecialchars($link);
                 $message = str_replace('\\"', '"', $message);
                 $message = str_ireplace("&quot;", '"', $message);
                 $link = str_ireplace("&quot;", '"', $link);
-                $link = htmlspecialchars($link);
+                $link = preg_replace('#<a href="(.*?)" (.*?)</a>#i', "$1", $link);
+                $message = str_ireplace("&amp;", '&', $message);
+                $link = str_ireplace("&amp;", '&', $link);
 
                 $link = preg_replace('#<a href="(.*?)" (.*?)</a>#i', "$1", $link);
 

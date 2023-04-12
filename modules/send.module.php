@@ -171,12 +171,13 @@ class PowerBBCoreMOD
 	    $PowerBB->_POST['text']   = 	$PowerBB->functions->CleanVariable($PowerBB->_POST['text'],'sql');
 		$PowerBB->_POST['text']   = 	$PowerBB->functions->CleanVariable($PowerBB->_POST['text'],'html');
 
-		$PowerBB->_POST['code']    =    $PowerBB->functions->CleanVariable($PowerBB->_POST['code'],'trim');
-		$PowerBB->_POST['code']   = 	$PowerBB->functions->CleanVariable($PowerBB->_POST['code'],'sql');
-		$PowerBB->_POST['code']   = 	$PowerBB->functions->CleanVariable($PowerBB->_POST['code'],'html');
 
                  if($PowerBB->_CONF['info_row']['captcha_type'] == 'captcha_Q_A')
 				 {
+
+					$PowerBB->_POST['code']    =    $PowerBB->functions->CleanVariable($PowerBB->_POST['code'],'trim');
+					$PowerBB->_POST['code']   = 	$PowerBB->functions->CleanVariable($PowerBB->_POST['code'],'sql');
+					$PowerBB->_POST['code']   = 	$PowerBB->functions->CleanVariable($PowerBB->_POST['code'],'html');
 
 	                if($PowerBB->_POST['code'] != $PowerBB->_POST['code_answer'])
 					 {
@@ -186,7 +187,11 @@ class PowerBBCoreMOD
 		        if($PowerBB->_CONF['info_row']['captcha_type'] == 'captcha_IMG')
 				 {
 
-			        if(md5($PowerBB->_POST['code']) != $_SESSION['captcha_key'])
+					$PowerBB->_POST['code_confirm']    =    $PowerBB->functions->CleanVariable($PowerBB->_POST['code_confirm'],'trim');
+					$PowerBB->_POST['code_confirm']   = 	$PowerBB->functions->CleanVariable($PowerBB->_POST['code_confirm'],'sql');
+					$PowerBB->_POST['code_confirm']   = 	$PowerBB->functions->CleanVariable($PowerBB->_POST['code_confirm'],'html');
+
+			        if(md5($PowerBB->_POST['code_confirm']) != $_SESSION['captcha_key'])
 					 {
 			            $PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['Code_that_you_enter_the_wrong']);
 				     }
@@ -303,6 +308,10 @@ class PowerBBCoreMOD
   		$PowerBB->_POST['email'] 	= 	$PowerBB->functions->CleanVariable($PowerBB->_POST['email'],'sql');
 		$PowerBB->_POST['text']   = 	$PowerBB->functions->CleanVariable($PowerBB->_POST['text'] ,'sql');
        	$PowerBB->_POST['username']   = 	$PowerBB->functions->CleanVariable($PowerBB->_POST['username'] ,'sql');
+
+		$PowerBB->_POST['code']    =    $PowerBB->functions->CleanVariable($PowerBB->_POST['code'],'trim');
+		$PowerBB->_POST['code']   = 	$PowerBB->functions->CleanVariable($PowerBB->_POST['code'],'sql');
+		$PowerBB->_POST['code']   = 	$PowerBB->functions->CleanVariable($PowerBB->_POST['code'],'html');
 
 
 	     			if (!$PowerBB->_CONF['member_permission'])

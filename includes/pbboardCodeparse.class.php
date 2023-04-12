@@ -42,11 +42,15 @@ class PowerBBCodeParse
 
 		$regexcodew['[code]'] = '#\[code\](.*)\[/code\]#siU';
 		$string = preg_replace_callback($regexcodew, function($matchesw) {
+		$matchesw[1] = str_replace('[color=#ff0000]', "", $matchesw[1]);
+		$matchesw[1] = str_replace('[/color]', "", $matchesw[1]);
 		return '[code]'.base64_encode($matchesw[1]).'[/code]';
 		}, $string);
 
 		$regexcode['[php]'] = '#\[php\](.*)\[/php\]#siU';
 		$string = preg_replace_callback($regexcode, function($matches) {
+		$matches[1] = str_replace('[color=#ff0000]', "", $matches[1]);
+		$matches[1] = str_replace('[/color]', "", $matches[1]);
 		return '[php]'.base64_encode($matches[1]).'[/php]';
 		}, $string);
 

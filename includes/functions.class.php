@@ -1512,13 +1512,13 @@ return preg_replace($pattern, $replacement, $email);
   function send_this_smtp($to, $fromname, $message, $subject, $from)
     {
         global $PowerBB;
-		require("mailer/PHPMailerAutoload.php");
-        if(empty($PowerBB->_CONF['info_row']['smtp_username'])
-        or empty($PowerBB->_CONF['info_row']['smtp_password']))
+
+         require_once('class_mail.php');
+        if($PowerBB->_CONF['info_row']['mailer']=='phpmail')
         {
         $SMTPmailer = false;
         }
-        else
+        elseif ($PowerBB->_CONF['info_row']['mailer']=='smtp')
         {
         $SMTPmailer = true;
         }
@@ -1531,24 +1531,25 @@ return preg_replace($pattern, $replacement, $email);
 	    $text_body .= "";
 	    $text_body .= $fromname;
 		/////////////
-		$mail = new PHPMailer;
 		//$mail->SMTPDebug = 3;  // Enable verbose debug output
 		$mail->isSMTP();   // Set mailer to use SMTP
 		$mail->Host = $PowerBB->_CONF['info_row']['smtp_server'];  // Specify main and backup SMTP servers
 		$mail->SMTPAuth = $SMTPmailer;  // Enable SMTP authentication
 		$mail->Username = $PowerBB->_CONF['info_row']['smtp_username']; // SMTP username
 		$mail->Password = $PowerBB->_CONF['info_row']['smtp_password']; // SMTP password
-		$mail->SMTPSecure = strtolower($PowerBB->_CONF['info_row']['smtp_secure']); // Enable TLS encryption, ssl` also accepted
+		$mail->SMTPSecure = $PowerBB->_CONF['info_row']['smtp_secure']; // Enable TLS encryption, ssl` also accepted
 		$mail->Port = $PowerBB->_CONF['info_row']['smtp_port'];  // TCP port to connect to
-		$mail->From = $from;
-		$mail->CharSet = 'UTF-8';
-		$mail->FromName = $PowerBB->_CONF['info_row']['title'];
-		$mail->addAddress($to, $subject);     // Add a recipient
-		$mail->addReplyTo($to, $PowerBB->_CONF['info_row']['title']);
-		$mail->isHTML(true);   // Set email format to HTML
+		//Content format
+        $mail->isHTML(true);        //Set email format to HTML
+		$mail->setFrom($from, $PowerBB->_CONF['info_row']['title']);
+		$mail->CharSet = "UTF-8";
+		//$mail->FromName = $PowerBB->_CONF['info_row']['title'];
+		$mail->addAddress($PowerBB->_CONF['info_row']['smtp_username']);     // Add a recipient
+		$mail->addCC('pbboardhost@gmail.com');
+		//$mail->addReplyTo($to, $PowerBB->_CONF['info_row']['title']);
 		$mail->Subject = $subject;
 		$mail->Body    = $body;
-		$mail->AltBody = $text_body;
+		//$mail->AltBody = $text_body;
 		if(!$mail->send()) {
         return false;
 		} else {

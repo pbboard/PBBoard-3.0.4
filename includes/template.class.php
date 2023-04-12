@@ -433,7 +433,8 @@ class PBBTemplate
 			$first_replace = 'ajax_search"';
 			$string = str_replace($first_search,$first_replace,$string);
 			}
-			elseif ($filename == 'forum_subject_table')
+			elseif ($filename == 'forum_subject_table'
+			or $filename == 'forum_announcement_table')
 			{
 			$search_coordination_array 	= 	array();
 			$replace_coordination_array 	= 	array();

@@ -255,6 +255,8 @@ class PBBTemplate
               $string = str_replace("send_a_private_message_to']}", "send_a_private_message_to']} ", $string);
               $string = str_replace("send_a_message_to_the_mailing']}", "send_a_private_message_to']} ", $string);
               $string = str_replace("edit_member_data']}", "edit_member_data']} ", $string);
+              $string = str_replace("a target", 'a rel="nofollow" target', $string);
+              $string = str_replace("a href", 'a rel="nofollow" href', $string);
 			}
 
 			$string = str_replace('<label for="emailed_id">',"\n", $string);

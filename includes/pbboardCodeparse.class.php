@@ -35,6 +35,10 @@ class PowerBBCodeParse
         {        $string = str_replace("[/code]", "<br />\r\n[/code]", $string);
         }
 		// start replaces code
+		 $string = str_replace("&lt;code&gt;", "[code]", $string);
+		 $string = str_replace("&lt;/code&gt;", "[/code]", $string);
+		 $string = str_replace("&lt;/img&gt;", "", $string);
+
 		$regexcode_htmlcode['[code]'] = '#<code (.*)>(.*)</code>#siU';
 		$string = preg_replace_callback($regexcode_htmlcode, function($matches_htmlcode) {
         return $matches_htmlcode[2];
@@ -1128,6 +1132,10 @@ class PowerBBCodeParse
 					 $url = "<a href=\"$register_link\" target=\"_blank\" title=\"$register_link\">$Guest_message</a>";
 	                }
 				}
+				if(!strstr($url,$PowerBB->_SERVER['HTTP_HOST']))
+				{				$url = str_ireplace('a href=', 'a rel="nofollow" href=', $url);
+				}
+
             eval($PowerBB->functions->get_fetch_hooks('BBCodeParseHooks_url'));
 			return $url;
         }
@@ -1415,8 +1423,8 @@ class PowerBBCodeParse
 	  $string = str_replace('\"','"', $string);
 	  $string = str_replace("&#39;","'", $string);
       $string = str_replace("&nbsp;", ' ', $string);
-      $string = str_replace("<br />", " ", $string);
-
+      $string = str_replace("<br />", "", $string);
+      $string = str_replace("</div>\r\n", ' ', $string);
 		$regexcode_iframe['[iframe]'] = '#<iframe (.*)src="(.*)">(.*)</iframe>#siU';
 		$string = preg_replace_callback($regexcode_iframe, function($matches_iframe) {
         $matches_iframe[2] = str_replace("url", "iframe", $matches_iframe[2]);
@@ -1577,12 +1585,13 @@ class PowerBBCodeParse
     	 $string = preg_replace('#<dd(.*?)>#i', " ", $string);
          $string = str_replace('</dd>', ' ', $string);
          $string = preg_replace('#<mark (.*)">(.*)</mark>#siU', '$2', $string);
-                         $Adress = $PowerBB->functions->GetForumAdress();
-                 $string = str_replace('[url=download/', '[url='.$Adress.'download/', $string);
+         $Adress = $PowerBB->functions->GetForumAdress();
+         $string = str_replace('[url=download/', '[url='.$Adress.'download/', $string);
 
+         $string = preg_replace('#<font.*? color="(.*?)".*?>#si', '', $string);
+         $string = str_replace("</font>", "", $string);
 
-         //$string = preg_replace('#<(.*?)>#i', ' ', $string);
-
+         $string = str_replace("<br>", "", $string);
 
 		// Convert HTML quotes
 		$string = $this->htmlspecialchars_uni($string);

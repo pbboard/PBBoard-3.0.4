@@ -1424,7 +1424,7 @@ class PowerBBCodeParse
 	  $string = str_replace("&#39;","'", $string);
       $string = str_replace("&nbsp;", ' ', $string);
       $string = str_replace("<br />", "", $string);
-      $string = str_replace("</div>\r\n", ' ', $string);
+      $string = str_replace("</div>\r\n", '</div>', $string);
 		$regexcode_iframe['[iframe]'] = '#<iframe (.*)src="(.*)">(.*)</iframe>#siU';
 		$string = preg_replace_callback($regexcode_iframe, function($matches_iframe) {
         $matches_iframe[2] = str_replace("url", "iframe", $matches_iframe[2]);
@@ -1588,6 +1588,8 @@ class PowerBBCodeParse
          $Adress = $PowerBB->functions->GetForumAdress();
          $string = str_replace('[url=download/', '[url='.$Adress.'download/', $string);
 
+         $string = preg_replace('#<font.*? color="(.*?)".*?>#si', '', $string);
+         $string = str_replace("</font>", "", $string);
 
          $string = str_replace("<br>", "", $string);
 

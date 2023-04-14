@@ -368,6 +368,10 @@ class PowerBBPrivateMassegeShowMOD
 				}
               	$PowerBB->_POST['text']= str_replace($PowerBB->admincpdir."/", '', $PowerBB->_POST['text']);
 
+		if ($PowerBB->_CONF['info_row']['mailer']=='smtp')
+		{
+		require_once("../includes/class_mail.php");
+		}
 
           if ($PowerBB->_POST['group'] == 'all')
               {
@@ -442,8 +446,13 @@ class PowerBBPrivateMassegeShowMOD
 						$message = $username . $Form_Massege;
 						$subject = $title;
 						$from = $PowerBB->_CONF['info_row']['send_email'];
-                         $send_mail = $PowerBB->functions->send_this_smtp($to,$fromname,$message,$subject,$from);
 
+						$mail->setFrom($from, $fromname);
+						$mail->addAddress($to);     // Add a recipient
+						$mail->Subject = $subject;
+						$mail->Body    = $message;
+						$send_mail = $mail->send();
+			            $mail->ClearAddresses();
 						}
                         echo($PowerBB->_CONF['template']['_CONF']['lang']['The_message_was_sent_successfully_to_the_private'].'  : ' . $getmember_row['username'] . "<br />");
 
@@ -526,8 +535,13 @@ class PowerBBPrivateMassegeShowMOD
 						$message = $username . $Form_Massege;
 						$subject = $title;
 						$from = $PowerBB->_CONF['info_row']['send_email'];
-                         $send_mail = $PowerBB->functions->send_this_smtp($to,$fromname,$message,$subject,$from);
 
+						$mail->setFrom($from, $fromname);
+						$mail->addAddress($to);     // Add a recipient
+						$mail->Subject = $subject;
+						$mail->Body    = $message;
+						$send_mail = $mail->send();
+			            $mail->ClearAddresses();
 						}
 
                   echo($PowerBB->_CONF['template']['_CONF']['lang']['The_message_was_sent_successfully_to_the_private'].'  : ' . $getmember_row['username'] . "<br />");

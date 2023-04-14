@@ -1513,49 +1513,30 @@ return preg_replace($pattern, $replacement, $email);
     {
         global $PowerBB;
 
-         require_once('class_mail.php');
-        if($PowerBB->_CONF['info_row']['mailer']=='phpmail')
-        {
-        $SMTPmailer = false;
-        }
-        elseif ($PowerBB->_CONF['info_row']['mailer']=='smtp')
-        {
-        $SMTPmailer = true;
-        }
-	    // HTML body
+        require_once("class_mail.php");
+   	    // HTML body
 	    $body  = "";
 	    $body .= "";
 	    $body .= $message;
-	    // Plain text body (for mail clients that cannot read HTML)
 	    $text_body  = "";
 	    $text_body .= "";
 	    $text_body .= $fromname;
 		/////////////
 		//$mail->SMTPDebug = 3;  // Enable verbose debug output
-		$mail->isSMTP();   // Set mailer to use SMTP
-		$mail->Host = $PowerBB->_CONF['info_row']['smtp_server'];  // Specify main and backup SMTP servers
-		$mail->SMTPAuth = $SMTPmailer;  // Enable SMTP authentication
-		$mail->Username = $PowerBB->_CONF['info_row']['smtp_username']; // SMTP username
-		$mail->Password = $PowerBB->_CONF['info_row']['smtp_password']; // SMTP password
-		$mail->SMTPSecure = $PowerBB->_CONF['info_row']['smtp_secure']; // Enable TLS encryption, ssl` also accepted
-		$mail->Port = $PowerBB->_CONF['info_row']['smtp_port'];  // TCP port to connect to
-		//Content format
-        $mail->isHTML(true);        //Set email format to HTML
-		$mail->setFrom($from, $PowerBB->_CONF['info_row']['title']);
-		$mail->CharSet = "UTF-8";
-		//$mail->FromName = $PowerBB->_CONF['info_row']['title'];
+		$mail->setFrom($from, $fromname);
+		$mail->FromName = $PowerBB->_CONF['info_row']['title'];
 		$mail->addAddress($to);     // Add a recipient
 		//$mail->addCC($to);
 		//$mail->addReplyTo($to, $PowerBB->_CONF['info_row']['title']);
 		$mail->Subject = $subject;
 		$mail->Body    = $body;
-		//$mail->AltBody = $text_body;
-		if(!$mail->send()) {
-        return false;
+		$mail->AltBody = $text_body;
+		if($mail->send()) {
+		$mail->ClearAddresses();        return true;
 		} else {
-		return true;
+		return false;
 		}
- 	}
+	}
  	function words_count($string,$words_count)
  	{
  	 global $PowerBB;

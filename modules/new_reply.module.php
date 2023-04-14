@@ -1,8 +1,8 @@
 <?php
 session_start();
 (!defined('IN_PowerBB')) ? die() : '';
-require_once('common.php');
 define('CLASS_NAME','PowerBBReplyAddMOD');
+require_once('common.php');
 class PowerBBReplyAddMOD
 {
 	var $SectionInfo;
@@ -506,6 +506,7 @@ class PowerBBReplyAddMOD
 	function _Start()
 	{
 		global $PowerBB;
+
 		 setcookie('mqtids','',time()-360000);
         $PowerBB->_GET['id'] = $PowerBB->functions->CleanVariable($PowerBB->_GET['id'],'intval');
         $PowerBB->_GET['reply_id'] = $PowerBB->functions->CleanVariable($PowerBB->_GET['reply_id'],'intval');
@@ -1143,6 +1144,8 @@ class PowerBBReplyAddMOD
 							if ($PowerBB->_CONF['info_row']['allowed_emailed'] == '1')
 							{
 
+
+
 							$SectionInfoid = $this->SectionInfo['id'];
 							$SubjectInfoid = $this->SubjectInfo['id'];
 							$member_row_id = $PowerBB->_CONF['member_row']['id'];
@@ -1189,6 +1192,8 @@ class PowerBBReplyAddMOD
 
 							$getmember_query = $PowerBB->DB->sql_query("SELECT Distinct user_id FROM " . $PowerBB->table['emailed'] . " WHERE user_id NOT IN ('$Mem_not') AND subject_id = '$SubjectInfoid'");
 
+
+
 							if ($PowerBB->emailed->IsEmailed(array('where' => array('subject_id',$SubjectInfoid))))
 							{
 
@@ -1212,8 +1217,14 @@ class PowerBBReplyAddMOD
 								$message = $starthtml.$username.$Form_Massege.$Endhtml;
 								$subject = $PowerBB->functions->CleanVariable($PowerBB->_POST['title'],'html');
 								$from = $PowerBB->_CONF['info_row']['send_email'];
-		                        $Send = $PowerBB->functions->send_this_smtp($to,$fromname,$message,$subject,$from);
-
+                                require_once("includes/class_mail.php");
+                                define('STOP_COMMON',false);
+								$mail->setFrom($from, $fromname);
+								$mail->addAddress($to);     // Add a recipient
+								$mail->Subject = $subject;
+								$mail->Body    = $message;
+								$mail->send();
+					            $mail->ClearAddresses();
 								}
 
 							}

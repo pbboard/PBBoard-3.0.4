@@ -157,11 +157,14 @@ $PowerBB->template->display('footer');
 		$member_nm = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['member'] . " WHERE usergroup='" . intval($MailInfo['user_group']). "' "));
 		}
 		$pagesnum = round(ceil($member_nm / $perpage));
+		if ($PowerBB->_CONF['info_row']['mailer']=='smtp')
+		{
+		require_once("../includes/class_mail.php");
+		}
 		while ($getmember_row = $PowerBB->DB->sql_fetch_array($getmember_query))
 		{
 
-		$username = $PowerBB->_CONF['template']['_CONF']['lang']['hello_your']. ' : ' . $getmember_row['username'] .'
-		';
+		$username = $PowerBB->_CONF['template']['_CONF']['lang']['hello_your']. ' : ' . $getmember_row['username'] .'';
 
           $MailInfo['message'] = str_replace("{username}", $getmember_row['username'],$MailInfo['message']);
           $MailInfo['message'] = str_replace("{user_id}", $getmember_row['id'],$MailInfo['message']);
@@ -179,10 +182,16 @@ $PowerBB->template->display('footer');
 			{
 			$to = $getmember_row['email'];
 			$fromname = $PowerBB->_CONF['info_row']['title'];
-			$message = $MailInfo['message'].$Form_Massege;
+			$message = "<br />".$MailInfo['message']."<br />\r\n".$Form_Massege;
 			$subject = $MailInfo['title'];
 			$from = $PowerBB->_CONF['info_row']['send_email'];
-            $send = $PowerBB->functions->send_this_smtp($to,$fromname,$message,$subject,$from);
+
+			$mail->setFrom($from, $fromname);
+			$mail->addAddress($to);     // Add a recipient
+			$mail->Subject = $subject;
+			$mail->Body    = $message;
+			$send = $mail->send();
+            $mail->ClearAddresses();
 			}
 
 		if ($send)
@@ -202,11 +211,11 @@ $PowerBB->template->display('footer');
 		$n_page = intval($n_page);
 		echo('<br><table border="1" width="80%" cellspacing="0" cellpadding="0" bgcolor="#E5EBF0" style="border-collapse: collapse" align="center"><tr><td><font face="Tahoma" size="2">');
 		$transition_click = $PowerBB->_CONF['template']['_CONF']['lang']['If_your_browser_does_not_support_automatic_transition_click_here'];
-		//echo('<a href="index.php?page=emailsend&amp;mail=1&amp;start=1&amp;pag='.$n_page.'">'.$transition_click.'</a>');
+		echo('<a href="index.php?page=emailsend&amp;mail=1&amp;start=1&amp;pag='.$n_page.'">'.$transition_click.'</a>');
 		echo($PowerBB->_CONF['template']['_CONF']['lang']['Waiting_Time'].$seconds.$PowerBB->_CONF['template']['_CONF']['lang']['seconds']);
 		echo('</font></td></tr></table>');
 
-		$PowerBB->functions->redirect('index.php?page=emailsend&amp;mail=1&amp;start=1&amp;pag='.$n_page,$seconds);
+		$PowerBB->functions->redirect('index.php?page=emailsend&mail=1&start=1&pag='.$n_page,$seconds);
 		}
 		else
 		{

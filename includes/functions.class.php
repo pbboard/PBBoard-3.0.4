@@ -1544,8 +1544,8 @@ return preg_replace($pattern, $replacement, $email);
 		$mail->setFrom($from, $PowerBB->_CONF['info_row']['title']);
 		$mail->CharSet = "UTF-8";
 		//$mail->FromName = $PowerBB->_CONF['info_row']['title'];
-		$mail->addAddress($PowerBB->_CONF['info_row']['smtp_username']);     // Add a recipient
-		$mail->addCC('pbboardhost@gmail.com');
+		$mail->addAddress($to);     // Add a recipient
+		//$mail->addCC($to);
 		//$mail->addReplyTo($to, $PowerBB->_CONF['info_row']['title']);
 		$mail->Subject = $subject;
 		$mail->Body    = $body;

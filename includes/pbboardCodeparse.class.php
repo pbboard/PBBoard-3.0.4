@@ -1588,8 +1588,6 @@ class PowerBBCodeParse
          $Adress = $PowerBB->functions->GetForumAdress();
          $string = str_replace('[url=download/', '[url='.$Adress.'download/', $string);
 
-         $string = preg_replace('#<font.*? color="(.*?)".*?>#si', '', $string);
-         $string = str_replace("</font>", "", $string);
 
          $string = str_replace("<br>", "", $string);
 

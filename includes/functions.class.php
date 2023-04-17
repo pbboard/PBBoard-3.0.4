@@ -3850,7 +3850,17 @@ function dec_to_utf8($src)
 			{
 			$salt = $this->generate_salt();
 			}
+
+            $salt_num = strlen(@utf8_decode($salt)) > 10;
+
+	        if($salt_num)
+	        {
+	        $hash = md5(md5($password).$salt);
+	        }
+	        else
+	        {
 			$hash = md5(md5($salt).md5($password));
+	        }
 
 			$fields = array(
 				'salt' => $salt,

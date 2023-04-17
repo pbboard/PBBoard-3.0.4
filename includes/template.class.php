@@ -408,12 +408,6 @@ class PBBTemplate
 			$first_replace = "last_post=1&amp;count=";
 			$string = str_replace($first_search,$first_replace,$string);
 			}
-			elseif ($filename == 'show_tags_topic')
-			{
-			$first_search = "id";
-			$first_replace = "tag";
-			$string = str_replace($first_search,$first_replace,$string);
-			}
 			elseif ($filename == 'usercp_menu')
 			{
 			$search_coordination_array 	= 	array();

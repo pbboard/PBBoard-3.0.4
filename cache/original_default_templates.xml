@@ -13752,7 +13752,7 @@ return $("#docheck_status").html(key_values.join());
 <dd class="row1">
 {if !{$mod_toolbar}}
 {if {$Multi_Moderation}}
-<div style="float: right;">
+<div style="float:{$align};">
 <form action="index.php?page=management&amp;multimod=1&amp;subject_id={$subject_id}" method="post">
 <select name="mod_id" class="dropdown">
 <option value="-1">

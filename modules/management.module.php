@@ -441,11 +441,10 @@ class PowerBBManagementMOD
 
 			unset($sectiongroup);
 
-			@include("cache/forums_cache/forums_cache_".$cat['id'].".php");
+			$forums_cache = $PowerBB->functions->get_forum_cache($cat['id'],$cat['forums_cache']);
 			if (!empty($forums_cache))
 			{
-                $forums = json_decode(base64_decode($forums_cache), true);
-
+                $forums = $PowerBB->functions->decode_forum_cache($forums_cache);
 					foreach ($forums as $forum)
 					{
 						//////////////////////////
@@ -454,11 +453,11 @@ class PowerBBManagementMOD
 							$forum['is_sub'] 	= 	0;
 							$forum['sub']		=	'';
 
-                              @include("cache/forums_cache/forums_cache_".$forum['id'].".php");
+                              $forums_cache = $PowerBB->functions->get_forum_cache($forum['id'],$forum['forums_cache']);
                                if (!empty($forums_cache))
 	                           {
 
-									$subs = json_decode(base64_decode($forums_cache), true);
+									$subs = $PowerBB->functions->decode_forum_cache($forums_cache);
 	                               foreach ($subs as $sub)
 									{
 									   if ($forum['id'] == $sub['parent'])
@@ -474,19 +473,14 @@ class PowerBBManagementMOD
 										        }
 										  }
 
-
-
-
-					                         ///////////////
-
 													$forum['is_sub_sub'] 	= 	0;
 													$forum['sub_sub']		=	'';
 
-		                                       @include("cache/forums_cache/forums_cache_".$sub['id'].".php");
+		                                       $forums_cache = $PowerBB->functions->get_forum_cache($sub['id'],$sub['forums_cache']);
 		                                   if (!empty($forums_cache))
 				                           {
 
-												$subs_sub = json_decode(base64_decode($forums_cache), true);
+												$subs_sub = $PowerBB->functions->decode_forum_cache($forums_cache);
 				                               foreach ($subs_sub as $sub_sub)
 												{
 												   if ($sub['id'] == $sub_sub['parent'])
@@ -571,14 +565,18 @@ class PowerBBManagementMOD
          // intval to subject_id
 		$PowerBB->_GET['subject_id'] = $PowerBB->functions->CleanVariable($PowerBB->_GET['subject_id'],'intval');
 		$PowerBB->_POST['section'] = $PowerBB->functions->CleanVariable($PowerBB->_POST['section'],'intval');
+		$PowerBB->_POST['id_section'] = $PowerBB->functions->CleanVariable($PowerBB->_POST['id_section'],'intval');
 		$PowerBB->_GET['section'] = $PowerBB->functions->CleanVariable($PowerBB->_GET['section'],'intval');
+		$_SESSION['old_section'] = $PowerBB->_POST['id_section'];
         ////
+
 		if (empty($PowerBB->_GET['subject_id']))
 		{
 			$PowerBB->functions->ShowHeader();
             $PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['path_not_true']);
 		}
-		if (empty($PowerBB->_POST['section']))
+		if (empty($PowerBB->_POST['section'])
+		or empty($PowerBB->_POST['id_section']))
 		{
 			$PowerBB->functions->ShowHeader();
             $PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['Section_does_not_exist']);
@@ -586,7 +584,7 @@ class PowerBBManagementMOD
 		     // subject_id
 		     $subject_id = $PowerBB->_GET['subject_id'];
             // Get id Both Move from section AND Move to section
-			$Move_from_section = $PowerBB->_GET['section'];
+			$Move_from_section = $PowerBB->_POST['id_section'];
 			$Move_to_section = $PowerBB->_POST['section'];
             ////
 		if (empty($Move_from_section))
@@ -610,7 +608,7 @@ class PowerBBManagementMOD
 
      	// Get Section To Info
      	$SecToArr 			= 	array();
-		$SecToArr['where'] 	= 	array('id',$Move_to_section );
+		$SecToArr['where'] 	= 	array('id',$Move_to_section);
 
 		$SectionToInfo = $PowerBB->section->GetSectionInfo($SecToArr);
 
@@ -635,6 +633,7 @@ class PowerBBManagementMOD
 
 			$update = $PowerBB->core->Update($UpdateArr,'subject');
 
+            $UpdateSectionCache2 = $PowerBB->functions->UpdateSectionCache($PowerBB->_POST['section']);
 
 		    // INSERT moderators Action
 
@@ -653,10 +652,10 @@ class PowerBBManagementMOD
 
 			$insert = $PowerBB->core->Insert($SmLogsArr,'supermemberlogs');
 
-       			//$UpdateSectionCache1 =	$PowerBB->functions->UpdateSectionCache($Move_from_section);
-                $UpdateSectionCache2 = $PowerBB->functions->UpdateSectionCache($PowerBB->_POST['section']);
-                $UpdateSectionCache3 = $PowerBB->functions->UpdateSectionCache($PowerBB->_POST['id_section']);
+           $cache1 = $PowerBB->section->UpdateSectionsCache(array('parent'=>$_SESSION['old_section']));
 
+           $cache2 = $PowerBB->section->UpdateSectionsCache(array('parent'=>$PowerBB->_POST['section']));
+             $_SESSION['old_parent'] = '';
      		//$PowerBB->functions->msg($PowerBB->_CONF['template']['_CONF']['lang']['Was_mov_subject']);
 			$PowerBB->functions->header_redirect('index.php?page=topic&amp;show=1&amp;id=' . $PowerBB->_GET['subject_id']);
    }
@@ -844,7 +843,7 @@ class PowerBBManagementMOD
 
 			$insert = $PowerBB->core->Insert($SmLogsArr,'supermemberlogs');
 
-          $UpdateSectionCache1 = $PowerBB->functions->UpdateSectionCache($PowerBB->_GET['section']);
+          $UpdateSectionCache = $PowerBB->functions->UpdateSectionCache($PowerBB->_GET['section']);
 
 
 			//$PowerBB->functions->msg($PowerBB->_CONF['template']['_CONF']['lang']['Was_Trasht']);
@@ -913,7 +912,7 @@ class PowerBBManagementMOD
 
 				  $del = $PowerBB->core->Deleted($DelArr,'subject');
 
-           $UpdateSectionCache2 = $PowerBB->functions->UpdateSectionCache($PowerBB->_GET['section']);
+           $UpdateSectionCache = $PowerBB->functions->UpdateSectionCache($PowerBB->_GET['section']);
 
 	        //$PowerBB->functions->msg($PowerBB->_CONF['template']['_CONF']['lang']['Was_delet_subject']);
 			$PowerBB->functions->header_redirect('index.php?page=forum&show=1&id=' . $PowerBB->_GET['section']);
@@ -1753,6 +1752,7 @@ class PowerBBManagementMOD
 
               // Update section's cache
                 $UpdateSectionCache = $PowerBB->functions->UpdateSectionCache($SubjectUpdate['section']);
+
                 eval($PowerBB->functions->get_fetch_hooks('subject_edit_start'));
 
 				//$PowerBB->functions->msg($PowerBB->_CONF['template']['_CONF']['lang']['Updated_successfully']);
@@ -2735,7 +2735,6 @@ class PowerBBManagementMOD
 					{
 					$UpdateSectionCache = $PowerBB->functions->UpdateSectionCache($move);
 					$UpdateSectionCache = $PowerBB->functions->UpdateSectionCache($SubjectInfo['section']);
-
 					}
 		     		//////////
             // INSERT moderators Action
@@ -3135,7 +3134,7 @@ class PowerBBManagementMOD
 				}
 
 
-     		$UpdateSectionCache = $PowerBB->functions->UpdateSectionCache($action['section']);
+			$UpdateSectionCache = $PowerBB->functions->UpdateSectionCache($action['section']);
 
 			//$PowerBB->functions->msg($PowerBB->_CONF['template']['_CONF']['lang']['Was_Up_subject']);
 			$PowerBB->functions->header_redirect('index.php?page=topic&amp;show=1&amp;id=' . $PowerBB->_GET['subject_id']);
@@ -3184,7 +3183,7 @@ class PowerBBManagementMOD
 
 			$insert = $PowerBB->core->Insert($SmLogsArr,'supermemberlogs');
 
-     		$UpdateSectionCache = $PowerBB->functions->UpdateSectionCache($action['section']);
+			$UpdateSectionCache = $PowerBB->functions->UpdateSectionCache($action['section']);
 
 	    	//$PowerBB->functions->msg($PowerBB->_CONF['template']['_CONF']['lang']['Was_Down_subject']);
 			$PowerBB->functions->header_redirect('index.php?page=topic&amp;show=1&amp;id=' . $PowerBB->_GET['subject_id']);
@@ -3239,8 +3238,7 @@ class PowerBBManagementMOD
 		        $this->SectionInfo = $PowerBB->core->GetInfo($SecArr,'section');
 
     		// Update Section Cache
-
-	           $UpdateSectionCache = $PowerBB->functions->UpdateSectionCache($this->SectionInfo['id']);
+	          $UpdateSectionCache = $PowerBB->functions->UpdateSectionCache($this->SectionInfo['id']);
 
 			//$PowerBB->functions->msg($PowerBB->_CONF['template']['_CONF']['lang']['Subject_hide_successfully']);
 			$PowerBB->functions->header_redirect('index.php?page=topic&amp;show=1&amp;id=' . $PowerBB->_GET['subject_id']);
@@ -3290,8 +3288,7 @@ class PowerBBManagementMOD
 			$insert = $PowerBB->core->Insert($SmLogsArr,'supermemberlogs');
 
 			  //
-	           $UpdateSectionCache6 = $PowerBB->functions->UpdateSectionCache($action['section']);
-
+	          $UpdateSectionCache = $PowerBB->functions->UpdateSectionCache($action['section']);
 
 			//$PowerBB->functions->msg($PowerBB->_CONF['template']['_CONF']['lang']['Was_approved_on_the_subject_successfully']);
 			$PowerBB->functions->header_redirect('index.php?page=topic&amp;show=1&amp;id=' . $PowerBB->_GET['subject_id']);
@@ -3621,6 +3618,7 @@ class PowerBBManagementMOD
 
 					$UpdateSectionCache = $PowerBB->functions->UpdateSectionCache($Subject['section']);
 
+
 		     		unset($UpdateArr);
 		     		//////////
 
@@ -3647,7 +3645,7 @@ class PowerBBManagementMOD
 
 			$insert = $PowerBB->core->Insert($SmLogsArr,'supermemberlogs');
 
-	           $UpdateSectionCache6 = $PowerBB->functions->UpdateSectionCache($action['section']);
+			$UpdateSectionCache = $PowerBB->functions->UpdateSectionCache($action['section']);
 
 			     $DelArr				=	array();
 		         $DelArr['where'] 	= 	array('id',$PowerBB->_GET['subject_id']);
@@ -3906,7 +3904,8 @@ class PowerBBManagementMOD
 
 				$cache = $PowerBB->section->UpdateSectionsCache(array('parent'=>$SectionInfo['parent']));
 				$Update = $PowerBB->section->UpdateAllSectionsCache();
-	           $UpdateSectionCache6 = $PowerBB->functions->UpdateSectionCache($SectionInfo['id']);
+	           $UpdateSectionCache = $PowerBB->functions->UpdateSectionCache($SectionInfo['section']);
+
 
 
        }
@@ -4031,7 +4030,8 @@ class PowerBBManagementMOD
 
                  $del = $PowerBB->core->Deleted($DelArr,'subject');
 
-        $UpdateSectionCache1 = $PowerBB->functions->UpdateSectionCache($PowerBB->_GET['section']);
+	           $UpdateSectionCache = $PowerBB->functions->UpdateSectionCache($PowerBB->_GET['section']);
+
 
        }
 
@@ -4062,7 +4062,8 @@ class PowerBBManagementMOD
 
 		$UnTrash = $PowerBB->subject->UnTrashSubject($Trash);
 
-       $UpdateSectionCache2 = $PowerBB->functions->UpdateSectionCache($action['section']);
+	   $UpdateSectionCache = $PowerBB->functions->UpdateSectionCache($action['section']);
+
 
 
 		    // INSERT moderators Action
@@ -4084,8 +4085,7 @@ class PowerBBManagementMOD
 			$SmLogsArr['field']['edit_date'] 	= 	date("d/m/Y", $time);
 
 			$insert = $PowerBB->core->Insert($SmLogsArr,'supermemberlogs');
-        	$UpdateSectionCache6 = $PowerBB->functions->UpdateSectionCache($action['section']);
-
+	        $UpdateSectionCache = $PowerBB->functions->UpdateSectionCache($action['section']);
 
 		}
 
@@ -4238,7 +4238,7 @@ class PowerBBManagementMOD
 			$insert = $PowerBB->core->Insert($SmLogsArr,'supermemberlogs');
           }
 
-        	$UpdateSectionCache6 = $PowerBB->functions->UpdateSectionCache($action['section']);
+	        $UpdateSectionCache = $PowerBB->functions->UpdateSectionCache($action['section']);
 
 			//$PowerBB->functions->msg($PowerBB->_CONF['template']['_CONF']['lang']['approved_subjects_successfully']);
 			$PowerBB->functions->header_redirect('index.php?page=forum&show=1&id=' . $PowerBB->_GET['section']);
@@ -4291,7 +4291,7 @@ class PowerBBManagementMOD
 
 			$insert = $PowerBB->core->Insert($SmLogsArr,'supermemberlogs');
           }
-          $UpdateSectionCache6 = $PowerBB->functions->UpdateSectionCache($action['section']);
+	        $UpdateSectionCache = $PowerBB->functions->UpdateSectionCache($action['section']);
 
 			//$PowerBB->functions->msg($PowerBB->_CONF['template']['_CONF']['lang']['hide_subjects_successfully']);
 			$PowerBB->functions->header_redirect('index.php?page=forum&show=1&id=' . $PowerBB->_GET['section']);
@@ -4531,8 +4531,9 @@ class PowerBBManagementMOD
 		         }
        }
 
-          $UpdateSectionCache1 = $PowerBB->functions->UpdateSectionCache($PowerBB->_GET['section']);
-          $UpdateSectionCache2 = $PowerBB->functions->UpdateSectionCache($PowerBB->_POST['section']);
+
+	        $UpdateSectionCache = $PowerBB->functions->UpdateSectionCache($PowerBB->_GET['section']);
+	        $UpdateSectionCache = $PowerBB->functions->UpdateSectionCache($PowerBB->_POST['section']);
 
             //$PowerBB->functions->msg($PowerBB->_CONF['template']['_CONF']['lang']['mov_subjects_successfully']);
 			$PowerBB->functions->header_redirect('index.php?page=forum&show=1&id=' . $PowerBB->_POST['section']);

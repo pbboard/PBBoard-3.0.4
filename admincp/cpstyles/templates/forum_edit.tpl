@@ -38,30 +38,7 @@
 			{$lang['Forum_Follow_to']}
 			</td>
 			<td class="row2">
-           <select name="parent" id="select_parent">
-				{Des::foreach}{forums_list}{forum}
-					{if {$forum['parent']} == 0}
-					{if {$forum['id']} == {$Inf['parent']}}
-					<option value="{$forum['id']}" class="main_section" selected="selected">- {$forum['title']}</option>
-					{else}
-					<option value="{$forum['id']}" class="main_section">- {$forum['title']}</option>
-					{/if}
-					{else}
-					{if {$forum['id']} == {$Inf['parent']}}
-					<option value="{$forum['id']}" selected="selected">-- {$forum['title']}</option>
-					{else}
-					<option value="{$forum['id']}">-- {$forum['title']}</option>
-					{/if}
-					{/if}
-					{if {$forum['parent']} != 0}
-		       {if {$forum['linksection']} != '1'}
-				 {if {$forum['is_sub']}}
-					{$forum['sub']}
-				{/if}
-				{/if}
-	            {/if}
-				{/Des::foreach}
-			</select>
+{$DoJumpList}
 			</td>
 		</tr>
 		<tr>

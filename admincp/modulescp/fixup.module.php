@@ -202,9 +202,6 @@ class PowerBBFixMOD
 
 		$SectionInfo = $PowerBB->core->GetInfo($SecArr,'section');
 
-
-			global $PowerBB;
-
 			$SecArr 						= 	array();
 			$SecArr['get_from']				=	'db';
 

@@ -888,212 +888,9 @@ class PowerBBReplyAddMOD
 						$review_reply = 1;
 					}
 
-		     		// The number of section's subjects number
-		     		$UpdateArr 					= 	array();
-		     		$UpdateArr['field']			=	array();
-
-		     		$UpdateArr['field']['reply_num'] 	= 	$this->SectionInfo['reply_num'] + 1;
-                   if(!$this->SubjectInfo['review_subject']){
-					$UpdateArr['field']['last_writer'] 		= 	$writer;
-		     		$UpdateArr['field']['last_subject'] 		= 	$PowerBB->functions->CleanVariable($PowerBB->_POST['title'],'html');
-		     		$UpdateArr['field']['last_subjectid'] 	= 	$this->SubjectInfo['id'];
-		     		$UpdateArr['field']['last_date'] 	= 	$PowerBB->_CONF['now'];
-		     		$UpdateArr['field']['last_time'] 	= 	$PowerBB->_CONF['now'];
-		     		$UpdateArr['field']['last_reply'] 	= 	$PowerBB->reply->id;
-		     		$UpdateArr['field']['icon'] 	    = 	$this->SubjectInfo['icon'];
-		     		$UpdateArr['field']['last_berpage_nm']  = 	$PowerBB->_POST['count'];
-		     		}
-		     		$UpdateArr['field']['replys_review_num'] 		= 	$this->SectionInfo['replys_review_num'] + $review_reply;
-
-		     		$UpdateArr['where']					= 	array('id',$this->SectionInfo['id']);
-
-		     		$UpdateSubjectNumber = $PowerBB->core->Update($UpdateArr,'section');
-
-		     		// Free memory
-		     		unset($UpdateArr);
-
-		     		//////////
-
-		     		// Update section's cache
-		     		$UpdateArr 				= 	array();
-		     		$UpdateArr['parent'] 	= 	$this->SectionInfo['parent'];
-
-		     		$update_cache = $PowerBB->section->UpdateSectionsCache($UpdateArr);
-
-		     		unset($UpdateArr);
-
-		     		//////////
-
-		     		//////////
-
-                    $get_section_parent = $PowerBB->DB->sql_query("SELECT  *   FROM " . $PowerBB->table['section'] . " WHERE parent = " . $this->SectionInfo['parent'] . " ");
-	                $Inf_row = $PowerBB->DB->sql_fetch_array($get_section_parent);
-                        if ($Inf_row)
-						{
-
-	                           //////////
-				     		if (!$PowerBB->_CONF['member_permission'])
-							{
-			                $writer = 	$PowerBB->_CONF['template']['_CONF']['lang']['Guestp'];
-							}
-					     	else
-					     	{
-				            $writer = 	$PowerBB->_CONF['member_row']['username'];
-							}
-
-				     		$UpdateLastprantArr = array();
-				     		$UpdateLastprantArr['field']			=	array();
-							$UpdateLastprantArr['field']['last_writer'] 		= 	$writer;
-				     		$UpdateLastprantArr['field']['last_subject'] 		= 	$PowerBB->functions->CleanVariable($PowerBB->_POST['title'],'html');
-				     		$UpdateLastprantArr['field']['last_subjectid'] 	= 	$this->SubjectInfo['id'];
-				     		$UpdateLastprantArr['field']['last_date'] 	= 	$PowerBB->_CONF['now'];
-				     		$UpdateLastprantArr['field']['last_time'] 	= 	$PowerBB->_CONF['now'];
-		     	         	$UpdateLastprantArr['field']['icon'] 	    = 	$this->SubjectInfo['icon'];
-		     		        $UpdateLastprantArr['field']['last_reply'] 	= 	$PowerBB->reply->id;
-		     		        $UpdateLastprantArr['field']['last_berpage_nm']  = 	$PowerBB->_POST['count'];
-
-				     		$UpdateLastprantArr['where'] 		        = 	array('id',$Inf_row['parent']);
-
-				     		// Update Last subject's information
-				     		$UpdateprantLast = $PowerBB->section->UpdateSection($UpdateLastprantArr);
-							unset($UpdateLastprantArr);
 
 
-				     	}
 
-                     $get_sections_parent = $PowerBB->DB->sql_query("SELECT  *   FROM " . $PowerBB->table['section'] . " WHERE parent = " . $this->SectionInfo['parent'] . " ");
-	                $Inf_rows = $PowerBB->DB->sql_fetch_array($get_section_parent);
-                        if ($Inf_rows)
-						{
-
-	                           //////////
-				     		if (!$PowerBB->_CONF['member_permission'])
-							{
-			                $writer = 	$PowerBB->_CONF['template']['_CONF']['lang']['Guestp'];
-							}
-					     	else
-					     	{
-				            $writer = 	$PowerBB->_CONF['member_row']['username'];
-							}
-
-				     		$UpdateLastprantArr = array();
-				     		$UpdateLastprantArr['field']			=	array();
-							$UpdateLastprantArr['field']['last_writer'] 		= 	$writer;
-				     		$UpdateLastprantArr['field']['last_subject'] 		= 	$PowerBB->functions->CleanVariable($PowerBB->_POST['title'],'html');
-				     		$UpdateLastprantArr['field']['last_subjectid'] 	= 	$this->SubjectInfo['id'];
-				     		$UpdateLastprantArr['field']['last_date'] 	= 	$PowerBB->_CONF['now'];
-				     		$UpdateLastprantArr['field']['last_time'] 	= 	$PowerBB->_CONF['now'];
-		     		        $UpdateLastprantArr['field']['last_reply'] 	= 	$PowerBB->reply->id;
-		     		        $UpdateLastprantArr['field']['last_berpage_nm']  = 	$PowerBB->_POST['count'];
-		     	         	$UpdateLastprantArr['field']['icon'] 	    = 	$this->SubjectInfo['icon'];
-				     		$UpdateLastprantArr['where'] 		        = 	array('parent',$Inf_rows['id']);
-
-				     		// Update Last subject's information
-				     		$UpdateprantLast = $PowerBB->section->UpdateSection($UpdateLastprantArr);
-							unset($UpdateLastprantArr);
-
-					     		// Update section's cache
-					     		$UpdateArr 				= 	array();
-					     		$UpdateArr['parent'] 	= 	$Inf_rows['parent'];
-
-					     		$update_cache = $PowerBB->section->UpdateSectionsCache($UpdateArr);
-
-					     		unset($UpdateArr);
-
-				     		if ($UpdateprantLast)
-							{
-
-		                           //////////
-					     		if (!$PowerBB->_CONF['member_permission'])
-								{
-				                $writer = 	$PowerBB->_CONF['template']['_CONF']['lang']['Guestp'];
-								}
-						     	else
-						     	{
-					            $writer = 	$PowerBB->_CONF['member_row']['username'];
-								}
-
-					     		$UpdateLastprantArr = array();
-					     		$UpdateLastprantArr['field']			=	array();
-								$UpdateLastprantArr['field']['last_writer'] 		= 	$writer;
-					     		$UpdateLastprantArr['field']['last_subject'] 		= 	$PowerBB->functions->CleanVariable($PowerBB->_POST['title'],'html');
-					     		$UpdateLastprantArr['field']['last_subjectid'] 	= 	$this->SubjectInfo['id'];
-					     		$UpdateLastprantArr['field']['last_date'] 	= 	$PowerBB->_CONF['now'];
-					     		$UpdateLastprantArr['field']['last_time'] 	= 	$PowerBB->_CONF['now'];
-		     		            $UpdateLastprantArr['field']['last_reply'] 	= 	$PowerBB->reply->id;
-		     		            $UpdateLastprantArr['field']['last_berpage_nm']  = 	$PowerBB->_POST['count'];
-		     	         	    $UpdateLastprantArr['field']['icon'] 	    = 	$this->SubjectInfo['icon'];
-					     		$UpdateLastprantArr['where'] 		        = 	array('id',$Inf_rows['parent']);
-
-					     		// Update Last subject's information
-					     		$UpdateprantLast = $PowerBB->section->UpdateSection($UpdateLastprantArr);
-								unset($UpdateLastprantArr);
-
-						     		// Update section's cache
-						     		$UpdateArr 				= 	array();
-						     		$UpdateArr['parent'] 	= 	$Inf_rows['parent'];
-
-						     		$update_cache = $PowerBB->section->UpdateSectionsCache($UpdateArr);
-
-						     		unset($UpdateArr);
-						     }
-
-				     	}
-
-								// Update reply_num & subject_num
-					   if ($this->SectionInfo['parent']<1)
-						{
-							$SectionCache = $this->SectionInfo['id'];
-
-								$Section_Rnum = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT section FROM " . $PowerBB->table['reply'] . " WHERE section = " . $SectionCache . " AND delete_topic<>1 AND review_reply<>1"));
-								$Section_Snum = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT section FROM " . $PowerBB->table['subject'] . " WHERE section = " . $SectionCache . " AND delete_topic<>1 AND review_subject<>1 "));
-
-
-								$subject_num = $Section_Snum ;
-								$reply_num   = $Section_Rnum;
-
-								$UpdatesrFormSecArr = array();
-								$UpdatesrFormSecArr['field']			=	array();
-
-								$UpdatesrFormSecArr['field']['reply_num'] 	= 	$reply_num;
-								$UpdatesrFormSecArr['field']['subject_num']  = 	$subject_num;
-
-								$UpdatesrFormSecArr['where'] 		        = 	array('id',$SectionCache);
-
-								// Update reply_num & subject_num
-								$UpdaterSFormSec = $PowerBB->section->UpdateSection($UpdatesrFormSecArr);
-                                 $UpdateSectionCache1 = $PowerBB->functions->UpdateSectionCache($SectionCache);
-						}
-						else
-						{
-						$SectionCache = $this->SectionInfo['parent'];
-
-
-								$S_R = $PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['section'] . " WHERE parent = ".$SectionCache." ");
-								while ($f_S_R = $PowerBB->DB->sql_fetch_array($S_R))
-								{
-								$Section_Rnum = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT section FROM " . $PowerBB->table['reply'] . " WHERE section = " . $SectionCache . " AND delete_topic<>1 AND review_reply<>1"));
-								$Section_Snum = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT section FROM " . $PowerBB->table['subject'] . " WHERE section = " . $SectionCache . " AND delete_topic<>1 AND review_subject<>1 "));
-
-								$Rnum = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT section FROM " . $PowerBB->table['reply'] . " WHERE section = " . $f_S_R['id'] . " AND delete_topic<>1 AND review_reply<>1"));
-								$Snum = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT section FROM " . $PowerBB->table['subject'] . " WHERE section = " . $f_S_R['id'] . " AND delete_topic<>1 AND review_subject<>1 "));
-
-								$subject_num = $Section_Snum + $Snum;
-								$reply_num   = $Section_Rnum + $Rnum;
-
-								$UpdatesrFormSecArr = array();
-								$UpdatesrFormSecArr['field']			=	array();
-
-								$UpdatesrFormSecArr['field']['reply_num'] 	= 	$reply_num;
-								$UpdatesrFormSecArr['field']['subject_num']  = 	$subject_num;
-
-								$UpdatesrFormSecArr['where'] 		        = 	array('id',$SectionCache);
-
-								// Update reply_num & subject_num
-								$UpdaterSFormSec = $PowerBB->section->UpdateSection($UpdatesrFormSecArr);
-                                 $UpdateSectionCache1 = $PowerBB->functions->UpdateSectionCache($SectionCache);
-				               }
-						}
 
 			     	 if ($PowerBB->_CONF['member_permission'])
 					 {
@@ -1234,21 +1031,40 @@ class PowerBBReplyAddMOD
 
 							}
 
+		     		       // Update Last subject's information in Section
+				     		$LastArr 					        = 	array();
+				     		$LastArr['field']			        =	array();
+				     		$LastArr['field']['last_writer'] 	    = 	$PowerBB->_CONF['member_row']['username'];
+				     		$LastArr['field']['last_subject']   = 	$this->SubjectInfo['title'];
+				     		$LastArr['field']['last_subjectid'] = 	$this->SubjectInfo['id'];
+				     		$LastArr['field']['last_date'] 	    = 	$PowerBB->_CONF['now'];
+				     		$LastArr['field']['last_time'] 	    = 	$PowerBB->_CONF['now'];
+				     		$LastArr['field']['icon'] 	        = 	$PowerBB->_POST['icon'];
+                           	$LastArr['field']['last_reply'] 		= 	$PowerBB->reply->id;
+				     		$LastArr['field']['last_berpage_nm'] 		= 	$PowerBB->_POST['count'];
+				     		$LastArr['where']					= 	array('id',$this->SectionInfo['id']);
 
-				     		$LastArr = array();
+		                    $UpdateLast = $PowerBB->section->UpdateSection($LastArr);
 
-				     		$LastArr['writer'] 		= 	$PowerBB->_CONF['member_row']['username'];
-				     		$LastArr['title'] 		= 	$this->SubjectInfo['title'];
-				     		$LastArr['subject_id'] 	= 	$this->SubjectInfo['id'];
-				     		$LastArr['date'] 		= 	$PowerBB->_CONF['now'];
-				     		$LastArr['last_time'] 		= 	$PowerBB->_CONF['now'];
-				     		$LastArr['icon'] 		= 	$PowerBB->_POST['icon'];
-				     		$LastArr['last_reply'] 		= 	$PowerBB->reply->id;
-				     		$LastArr['last_berpage_nm'] 		= 	$PowerBB->_POST['count'];
-				     		$LastArr['where'] 		= 	(!$this->SectionInfo['parent']) ? array('id',$this->SectionInfo['id']) : array('id',$this->SectionInfo['parent']);
+				     		// Update Last subject's information in parent
+				     		$LastParentArr 					        = 	array();
+				     		$LastParentArr['field']			        =	array();
 
+				     		$LastParentArr['field']['last_writer'] 	    = 	$PowerBB->_CONF['member_row']['username'];
+				     		$LastParentArr['field']['last_subject']   = 	$this->SubjectInfo['title'];
+				     		$LastParentArr['field']['last_subjectid'] = 	$this->SubjectInfo['id'];
+				     		$LastParentArr['field']['last_date'] 	    = 	$PowerBB->_CONF['now'];
+				     		$LastParentArr['field']['last_time'] 	    = 	$PowerBB->_CONF['now'];
+				     		$LastParentArr['field']['icon'] 	        = 	$PowerBB->_POST['icon'];
+                           	$LastParentArr['field']['last_reply'] 		= 	$PowerBB->reply->id;
+				     		$LastParentArr['field']['last_berpage_nm'] 		= 	$PowerBB->_POST['count'];
+				     		$LastParentArr['where']					= 	array('id',$this->SectionInfo['parent']);
 
-				     		$UpdateLast = $PowerBB->section->UpdateLastSubject($LastArr);
+		                    $UpdateLast = $PowerBB->section->UpdateSection($LastParentArr);
+
+				        	// Update section's cache
+				        	$UpdateSectionCache1 = $PowerBB->functions->UpdateSectionCache($this->SectionInfo['id']);
+						    $cache = $PowerBB->section->UpdateSectionsCache(array('parent'=>$this->SectionInfo['parent']));
 				     		$PowerBB->functions->PBB_Create_last_posts_cache(0);
 	                 }
 	                 else
@@ -1259,22 +1075,44 @@ class PowerBBReplyAddMOD
 
 				     	$UpdateLastReplier = $PowerBB->subject->UpdateLastReplier($LastArr);
 
-	                        $LastArr = array();
+		     		       // Update Last subject's information in Section
+				     		$LastArr 					        = 	array();
+				     		$LastArr['field']			        =	array();
+				     		$LastArr['field']['last_writer'] 	    = 'Guest';
+				     		$LastArr['field']['last_subject']   = 	$this->SubjectInfo['title'];
+				     		$LastArr['field']['last_subjectid'] = 	$this->SubjectInfo['id'];
+				     		$LastArr['field']['last_date'] 	    = 	$PowerBB->_CONF['now'];
+				     		$LastArr['field']['last_time'] 	    = 	$PowerBB->_CONF['now'];
+				     		$LastArr['field']['icon'] 	        = 	$PowerBB->_POST['icon'];
+                           	$LastArr['field']['last_reply'] 		= 	$PowerBB->reply->id;
+				     		$LastArr['field']['last_berpage_nm'] 		= 	$PowerBB->_POST['count'];
+				     		$LastArr['where']					= 	array('id',$this->SectionInfo['id']);
 
-				     		$LastArr['writer'] 		= 	'Guest';
-				     		$LastArr['title'] 		= 	$this->SubjectInfo['title'];
-				     		$LastArr['subject_id'] 	= 	$this->SubjectInfo['id'];
-				     		$LastArr['date'] 		= 	$PowerBB->_CONF['now'];
-				     		$LastArr['last_time'] 		= 	$PowerBB->_CONF['now'];
-				     		$LastArr['icon'] 		= 	$PowerBB->_POST['icon'];
-				     		$LastArr['last_reply'] 		= 	$PowerBB->reply->id;
-				     		$LastArr['last_berpage_nm'] 		= 	$PowerBB->_POST['count'];
-				     		$LastArr['where'] 		= 	(!$this->SectionInfo['parent']) ? array('id',$this->SectionInfo['id']) : array('id',$this->SectionInfo['parent']);
+		                    $UpdateLast = $PowerBB->section->UpdateSection($LastArr);
 
+				     		// Update Last subject's information in parent
+				     		$LastParentArr 					        = 	array();
+				     		$LastParentArr['field']			        =	array();
 
-				     		$UpdateLast = $PowerBB->section->UpdateLastSubject($LastArr);
+				     		$LastParentArr['field']['last_writer'] 	    = 	'Guest';
+				     		$LastParentArr['field']['last_subject']   = 	$this->SubjectInfo['title'];
+				     		$LastParentArr['field']['last_subjectid'] = 	$this->SubjectInfo['id'];
+				     		$LastParentArr['field']['last_date'] 	    = 	$PowerBB->_CONF['now'];
+				     		$LastParentArr['field']['last_time'] 	    = 	$PowerBB->_CONF['now'];
+				     		$LastParentArr['field']['icon'] 	        = 	$PowerBB->_POST['icon'];
+                           	$LastParentArr['field']['last_reply'] 		= 	$PowerBB->reply->id;
+				     		$LastParentArr['field']['last_berpage_nm'] 		= 	$PowerBB->_POST['count'];
+				     		$LastParentArr['where']					= 	array('id',$this->SectionInfo['parent']);
+
+		                    $UpdateLast = $PowerBB->section->UpdateSection($LastParentArr);
+
+				        	// Update section's cache
+				        	$UpdateSectionCache1 = $PowerBB->functions->UpdateSectionCache($this->SectionInfo['id']);
+						    $cache = $PowerBB->section->UpdateSectionsCache(array('parent'=>$this->SectionInfo['parent']));
 				     		$PowerBB->functions->PBB_Create_last_posts_cache(0);
 					 }
+					 // Update parent's cache
+                     $UpdateSectionCache = $PowerBB->functions->UpdateSectionCache($this->SectionInfo['parent']);
 
                         // insert mention
                      if($PowerBB->functions->mention_permissions())

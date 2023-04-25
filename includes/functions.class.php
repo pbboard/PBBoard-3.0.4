@@ -1,4 +1,6 @@
 <?php
+@set_time_limit(0);
+@ini_set('max_execution_time', 123456);
 class PowerBBFunctions
 {
 	var $PowerBB;
@@ -22,23 +24,19 @@ class PowerBBFunctions
 		$SecArr['where'][0]['value']	= 	'0';
 		// Get main sections
 		$cats = $PowerBB->core->GetList($SecArr,'section');
-
-
  		////////////
 		// Loop to read the information of main sections
-		foreach ($cats as $cat)
+		foreach($cats as $cat)
 		{
 		   if ($PowerBB->functions->section_group_permission($cat['id'],$PowerBB->_CONF['group_info']['id'],'view_section'))
 	      	{
              // foreach main sections
 			$PowerBB->_CONF['template']['foreach']['forums_list'][$cat['id'] . '_m'] = $cat;
-
-			@include("cache/forums_cache/forums_cache_".$cat['id'].".php");
- 			if (!empty($forums_cache))
-			{
-
-                $forums = json_decode(base64_decode($forums_cache), true);
-					foreach ($forums as $forum)
+            $forums_cache = $PowerBB->functions->get_forum_cache($cat['id'],$cat['forums_cache']);
+ 			 if (!empty($forums_cache))
+			 {
+                $forums = $PowerBB->functions->decode_forum_cache($forums_cache);
+					foreach($forums as $forum)
 					{
 
 						if ($PowerBB->_CONF['group_info']['vice']
@@ -89,8 +87,6 @@ class PowerBBFunctions
                             $forum['last_writer_id']= $forum['last_writer_id'];
                            }
 
-
-
                             $kay =$cat['id'];
                             if (isset($PowerBB->_COOKIE["pbboard_collapse_forumid_$kay"]))
                             {
@@ -99,10 +95,11 @@ class PowerBBFunctions
 									$forum['is_sub'] 	= 	0;
 									$forum['sub']		=	'';
 									$t_sub=0;
-			                        @include("cache/forums_cache/forums_cache_".$forum['id'].".php");
+			                        $forums_cache = $PowerBB->functions->get_forum_cache($forum['id'],$forum['forums_cache']);
+
                                     if (!empty($forums_cache))
 		                           {
-										$subs = json_decode(base64_decode($forums_cache), true);
+										$subs = $PowerBB->functions->decode_forum_cache($forums_cache);
 		                               foreach($subs as $sub)
 										{
 
@@ -116,7 +113,7 @@ class PowerBBFunctions
 										          $forum['num_subjects_awaiting_approval'] += $sub['subjects_review_num'];
 										          $forum['num_replys_awaiting_approval'] += $sub['replys_review_num'];
 
-										           if ($forum['last_time']< $sub['last_time'])
+										           if ($sub['last_time'] > $forum['last_time'])
 										           {
 	                                             	$forum_last_time1 = $sub['last_date'];
 													$forum['last_subject'] = $PowerBB->Powerparse->censor_words($sub['last_subject']);
@@ -165,10 +162,10 @@ class PowerBBFunctions
 														$t_sub=$t_sub+1;
 											        }
                                                    // subs forum ++
-							                        @include("cache/forums_cache/forums_cache_".$sub['id'].".php");
+							                        $forums_cache = $PowerBB->functions->get_forum_cache($sub['id'],$sub['forums_cache']);
  				                                   if (!empty($forums_cache))
 						                           {
-														$subsforum = json_decode(base64_decode($forums_cache), true);
+														$subsforum = $PowerBB->functions->decode_forum_cache($forums_cache);
 						                               foreach($subsforum as $subforum)
 														{
 														    if ($sub['id'] == $subforum['parent'])
@@ -211,10 +208,10 @@ class PowerBBFunctions
                                                             }
 
                                                               // subs forum +++
-									                        @include("cache/forums_cache/forums_cache_".$sub['id'].".php");
+									                        $forums_cache = $PowerBB->functions->get_forum_cache($subforum['id'],$subforum['forums_cache']);
  						                                   if (!empty($forums_cache))
 								                           {
-																$subs4forum = json_decode(base64_decode($forums_cache), true);
+																$subs4forum = $PowerBB->functions->decode_forum_cache($forums_cache);
 								                               foreach($subs4forum  as $sub4forum)
 																{
 																    if ($subforum['id'] == $sub4forum['parent'])
@@ -258,13 +255,13 @@ class PowerBBFunctions
 
 
 																	   // subs forum ++++
-												                        @include("cache/forums_cache/forums_cache_".$subforum['id'].".php");
+																	   $forums_cache = $PowerBB->functions->get_forum_cache($sub4forum['id'],$sub4forum['forums_cache']);
 			 						                                   if (!empty($forums_cache))
 											                           {
-																			$subs5forum = json_decode(base64_decode($forums_cache), true);
+																			$subs5forum = $PowerBB->functions->decode_forum_cache($forums_cache);
 											                               foreach($subs5forum  as $sub5forum)
 																			{
-																			    if ($subforum['id'] == $sub5forum['parent'])
+																			    if ($sub4forum['id'] == $sub5forum['parent'])
 																			    {
 																			        if (!empty($sub5forum['last_date']))
 																			         {
@@ -303,6 +300,58 @@ class PowerBBFunctions
 
 					                                                            }
 
+
+                                                                                       // subs forum +++++
+																                       $forums_cache = $PowerBB->functions->get_forum_cache($sub5forum['id'],$sub5forum['forums_cache']);
+							 						                                   if (!empty($forums_cache))
+															                           {
+																							$subs6forum = $PowerBB->functions->decode_forum_cache($forums_cache);
+															                               foreach($subs6forum  as $sub6forum)
+																							{
+																							    if ($subforum['id'] == $sub6forum['parent'])
+																							    {
+																							        if (!empty($sub6forum['last_date']))
+																							         {
+																							            $forum['subject_num'] += $sub6forum['subject_num'];
+																	                                    $forum['reply_num'] += $sub6forum['reply_num'];
+							            														        $forum['num_subjects_awaiting_approval'] += $sub6forum['subjects_review_num'];
+																					                    $forum['num_replys_awaiting_approval'] += $sub6forum['replys_review_num'];
+
+																								           if ($sub6forum['last_time'] > $sub['last_time'] and $sub6forum['last_time'] > $subforum['last_time'] and $sub6forum['last_time'] > $forum['last_time'])
+																								           {
+															                                             	$forum_last_time1 = $sub6forum['last_date'];
+																											$forum['last_subject'] = $PowerBB->Powerparse->censor_words($sub6forum['last_subject']);
+																											$forum['last_subject_title'] =  $forum['last_subject'];
+																											$forum['last_subject'] =  $PowerBB->Powerparse->_wordwrap($sub6forum['last_subject'],'35');
+																											$forum['last_post_date'] = $PowerBB->sys_functions->_date($forum_last_time1);
+																		                                    $forum['l_date'] = $forum_last_time1;
+																											$forum['last_date'] = $PowerBB->sys_functions->time_ago($forum_last_time1);
+																											$forum['last_time_ago'] = $PowerBB->sys_functions->time_ago($forum_last_time1);
+																											$forum['last_date_ago'] = $PowerBB->sys_functions->_time($forum_last_time1);
+																											$forum['last_subjectid'] = $sub6forum['last_subjectid'];
+																											$forum['last_time'] = $sub6forum['last_time'];
+																											$forum['last_reply'] = $sub6forum['last_reply'];
+																											$forum['icon'] = $sub6forum['icon'];
+																											$forum['review_subject'] = $sub6forum['review_subject'];
+																											$forum['last_berpage_nm'] = $sub6forum['last_berpage_nm'];
+																											$forum['last_writer']= $sub6forum['last_writer'];
+									                                       							        $forum['username_style_cache'] = $sub6forum['username_style_cache'];
+									                                       							        $forum['writer_photo']= $sub6forum['writer_photo'];
+									                                       							        $forum['avater_path']= $sub6forum['avater_path'];
+																						                    $forum['last_subject'] =  $sub6forum['prefix_subject']." ".$PowerBB->functions->pbb_stripslashes($sub6forum['last_subject']);
+																						                    $forum['sec_section']= $sub6forum['sec_section'];
+																						                    $forum['last_writer_id']= $sub6forum['last_writer_id'];
+										                                                                   }
+
+													                                                 }
+
+									                                                            }
+
+																							}
+													                                   }
+
+
+
 																			}
 									                                   }
 
@@ -326,6 +375,8 @@ class PowerBBFunctions
 		                                       $forum['sub'] ='0';
 		                                     }
 								   }
+
+
                             /*
 							if($sub['reply_num'] > 0)
 							{
@@ -516,6 +567,12 @@ class PowerBBFunctions
                               $forum['IsModeratorCheck'] = 0;
                              }
 
+                         if ($forum['review_subject'])
+						 {
+						   $forum['hide_subject']	= '1';
+                         }
+
+
 							$PowerBB->_CONF['template']['foreach']['forums_list'][$forum['id'] . '_f'] = $forum;
 							unset($groups);
 						}// end view forums
@@ -526,14 +583,68 @@ class PowerBBFunctions
 
 			  } // end !empty($forums_cache)
 			  else
-			  {
-			   $PowerBB->functions->_AllCacheStart();
+			  {			   $Forum 			= 	array();
+		       $Forum['where'] 	= 	array('parent',$cat['id']);
+		       $Forum_rwo = $PowerBB->core->GetInfo($Forum,'section');
+		       if($Forum_rwo)
+		       {
+			   $UpdateSectionCache = true;
+
+			   }
 			  }
-		   } // end view section
+		   }
+
+		    // end view section
 				unset($SecArr);
 		} // end foreach ($cats)
 		//////////
+	 	if ($UpdateSectionCache)
+ 		{
+		  $PowerBB->functions->_AllCacheStart();
+ 		}
 	}
+
+	function get_forum_cache($forum_id,$section_forum_cache)
+	{
+	   global $PowerBB;
+
+	   $Allow_forums_Cache_system_files= false;
+	   $Update_Sections_Cache= false;
+
+	   if(empty($section_forum_cache) or $Allow_forums_Cache_system_files)
+	   {
+        @include("cache/forums_cache/forums_cache_".$forum_id.".php");
+       }
+       else
+       {
+		$cache = $PowerBB->functions->decode_forum_cache($section_forum_cache);
+		  foreach ($cache as $forum)
+		  {
+		    if(isset($forum['parent']))
+		    {
+		     return $section_forum_cache;
+		   	}
+		   	else
+		   	{
+             $Update_Sections_Cache = true;
+			}
+		   }
+
+		    if($Update_Sections_Cache)
+		    {
+              $PowerBB->functions->_AllCacheStart();
+		    }
+       }
+
+	}
+
+	function decode_forum_cache($forums_cache)
+	{
+	   global $PowerBB;
+	    $cache = json_decode(base64_decode($forums_cache), true);
+        return $cache;
+	}
+
 	/**
 	 * Check if delicious cookie is here or another eat it mmmm :)
 	 */
@@ -878,7 +989,8 @@ class PowerBBFunctions
  		$title_keywords    = str_replace(" ",",", $PowerBB->_CONF['info_row']['title']);
 		$page = empty($PowerBB->_GET['page']) ? 'index' : $PowerBB->_GET['page'];
 		if ($PowerBB->_CONF['template']['_CONF']['info_row']['chat_bar_dir'] == 'right')
-		{		$PowerBB->_CONF['template']['_CONF']['info_row']['chat_bar_dir'] == 'out';
+		{
+		$PowerBB->_CONF['template']['_CONF']['info_row']['chat_bar_dir'] == 'out';
 		}
 		elseif ($PowerBB->_CONF['template']['_CONF']['info_row']['chat_bar_dir'] == 'left')
 		{
@@ -903,7 +1015,8 @@ class PowerBBFunctions
 		elseif ($page == 'forum')
 		{
 			if (empty($PowerBB->_GET['id']))
-			{			$PowerBB->_GET['id'] = $PowerBB->functions->CleanVariable($PowerBB->_GET['section'],'intval');
+			{
+			$PowerBB->_GET['id'] = $PowerBB->functions->CleanVariable($PowerBB->_GET['section'],'intval');
 			}
         $Forum 			= 	array();
 		$Forum['where'] 	= 	array('id',$PowerBB->_GET['id']);
@@ -1052,7 +1165,8 @@ class PowerBBFunctions
 
                     $description = str_replace(" .. ","", $description);
 					if(empty($description))
-					{					$PowerBB->template->assign('description',$SubjectInfo['title']);
+					{
+					$PowerBB->template->assign('description',$SubjectInfo['title']);
 					}
 					else
 					{
@@ -1280,13 +1394,15 @@ class PowerBBFunctions
 		$page_address['new_topic'] 	= 	$PowerBB->_CONF['template']['_CONF']['lang']['add_new_topic'] .' - '. $PowerBB->_CONF['info_row']['title'];
 		$page_address['new_reply'] 	= 	$PowerBB->_CONF['template']['_CONF']['lang']['add_new_reply'] .' - '. $PowerBB->_CONF['info_row']['title'];
 		if ($page == 'vote')
-		{			$PollArr 			= 	array();
+		{
+			$PollArr 			= 	array();
 			$PollArr['where'] 	= 	array('id',$PowerBB->_GET['id']);
 
 			$Poll = $PowerBB->core->GetInfo($PollArr,'poll');
 
 			if ($PowerBB->_GET['poll_edit'])
-			{			$page_address['vote'] 			= 	$PowerBB->_CONF['template']['_CONF']['lang']['poll_edit'] .' '. $Poll['qus'];
+			{
+			$page_address['vote'] 			= 	$PowerBB->_CONF['template']['_CONF']['lang']['poll_edit'] .' '. $Poll['qus'];
 			}
 			else
 			{
@@ -1326,11 +1442,13 @@ class PowerBBFunctions
          $bot_name = $PowerBB->functions->bot_name();
 
          if($isBot)
-         {         $PowerBB->template->assign('is_bot',false);
+         {
+         $PowerBB->template->assign('is_bot',false);
          $PowerBB->template->assign('bot_name',$bot_name);
          }
          else
-         {         $PowerBB->template->assign('is_bot',true);
+         {
+         $PowerBB->template->assign('is_bot',true);
          }
 
         $PowerBB->template->assign('page',$page);
@@ -1416,7 +1534,9 @@ class PowerBBFunctions
 		// Get server port
 		$Protocol = $PowerBB->functions->GetServerProtocol();
         $actual_link = $Protocol.$PowerBB->_SERVER['HTTP_HOST'].$PowerBB->_SERVER['REQUEST_URI'];
-        if(strstr($actual_link,'count='))        {        $actual_link = str_replace("&count=0","", $actual_link);
+        if(strstr($actual_link,'count='))
+        {
+        $actual_link = str_replace("&count=0","", $actual_link);
         $actual_link = str_replace("&count=1","", $actual_link);
         }
  		return $actual_link;
@@ -1532,7 +1652,8 @@ return preg_replace($pattern, $replacement, $email);
 		$mail->Body    = $body;
 		$mail->AltBody = $text_body;
 		if($mail->send()) {
-		$mail->ClearAddresses();        return true;
+		$mail->ClearAddresses();
+        return true;
 		} else {
 		return false;
 		}
@@ -2293,18 +2414,18 @@ return preg_replace($pattern, $replacement, $email);
 		$UpdateArr['where']					= 	array('id',$SectionCache);
 		$UpdateReplyNumber = $PowerBB->core->Update($UpdateArr,'section');
 		// The number of section's subjects number
-		$subject_nm = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT id FROM " . $PowerBB->table['subject'] . " WHERE section = '$SectionCache' AND delete_topic<>1"));
-		// The number of section's subjects number
+		$subject_nm = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT id FROM " . $PowerBB->table['subject'] . " WHERE section = '$SectionCache' AND delete_topic='0'"));
+
 		$UpdateArr 					= 	array();
 		$UpdateArr['field']			=	array();
 		$UpdateArr['field']['subject_num'] 	= 	$subject_nm;
 		$UpdateArr['where']					= 	array('id',$SectionCache);
 		$UpdateSubjectNumber = $PowerBB->core->Update($UpdateArr,'section');
 
-		$GetLastqueryReplyForm = $PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['reply'] . " WHERE section = '$SectionCache' AND delete_topic<>1 AND review_reply<>1 ORDER by write_time DESC LIMIT 0 , 30");
+		$GetLastqueryReplyForm = $PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['reply'] . " WHERE section = '$SectionCache' AND delete_topic='0' AND review_reply='0' ORDER by write_time DESC");
 		$GetLastReplyForm = $PowerBB->DB->sql_fetch_array($GetLastqueryReplyForm);
 
-		$GetLastSubjectInfoQuery = $PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['subject'] . " WHERE section = '$SectionCache' AND delete_topic<>1 AND review_subject<>1 ORDER by native_write_time DESC LIMIT 0 , 30 ");
+		$GetLastSubjectInfoQuery = $PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['subject'] . " WHERE section = '$SectionCache' AND delete_topic='0' AND review_subject='0' ORDER by native_write_time DESC");
 		$GetLastSubjectInf = $PowerBB->DB->sql_fetch_array($GetLastSubjectInfoQuery);
 
         if ($PowerBB->_GET['page'] == 'new_topic')
@@ -2323,13 +2444,14 @@ return preg_replace($pattern, $replacement, $email);
 
 		 if($GetLastReplyForm['write_time'] > $GetLastSubjectInf['native_write_time'])
 		 {
-			$GetSubjectInfoQuery = $PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['subject'] . " WHERE id = '".$GetLastReplyForm['subject_id']."' AND delete_topic<>1 AND review_subject<>1 ");
+			$GetSubjectInfoQuery = $PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['subject'] . " WHERE id = '".$GetLastReplyForm['subject_id']."' AND delete_topic='0' AND review_subject='0' ");
 			$SubjectInf = $PowerBB->DB->sql_fetch_array($GetSubjectInfoQuery);
-			// Get info subject
-			$last_subjectid = $GetLastReplyForm['subject_id'];
+			// Get info Reply
+			$countpage = $PowerBB->functions->get_count_perpage($SubjectInf['reply_number'],$PowerBB->_CONF['info_row']['perpage']);
+			$last_subjectid = $SubjectInf['id'];
 			$icon = $SubjectInf['icon'];
 			$last_reply = $SubjectInf['last_reply'];
-			$last_berpage_nm = $SubjectInf['last_berpage_nm'];
+			$last_berpage_nm = $countpage;
 			$last_writer = $SubjectInf['last_replier'];
 			$title = $SubjectInf['title'];
 			$last_date = $SubjectInf['write_time'];
@@ -2337,10 +2459,11 @@ return preg_replace($pattern, $replacement, $email);
 		 else
 		 {
 			// Get info subject
+			$countpage = $PowerBB->functions->get_count_perpage($GetLastSubjectInf['reply_number'],$PowerBB->_CONF['info_row']['perpage']);
 			$last_subjectid = $GetLastSubjectInf['id'];
 			$icon = $GetLastSubjectInf['icon'];
 			$last_reply = $GetLastSubjectInf['last_reply'];
-			$last_berpage_nm = $GetLastSubjectInf['last_berpage_nm'];
+			$last_berpage_nm = $countpage;
 			$last_writer = $GetLastSubjectInf['writer'];
 			$title = $GetLastSubjectInf['title'];
 			$last_date = $GetLastSubjectInf['write_time'];
@@ -2353,7 +2476,7 @@ return preg_replace($pattern, $replacement, $email);
 		if ($subject_nm == 0)
 		{
 	 		// Get Section Info
-			$SecParenreplytArr = $PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['section'] . " WHERE parent='$SectionCache' AND review_subject<>1 ORDER by last_time DESC LIMIT 0 , 30 ");
+			$SecParenreplytArr = $PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['section'] . " WHERE parent='$SectionCache' AND review_subject='0' ORDER by last_time DESC");
 			$this->ParentsInfo = $PowerBB->DB->sql_fetch_array($SecParenreplytArr);
 			$CacheArr 			= 	array();
 			$CacheArr['where'] 	= 	array('section_id',$SectionCache);
@@ -2377,6 +2500,7 @@ return preg_replace($pattern, $replacement, $email);
 				$UpdateLastFormSecArr['where'] 		        = 	array('id',$SectionCache);
 				// Update Last Form Sec subject's information
 				$UpdateLastFormSec = $PowerBB->core->Update($UpdateLastFormSecArr,'section');
+
 			}
 			else
 			{
@@ -2423,10 +2547,14 @@ return preg_replace($pattern, $replacement, $email);
 		// Update Last Form Sec subject's information
 		$UpdateLastFormSec = $PowerBB->core->Update($UpdateLastFormSecArr,'section');
 	   }
-		// Update section's cache
-		$UpdateArr 				= 	array();
-		$UpdateArr['parent'] 	= 	$this->SectionInfo['parent'];
-		$update_cache = $PowerBB->section->UpdateSectionsCache($UpdateArr);
+
+			// Update section's cache
+			$UpdateArr 				= 	array();
+			$UpdateArr['parent'] 	= 	$this->SectionInfo['parent'];
+			$update_cache = $PowerBB->section->UpdateSectionsCache($UpdateArr);
+
+			$UpdateSectionCache = $PowerBB->functions->_MeterStart($SectionCache);
+
        $PowerBB->functions->PBB_Create_last_posts_cache(0);
 		unset($UpdateArr);
        return;
@@ -2435,6 +2563,7 @@ return preg_replace($pattern, $replacement, $email);
 	function _AllCacheStart()
 	{
 		global $PowerBB;
+
 		$SecArr 					= 	array();
 		$SecArr['get_from']			=	'db';
 		$SecArr['proc'] 			= 	array();
@@ -2468,6 +2597,58 @@ return preg_replace($pattern, $replacement, $email);
 			$cache = $PowerBB->group->UpdateSectionGroupCache($CacheArr);
 		 }
 	 }
+
+    function _MeterStart($section_id)
+	{
+		global $PowerBB;
+ 		// Get Section Info
+   		$SecArr 			= 	array();
+		$SecArr['where'] 	= 	array('id',$section_id);
+		$SectionInfo = $PowerBB->core->GetInfo($SecArr,'section');
+        $cache = $PowerBB->section->UpdateSectionsCache(array('id'=>$SectionInfo['id']));
+        if($SectionInfo['parent'])
+        {
+   		$ParentA 			= 	array();
+		$ParentA['where'] 	= 	array('id',$SectionInfo['parent']);
+		$ParentAInfo = $PowerBB->core->GetInfo($ParentA,'section');
+        $cache = $PowerBB->section->UpdateSectionsCache(array('id'=>$ParentAInfo['id']));
+
+			if($ParentAInfo['parent'])
+			{
+	   		$ParentB 			= 	array();
+			$ParentB['where'] 	= 	array('id',$ParentAInfo['parent']);
+			$ParentBInfo = $PowerBB->core->GetInfo($ParentB,'section');
+	        $cache = $PowerBB->section->UpdateSectionsCache(array('id'=>$ParentBInfo['id']));
+
+		        if($ParentBInfo['parent'])
+		        {
+		   		$ParentC 			= 	array();
+				$ParentC['where'] 	= 	array('id',$ParentBInfo['parent']);
+				$ParentCInfo = $PowerBB->core->GetInfo($ParentC,'section');
+		        $cache = $PowerBB->section->UpdateSectionsCache(array('id'=>$ParentCInfo['id']));
+
+			        if($ParentCInfo['parent'])
+			        {
+			   		$ParentD 			= 	array();
+					$ParentD['where'] 	= 	array('id',$ParentCInfo['parent']);
+					$ParentDInfo = $PowerBB->core->GetInfo($ParentD,'section');
+			        $cache = $PowerBB->section->UpdateSectionsCache(array('id'=>$ParentDInfo['id']));
+
+				         if($ParentDInfo['parent'])
+				        {
+				   		$ParentG 			= 	array();
+						$ParentG['where'] 	= 	array('id',$ParentDInfo['parent']);
+						$ParentGInfo = $PowerBB->core->GetInfo($ParentG,'section');
+				        $cache = $PowerBB->section->UpdateSectionsCache(array('id'=>$ParentGInfo['id']));
+						}
+
+					}
+				}
+			}
+			$PowerBB->functions->PBB_Create_last_posts_cache(0);
+        }
+	}
+
 	    /**
 	 * Get the Jump Forums List
 	 */
@@ -2497,11 +2678,11 @@ return preg_replace($pattern, $replacement, $email);
              // foreach main sections
 			$PowerBB->_CONF['template']['foreach']['forumsy_list'][$caty['id'] . '_m'] = $caty;
 			unset($sectiongroup);
-			@include("cache/forums_cache/forums_cache_".$caty['id'].".php");
+            $forums_cache = $PowerBB->functions->get_forum_cache($caty['id'],$caty['forums_cache']);
 
 			if (!empty($forums_cache))
 			{
-                $forumsy = json_decode(base64_decode($forums_cache), true);
+                $forumsy = $PowerBB->functions->decode_forum_cache($forums_cache);
 					foreach ($forumsy as $forumy)
 					{
 						//////////////////////////
@@ -2509,11 +2690,10 @@ return preg_replace($pattern, $replacement, $email);
 						{
 							$forumy['is_sub'] 	= 	0;
 							$forumy['sub']		=	'';
-							@include("cache/forums_cache/forums_cache_".$forumy['id'].".php");
-
+                            $forums_cache = $PowerBB->functions->get_forum_cache($forumy['id'],$forumy['forums_cache']);
                                if (!empty($forums_cache))
 	                           {
-									$subs = json_decode(base64_decode($forums_cache), true);
+									$subs = $PowerBB->functions->decode_forum_cache($forums_cache);
 	                               foreach ($subs as $sub)
 									{
 									   if ($forumy['id'] == $sub['parent'])
@@ -2542,12 +2722,11 @@ return preg_replace($pattern, $replacement, $email);
 	                                    {
 										$forumy['is_sub_sub'] 	= 	0;
 										$forumy['sub_sub']		=	'';
-			                                 @include("cache/forums_cache/forums_cache_".$sub['id'].".php");
-
+                                          $forums_cache = $PowerBB->functions->get_forum_cache($sub['id'],$sub['forums_cache']);
 		                                   if (!empty($forums_cache))
 				                           {
-												$subs_sub = json_decode(base64_decode($forums_cache), true);
-				                               foreach ($subs_sub as $sub_sub)
+												$subs_sub = $PowerBB->functions->decode_forum_cache($forums_cache);
+				                                foreach ($subs_sub as $sub_sub)
 												{
 												   if ($sub['id'] != $sub_sub['parent'])
 				                                    {
@@ -2572,6 +2751,7 @@ return preg_replace($pattern, $replacement, $email);
 												 }
 										   }
 										 }
+
 									 }
 								}
 							$PowerBB->_CONF['template']['foreach']['forumsy_list'][$forumy['id'] . '_f'] = $forumy;
@@ -2588,7 +2768,7 @@ return preg_replace($pattern, $replacement, $email);
 	{
 		global $PowerBB;
         $keytmp = rand(0, $max);
-	  return $keytmp ;
+	  return $keytmp;
 	}
 //	****** Conversion and shorten links ******
 //	This setting allows you to change the links
@@ -3321,59 +3501,82 @@ function my_strlen($string)
     	$copy = move_uploaded_file($tmp_name,$path.$filename);
 		return ($copy) ? true : false;
 	}
+
   	function section_group_permission($forum_id, $group_id, $permission_name)
 	{
 	   global $PowerBB;
-        $dir = "cache/sectiongroup_cache/sectiongroup_cache_".$forum_id.".php";
-        if (file_exists($dir))
-        {
-			@include($dir);
-			$groups = json_decode(base64_decode($sectiongroup_cache), true);
-			if (!empty($sectiongroup_cache))
-			{
-		 		if($PowerBB->_CONF['member_row']['membergroupids'] !='')
-		 		{
-		 		 $groupids = $group_id.",".$PowerBB->_CONF['member_row']['membergroupids'];
-				 $pieces = explode(",", $groupids);
-					 if ($groups[$pieces[0]][$permission_name]
-					 or $groups[$pieces[1]][$permission_name]
-					 or $groups[$pieces[2]][$permission_name]
-					 or $groups[$pieces[3]][$permission_name]
-					 or $groups[$pieces[4]][$permission_name]
-					 or $groups[$pieces[5]][$permission_name]
-					 or $groups[$pieces[6]][$permission_name]
-					 or $groups[$pieces[7]][$permission_name]
-					 or $groups[$pieces[8]][$permission_name]
-					 or $groups[$pieces[9]][$permission_name]
-					 or $groups[$pieces[10]][$permission_name])
-					  {
-						 return true;
-			          }
-			          else
-					  {
-						 return false;
-			          }
-				}
-		       else
+
+        $Forum 			= 	array();
+		$Forum['where'] 	= 	array('id',$forum_id);
+		$Forum_rwo = $PowerBB->core->GetInfo($Forum,'section');
+		if(!empty($Forum_rwo['sectiongroup_cache']))
+	   {
+	   $sectiongroup_cache = json_decode(base64_decode($Forum_rwo['sectiongroup_cache']), true);
+	   $permission_section = $sectiongroup_cache[$PowerBB->_CONF['group_info']['id']][$permission_name];
+	   return $permission_section;
+	   }
+	   else
+	   {
+	        $dir = "cache/sectiongroup_cache/sectiongroup_cache_".$forum_id.".php";
+	        if (file_exists($dir))
+	        {
+				@include($dir);
+				// Update section's sectiongroup_cache
+	     		$UpdateArr 					        = 	array();
+	     		$UpdateArr['field']			        =	array();
+	     		$UpdateArr['field']['sectiongroup_cache'] 	    = 	$sectiongroup_cache;
+	     		$UpdateArr['where']					= 	array('id',$forum_id);
+                $UpdateSectionGroupCache = $PowerBB->core->Update($UpdateArr,'section');
+
+				$groups = json_decode(base64_decode($sectiongroup_cache), true);
+				if (!empty($sectiongroup_cache))
 				{
-		          $permission = @$groups[$group_id][$permission_name];
-			      return ($permission) ? true : false;
-			    }
+			 		if($PowerBB->_CONF['member_row']['membergroupids'] !='')
+			 		{
+			 		 $groupids = $group_id.",".$PowerBB->_CONF['member_row']['membergroupids'];
+					 $pieces = explode(",", $groupids);
+						 if ($groups[$pieces[0]][$permission_name]
+						 or $groups[$pieces[1]][$permission_name]
+						 or $groups[$pieces[2]][$permission_name]
+						 or $groups[$pieces[3]][$permission_name]
+						 or $groups[$pieces[4]][$permission_name]
+						 or $groups[$pieces[5]][$permission_name]
+						 or $groups[$pieces[6]][$permission_name]
+						 or $groups[$pieces[7]][$permission_name]
+						 or $groups[$pieces[8]][$permission_name]
+						 or $groups[$pieces[9]][$permission_name]
+						 or $groups[$pieces[10]][$permission_name])
+						  {
+							 return true;
+				          }
+				          else
+						  {
+							 return false;
+				          }
+					}
+			       else
+					{
+			          $permission = @$groups[$group_id][$permission_name];
+				      return ($permission) ? true : false;
+				    }
+				}
+				else
+				{
+	               $permission = $PowerBB->functions->_MeterGroupsStart();
+	               return ($permission) ? true : false;
+				}
+						echo "false";
+
 			}
 			else
 			{
-               $permission = $PowerBB->functions->_MeterGroupsStart();
-               return ($permission) ? true : false;
+	           $permission = $PowerBB->functions->_MeterGroupsStart();
+	           return ($permission) ? true : false;
 			}
-					echo "false";
 
 		}
-		else
-		{
-           $permission = $PowerBB->functions->_MeterGroupsStart();
-           return ($permission) ? true : false;
-		}
 	}
+
    	function PBBoard_Updates()
 	{
 	   global $PowerBB;
@@ -3770,7 +3973,8 @@ function dec_to_utf8($src)
 		$exforumid = intval($Topic_row['section']);
 		}
        else
-        {        $exforumid = "666,555";
+        {
+        $exforumid = "666,555";
         }
 
 		if($PowerBB->_CONF['info_row']['mention_exforum'] == '0')
@@ -3871,7 +4075,8 @@ function dec_to_utf8($src)
 	}
 
 	function update_password($uid, $password)
-	{		global $PowerBB;
+	{
+		global $PowerBB;
 
 		$salt = $this->generate_salt();
 
@@ -3988,7 +4193,8 @@ function dec_to_utf8($src)
 					$options['secure'] = true;
 				}
 				else
-				{				   $options['secure'] = false;
+				{
+				   $options['secure'] = false;
 				}
 			}
 
@@ -4010,6 +4216,20 @@ function dec_to_utf8($src)
 		$PowerBB->_COOKIE[$name] = $value;
 	}
 
+	function get_count_perpage($count, $perpage)
+	{
+    	global $PowerBB;
+
+		$Reply_NumArr = $count;
+		$ss_r = $perpage/2+1;
+		$roun_ss_r = round($ss_r, 0);
+		$reply_number_r = $Reply_NumArr-$roun_ss_r;
+		$pagenum_r = $reply_number_r/$perpage;
+		$round0_r = round($pagenum_r, 0);
+		$countpage = $round0_r+1;
+		$countpage = str_replace("-", '', $countpage);
+		return ($countpage);
+	}
 
  }
 ?>

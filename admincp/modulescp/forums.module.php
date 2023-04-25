@@ -515,71 +515,23 @@ class PowerBBForumsMOD extends _functions
 		//////////
 		$PowerBB->_CONF['template']['Inf'] = false;
 		$this->check_by_id($PowerBB->_CONF['template']['Inf']);
+		$PowerBB->_GET['id'] = $PowerBB->functions->CleanVariable($PowerBB->_GET['id'],'intval');
 
-		//////////
+		// Show Jump List to:)
+		$result = $PowerBB->DB->sql_query("SELECT id,title,parent FROM " . $PowerBB->table['section'] . " ORDER BY id ASC");
 
-	    $SecArr 						= 	array();
-		$SecArr['get_from']				=	'db';
+		$Master = array();
+		while ($row = $PowerBB->DB->sql_fetch_array($result)) {
+			extract($row);
+		    $Master = $PowerBB->core->GetList(array ('id'=>$id,'title'=>"".$title."",'parent'=>$parent."",'parent'=>$parent),'section');
+		    $PowerBB->_CONF['template']['foreach']['SecList'] = $PowerBB->core->GetList($Master,'section');
+		}
 
-		$SecArr['proc'] 				= 	array();
-		$SecArr['proc']['*'] 			= 	array('method'=>'clean','param'=>'html');
+		$MainAndSub = new PowerBBCommon;
+          	$PowerBB->template->assign('DoJumpList',$MainAndSub->DoJumpList($Master,$url,1));
+		unset($Master);
+	   ////////
 
-		$SecArr['order']				=	array();
-		$SecArr['order']['field']		=	'sort';
-		$SecArr['order']['type']		=	'ASC';
-
-		$SecArr['where']				=	array();
-		$SecArr['where'][0]['name']		= 	'parent';
-		$SecArr['where'][0]['oper']		= 	'=';
-		$SecArr['where'][0]['value']	= 	'0';
-
-		// Get main sections
-		$cats = $PowerBB->core->GetList($SecArr,'section');
-
-
-		// Loop to read the information of main sections
-		foreach ($cats as $cat)
-		{
-				// foreach main sections
-				$PowerBB->_CONF['template']['foreach']['forums_list'][$cat['id'] . '_m'] = $cat;
-
-				// Get main Forums
-				$ForumArr 						= 	array();
-				$ForumArr['get_from']				=	'db';
-
-				$ForumArr['proc'] 				= 	array();
-				$ForumArr['proc']['*'] 			= 	array('method'=>'clean','param'=>'html');
-
-				$ForumArr['order']				=	array();
-				$ForumArr['order']['field']		=	'sort';
-				$ForumArr['order']['type']		=	'ASC';
-
-				$ForumArr['where']				=	array();
-				$ForumArr['where'][0]['name']		= 	'parent';
-				$ForumArr['where'][0]['oper']		= 	'=';
-				$ForumArr['where'][0]['value']	= 	$cat['id'];
-
-				// Get parent sections
-				$forums = $PowerBB->core->GetList($ForumArr,'section');
-
-				foreach ($forums as $forum)
-				{
-					// Get parent forums
-					$sub_section = $forum['id'];
-					$sub_section_num = $PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['section'] . " WHERE parent = '$sub_section'");
-					while($r=$PowerBB->DB->sql_fetch_array($sub_section_num))
-					{
-					if ($r['id'])
-					{
-					$forum['is_sub'] = 1;
-					}
-
-					$forum['sub'] .= ('<option value="' .$r['id'] . '">---'  . $r['title'] . '</option>');
-					}
-
-					 $PowerBB->_CONF['template']['foreach']['forums_list'][$forum['id'] . '_f'] = $forum;
-					} // end if is_array
-			} // end !empty($forums_cache)
 
 		//////////
 
@@ -617,11 +569,10 @@ class PowerBBForumsMOD extends _functions
 		if ($PowerBB->_CONF['template']['Inf']['parent'] != $PowerBB->_POST['parent'])
 		{
 			$new_parent		= 	true;
-			$old_parent		=	$PowerBB->_CONF['template']['Inf']['id'];
+			$old_parent		=	$PowerBB->_CONF['template']['Inf']['parent'];
 		}
 
 		//////////
-
 		$SecArr 			= 	array();
 		$SecArr['field']	=	array();
 
@@ -675,17 +626,19 @@ class PowerBBForumsMOD extends _functions
 			 }
 
 			$cache = $PowerBB->section->UpdateSectionsCache(array('parent'=>$PowerBB->_POST['parent']));
-
-			// There is a new main section
-			if ($new_parent)
-			{
-			  $cache = $PowerBB->section->UpdateSectionsCache(array('parent'=>$old_parent));
-			}
-
+           	$cache = $PowerBB->section->UpdateSectionsCache(array('id'=>$PowerBB->_POST['parent']));
      		$UpdateArr 				= 	array();
      		$UpdateArr['parent'] 	= 	$PowerBB->_CONF['template']['Inf']['parent'];
 
      		$update_cache = $PowerBB->section->UpdateSectionsCache($UpdateArr);
+
+			$cache = $PowerBB->section->UpdateSectionsCache(array('id'=>$PowerBB->_CONF['template']['Inf']['id']));
+
+			// There is a new main section
+			if ($new_parent)
+			{
+			  $PowerBB->functions->_AllCacheStart();
+			}
 
 
 			$PowerBB->functions->msg($PowerBB->_CONF['template']['_CONF']['lang']['Forum_has_been_updated_successfully']);

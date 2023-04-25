@@ -1,4 +1,7 @@
 <?php
+error_reporting(E_ERROR | E_PARSE);
+@set_time_limit(0);
+@ini_set('max_execution_time', 123456);
 class FeedParser{
 
 	var $xmlParser      = null;
@@ -287,7 +290,7 @@ class FeedParser{
 		CURLOPT_POSTFIELDS => 'schn=csrf'
 	));
 
-	$html = curl_exec($ct);
+	$html = @curl_exec($ct);
 
 	$dochtml = new DOMDocument();
 	@$dochtml->loadHTML($html);

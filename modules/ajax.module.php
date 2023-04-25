@@ -157,6 +157,8 @@ class PowerBBAJAXtMOD
 			$cache = $PowerBB->section->UpdateSectionsCache(array('parent'=>$SubjectInfo['section']));
 		}
 
+	        $UpdateSectionCache = $PowerBB->functions->UpdateSectionCache($SubjectInfo['section']);
+
 		if ($update)
 		{
 			echo "<a href='index.php?page=topic&show=1&id=".$PowerBB->_POST['m_subject']."{$password}'>".$PowerBB->_POST['title']."</a>";

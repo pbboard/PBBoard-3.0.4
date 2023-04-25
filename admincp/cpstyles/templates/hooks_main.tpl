@@ -3,7 +3,7 @@
 <div class="address_bar">
 {$lang['Control_Panel']}
 &raquo; {$lang['addons_pbb']}
-&raquo; <a href="index.php?page=addons&amp;control=1&amp;main=1">{$lang['control_hooks']}</a>
+&raquo; <a href="index.php?page=addons&amp;control_hooks=1&amp;main=1">{$lang['control_hooks']}</a>
 </div>
 <br />
 <font color="#FF0000">{$lang['RewriteEnginetextarea']}</font>
@@ -11,13 +11,16 @@
 <table width="98%" class="t_style_b" border="0" cellspacing="1" align="center">
 	<tr>
 		<td class="main1" align="center" width="39%">
-    {$lang['sel_addons']}
+    Plugin Name
 		</td>
 		<td class="main1" align="center" width="30%">
-		{$lang['Location']}
+		Hook Name
 		</td>
 		<td class="main1" align="center" width="10%">
 		{$lang['edit']}
+		</td>
+		<td class="main1" align="center" width="10%">
+		{$lang['Delet']}
 		</td>
 	</tr>
 	{Des::while}{HooksList}
@@ -37,6 +40,9 @@
 		</td>
 		<td class="row1" align="center" width="10%">
 		<a href="index.php?page=addons&amp;edit_hook=1&amp;main=1&amp;id={$HooksList['id']}"> {$lang['edit']}</a>
+		</td>
+		<td class="row1" align="center" width="10%">
+		<a href="index.php?page=addons&amp;delet_hook=1&amp;start=1&amp;id={$HooksList['id']}"> {$lang['Delet']}</a>
 		</td>
 	</tr>
 	{/Des::while}

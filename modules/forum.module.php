@@ -405,11 +405,10 @@ function _AllCacheStart()
 	{
 		global $PowerBB;
 
-			@include("cache/forums_cache/forums_cache_".$this->Section['id'].".php");
-
+           $forums_cache = $PowerBB->functions->get_forum_cache($this->Section['id'],$this->Section['forums_cache']);
 			if (!empty($forums_cache))
 			{
-                $forums = json_decode(base64_decode($forums_cache), true);
+                $forums = $PowerBB->functions->decode_forum_cache($forums_cache);
 
 					foreach ($forums as $forum)
 					{
@@ -470,11 +469,10 @@ function _AllCacheStart()
 									$forum['is_sub'] 	= 	0;
 									$forum['sub']		=	'';
 									$t_sub=0;
-			                        @include("cache/forums_cache/forums_cache_".$forum['id'].".php");
+                                    $forums_cache = $PowerBB->functions->get_forum_cache($forum['id'],$forum['forums_cache']);
                                    if (!empty($forums_cache))
 		                           {
-
-										$subs = json_decode(base64_decode($forums_cache), true);
+									   $subs = $PowerBB->functions->decode_forum_cache($forums_cache);
 		                               foreach($subs as $sub)
 										{
 										   if ($forum['id'] == $sub['parent'])
@@ -537,10 +535,10 @@ function _AllCacheStart()
 											        }
 
                                                    // subs forum ++
-							                        @include("cache/forums_cache/forums_cache_".$sub['id'].".php");
+							                        $forums_cache = $PowerBB->functions->get_forum_cache($sub['id'],$sub['forums_cache']);
 				                                   if (!empty($forums_cache))
 						                           {
-														$subsforum = json_decode(base64_decode($forums_cache), true);
+														$subsforum = $PowerBB->functions->decode_forum_cache($forums_cache);
 						                               foreach($subsforum as $subforum)
 														{
 														    if ($sub['id'] == $subforum['parent'])
@@ -583,10 +581,10 @@ function _AllCacheStart()
                                                             }
 
 	                                                              // subs forum +++
-										                        @include("cache/forums_cache/forums_cache_".$subforum['id'].".php");
+										                        $forums_cache = $PowerBB->functions->get_forum_cache($subforum['id'],$subforum['forums_cache']);
 							                                   if (!empty($forums_cache))
 									                           {
-																	$subs4forum = json_decode(base64_decode($forums_cache), true);
+																	$subs4forum = $PowerBB->functions->decode_forum_cache($forums_cache);
 									                               foreach($subs4forum  as $sub4forum)
 																	{
 																	    if ($subforum['id'] == $sub4forum['parent'])

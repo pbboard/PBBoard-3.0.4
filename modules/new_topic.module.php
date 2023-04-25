@@ -1,8 +1,14 @@
 <?php
 session_start();
 (!defined('IN_PowerBB')) ? die() : '';
-include('common.php');
 define('CLASS_NAME','PowerBBTopicAddMOD');
+$CALL_SYSTEM				=	array();
+$CALL_SYSTEM['SUBJECT'] 	= 	true;
+$CALL_SYSTEM['REPLY'] 		= 	true;
+$CALL_SYSTEM['SECTION'] 		= 	true;
+$CALL_SYSTEM['CACHE'] 			= 	true;
+
+include('common.php');
 class PowerBBTopicAddMOD
 {
 	var $SectionInfo;
@@ -36,38 +42,6 @@ class PowerBBTopicAddMOD
 	{
 		global $PowerBB;
 
-		//////////
-       	if ($PowerBB->_CONF['info_row']['MySBB_version'] == "3.0.0"
-       	or $PowerBB->_CONF['info_row']['MySBB_version'] == "3.0.1")
-        {
-
-		$fileJsvk_popup = "look/ckeditor/plugins/Jsvk/jscripts/vk_popup.html";
-		$fileJsvk_iframe = "look/ckeditor/plugins/Jsvk/jscripts/vk_iframe.html";
-		$filewsc_ciframe = "look/ckeditor/plugins/wsc/dialogs/ciframe.html";
-		$filewsc_tmpFrameset = "look/ckeditor/plugins/wsc/dialogs/tmpFrameset.html";
-		$filecke_preview = "look/ckeditor/plugins/preview/preview.html";
-		if (file_exists($fileJsvk_popup))
-		{
-		$delJsvkpopup = @unlink($fileJsvk_popup);
-		}
-		if (file_exists($fileJsvk_iframe))
-		{
-		$delJsvkiframe = @unlink($fileJsvk_iframe);
-		}
-		if (file_exists($filewsc_ciframe))
-		{
-		$delciframe = @unlink($filewsc_ciframe);
-		}
-		if (file_exists($filewsc_tmpFrameset))
-		{
-		$deltmpFrameset = @unlink($filewsc_tmpFrameset);
-		}
-		if (file_exists($filecke_preview))
-		{
-		$delpreview = @unlink($filecke_preview);
-		}
-
-	   }
 		$PowerBB->functions->CleanVariable($PowerBB->_GET['id'],'intval');
 
 		if (empty($PowerBB->_GET['id']))
@@ -1127,23 +1101,45 @@ class PowerBBTopicAddMOD
                    }
 
 
-		     		$LastArr = array();
+     		       // Update Last subject's information in Section
+		     		$LastArr 					        = 	array();
+		     		$LastArr['field']			        =	array();
 
-		     		$LastArr['writer'] 		= 	$PowerBB->_CONF['member_row']['username'];
-		     		$LastArr['title'] 		= 	$PowerBB->functions->CleanVariable($PowerBB->_POST['title'],'html');
-		     		$LastArr['subject_id'] 	= 	$PowerBB->subject->id;
-		     		$LastArr['date'] 		= 	$PowerBB->_CONF['now'];
-		     		$LastArr['last_time'] 		= 	$PowerBB->_CONF['now'];
-		     		$LastArr['icon'] 		= 	$PowerBB->_POST['icon'];
-		     		$LastArr['last_reply'] 		= 	'0';
+		     		$LastArr['field']['last_writer'] 	    = 	$PowerBB->_CONF['member_row']['username'];
+		     		$LastArr['field']['last_subject']   = 	$PowerBB->functions->CleanVariable($PowerBB->_POST['title'],'html');
+		     		$LastArr['field']['last_subjectid'] = 	$PowerBB->subject->id;
+		     		$LastArr['field']['last_date'] 	    = 	$PowerBB->_CONF['now'];
+		     		$LastArr['field']['last_time'] 	    = 	$PowerBB->_CONF['now'];
+		     		$LastArr['field']['icon'] 	        = 	$PowerBB->_POST['icon'];
 
-		     		$LastArr['where'] 		= 	(!$this->SectionInfo['parent']) ? array('id',$this->SectionInfo['id']) : array('id',$this->SectionInfo['parent']);
 
-     		     // Update Last subject's information
-     		       $UpdateLast = $PowerBB->section->UpdateLastSubject($LastArr);
+		     		$LastArr['where']					= 	array('id',$this->SectionInfo['id']);
+
+                    $UpdateLast = $PowerBB->section->UpdateSection($LastArr);
+
+		     		// Update Last subject's information in parent
+		     		$LastParentArr 					           = 	array();
+		     		$LastParentArr['field']			           =	array();
+
+		     		$LastParentArr['field']['last_writer'] 	       = 	$PowerBB->_CONF['member_row']['username'];
+		     		$LastParentArr['field']['last_subject']    = 	$PowerBB->functions->CleanVariable($PowerBB->_POST['title'],'html');
+		     		$LastParentArr['field']['last_subjectid']  = 	$PowerBB->subject->id;
+		     		$LastParentArr['field']['last_date'] 	   = 	$PowerBB->_CONF['now'];
+		     		$LastParentArr['field']['last_time'] 	   = 	$PowerBB->_CONF['now'];
+		     		$LastParentArr['field']['icon'] 	       = 	$PowerBB->_POST['icon'];
+
+
+		     		$LastParentArr['where']					   = 	array('id',$this->SectionInfo['parent']);
+
+                    $UpdateLast = $PowerBB->section->UpdateSection($LastParentArr);
 
 		        	// Update section's cache
-	               $UpdateSectionCache = $PowerBB->functions->UpdateSectionCache($this->SectionInfo['id']);
+		        	$UpdateSectionCache1 = $PowerBB->functions->UpdateSectionCache($this->SectionInfo['id']);
+			        $cache = $PowerBB->section->UpdateSectionsCache(array('parent'=>$this->SectionInfo['parent']));
+
+					 // Update parent's cache
+                     $UpdateSectionCache = $PowerBB->functions->UpdateSectionCache($this->SectionInfo['parent']);
+
                   $PowerBB->functions->PBB_Create_last_posts_cache(0);
 
                    /*

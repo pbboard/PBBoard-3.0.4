@@ -7,7 +7,7 @@
 </div>
 <br />
 <form action="index.php?page=addons&amp;writing_addon=1&amp;start=1" method="post">
-	<table width="88%" class="t_style_b" border="0" cellspacing="1" align="center">
+	<table width="88%" class="t_style_b" border="0" cellspacing="1" align="center" dir="ltr">
 		<tr align="center">
 			<td class="main1" colspan="2">
 			{$lang['writing_addon']}
@@ -15,20 +15,29 @@
 		</tr>
 <tr>
 			<td class="row2">
-			{$lang['sel_addons']}
+			New Plugin Name:
+			</td>
+			<td class="row2">
+<input type="text" name="plugin_name" id="plugin_name" value="" size="30" dir="ltr">
+			</td>
+		</tr>
+
+<tr>
+			<td class="row2">
+			Plugin Name:
 			</td>
 			<td class="row2">
 <select name="addons" id="sel_addons" dir="ltr">
+<option value="">{$lang['no_place']}</option>
 {Des::while}{AddonsList}
 <option value="{$AddonsList['id']}">{$AddonsList['title']}</option>
 {/Des::while}
-<option value="">{$lang['no_place']}</option>
 </select>
 			</td>
 		</tr>
 <tr>
 			<td class="row2">
-			{$lang['Location']}
+			Hook Name:
 			</td>
 			<td class="row2">
 <input type="text" name="place_of_hook" id="sel_place_of_hook" value="" size="30" dir="ltr">

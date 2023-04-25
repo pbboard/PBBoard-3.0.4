@@ -131,6 +131,14 @@ class PowerBBAddonsMOD
 					$this->_StartEditHook();
 				}
 			}
+			elseif($PowerBB->_GET['delet_hook'])
+			{
+				$PowerBB->template->display('header');
+                if ($PowerBB->_GET['start'])
+				{
+					$this->_StartDeletHook();
+				}
+			}
 
 
 		$PowerBB->template->display('footer');
@@ -317,6 +325,26 @@ class PowerBBAddonsMOD
 	{
 
 		global $PowerBB;
+
+        if (!empty($PowerBB->_POST['plugin_name']))
+        {
+        $name = str_replace(" ","_",$PowerBB->_POST['plugin_name']);
+        $username = $_SESSION[$PowerBB->_CONF['admin_username_cookie']];
+        $AddonsArr 			= 	array();
+		$AddonsArr['field']	=	array();
+
+		$AddonsArr['field']['name'] 		     = 	$name.".xml";
+		$AddonsArr['field']['title'] 		     = 	$PowerBB->_POST['plugin_name'];
+		$AddonsArr['field']['version'] 	         = 	'1.0';
+		$AddonsArr['field']['description'] 	    	= 	$PowerBB->_POST['plugin_name'];
+		$AddonsArr['field']['author'] 		        = 	$username;
+
+		$insert = $PowerBB->addons->InsertAddons($AddonsArr);
+		$addon_arr = array();
+		$addon_arr['where'] = array('title',$PowerBB->_POST['plugin_name']);
+		 $addon_info = $PowerBB->addons->GetAddonsInfo($addon_arr);
+		 $PowerBB->_POST['addons'] = $addon_info['id'];
+        }
 
 			$HooksArr 	=	array();
 			$HooksArr['field']	=	array();
@@ -1814,6 +1842,33 @@ $Hooks = array();
 
 			$PowerBB->functions->msg($PowerBB->_CONF['template']['_CONF']['lang']['plugin_updated_successfully']);
 			$PowerBB->functions->redirect('index.php?page=addons&amp;control_hooks=1&amp;main=1');
+	}
+
+
+	function _StartDeletHook()
+	{
+		global $PowerBB;
+
+			$HooksArr 	=	array();
+			$HooksArr['field']	=	array();
+			$HooksArr['field']['id']           =       $PowerBB->_GET['id'];
+			$DeleteHooks = $PowerBB->hooks->DeleteHooks($HooksArr);
+
+			$Delete = $PowerBB->hooks->DeleteHooks(array('where'=>array('id',$PowerBB->_GET['id'])));
+
+		if($Delete){
+
+		return TRUE;
+
+        $this->update_cache();
+
+		$PowerBB->functions->msg($PowerBB->_CONF['template']['_CONF']['lang']['plugin_updated_successfully']);
+		$PowerBB->functions->redirect('index.php?page=addons&amp;control_hooks=1&amp;main=1');
+		}
+		else
+		{
+			return FALSE;
+		}
 	}
 
 }

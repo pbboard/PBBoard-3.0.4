@@ -8,6 +8,7 @@ class PowerBBSection
 	function __construct($PowerBB)
 	{
 		$this->Engine = $PowerBB;
+
 	}
 
 	function InsertSection($param)
@@ -146,7 +147,7 @@ class PowerBBSection
 		           		'last_writer'		=> 	$param['writer']		,
 		           		'last_subject'		=>	$param['title']			,
 		           		'last_subjectid'	=>	$param['subject_id']	,
-		           		'last_date'			=>	$param['last_date']		,
+		           		'last_date'			=>	$param['date']		,
 		           		'last_time'			=>	$param['last_time']		,
 		           		'linkvisitor'		=>	$param['linkvisitor']   ,
 		           		'icon'		    	=>	$param['icon']			,
@@ -163,11 +164,13 @@ class PowerBBSection
 
 	function CreateSectionsCache($param)
  	{
- 		if (!isset($param)
+ 		   global $PowerBB;
+
+ 		 if (!isset($param)
  			or !is_array($param))
- 		{
+ 		 {
  			$param = array();
- 		}
+ 		 }
 
  		$arr 					= 	array();
  		$arr['get_from'] 		= 	'db';
@@ -216,6 +219,7 @@ class PowerBBSection
 				$cache[$x]['reply_num'] 			= 	$forums[$x]['reply_num'];
 				$cache[$x]['moderators'] 			= 	$forums[$x]['moderators'];
 				$cache[$x]['icon'] 	        		=  	$forums[$x]['icon'];
+
 				$cache[$x]['hide_subject'] 	        =  	$forums[$x]['hide_subject'];
 				$cache[$x]['sec_section'] 	        =  	$forums[$x]['sec_section'];
 				$cache[$x]['section_password'] 	    =  	$forums[$x]['section_password'];
@@ -223,6 +227,7 @@ class PowerBBSection
 				$cache[$x]['last_reply'] 	        =  	$forums[$x]['last_reply'];
 				$cache[$x]['forums_cache'] 			= 	$forums[$x]['forums_cache'];
 				$cache[$x]['forum_title_color']     = 	$forums[$x]['forum_title_color'];
+
 				$cache[$x]['review_subject']        = 	$forums[$x]['review_subject'];
 				$cache[$x]['replys_review_num']     = 	$forums[$x]['replys_review_num'];
 				$cache[$x]['subjects_review_num']   = 	$forums[$x]['subjects_review_num'];
@@ -253,7 +258,7 @@ class PowerBBSection
 					$cache[$x]['groups'][$group['group_id']]['main_section'] 	= 	$group['main_section'];
 				}
 
-				$x += 1;
+				$x++;
  			}
 
 		$cache = base64_encode(json_encode($cache));
@@ -270,18 +275,27 @@ class PowerBBSection
  		{
  			$param = array();
  		}
-          if (!$param['parent']== "0")
- 	       {
-		 		$cache = $this->CreateSectionsCache($param);
 
+   		$SecArr 			= 	array();
+		$SecArr['where'] 	= 	array('id',$param['id']);
+		$SectionInfo = $this->GetSectionInfo($SecArr);
+
+          if (!$SectionInfo['parent']== "0")
+ 	       {
+              	$cache = $this->CreateSectionsCache($SectionInfo);
+
+					$ForumCacheArr 				= 	array();
+					$ForumCacheArr['field']['forums_cache'] 	= 	$cache;
+					$ForumCacheArr['where'] 		        = 	array('id',$SectionInfo['parent']);
+					$UpdateForumCache = $this->UpdateSection($ForumCacheArr);
 
 	            // get main dir
-				$file_forums_cache = $PowerBB->functions->GetMianDir()."cache/forums_cache/forums_cache_".$param['parent'].".php";
+				$file_forums_cache = $PowerBB->functions->GetMianDir()."cache/forums_cache/forums_cache_".$SectionInfo['parent'].".php";
                 $file_forums_cache = str_ireplace("index.php/", '', $file_forums_cache);
                 $file_forums_cache = str_replace("index.php/", '', $file_forums_cache);
 				$fp = fopen($file_forums_cache,'w');
 				$Ds = '$';
-				$parent = $param['parent'];
+				$parent = $SectionInfo['parent'];
 				$forums_cache = "<?php \n".$Ds."forums_cache ='".$cache."';\n ?> ";
 
 				$fw = fwrite($fp,$forums_cache);
@@ -292,6 +306,7 @@ class PowerBBSection
  					$fail = true;
  				}
            }
+
 
 
  		return ($fail) ? true : false;

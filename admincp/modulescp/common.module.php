@@ -34,7 +34,6 @@ class PowerBBCommon
 	{
 	  global $PowerBB;
 
-
 		$this->Main =	$this->SetMain($Master);
 		$this->Sub	=	$this->SetSub($Master);
 		$this->Url	=	$Url;
@@ -79,23 +78,58 @@ class PowerBBCommon
 	function Build()
 	{
 		global $PowerBB;
+         if($PowerBB->_GET['page'] == 'forums' and $PowerBB->_GET['edit'] and $PowerBB->_GET['main'])
+         {
+             $edit_forums = true;
+  		     $PowerBB->_GET['id'] = $PowerBB->functions->CleanVariable($PowerBB->_GET['id'],'intval');
+	     	// Get Section To Info
+	     	$SecToArr 			= 	array();
+			$SecToArr['where'] 	= 	array('id',$PowerBB->_GET['id']);
 
-		if ($PowerBB->_CONF['info_row']['content_dir'] == 'rtl')
-		{
-			$Form = "<div align='right'>
-			<select name=\"section\" id=\"select_section\">";
-		}
-       else
-		{
-			$Form = "<div align='left'>
-			<select name=\"section\" id=\"select_section\">";
-		}
+			$SectionInfo = $PowerBB->section->GetSectionInfo($SecToArr);
+
+			if ($PowerBB->_CONF['info_row']['content_dir'] == 'rtl')
+			{
+				$Form = "<div align='right'>
+				<select name=\"parent\" id=\"select_parent\">";
+			}
+	       else
+			{
+				$Form = "<div align='left'>
+				<select name=\"parent\" id=\"select_parent\">";
+			}
+         }
+         else
+         {
+			if ($PowerBB->_CONF['info_row']['content_dir'] == 'rtl')
+			{
+				$Form = "<div align='right'>
+				<select name=\"section\" id=\"select_section\">";
+			}
+	       else
+			{
+				$Form = "<div align='left'>
+				<select name=\"section\" id=\"select_section\">";
+			}
+         }
+     	$SecToparent 			= 	array();
+		$SecToparent['where'] 	= 	array('id',$SectionInfo['parent']);
+
+		$SecparentInfo = $PowerBB->section->GetSectionInfo($SecToparent);
+
 		 $Mn = 1;
 		$size = sizeof($this->Main);
 		for($i=0;$i<$size;$i++)
 		{
-		$Form .= "<option class='row1' style=\"color: #FF0000\" value='".$this->Url.$this->Main[$i]['id']."' >".$this->Main[$i]['title']."</option></style>";
-		     $Form .= $this->SubList($this->Main[$i]['id'],$Mn);
+		if($this->Main[$i]['id'] == $SectionInfo['parent'])
+		{
+		$Form .= "<option class='row1' style=\"color: #FF0000\" value='".$SecparentInfo['id']."' selected='selected'>".$SecparentInfo['title']."</option></style>";
+		}
+		else
+		{		$Form .= "<option class='row1' style=\"color: #FF0000\" value='".$this->Main[$i]['id']."'>".$this->Main[$i]['title']."</option></style>";
+		}
+
+		$Form .= $this->SubList($this->Main[$i]['id'],$Mn);
 		if($i<($size-1))
 		{
 		     $Form .= "<option> ----------------------------</option>";
@@ -112,6 +146,17 @@ class PowerBBCommon
 	function SubList($id,$Mn,$Sn="")
 	{
 		global $PowerBB;
+
+         if($PowerBB->_GET['page'] == 'forums' and $PowerBB->_GET['edit'] and $PowerBB->_GET['main'])
+         {
+             $edit_forums = true;
+  		     $PowerBB->_GET['id'] = $PowerBB->functions->CleanVariable($PowerBB->_GET['id'],'intval');
+	     	// Get Section To Info
+	     	$SecToArr 			= 	array();
+			$SecToArr['where'] 	= 	array('id',$PowerBB->_GET['id']);
+
+			$SectionInfo = $PowerBB->section->GetSectionInfo($SecToArr);
+         }
 
 		$b_id = array();
 		$b_title = array();
@@ -131,14 +176,24 @@ class PowerBBCommon
 		$Sn=1;
 		}
 
-		if (count($b_id) > 1 )
+     	$SecToparent 			= 	array();
+		$SecToparent['where'] 	= 	array('id',$SectionInfo['parent']);
 
+		$SecparentInfo = $PowerBB->section->GetSectionInfo($SecToparent);
+
+		if (count($b_id) > 1 )
 		{
 		$Form ="";
 		for($i=0;$i<sizeof($b_id);$i++)
-
 		{
-		$Form .= "<option value=\"".$this->Url.$b_id[$i]."\"> ".$b_title[$i]."</option>";
+		if($b_id[$i] == $SectionInfo['parent'])
+		{
+		$Form .= "<option value=\"".$SecparentInfo['id']."\" selected='selected'> ".$SecparentInfo['title']."</option>";
+		}
+		else
+		{
+		$Form .= "<option value=\"".$b_id[$i]."\"> ".$b_title[$i]."</option>";
+		}
 		$Mn2 = $Mn." ".$this->ListType($Sn,$b_title[$i]);
 		$Form .=$this->SubList($b_id[$i],$Mn2);
 		$Sn++;
@@ -146,7 +201,15 @@ class PowerBBCommon
 		}
 		else
 		{
-		$Form = "<option value=\"".$this->Url.$b_id[0]."\"> ".$b_title[0]."</option>";
+		if($b_id[0] == $SectionInfo['parent'])
+		{
+		$Form = "<option value=\"".$SecparentInfo['id']."\" selected='selected'> ".$SecparentInfo['title']."</option>";
+		}
+		else
+		{
+		$Form = "<option value=\"".$b_id[0]."\"> ".$b_title[0]."</option>";
+		}
+
 		$Mn2 = $Mn."  ".$this->ListType($Sn,$b_title[0]);
 		$Form .=$this->SubList($b_id[0],$Mn2,$Sn);
 		}

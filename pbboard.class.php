@@ -355,7 +355,7 @@ class PowerBB
  		$this->_CONF['timeout']					=	time()-300;
  		$this->_CONF['date']					=	@date('j/n/Y');
  		$this->_CONF['day']						=	@date('D');
- 		$this->_CONF['temp']['query_num']		=	0;
+ 		$this->_CONF['temp']['query_num']		=	false;
  		$this->_CONF['username_cookie']			=	'PowerBB_username';
  		$this->_CONF['password_cookie']			=	'PowerBB_password';
  		$this->_CONF['admin_username_cookie']	=	'PowerBB_admin_username';
@@ -364,7 +364,8 @@ class PowerBB
  		$this->_CONF['style_cookie']			=	'PowerBB_style';
  		$this->_CONF['lang_cookie']			    =	'PowerBB_lang';
  		$this->_CONF['today_cookie']			=	'PowerBB_today_date';
-
+ 		$this->_CONF['files_sectiongroup_cache']=	true;
+ 		$this->_CONF['files_forums_Cache']      =	true;
  		////////////
 
  		$this->sys_functions->LocalArraySetup();

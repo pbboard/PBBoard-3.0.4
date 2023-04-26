@@ -94,8 +94,6 @@ class PowerBBFixMOD
 	{
 		global $PowerBB;
 
-
-
 		// Show Jump List to:)
 		$result = $PowerBB->DB->sql_query("SELECT id,title,parent FROM " . $PowerBB->table['section'] . " ORDER BY id ASC");
 
@@ -118,73 +116,7 @@ class PowerBBFixMOD
 
 		$PowerBB->_CONF['template']['while']['groups'] = $PowerBB->core->GetList($GroupArr,'group');
 
-		//////////
-		//////////
 
-        $SecArr 						= 	array();
-		$SecArr['get_from']				=	'db';
-
-		$SecArr['proc'] 				= 	array();
-		$SecArr['proc']['*'] 			= 	array('method'=>'clean','param'=>'html');
-
-		$SecArr['order']				=	array();
-		$SecArr['order']['field']		=	'sort';
-		$SecArr['order']['type']		=	'ASC';
-
-		$SecArr['where']				=	array();
-		$SecArr['where'][0]['name']		= 	'parent';
-		$SecArr['where'][0]['oper']		= 	'=';
-		$SecArr['where'][0]['value']	= 	'0';
-
-		// Get main sections
-		$cats = $PowerBB->core->GetList($SecArr,'section');
-
-		// We will use forums_list to store list of forums which will view in main page
-		$PowerBB->_CONF['template']['foreach']['forums_list'] = array();
-
-		// Loop to read the information of main sections
-		foreach ($cats as $cat)
-		{
-
-		  $PowerBB->_CONF['template']['foreach']['forums_list'][$cat['id'] . '_m'] = $cat;
-
-
-			if (!empty($forums_cache))
-			{
-			    include("../cache/forums_cache".$forum['id'].".php");
-	            $forums = json_decode(base64_decode($forums_cache), true);
-				foreach ($forums as $forum)
-				{
-
-
-							$forum['is_sub'] 	= 	0;
-							$forum['sub']		=	'';
-
-							if (!empty($forums_cache))
-							{
-			                    include("../cache/forums_cache".$forum['id'].".php");
-								$subs = json_decode(base64_decode($forums_cache), true);
-								if (is_array($subs))
-								{
-									foreach ($subs as $sub)
-									{
-
-												if (!$forum['is_sub'])
-												{
-													$forum['is_sub'] = 1;
-												}
-
-												$forum['sub'] .= ('<option value="' .$sub['id'] . '">---'  . $sub['title'] . '</option>');
-
-									}
-								}
-							}
-
-
-							$PowerBB->_CONF['template']['foreach']['forums_list'][$forum['id'] . '_f'] = $forum;
-					} // end if is_array
-				} // end foreach ($forums)
-			} // end !empty($forums_cache)
 		$PowerBB->template->display('meter_edit');
 	}
 
@@ -306,39 +238,70 @@ class PowerBBFixMOD
 	{
 		global $PowerBB;
 
-		$SecArr 					= 	array();
-		$SecArr['get_from']			=	'db';
-		$SecArr['proc'] 			= 	array();
-		$SecArr['proc']['*'] 		= 	array('method'=>'clean','param'=>'html');
-		$SecArr['order']			=	array();
-		$SecArr['order']['field']	=	'sort';
-		$SecArr['order']['type']	=	'ASC';
+		if(!isset($PowerBB->_GET['pag']))
+		{		$page = 1;
+		}
+		else
+		{
+		$page = $PowerBB->_GET['pag'];
+		}
+		$page = ($page == 0 ? 1 : $page);
+		$perpage = 4;
+		$startpoint = ($page * $perpage) - $perpage;
+ 		$forumArr = $PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['section'] . " WHERE parent > '0' ORDER BY id ASC LIMIT ".$startpoint.",".$perpage." ");
+		$forum_nm = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['section'] . " WHERE parent > 0"));
 
-		$SecArr['where']				=	array();
-		$SecArr['where'][0]				=	array();
-		$SecArr['where'][0]['name']		=	'parent';
-		$SecArr['where'][0]['oper']		=	'<>';
-		$SecArr['where'][0]['value']	=	'0';
+        $pagesnum = round(ceil($forum_nm / $perpage));
+        echo('<br><br><table border="1" width="80%" cellspacing="0" cellpadding="0" bgcolor="#FFFFFF" style="border-collapse: collapse" align="center"><tr><td><font face="Tahoma" size="2">');
 
-		$SecList = $PowerBB->core->GetList($SecArr,'section');
-
-		$x = 0;
-		$y = sizeof($SecList);
-		$s = array();
-
-		while ($x < $y)
+		while ($forum_row = $PowerBB->DB->sql_fetch_array($forumArr))
 		{
 
-	        $UpdateSectionCache = $PowerBB->functions->UpdateSectionCache($SecList[$x]['id']);
-			$PowerBB->functions->msg($PowerBB->_CONF['template']['_CONF']['lang']['updated']  .  $SecList[$x]['title']  .  $PowerBB->_CONF['template']['_CONF']['lang']['Successfully']);
-			$x += 1;
+		 $UpdateSectionCache = $PowerBB->functions->UpdateSectionCache($forum_row['id']);
+          if($forum_row['id'])
+          {
+           $Updated = '1';
+          }
+		 if ($Updated)
+		  {
+		  echo($PowerBB->_CONF['template']['_CONF']['lang']['updated']  .  $forum_row['title']  .  $PowerBB->_CONF['template']['_CONF']['lang']['Successfully'] .' .. <br />');
+		  }
 
+		}
+		echo('</font></td></tr></table>');
+		$current_page = $page;
+
+		if ($Updated)
+		{
+			if($pagesnum != $current_page or $pagesnum > $current_page)
+			{
+			$n_page = $current_page+1;
+			$seconds= 1;
+			$n_page = intval($n_page);
+			echo('<br><table border="1" width="80%" cellspacing="0" cellpadding="0" bgcolor="#E5EBF0" style="border-collapse: collapse" align="center"><tr><td><font face="Tahoma" size="2">');
+			$transition_click = $PowerBB->_CONF['template']['_CONF']['lang']['If_your_browser_does_not_support_automatic_transition_click_here'];
+			echo('<a href="index.php?page=fixup&amp;update_meter=1&amp;all_cache=1&amp;pag='.$n_page.'">'.$transition_click.'</a>');
+			echo($PowerBB->_CONF['template']['_CONF']['lang']['Waiting_Time'].$seconds.$PowerBB->_CONF['template']['_CONF']['lang']['seconds']);
+			echo('</font></td></tr></table>');
+
+			$PowerBB->functions->redirect('index.php?page=fixup&update_meter=1&all_cache=1&pag='.$n_page,$seconds);
+			}
+			else
+			{
+			$PowerBB->functions->Update_Cache_groups();
+			$PowerBB->functions->msg($PowerBB->_CONF['template']['_CONF']['lang']['updated_successfully']);
+			$PowerBB->functions->redirect('index.php?page=fixup&amp;update_meter=1&amp;main=1');
+			}
+
+		}
+		else
+		{
+		echo('<br><table border="1" width="80%" cellspacing="0" cellpadding="0" bgcolor="#E5EBF0" style="border-collapse: collapse" align="center"><tr><td><font face="Tahoma" size="2">');
+		echo($PowerBB->_CONF['template']['_CONF']['lang']['not_the_update']);
+		echo('</font></td></tr></table>');
 		}
 
 
-       	  $PowerBB->functions->Update_Cache_groups();
-
-       $PowerBB->functions->redirect('index.php?page=fixup&amp;update_meter=1&amp;main=1');
 
 	}
 
@@ -451,10 +414,8 @@ class PowerBBFixMOD
 
 	    }
 
-
-
 		$PowerBB->functions->msg($PowerBB->_CONF['template']['_CONF']['lang']['updated_successfully_Please_wait']);
-		//$PowerBB->functions->redirect('index.php?page=fixup&amp;update_meter=1&amp;main=1');
+		$PowerBB->functions->redirect('index.php?page=fixup&amp;update_meter=1&amp;main=1');
        }
 
    function _php_infoStart()

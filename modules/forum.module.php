@@ -406,7 +406,14 @@ function _AllCacheStart()
 		global $PowerBB;
 
 
-           $forums_cache = $PowerBB->functions->get_forum_cache($this->Section['id'],$this->Section['forums_cache']);
+			if($PowerBB->_CONF['files_forums_Cache'])
+			{
+			 @include("cache/forums_cache/forums_cache_".$this->Section['id'].".php");
+			}
+			else
+			{
+			 $forums_cache = $PowerBB->functions->get_forum_cache($this->Section['id'],$this->Section['forums_cache']);
+			}
 			if (!empty($forums_cache))
 			{
                 $forums = $PowerBB->functions->decode_forum_cache($forums_cache);
@@ -470,9 +477,9 @@ function _AllCacheStart()
 									$forum['is_sub'] 	= 	0;
 									$forum['sub']		=	'';
 									$t_sub=0;
-									if (empty($forum['forums_cache']))
+									if($PowerBB->_CONF['files_forums_Cache'])
 									 {
-                                     $PowerBB->functions->get_forum_cache($forum['id'],$forum['forums_cache']);
+                                     @include("cache/forums_cache/forums_cache_".$forum['id'].".php");
                                      }
                                      else
 									 {
@@ -543,9 +550,9 @@ function _AllCacheStart()
 											        }
 
                                                    // subs forum ++
-                                                   	if (empty($sub['forums_cache']))
+                                                   	if($PowerBB->_CONF['files_forums_Cache'])
 													 {
-													 $PowerBB->functions->get_forum_cache($sub['id'],$sub['forums_cache']);
+													 @include("cache/forums_cache/forums_cache_".$sub['id'].".php");
 													 }
 													 else
 													 {
@@ -596,9 +603,9 @@ function _AllCacheStart()
                                                             }
 
 	                                                              // subs forum +++
-			                                                   	if (empty($subforum['forums_cache']))
+			                                                   	if($PowerBB->_CONF['files_forums_Cache'])
 																 {
-																 $PowerBB->functions->get_forum_cache($subforum['id'],$subforum['forums_cache']);
+																 @include("cache/forums_cache/forums_cache_".$subforum['id'].".php");
 																 }
 																 else
 																 {

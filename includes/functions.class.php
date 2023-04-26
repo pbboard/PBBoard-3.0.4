@@ -614,6 +614,15 @@ class PowerBBFunctions
 	   if(empty($section_forum_cache) or $Allow_forums_Cache_system_files)
 	   {
         @include("cache/forums_cache/forums_cache_".$forum_id.".php");
+             if(!empty($forums_cache))
+             {
+				// Update section's forums_cache
+	     		$UpdateArr 					        = 	array();
+	     		$UpdateArr['field']			        =	array();
+	     		$UpdateArr['field']['forums_cache'] 	    = 	$forums_cache;
+	     		$UpdateArr['where']					= 	array('id',$forum_id);
+                $UpdateForumsCacheCache = $PowerBB->core->Update($UpdateArr,'section');
+              }
        }
        else
        {

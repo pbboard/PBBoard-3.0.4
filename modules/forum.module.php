@@ -405,6 +405,7 @@ function _AllCacheStart()
 	{
 		global $PowerBB;
 
+
            $forums_cache = $PowerBB->functions->get_forum_cache($this->Section['id'],$this->Section['forums_cache']);
 			if (!empty($forums_cache))
 			{
@@ -427,13 +428,13 @@ function _AllCacheStart()
 						}
 
 						//////////////////////////
-
 						if ($PowerBB->functions->section_group_permission($forum['id'],$PowerBB->_CONF['group_info']['id'],'view_section'))
 						{
                          if ($PowerBB->functions->section_group_permission($forum['id'],$PowerBB->_CONF['group_info']['id'],'view_subject') == 0)
 						 {
 						   $forum['hide_subject']	= '1';
                          }
+
                            if (!empty($forum['last_date']))
                            {
 							$forum_last_time1 = $forum['last_date'];
@@ -469,7 +470,14 @@ function _AllCacheStart()
 									$forum['is_sub'] 	= 	0;
 									$forum['sub']		=	'';
 									$t_sub=0;
-                                    $forums_cache = $PowerBB->functions->get_forum_cache($forum['id'],$forum['forums_cache']);
+									if (empty($forum['forums_cache']))
+									 {
+                                     $PowerBB->functions->get_forum_cache($forum['id'],$forum['forums_cache']);
+                                     }
+                                     else
+									 {
+                                     $forums_cache = $PowerBB->functions->get_forum_cache($forum['id'],$forum['forums_cache']);
+                                     }
                                    if (!empty($forums_cache))
 		                           {
 									   $subs = $PowerBB->functions->decode_forum_cache($forums_cache);
@@ -480,7 +488,7 @@ function _AllCacheStart()
 
 										        if (!empty($sub['last_date']))
 										         {
-										           if ($forum['last_time']< $sub['last_time'])
+										           if ($sub['last_time'] > $forum['last_time'])
 										           {
 	                                             	$forum_last_time1 = $sub['last_date'];
 													$forum['last_subject'] = $PowerBB->Powerparse->censor_words($sub['last_subject']);
@@ -535,7 +543,14 @@ function _AllCacheStart()
 											        }
 
                                                    // subs forum ++
-							                        $forums_cache = $PowerBB->functions->get_forum_cache($sub['id'],$sub['forums_cache']);
+                                                   	if (empty($sub['forums_cache']))
+													 {
+													 $PowerBB->functions->get_forum_cache($sub['id'],$sub['forums_cache']);
+													 }
+													 else
+													 {
+													 $forums_cache = $PowerBB->functions->get_forum_cache($sub['id'],$sub['forums_cache']);
+													 }
 				                                   if (!empty($forums_cache))
 						                           {
 														$subsforum = $PowerBB->functions->decode_forum_cache($forums_cache);
@@ -581,7 +596,15 @@ function _AllCacheStart()
                                                             }
 
 	                                                              // subs forum +++
-										                        $forums_cache = $PowerBB->functions->get_forum_cache($subforum['id'],$subforum['forums_cache']);
+			                                                   	if (empty($subforum['forums_cache']))
+																 {
+																 $PowerBB->functions->get_forum_cache($subforum['id'],$subforum['forums_cache']);
+																 }
+																 else
+																 {
+																 $forums_cache = $PowerBB->functions->get_forum_cache($subforum['id'],$subforum['forums_cache']);
+																 }
+
 							                                   if (!empty($forums_cache))
 									                           {
 																	$subs4forum = $PowerBB->functions->decode_forum_cache($forums_cache);
@@ -1331,7 +1354,8 @@ function _AllCacheStart()
 		$tSection = $PowerBB->core->GetInfo($SectiondArr,'section');
 
 			if ($PowerBB->functions->ModeratorCheck($tSection['moderators']))
-			{          	 $subject_nm = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['subject'] . " WHERE text LIKE '%$keyword%' AND section = '$section'"));
+			{
+          	 $subject_nm = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['subject'] . " WHERE text LIKE '%$keyword%' AND section = '$section'"));
             }
              else
 			{

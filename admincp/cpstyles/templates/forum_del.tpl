@@ -42,7 +42,7 @@ $(document).ready(Ready);
 
 <br />
 
-<form action="index.php?page=forums&amp;del=1&amp;start=1&amp;id={$Inf['id']}" method="post">
+<form action="index.php?page=forums&amp;del=1&amp;start=1&amp;id={$Inf['id']}&amp;parent={$Inf['parent']}" method="post">
 <p align="center">{$lang['delete_the_forum']} :
 {$Inf['title']}</p>
 

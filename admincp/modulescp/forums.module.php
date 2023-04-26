@@ -323,6 +323,8 @@ class PowerBBForumsMOD extends _functions
 
 			$cache = $PowerBB->section->UpdateSectionsCache(array('parent'=>$PowerBB->_POST['section']));
             $cache = $PowerBB->section->UpdateSectionsCache(array('parent'=>$SectionInfo['parent']));
+            $cache = $PowerBB->section->UpdateSectionsCache(array('id'=>$PowerBB->section->id));
+			$cache = $PowerBB->section->UpdateSectionsCache(array('id'=>$PowerBB->_POST['section']));
 
 			//////////
 
@@ -377,6 +379,7 @@ class PowerBBForumsMOD extends _functions
 				{
 					$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['did_not_succeed_the_process']);
 				}
+
 						$PowerBB->functions->msg($PowerBB->_CONF['template']['_CONF']['lang']['Forum_has_been_added_successfully']);
 						$PowerBB->functions->redirect('index.php?page=forums&amp;edit=1&amp;main=1&amp;id=' . $PowerBB->section->id);
 
@@ -919,12 +922,11 @@ class PowerBBForumsMOD extends _functions
 		     		    $updateReply = $PowerBB->core->Update($ReplyUpdateArr,'reply');
                     }
 
-     				if ($update)
-     				{
-						$cache = $PowerBB->section->UpdateSectionsCache(array('parent'=>$PowerBB->_CONF['template']['Inf']['parent']));
 
-						if ($cache)
-						{
+						$cache = $PowerBB->section->UpdateSectionsCache(array('parent'=>$PowerBB->_CONF['template']['Inf']['parent']));
+			            $cache = $PowerBB->section->UpdateSectionsCache(array('id'=>$PowerBB->_CONF['template']['Inf']['id']));
+						$cache = $PowerBB->section->UpdateSectionsCache(array('id'=>$PowerBB->_CONF['template']['Inf']['parent']));
+
 							$PowerBB->functions->msg($PowerBB->_CONF['template']['_CONF']['lang']['Information_has_been_updated_successfully']);
 
 							$DelArr 						= 	array();
@@ -941,8 +943,7 @@ class PowerBBForumsMOD extends _functions
 								$PowerBB->functions->msg($PowerBB->_CONF['template']['_CONF']['lang']['groups_have_been_deleted_successfully']);
 								$PowerBB->functions->redirect('index.php?page=forums&amp;control=1&amp;main=1');
 							}
-						}
-					}
+
 				}
 			}
 		}
@@ -997,8 +998,7 @@ class PowerBBForumsMOD extends _functions
 				$del = $PowerBB->core->Deleted($DelArr,'subject');
 
 
-				if ($del)
-				{
+
 					$PowerBB->functions->msg($PowerBB->_CONF['template']['_CONF']['lang']['Topic_has_been_deleted_successfully']);
 
 							$DelArr 			= 	array();
@@ -1010,8 +1010,9 @@ class PowerBBForumsMOD extends _functions
 
 					$cache = $PowerBB->section->UpdateSectionsCache(array('parent'=>$PowerBB->_CONF['template']['Inf']['parent']));
 
-					if ($cache)
-					{
+			            $cache = $PowerBB->section->UpdateSectionsCache(array('id'=>$PowerBB->_CONF['template']['Inf']['id']));
+						$cache = $PowerBB->section->UpdateSectionsCache(array('id'=>$PowerBB->_CONF['template']['Inf']['parent']));
+
 
 					        $SecArr 					= 	array();
 							$SecArr['get_from']			=	'db';
@@ -1074,8 +1075,7 @@ class PowerBBForumsMOD extends _functions
 
 							$del = $PowerBB->core->Deleted($DelArr,'sectiongroup');
 
-							if ($del)
-							{
+
 							$SecArr 					= 	array();
 							$SecArr['get_from']			=	'db';
 							$SecArr['proc'] 			= 	array();
@@ -1111,10 +1111,9 @@ class PowerBBForumsMOD extends _functions
 
 							$update = $PowerBB->core->Update($UpdateArr,'section');
 
-							if ($update)
-							{
+
 							$cache = $PowerBB->section->UpdateSectionsCache(array('parent'=>$SecList[$x]['parent']));
-							}
+
 
 							$s[$SecList[$x]['id']] = ($update) ? 'true' : 'false';
 							}
@@ -1127,12 +1126,15 @@ class PowerBBForumsMOD extends _functions
 							$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['did_not_succeed_the_process']);
 							}
 
+							$cache = $PowerBB->section->UpdateSectionsCache(array('parent'=>$PowerBB->_GET['parent']));
+							$cache = $PowerBB->section->UpdateSectionsCache(array('id'=>$PowerBB->_GET['parent']));
+							$cache = $PowerBB->section->UpdateSectionsCache(array('id'=>$PowerBB->_GET['id']));
 
 							$PowerBB->functions->msg($PowerBB->_CONF['template']['_CONF']['lang']['groups_have_been_deleted_successfully']);
 							$PowerBB->functions->redirect('index.php?page=forums&amp;control=1&amp;main=1');
-						}
-					}
-				}
+
+
+
 
 		}
 		else

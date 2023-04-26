@@ -130,10 +130,12 @@ class PowerBBCommon
 		}
 
 		$Form .= $this->SubList($this->Main[$i]['id'],$Mn);
+		/*
 		if($i<($size-1))
 		{
 		     $Form .= "<option> ----------------------------</option>";
 		}
+		*/
 		     $Mn++;
 		}
 		$Form .= "</select>";

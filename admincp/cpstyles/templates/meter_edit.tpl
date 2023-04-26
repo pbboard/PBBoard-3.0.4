@@ -25,6 +25,7 @@
 		<br />
 		{/Des::while}
 		</div>
+					{template}forums_am{/template}
 			</td>
 		</tr>
 				<tr align="center">

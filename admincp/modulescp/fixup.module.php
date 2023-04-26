@@ -116,6 +116,74 @@ class PowerBBFixMOD
 
 		$PowerBB->_CONF['template']['while']['groups'] = $PowerBB->core->GetList($GroupArr,'group');
 
+		//////////
+
+        $SecArr 						= 	array();
+		$SecArr['get_from']				=	'db';
+
+		$SecArr['proc'] 				= 	array();
+		$SecArr['proc']['*'] 			= 	array('method'=>'clean','param'=>'html');
+
+		$SecArr['order']				=	array();
+		$SecArr['order']['field']		=	'sort';
+		$SecArr['order']['type']		=	'ASC';
+
+		$SecArr['where']				=	array();
+		$SecArr['where'][0]['name']		= 	'parent';
+		$SecArr['where'][0]['oper']		= 	'=';
+		$SecArr['where'][0]['value']	= 	'0';
+
+		// Get main sections
+		$cats = $PowerBB->core->GetList($SecArr,'section');
+
+		// We will use forums_list to store list of forums which will view in main page
+		$PowerBB->_CONF['template']['foreach']['forums_list'] = array();
+
+		// Loop to read the information of main sections
+		foreach ($cats as $cat)
+		{
+
+		  $PowerBB->_CONF['template']['foreach']['forums_list'][$cat['id'] . '_m'] = $cat;
+        	$forums_cache = $PowerBB->functions->get_forum_cache($cat['id'],$cat['forums_cache']);
+			if (!empty($forums_cache))
+			{
+	            $forums = $PowerBB->functions->decode_forum_cache($forums_cache);
+				foreach ($forums as $forum)
+				{
+							$forum['is_sub'] 	= 	0;
+							$forum['sub']		=	'';
+								if (empty($forum['forums_cache']))
+								{
+								$PowerBB->functions->get_forum_cache($forum['id'],$forum['forums_cache']);
+								}
+								else
+								{
+								$forums_cache = $PowerBB->functions->get_forum_cache($forum['id'],$forum['forums_cache']);
+								}
+							if (!empty($forums_cache))
+							{
+								$subs = $PowerBB->functions->decode_forum_cache($forums_cache);
+								if (is_array($subs))
+								{
+									foreach ($subs as $sub)
+									{
+
+												if (!$forum['is_sub'])
+												{
+													$forum['is_sub'] = 1;
+												}
+
+												$forum['sub'] .= ('<option value="' .$sub['id'] . '">---'  . $sub['title'] . '</option>');
+
+									}
+								}
+							}
+
+							$PowerBB->_CONF['template']['foreach']['forums_list'][$forum['id'] . '_f'] = $forum;
+					} // end if is_array
+				} // end foreach ($forums)
+			} // end !empty($forums_cache)
+
 
 		$PowerBB->template->display('meter_edit');
 	}

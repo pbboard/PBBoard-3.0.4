@@ -280,7 +280,7 @@ class PowerBBSection
 		$SecArr['where'] 	= 	array('id',$param['id']);
 		$SectionInfo = $this->GetSectionInfo($SecArr);
 
-          if (!$SectionInfo['parent']== "0")
+          if ($SectionInfo and !$SectionInfo['parent']== "0")
  	       {
               	$cache = $this->CreateSectionsCache($SectionInfo);
 
@@ -305,6 +305,36 @@ class PowerBBSection
  				{
  					$fail = true;
  				}
+           }
+           else
+           {
+              if($param['parent'])
+              {
+	                $cache = $this->CreateSectionsCache($param);
+
+					$ForumCacheArr 				= 	array();
+					$ForumCacheArr['field']['forums_cache'] 	= 	$cache;
+					$ForumCacheArr['where'] 		        = 	array('id',$param['parent']);
+					$UpdateForumCache = $this->UpdateSection($ForumCacheArr);
+
+	            // get main dir
+				$file_forums_cache = $PowerBB->functions->GetMianDir()."cache/forums_cache/forums_cache_".$param['parent'].".php";
+                $file_forums_cache = str_ireplace("index.php/", '', $file_forums_cache);
+                $file_forums_cache = str_replace("index.php/", '', $file_forums_cache);
+				$fp = fopen($file_forums_cache,'w');
+				$Ds = '$';
+				$parent = $param['parent'];
+				$forums_cache = "<?php \n".$Ds."forums_cache ='".$cache."';\n ?> ";
+
+				$fw = fwrite($fp,$forums_cache);
+		        fclose($fp);
+
+ 				if (!$fw)
+ 				{
+ 					$fail = true;
+ 				}
+
+ 			  }
            }
 
 

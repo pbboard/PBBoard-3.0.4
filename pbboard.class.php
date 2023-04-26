@@ -364,8 +364,8 @@ class PowerBB
  		$this->_CONF['style_cookie']			=	'PowerBB_style';
  		$this->_CONF['lang_cookie']			    =	'PowerBB_lang';
  		$this->_CONF['today_cookie']			=	'PowerBB_today_date';
- 		$this->_CONF['files_sectiongroup_cache']=	true;
- 		$this->_CONF['files_forums_Cache']      =	true;
+ 		$this->_CONF['files_sectiongroup_cache']=	false;
+ 		$this->_CONF['files_forums_Cache']      =	false;
  		////////////
 
  		$this->sys_functions->LocalArraySetup();

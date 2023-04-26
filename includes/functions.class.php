@@ -2713,8 +2713,14 @@ return preg_replace($pattern, $replacement, $email);
              // foreach main sections
 			$PowerBB->_CONF['template']['foreach']['forumsy_list'][$caty['id'] . '_m'] = $caty;
 			unset($sectiongroup);
-            $forums_cache = $PowerBB->functions->get_forum_cache($caty['id'],$caty['forums_cache']);
-
+			if($PowerBB->_CONF['files_forums_Cache'])
+			{
+			@include("cache/forums_cache/forums_cache_".$caty['id'].".php");
+			}
+			else
+			{
+			$forums_cache = $PowerBB->functions->get_forum_cache($caty['id'],$caty['forums_cache']);
+			}
 			if (!empty($forums_cache))
 			{
                 $forumsy = $PowerBB->functions->decode_forum_cache($forums_cache);
@@ -2725,7 +2731,14 @@ return preg_replace($pattern, $replacement, $email);
 						{
 							$forumy['is_sub'] 	= 	0;
 							$forumy['sub']		=	'';
-                            $forums_cache = $PowerBB->functions->get_forum_cache($forumy['id'],$forumy['forums_cache']);
+								if($PowerBB->_CONF['files_forums_Cache'])
+								{
+								@include("cache/forums_cache/forums_cache_".$forumy['id'].".php");
+								}
+								else
+								{
+								$forums_cache = $PowerBB->functions->get_forum_cache($forumy['id'],$forumy['forums_cache']);
+								}
                                if (!empty($forums_cache))
 	                           {
 									$subs = $PowerBB->functions->decode_forum_cache($forums_cache);
@@ -2757,7 +2770,14 @@ return preg_replace($pattern, $replacement, $email);
 	                                    {
 										$forumy['is_sub_sub'] 	= 	0;
 										$forumy['sub_sub']		=	'';
-                                          $forums_cache = $PowerBB->functions->get_forum_cache($sub['id'],$sub['forums_cache']);
+											if($PowerBB->_CONF['files_forums_Cache'])
+											{
+											@include("cache/forums_cache/forums_cache_".$sub['id'].".php");
+											}
+											else
+											{
+											$forums_cache = $PowerBB->functions->get_forum_cache($sub['id'],$sub['forums_cache']);
+											}
 		                                   if (!empty($forums_cache))
 				                           {
 												$subs_sub = $PowerBB->functions->decode_forum_cache($forums_cache);

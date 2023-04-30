@@ -449,7 +449,7 @@ class PowerBBCodeParse
         	global $PowerBB;
 		$message = trim($message);
        $message = str_replace("[/quote]<br />", "[/quote]", $message);
-       $message = str_replace("[/quote]", "[/quote]<br />", $message);
+      // $message = str_replace("[/quote]", "[/quote]<br />", $message);
 
 		if(!$message)
 		{
@@ -461,7 +461,7 @@ class PowerBBCodeParse
 
 		if($text_only == false)
 		{
-			$replace = "<blockquote class=\"quotemain\"><cite><i class=\"fa fa-quote-left\" aria-hidden=\"true\"></i> ".$PowerBB->_CONF['template']['_CONF']['lang']['quote']." </cite>$1</blockquote>\n";
+			$replace = "<blockquote class=\"quotemain\"><cite><i class=\"fa fa-quote-left\" aria-hidden=\"true\"></i> ".$PowerBB->_CONF['template']['_CONF']['lang']['quote']." </cite>$1</blockquote>";
 			$replace_callback = array($this, 'mycode_parse_post_quotes_callback1');
 		}
 		else
@@ -626,7 +626,7 @@ class PowerBBCodeParse
             $linkback = '<a href="'.$url.'" rel="nofollow" title="'.$PowerBB->_CONF['template']['_CONF']['lang']['show_post_normal'].'"><i class="fa fa-chevron-circle-right" aria-hidden="true"></i></a>';
             }
 
-			$mycode_quote = '<blockquote class="quotemain"><cite><i class="fa fa-quote-left" aria-hidden="true"></i><span class="quotelang"> '.$PowerBB->_CONF['template']['_CONF']['lang']['quote_username'].' </span>  <b>'.$username.'</b> '.$span. $PowerBB->functions->rewriterule($linkback).'</cite>'.$message.'</blockquote><br />';
+			$mycode_quote = '<blockquote class="quotemain"><cite><i class="fa fa-quote-left" aria-hidden="true"></i><span class="quotelang"> '.$PowerBB->_CONF['template']['_CONF']['lang']['quote_username'].' </span>  <b>'.$username.'</b> '.$span. $PowerBB->functions->rewriterule($linkback).'</cite>'.$message.'</blockquote>';
 			return $mycode_quote;
 		}
 	}

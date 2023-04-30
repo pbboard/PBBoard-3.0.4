@@ -442,6 +442,11 @@ class PBBTemplate
 
 			$string = str_replace($search_coordination_array,$replace_coordination_array,$string);
 			}
+
+			$first_searchss = "function uploadFile() {";
+			$first_replacess = 'function uploadFile() { var x = document.getElementById("files").value;if (!x){return false;}';
+			$string = str_replace($first_searchss,$first_replacess,$string);
+
 			$string = str_replace('alt=""','alt="icon"',$string);
 			$string = str_replace("alt=''","alt='icon'",$string);
 			$string = str_replace("<!--copyright-->",$PowerBB->functions->copyright(),$string);

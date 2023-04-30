@@ -85,10 +85,8 @@ class PowerBBSitemapMOD
         {
 			while ($catys_x < $catys_size)
 			{
-				@include("cache/sectiongroup_cache/sectiongroup_cache_".$catys[$catys_x]['id'].".php");
 		       // Get the groups information to know view this section or not
-		      $sectiongroup = json_decode(base64_decode($sectiongroup_cache), true);
-			  if ($sectiongroup[$PowerBB->_CONF['group_info']['id']]['view_section'])
+		    if ($PowerBB->functions->section_group_permission($catys[$catys_x]['id'],$PowerBB->_CONF['group_info']['id'],'view_section'))
 		      {
 	            echo  '<li><a title="'.$catys[$catys_x]['title'].'" target="_blank" href="'.$PowerBB->functions->GetForumAdress() . $forumurl . $catys[$catys_x]['id'].$extention.'">'.$catys[$catys_x]['title'].'</a><br /><font color="#008000" size="-1">'.$PowerBB->functions->GetForumAdress() . $forumurl . $catys[$catys_x]['id'].$extention.'</font><br /><hr></hr></li>';
 			  }
@@ -242,14 +240,12 @@ class PowerBBSitemapMOD
 		$forum_sitemap = "index.php?page=sitemap&amp;section=1&amp;id=";
 		$forum_sitemap = $PowerBB->functions->rewriterule($forum_sitemap);
 		while ($getSections_row = $PowerBB->DB->sql_fetch_array($catys))
-		{			@include("cache/sectiongroup_cache/sectiongroup_cache_".$getSections_row['id'].".php");
-	       // Get the groups information to know view this section or not
-	      $sectiongroup = json_decode(base64_decode($sectiongroup_cache), true);
-		  if ($sectiongroup[$PowerBB->_CONF['group_info']['id']]['view_section'] and $getSections_row['section_password'] == '')
+		{	       // Get the groups information to know view this section or not
+		if ($PowerBB->functions->section_group_permission($getSections_row['id'],$PowerBB->_CONF['group_info']['id'],'view_section') and $getSections_row['section_password'] == '')
 	      {
 				echo '<sitemap>';
 				echo '<loc>'. $PowerBB->functions->GetForumAdress() . $forum_sitemap . $getSections_row['id'] . ".xml" . '</loc>';
-				echo '<lastmod>'.$this->lastmod_date($getSections_row['native_write_time']).'</lastmod>';
+				echo '<lastmod>'.$this->lastmod_date($getSections_row['last_date']).'</lastmod>';
 				echo '</sitemap>'."\n";
 
 		  }

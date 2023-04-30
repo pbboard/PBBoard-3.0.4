@@ -655,6 +655,9 @@ class PowerBBManagementMOD
            $cache1 = $PowerBB->section->UpdateSectionsCache(array('parent'=>$_SESSION['old_section']));
 
            $cache2 = $PowerBB->section->UpdateSectionsCache(array('parent'=>$PowerBB->_POST['section']));
+                $UpdateSectionCache2 = $PowerBB->functions->UpdateSectionCache($PowerBB->_POST['section']);
+                $UpdateSectionCache3 = $PowerBB->functions->UpdateSectionCache($PowerBB->_POST['id_section']);
+
              $_SESSION['old_parent'] = '';
      		//$PowerBB->functions->msg($PowerBB->_CONF['template']['_CONF']['lang']['Was_mov_subject']);
 			$PowerBB->functions->header_redirect('index.php?page=topic&amp;show=1&amp;id=' . $PowerBB->_GET['subject_id']);

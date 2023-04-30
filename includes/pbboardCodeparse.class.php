@@ -270,8 +270,8 @@ class PowerBBCodeParse
         }
 
      // Fix up new lines and block level elements
-     $string = preg_replace("#(</?(?:html|head|body|div|p|form|table|thead|tbody|tfoot|tr|td|th|ul|ol|li|div|p|blockquote|cite|hr|h1|h2|h3|h4|h5)[^>]*>)\s*<br />#i", "$1", $string);
-	 $string = preg_replace("#(&nbsp;)+(</?(?:html|head|body|div|p|form|table|thead|tbody|tfoot|tr|td|th|ul|ol|li|div|p|blockquote|cite|hr|h1|h2|h3|h4|h5)[^>]*>)#i", "$2", $string);
+     $string = preg_replace("#(</?(?:html|head|body|div|p|form|table|thead|tbody|tfoot|tr|td|th|ul|ol|li|div|p|blockquote|cite|hr|h1|h2|h3|h4|h5|h6)[^>]*>)\s*<br />#i", "$1", $string);
+	 $string = preg_replace("#(&nbsp;)+(</?(?:html|head|body|div|p|form|table|thead|tbody|tfoot|tr|td|th|ul|ol|li|div|p|blockquote|cite|hr|h1|h2|h3|h4|h5|h6)[^>]*>)#i", "$2", $string);
 
 
 			//replace Custom bbcode

@@ -182,10 +182,10 @@ class PowerBBCodeParse
             $string = preg_replace('#\[s\](.+)\[\/s\]#iUs', '<s>$1</s>', $string);
             $string = preg_replace('#\[h1\](.+)\[\/h1\]#iUs', '<h1>$1</h1>', $string);
             $string = preg_replace('#\[h2\](.+)\[\/h2\]#iUs', '<h2>$1</h2>', $string);
-            $string = preg_replace('#\[h3\](.+)\[\/h3\]#iUs', '<h1>$1</h1>', $string);
-            $string = preg_replace('#\[h4\](.+)\[\/h4\]#iUs', '<h1>$1</h1>', $string);
-            $string = preg_replace('#\[h5\](.+)\[\/h5\]#iUs', '<h1>$1</h1>', $string);
-            $string = preg_replace('#\[h6\](.+)\[\/h6\]#iUs', '<h1>$1</h1>', $string);
+            $string = preg_replace('#\[h3\](.+)\[\/h3\]#iUs', '<h3>$1</h3>', $string);
+            $string = preg_replace('#\[h4\](.+)\[\/h4\]#iUs', '<h4>$1</h4>', $string);
+            $string = preg_replace('#\[h5\](.+)\[\/h5\]#iUs', '<h5>$1</h5>', $string);
+            $string = preg_replace('#\[h6\](.+)\[\/h6\]#iUs', '<h6>$1</h6>', $string);
             $string = preg_replace('#\[hr\]\[\/hr\]#iUs', '<HR id=null>', $string);
             $string = preg_replace('#\[hr\]#iUs', '<HR id=null>', $string);
             $string = preg_replace('#\[\/hr\]#iUs', '', $string);
@@ -1447,6 +1447,8 @@ class PowerBBCodeParse
 			'#<h2>(.*?)</h2>#si' => '[h2]\\1[/h2]',
             '#<h3>(.*?)</h3>#si' => '[h3]\\1[/h3]',
             '#<h4>(.*?)</h4>#si' => '[h4]\\1[/h4]',
+            '#<h5>(.*?)</h5>#si' => '[h5]\\1[/h5]',
+            '#<h6>(.*?)</h6>#si' => '[h6]\\1[/h6]',
             '#<ul>(.*?)</ul>#si' => '[ul]\\1[/ul]',
             '#<ol>(.*?)</ol>#si' => '[ol]\\1[/ol]',
             '#<li>(.*?)</li>#si' => '[li]\\1[/li]',
@@ -1540,11 +1542,13 @@ class PowerBBCodeParse
         $string = preg_replace('#<h3(| .*)>#siU', '[h3]',  $string);
         $string = preg_replace('#<h4(| .*)>#siU', '[h4]',  $string);
         $string = preg_replace('#<h5(| .*)>#siU', '[h5]',  $string);
+        $string = preg_replace('#<h6(| .*)>#siU', '[h6]',  $string);
 		$string = str_replace('</h1>', '[/h1]', $string);
 		$string = str_replace('</h2>', '[/h2]', $string);
 		$string = str_replace('</h3>', '[/h3]', $string);
 		$string = str_replace('</h4>', '[/h4]', $string);
 		$string = str_replace('</h5>', '[/h5]', $string);
+		$string = str_replace('</h6>', '[/h6]', $string);
 
 
 		$string = str_replace('<thead>', '[thead]', $string);

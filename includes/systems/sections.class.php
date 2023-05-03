@@ -275,7 +275,7 @@ class PowerBBSection
  		{
  			$param = array();
  		}
-
+       $maxsize = '300000';
    		$SecArr 			= 	array();
 		$SecArr['where'] 	= 	array('id',$param['id']);
 		$SectionInfo = $this->GetSectionInfo($SecArr);
@@ -283,9 +283,18 @@ class PowerBBSection
           if ($SectionInfo and !$SectionInfo['parent']== "0")
  	       {
               	$cache = $this->CreateSectionsCache($SectionInfo);
+                   $size = strlen($cache);
 
+                   if($size > $maxsize)
+                   {
+                   	$forums_cache = '';
+                   }
+                   else
+                   {
+                   	$forums_cache = $cache;
+                   }
 					$ForumCacheArr 				= 	array();
-					$ForumCacheArr['field']['forums_cache'] 	= 	$cache;
+					$ForumCacheArr['field']['forums_cache'] 	= 	$forums_cache;
 					$ForumCacheArr['where'] 		        = 	array('id',$SectionInfo['parent']);
 					$UpdateForumCache = $this->UpdateSection($ForumCacheArr);
 
@@ -311,9 +320,17 @@ class PowerBBSection
               if($param['parent'])
               {
 	                $cache = $this->CreateSectionsCache($param);
-
+                   $size = strlen($cache);
+                   if($size > $maxsize)
+                   {
+                   	$forums_cache = '';
+                   }
+                   else
+                   {
+                   	$forums_cache = $cache;
+                   }
 					$ForumCacheArr 				= 	array();
-					$ForumCacheArr['field']['forums_cache'] 	= 	$cache;
+					$ForumCacheArr['field']['forums_cache'] 	= 	$forums_cache;
 					$ForumCacheArr['where'] 		        = 	array('id',$param['parent']);
 					$UpdateForumCache = $this->UpdateSection($ForumCacheArr);
 

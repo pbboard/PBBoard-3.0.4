@@ -3848,7 +3848,8 @@ if ($PowerBB->_CONF['template']['while']['AdsensesList'][$this->x_loop]['in_page
 <td class="left_text_align wd50">
 
 <select class='select_jump' name='url' onchange="window.location.href=this.options[this.selectedIndex].value">
-<option selected="selected" value="index.php">»{$lang['home']}</option>
+<option selected="selected" disabled='disabled'>{$lang['quick_jump_to']}</option>
+<option value="index.php">»{$lang['home']}</option>
 {if {$_CONF['info_row']['active_portal']} == '1'}
 {if {$page} == 'portal'}
 <option value='index.php?page=portal' selected='selected'>»{$_CONF['info_row']['title_portal']}</option>

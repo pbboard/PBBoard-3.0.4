@@ -574,29 +574,16 @@ class PowerBBLangMOD extends _functions
 	{
 		global $PowerBB;
 
-        $update = array();
-        $update = $PowerBB->info->UpdateInfo(array('value'=>$PowerBB->_POST['default'],'var_name'=>'def_lang'));
+        $update_def_lang = $PowerBB->info->UpdateInfo(array('value'=>$PowerBB->_POST['default'],'var_name'=>'def_lang'));
 
 
 		//////////
 
-		if ($update)
+		if ($update_def_lang)
 		{
 			//////////
 
-           $getmember_query = $PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['member'] . " ORDER BY id DESC");
-
-             while ($getmember_row = $PowerBB->DB->sql_fetch_array($getmember_query))
-             {
-
-				$UpdateArr 				                = 	array();
-				$UpdateArr['field'] 	                    = 	array();
-				$UpdateArr['field']['lang'] 			    = 	$PowerBB->_POST['default'];
-				$UpdateArr['where']						=	array('id',$getmember_row['id']);
-
-				$update = $PowerBB->core->Update($UpdateArr,'member');
-
-             }
+            $update= $PowerBB->DB->sql_query("UPDATE " . $PowerBB->table['member'] . " SET lang = '".$PowerBB->_POST['default']."' ");
 
             $PowerBB->functions->msg($PowerBB->_CONF['template']['_CONF']['lang']['language_has_been_updated_successfully']);
 			$PowerBB->functions->redirect('index.php?page=lang&amp;control=1&amp;main=1');

@@ -1849,20 +1849,13 @@ $Hooks = array();
 	{
 		global $PowerBB;
 
-			$HooksArr 	=	array();
-			$HooksArr['field']	=	array();
-			$HooksArr['field']['id']           =       $PowerBB->_GET['id'];
-			$DeleteHooks = $PowerBB->hooks->DeleteHooks($HooksArr);
-
 			$Delete = $PowerBB->hooks->DeleteHooks(array('where'=>array('id',$PowerBB->_GET['id'])));
 
 		if($Delete){
 
-		return TRUE;
-
         $this->update_cache();
 
-		$PowerBB->functions->msg($PowerBB->_CONF['template']['_CONF']['lang']['plugin_updated_successfully']);
+		$PowerBB->functions->msg($PowerBB->_CONF['template']['_CONF']['lang']['deleted_hooks_successfully']);
 		$PowerBB->functions->redirect('index.php?page=addons&amp;control_hooks=1&amp;main=1');
 		}
 		else

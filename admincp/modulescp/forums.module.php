@@ -95,17 +95,10 @@ class PowerBBForumsMOD extends _functions
 	global $PowerBB;
 
 		// Show Jump List to:)
-		$result = $PowerBB->DB->sql_query("SELECT id,title,parent FROM " . $PowerBB->table['section'] . " ORDER BY id ASC");
-
 		$Master = array();
-		while ($row = $PowerBB->DB->sql_fetch_array($result)) {
-			extract($row);
-		    $Master = $PowerBB->core->GetList(array ('id'=>$id,'title'=>"".$title."",'parent'=>$parent."",'parent'=>$parent),'section');
-		    $PowerBB->_CONF['template']['foreach']['SecList'] = $PowerBB->core->GetList($Master,'section');
-		}
-
+		$Master = $PowerBB->section->GetSectionsList(array ('id'=>$id,'title'=>"".$title."",'parent'=>$parent));
 		$MainAndSub = new PowerBBCommon;
-          	$PowerBB->template->assign('DoJumpList',$MainAndSub->DoJumpList($Master,$url,1));
+        $PowerBB->template->assign('DoJumpList',$MainAndSub->DoJumpList($Master,false,1));
 		unset($Master);
 	   ////////
 
@@ -521,22 +514,12 @@ class PowerBBForumsMOD extends _functions
 		$PowerBB->_GET['id'] = $PowerBB->functions->CleanVariable($PowerBB->_GET['id'],'intval');
 
 		// Show Jump List to:)
-		$result = $PowerBB->DB->sql_query("SELECT id,title,parent FROM " . $PowerBB->table['section'] . " ORDER BY id ASC");
-
 		$Master = array();
-		while ($row = $PowerBB->DB->sql_fetch_array($result)) {
-			extract($row);
-		    $Master = $PowerBB->core->GetList(array ('id'=>$id,'title'=>"".$title."",'parent'=>$parent."",'parent'=>$parent),'section');
-		    $PowerBB->_CONF['template']['foreach']['SecList'] = $PowerBB->core->GetList($Master,'section');
-		}
-
+		$Master = $PowerBB->section->GetSectionsList(array ('id'=>$id,'title'=>"".$title."",'parent'=>$parent));
 		$MainAndSub = new PowerBBCommon;
-          	$PowerBB->template->assign('DoJumpList',$MainAndSub->DoJumpList($Master,$url,1));
+        $PowerBB->template->assign('DoJumpList',$MainAndSub->DoJumpList($Master,false,1));
 		unset($Master);
 	   ////////
-
-
-		//////////
 
 		$PowerBB->template->display('forum_edit');
 	}
@@ -729,17 +712,10 @@ class PowerBBForumsMOD extends _functions
 			} // end !empty($forums_cache)
 
 		// Show Jump List to:)
-		$result = $PowerBB->DB->sql_query("SELECT id,title,parent FROM " . $PowerBB->table['section'] . " ORDER BY id ASC");
-
 		$Master = array();
-		while ($row = $PowerBB->DB->sql_fetch_array($result)) {
-			extract($row);
-		    $Master = $PowerBB->core->GetList(array ('id'=>$id,'title'=>"".$title."",'parent'=>$parent."",'parent'=>$parent),'section');
-		    $PowerBB->_CONF['template']['foreach']['SecList'] = $PowerBB->core->GetList($Master,'section');
-		}
-
+		$Master = $PowerBB->section->GetSectionsList(array ('id'=>$id,'title'=>"".$title."",'parent'=>$parent));
 		$MainAndSub = new PowerBBCommon;
-          	$PowerBB->template->assign('DoJumpList',$MainAndSub->DoJumpList($Master,$url,1));
+        $PowerBB->template->assign('DoJumpList',$MainAndSub->DoJumpList($Master,false,1));
 		unset($Master);
 	   ////////
 

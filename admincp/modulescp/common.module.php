@@ -120,13 +120,18 @@ class PowerBBCommon
 		 $Mn = 1;
 		$size = sizeof($this->Main);
 		for($i=0;$i<$size;$i++)
-		{
+		{
+         if($PowerBB->_GET['page'] == 'feeder' and $PowerBB->_GET['add'] and $PowerBB->_GET['main'])
+         {
+             $disabled = 'disabled="disabled"';
+         }
+
 		if($this->Main[$i]['id'] == $SectionInfo['parent'])
 		{
 		$Form .= "<option class='row1' style=\"color: #FF0000\" value='".$SecparentInfo['id']."' selected='selected'>".$SecparentInfo['title']."</option></style>";
 		}
 		else
-		{		$Form .= "<option class='row1' style=\"color: #FF0000\" value='".$this->Main[$i]['id']."'>".$this->Main[$i]['title']."</option></style>";
+		{		$Form .= "<option class='row1' ".$disabled." style=\"color: #FF0000\" value='".$this->Main[$i]['id']."'>".$this->Main[$i]['title']."</option></style>";
 		}
 
 		$Form .= $this->SubList($this->Main[$i]['id'],$Mn);

@@ -648,27 +648,15 @@ class PowerBBStyleMOD extends _functions
 	{
 		global $PowerBB;
 
-        $update = $PowerBB->info->UpdateInfo(array('value'=>$PowerBB->_POST['default'],'var_name'=>'def_style'));
+        $update_def_style = $PowerBB->info->UpdateInfo(array('value'=>$PowerBB->_POST['default'],'var_name'=>'def_style'));
 
 		//////////
 
-		if ($update)
+		if ($update_def_style)
 		{
 			//////////
 
-           $getmember_query = $PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['member'] . " ORDER BY id DESC");
-
-             while ($getmember_row = $PowerBB->DB->sql_fetch_array($getmember_query))
-             {
-
-				$UpdateArr 				                = 	array();
-				$UpdateArr['field'] 	                    = 	array();
-				$UpdateArr['field']['style'] 			    = 	$PowerBB->_POST['default'];
-				$UpdateArr['where']						=	array('id',$getmember_row['id']);
-
-				$update = $PowerBB->core->Update($UpdateArr,'member');
-
-             }
+            $update= $PowerBB->DB->sql_query("UPDATE " . $PowerBB->table['member'] . " SET style = '".$PowerBB->_POST['default']."' ");
 
 			$PowerBB->functions->msg($PowerBB->_CONF['template']['_CONF']['lang']['Last_updated_successfully']);
 			$PowerBB->functions->redirect('index.php?page=style&amp;control=1&amp;main=1');

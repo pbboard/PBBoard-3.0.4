@@ -157,22 +157,13 @@ class PowerBBModeratorsMOD extends _functions
 				} // end foreach ($forums)
 			} // end !empty($forums_cache)
 
-					// Show Jump List to:)
-		$result = $PowerBB->DB->sql_query("SELECT id,title,parent FROM " . $PowerBB->table['section'] . " ORDER BY id ASC");
-
+		// Show Jump List to:)
 		$Master = array();
-		while ($row = $PowerBB->DB->sql_fetch_array($result)) {
-			extract($row);
-		    $Master = $PowerBB->section->GetSectionsList(array ('id'=>$id,'title'=>"".$title."",'parent'=>$parent."",'parent'=>$parent));
-		    $PowerBB->_CONF['template']['foreach']['SecList'] = $PowerBB->section->GetSectionsList($Master);
-		}
-
+		$Master = $PowerBB->section->GetSectionsList(array ('id'=>$id,'title'=>"".$title."",'parent'=>$parent));
 		$MainAndSub = new PowerBBCommon;
-          	$PowerBB->template->assign('DoJumpList',$MainAndSub->DoJumpList($Master,$url,1));
+        $PowerBB->template->assign('DoJumpList',$MainAndSub->DoJumpList($Master,false,1));
 		unset($Master);
 	   ////////
-
-		//////////
 
 		$GroupArr 							= 	array();
 
@@ -566,21 +557,13 @@ class PowerBBModeratorsMOD extends _functions
 				} // end foreach ($forums)
 			} // end !empty($forums_cache)
 
-					// Show Jump List to:)
-		$result = $PowerBB->DB->sql_query("SELECT id,title,parent FROM " . $PowerBB->table['section'] . " ORDER BY id ASC");
-
+		// Show Jump List to:)
 		$Master = array();
-		while ($row = $PowerBB->DB->sql_fetch_array($result)) {
-			extract($row);
-		    $Master = $PowerBB->section->GetSectionsList(array ('id'=>$id,'title'=>"".$title."",'parent'=>$parent."",'parent'=>$parent));
-		    $PowerBB->_CONF['template']['foreach']['SecList'] = $PowerBB->section->GetSectionsList($Master);
-		}
-
+		$Master = $PowerBB->section->GetSectionsList(array ('id'=>$id,'title'=>"".$title."",'parent'=>$parent));
 		$MainAndSub = new PowerBBCommon;
-          	$PowerBB->template->assign('DoJumpList',$MainAndSub->DoJumpList($Master,$url,1));
+        $PowerBB->template->assign('DoJumpList',$MainAndSub->DoJumpList($Master,false,1));
 		unset($Master);
 	   ////////
-
 		$PowerBB->template->display('moderators_main');
 	}
 

@@ -1550,7 +1550,7 @@ font-size:11px;
 .quotemain{
 position: relative;
 background: white;
-margin: 0.25em 0.05em 0 0;
+margin: 0.40em 0.05em 0.65em 0;
 border: 1px solid #ccc;
 padding: 10px;
 -moz-border-radius: 6px;
@@ -1579,7 +1579,7 @@ overflow:inherit;
 pre{
 display:block;
 border:1px solid #d1d1e1;
-text-align: right;
+text-align: left;
 direction:ltr;
 font-family: "tahoma",sans-serif;
 font-size: 85%;
@@ -1605,7 +1605,7 @@ float: 0;
 color:#81818b;
 padding: 5px;
 font: bold 11px tahoma;
-text-align: left;
+text-align: right;
 width: 98%;
 float: right;
 clear: both;
@@ -4382,7 +4382,7 @@ background-color:#D4E8EF;
 }
 
 div.bottom_text{
-min-height:200px !important;
+min-height:10px !important;
 }
 .r-nfo , .writers_info
 {

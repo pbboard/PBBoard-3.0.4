@@ -1346,7 +1346,29 @@ class PowerBBCoreMOD
 		}
 
 		$UpdateAvatar = $PowerBB->core->Update($UpdateArr,'member');
-       $PowerBB->functions->_AllCacheStart();
+
+		$SecArr 						= 	array();
+		$SecArr['get_from']				=	'db';
+		$SecArr['proc'] 				= 	array();
+		$SecArr['proc']['*'] 			= 	array('method'=>'clean','param'=>'html');
+		$SecArr['order']				=	array();
+		$SecArr['order']['field']		=	'sort';
+		$SecArr['order']['type']		=	'ASC';
+		$SecArr['where']				=	array();
+		$SecArr['where'][0]['name']		= 	'last_writer';
+		$SecArr['where'][0]['oper']		= 	'=';
+		$SecArr['where'][0]['value']	= 	$PowerBB->_CONF['rows']['member_row']['username'];
+		$cats = $PowerBB->core->GetList($SecArr,'section');
+		if ($cats)
+		{
+	 		////////////
+			// Loop to read the information of last_writer to change avatar in Section Cache
+			foreach($cats as $cat)
+			{
+			 $UpdateSectionCache = $PowerBB->functions->UpdateSectionCache($cat['id']);
+			}
+		}
+
 		if ($UpdateAvatar)
 		{
 			$PowerBB->functions->msg($PowerBB->_CONF['template']['_CONF']['lang']['Updated_successfully']);

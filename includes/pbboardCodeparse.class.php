@@ -46,15 +46,17 @@ class PowerBBCodeParse
 
 		$regexcodew['[code]'] = '#\[code\](.*)\[/code\]#siU';
 		$string = preg_replace_callback($regexcodew, function($matchesw) {
-		$matchesw[1] = str_replace('[color=#ff0000]', "", $matchesw[1]);
-		$matchesw[1] = str_replace('[/color]', "", $matchesw[1]);
+		$matchesw[1] = preg_replace('#\[color\=(.+)\](.+)\[\/color\]#iUs', "$2", $matchesw[1]);
+		$matchesw[1] = preg_replace('#\[font\=(.+)\](.+)\[\/font\]#iUs', "$2", $matchesw[1]);
+		$matchesw[1] = preg_replace('#\[size\=(.+)\](.+)\[\/size\]#iUs', "$2", $matchesw[1]);
 		return '[code]'.base64_encode($matchesw[1]).'[/code]';
 		}, $string);
 
 		$regexcode['[php]'] = '#\[php\](.*)\[/php\]#siU';
 		$string = preg_replace_callback($regexcode, function($matches) {
-		$matches[1] = str_replace('[color=#ff0000]', "", $matches[1]);
-		$matches[1] = str_replace('[/color]', "", $matches[1]);
+		$matches[1] = preg_replace('#\[color\=(.+)\](.+)\[\/color\]#iUs', "$2", $matches[1]);
+		$matches[1] = preg_replace('#\[font\=(.+)\](.+)\[\/font\]#iUs', "$2", $matches[1]);
+		$matches[1] = preg_replace('#\[size\=(.+)\](.+)\[\/size\]#iUs', "$2", $matches[1]);
 		return '[php]'.base64_encode($matches[1]).'[/php]';
 		}, $string);
 
@@ -319,7 +321,7 @@ class PowerBBCodeParse
 				{
 	             // thes is 3.0.3 codes  [code][/code]
 	             $matches[1] = base64_decode($matches[1]);
-				$matches[1] = $this->htmlspecialchars_off($matches[1]);
+				 $matches[1] = $this->htmlspecialchars_off($matches[1]);
 				}
 				elseif(strstr(base64_decode($matches[1]),"<br />\r\n"))
 				{
@@ -339,8 +341,7 @@ class PowerBBCodeParse
 					{
 				     $matches[1] = htmlspecialchars(base64_decode($matches[1]));
 				     $matches[1] = $this->htmlspecialchars_uni($matches[1]);
-					}
-				}
+					}				}
 			return '<div class="maxy"></div><div class="codediv">CODE</div><pre><code class="language-php">'.$matches[1].'</code></pre><div class="maxy"></div>';
 			}, $string);
 
@@ -448,8 +449,6 @@ class PowerBBCodeParse
       {
         	global $PowerBB;
 		$message = trim($message);
-       $message = str_replace("[/quote]<br />", "[/quote]", $message);
-      // $message = str_replace("[/quote]", "[/quote]<br />", $message);
 
 		if(!$message)
 		{

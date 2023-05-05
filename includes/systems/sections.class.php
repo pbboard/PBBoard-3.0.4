@@ -181,7 +181,8 @@ class PowerBBSection
  		$arr['where'] 			= 	array('parent',$param['parent']);
 
  		$forums = $this->GetSectionsList($arr);
-
+        if ($forums != false)
+ 		{
  			$x = 0;
  			$size = sizeof($forums);
 
@@ -258,10 +259,15 @@ class PowerBBSection
 					$cache[$x]['groups'][$group['group_id']]['main_section'] 	= 	$group['main_section'];
 				}
 
-				$x++;
+				$x += 1;
  			}
 
-		$cache = base64_encode(json_encode($cache));
+		  $cache = base64_encode(json_encode($cache));
+ 		}
+ 		else
+ 		{
+ 			return false;
+ 		}
 
 		return $cache;
 	}
@@ -283,6 +289,10 @@ class PowerBBSection
           if ($SectionInfo and !$SectionInfo['parent']== "0")
  	       {
               	$cache = $this->CreateSectionsCache($SectionInfo);
+				if ($cache == false)
+				 {
+				  $cache = '';
+				 }
                    $size = strlen($cache);
 
                    if($size > $maxsize)
@@ -320,6 +330,10 @@ class PowerBBSection
               if($param['parent'])
               {
 	                $cache = $this->CreateSectionsCache($param);
+					if ($cache == false)
+					{
+					$cache = '';
+					}
                    $size = strlen($cache);
                    if($size > $maxsize)
                    {

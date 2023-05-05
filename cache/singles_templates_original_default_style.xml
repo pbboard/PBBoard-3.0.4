@@ -8878,7 +8878,7 @@ $Forum_id = $Forum['id'];
 |{$lang['forum']}:		<a href="index.php?page=forum&amp;show=1&amp;id=<?php echo $Forum_id; ?>"><?php echo $Forum_title; ?></a>
 
 <br />
-<div class="textemain"><pre> {$MembersListReply['text']}</pre></div>
+<div class="textemain"><pre class="post" style="direction:{$_CONF['info_row']['content_dir']};"> {$MembersListReply['text']}</pre></div>
 </td>
 </tr>
 {/Des::while}

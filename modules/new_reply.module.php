@@ -563,6 +563,7 @@ class PowerBBReplyAddMOD
 		              	if (empty($PowerBB->_POST['text']))
 						{
 		     				   $PowerBB->functions->ShowHeader($PowerBB->_CONF['template']['_CONF']['lang']['Mistake']);
+		     				   $PowerBB->_CONF['template']['_CONF']['lang']['post_text_min'] = str_replace("5", $PowerBB->_CONF['info_row']['post_text_min'], $PowerBB->_CONF['template']['_CONF']['lang']['post_text_min']);
 		                       $PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['post_text_min']);
 						}
 
@@ -578,6 +579,7 @@ class PowerBBReplyAddMOD
 								else
 								{
 								$PowerBB->functions->ShowHeader($PowerBB->_CONF['template']['_CONF']['lang']['add_new_topic']);
+		     				    $PowerBB->_CONF['template']['_CONF']['lang']['post_text_max'] = str_replace("30000", $PowerBB->_CONF['info_row']['post_text_max'], $PowerBB->_CONF['template']['_CONF']['lang']['post_text_max']);
 								$PowerBB->functions->msg($PowerBB->_CONF['template']['_CONF']['lang']['post_text_max']);
 								$PowerBB->functions->error_stop();
 								}
@@ -590,6 +592,7 @@ class PowerBBReplyAddMOD
 								else
 								{
 								$PowerBB->functions->ShowHeader($PowerBB->_CONF['template']['_CONF']['lang']['add_new_topic']);
+		     				    $PowerBB->_CONF['template']['_CONF']['lang']['post_text_min'] = str_replace("5", $PowerBB->_CONF['info_row']['post_text_min'], $PowerBB->_CONF['template']['_CONF']['lang']['post_text_min']);
 								$PowerBB->functions->msg($PowerBB->_CONF['template']['_CONF']['lang']['post_text_min']);
 								$PowerBB->functions->error_stop();
 								}

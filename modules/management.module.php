@@ -950,10 +950,11 @@ class PowerBBManagementMOD
 				$PowerBB->_CONF['template']['SubjectInfoTime'] = $PowerBB->core->GetInfo($SubjectArr,'subject');
 
                $time_out = $PowerBB->_CONF['info_row']['time_out']*60;
-              if ($PowerBB->_CONF['now'] > $PowerBB->_CONF['template']['SubjectInfoTime']['write_time']+$time_out)
+              if ($PowerBB->_CONF['now'] > $PowerBB->_CONF['template']['SubjectInfoTime']['native_write_time']+$time_out)
                {
                $PowerBB->functions->ShowHeader();
-            $PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['Editing_time_out']);
+				$PowerBB->_CONF['template']['_CONF']['lang']['Editing_time_out'] = str_replace("1440", " ".$PowerBB->_CONF['info_row']['time_out'], $PowerBB->_CONF['template']['_CONF']['lang']['Editing_time_out']);
+				$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['Editing_time_out']);
                }
 	     }
 
@@ -1038,8 +1039,8 @@ class PowerBBManagementMOD
 				$PowerBB->_CONF['template']['SubjectInfoTime'] = $PowerBB->core->GetInfo($SubjectArr,'subject');
 
                $time_out = $PowerBB->_CONF['info_row']['time_out']*60;
-              if ($PowerBB->_CONF['now'] > $PowerBB->_CONF['template']['SubjectInfoTime']['write_time']+$time_out)
-               {
+              if ($PowerBB->_CONF['now'] > $PowerBB->_CONF['template']['SubjectInfoTime']['native_write_time']+$time_out)
+               {				$PowerBB->_CONF['template']['_CONF']['lang']['Editing_time_out'] = str_replace("1440", " ".$PowerBB->_CONF['info_row']['time_out'], $PowerBB->_CONF['template']['_CONF']['lang']['Editing_time_out']);
                 $PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['Editing_time_out']);
                }
 	     }
@@ -1109,7 +1110,20 @@ class PowerBBManagementMOD
 
 				$SubjectInfo  = $PowerBB->core->GetInfo($SubjectArr,'subject');
 
+		/** Get the section information **/
+		$SecArr 			= 	array();
+		$SecArr['where'] 	= 	array('id',$SubjectInfo['section']);
 
+		$this->SectionInfo = $PowerBB->core->GetInfo($SecArr,'section');
+
+        $time_out = $PowerBB->_CONF['info_row']['time_out']*60;
+
+        if ($PowerBB->_CONF['now'] > $SubjectInfo['native_write_time']+$time_out != false
+        and $PowerBB->functions->ModeratorCheck($this->SectionInfo['moderators']) == false)
+        {
+        	$PowerBB->_CONF['template']['_CONF']['lang']['Editing_time_out'] = str_replace("1440", " ".$PowerBB->_CONF['info_row']['time_out'], $PowerBB->_CONF['template']['_CONF']['lang']['Editing_time_out']);
+            $PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['Editing_time_out']);
+		}
 
 
          $SubjectInfo['title']    =   $PowerBB->Powerparse->censor_words($SubjectInfo['title']);
@@ -1232,9 +1246,10 @@ class PowerBBManagementMOD
              // time_out For Editing Subject
 
                $time_out = $PowerBB->_CONF['info_row']['time_out']*60;
-              if ($PowerBB->_CONF['now'] > $PowerBB->_CONF['template']['SubjectInfo']['write_time']+$time_out)
+              if ($PowerBB->_CONF['now'] > $PowerBB->_CONF['template']['SubjectInfo']['native_write_time']+$time_out)
                {
                  $PowerBB->functions->ShowHeader();
+				 $PowerBB->_CONF['template']['_CONF']['lang']['Editing_time_out'] = str_replace("1440", " ".$PowerBB->_CONF['info_row']['time_out'], $PowerBB->_CONF['template']['_CONF']['lang']['Editing_time_out']);
                  $PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['Editing_time_out']);
                }
 	     }
@@ -1309,6 +1324,30 @@ class PowerBBManagementMOD
 		$SubjectUpdate = $PowerBB->subject->GetSubjectInfo($SubjectInfoArr);
 
 
+				/** Get the section information **/
+				$SecArr 			= 	array();
+				$SecArr['where'] 	= 	array('id',$SubjectUpdate['section']);
+
+				$this->SectionInfo = $PowerBB->core->GetInfo($SecArr,'section');
+
+
+               if (!$PowerBB->functions->ModeratorCheck($SubjectUpdate['section']))
+               {
+					if ($PowerBB->_CONF['member_row']['username'] != $SubjectUpdate['writer'])
+					{
+					$PowerBB->functions->ShowHeader();
+					$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['error_permission']);
+					}
+
+			        $time_out = $PowerBB->_CONF['info_row']['time_out']*60;
+
+			        if ($PowerBB->_CONF['now'] > $SubjectUpdate['native_write_time']+$time_out != false)
+			        {					    $PowerBB->_CONF['template']['_CONF']['lang']['Editing_time_out'] = str_replace("1440", " ".$PowerBB->_CONF['info_row']['time_out'], $PowerBB->_CONF['template']['_CONF']['lang']['Editing_time_out']);
+			            $PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['Editing_time_out']);
+					}
+                }
+
+
 			$AttachArr 							= 	array();
 			$AttachArr['where']					= 	array();
 			$AttachArr['where'][0] 				=	array();
@@ -1326,21 +1365,7 @@ class PowerBBManagementMOD
 
 			$PowerBB->_CONF['template']['while']['AttachList'] = $PowerBB->core->GetList($AttachArr,'attach');
 
-		if (!$PowerBB->functions->ModeratorCheck($SubjectUpdate['section']))
-		{
-		   if ($PowerBB->_CONF['member_row']['username'] != $SubjectUpdate['writer'])
-		   {
-			$PowerBB->functions->ShowHeader();
-			$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['error_permission']);
-			}
 
-               $time_out = $PowerBB->_CONF['info_row']['time_out']*60;
-              if ($PowerBB->_CONF['now'] > $SubjectUpdate['write_time']+$time_out)
-               {
-                 $PowerBB->functions->ShowHeader();
-                 $PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['Editing_time_out']);
-               }
-		}
 
 				if ($PowerBB->_POST['stick'])
 				{
@@ -1447,6 +1472,7 @@ class PowerBBManagementMOD
 		     		if (isset($TitlePost{$PowerBB->_CONF['info_row']['post_title_max']}))
 		     		{
 		     			$PowerBB->functions->ShowHeader();
+		                $PowerBB->_CONF['template']['_CONF']['lang']['post_text_max_subjects'] = str_replace("60", $PowerBB->_CONF['info_row']['post_title_max'], $PowerBB->_CONF['template']['_CONF']['lang']['post_text_max_subjects']);
                         $PowerBB->functions->msg($PowerBB->_CONF['template']['_CONF']['lang']['post_text_max_subjects']);
                          $this->_empty_bac();
 		       			$PowerBB->functions->error_stop();
@@ -1456,6 +1482,7 @@ class PowerBBManagementMOD
 		        	if  (!isset($TitlePost{$PowerBB->_CONF['info_row']['post_title_min']}))
 		     		{
 		     			$PowerBB->functions->ShowHeader();
+		                $PowerBB->_CONF['template']['_CONF']['lang']['post_text_min_subjects'] = str_replace("(4)", " (".$PowerBB->_CONF['info_row']['post_text_min'].") ", $PowerBB->_CONF['template']['_CONF']['lang']['post_text_min_subjects']);
                         $PowerBB->functions->msg($PowerBB->_CONF['template']['_CONF']['lang']['post_text_min_subjects']);
                          $this->_empty_bac();
 		      			$PowerBB->functions->error_stop();
@@ -1466,6 +1493,7 @@ class PowerBBManagementMOD
 		       	 	if (isset($TextPost{$PowerBB->_CONF['info_row']['post_text_max']}))
 		     		{
 		     		$PowerBB->functions->ShowHeader();
+		     			$PowerBB->_CONF['template']['_CONF']['lang']['post_text_max'] = str_replace("30000", $PowerBB->_CONF['info_row']['post_text_max'], $PowerBB->_CONF['template']['_CONF']['lang']['post_text_max']);
                         $PowerBB->functions->msg($PowerBB->_CONF['template']['_CONF']['lang']['post_text_max']);
                          $this->_empty_bac();
 		      			$PowerBB->functions->error_stop();
@@ -1474,6 +1502,7 @@ class PowerBBManagementMOD
 		     		if (!isset($TextPost{$PowerBB->_CONF['info_row']['post_text_min']}))
 		     		{
 		     			$PowerBB->functions->ShowHeader();
+		     			 $PowerBB->_CONF['template']['_CONF']['lang']['post_text_min'] = str_replace("5", $PowerBB->_CONF['info_row']['post_text_min'], $PowerBB->_CONF['template']['_CONF']['lang']['post_text_min']);
 		     			 $PowerBB->functions->msg($PowerBB->_CONF['template']['_CONF']['lang']['post_text_min']);
                          $this->_empty_bac();
 		      			$PowerBB->functions->error_stop();
@@ -1492,10 +1521,11 @@ class PowerBBManagementMOD
 					$PowerBB->_CONF['template']['SubjectInfo'] = $PowerBB->core->GetInfo($SubjectArr,'subject');
 
 	               $time_out = $PowerBB->_CONF['info_row']['time_out']*60;
-	              if ($PowerBB->_CONF['now'] > $PowerBB->_CONF['template']['SubjectInfo']['write_time']+$time_out)
+	              if ($PowerBB->_CONF['now'] > $PowerBB->_CONF['template']['SubjectInfo']['native_write_time']+$time_out)
 	               {
-	               $PowerBB->functions->ShowHeader();
-                   $PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['Editing_time_out']);
+	                $PowerBB->functions->ShowHeader();
+				    $PowerBB->_CONF['template']['_CONF']['lang']['Editing_time_out'] = str_replace("1440", " ".$PowerBB->_CONF['info_row']['time_out'], $PowerBB->_CONF['template']['_CONF']['lang']['Editing_time_out']);
+                    $PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['Editing_time_out']);
 	               }
 		     }
 
@@ -1820,6 +1850,7 @@ class PowerBBManagementMOD
 	             if ($PowerBB->_CONF['now'] > $PowerBB->_CONF['template']['ReplyInfoTime']['write_time']+$time_out)
 	             {
 	                $PowerBB->functions->ShowHeader();
+				    $PowerBB->_CONF['template']['_CONF']['lang']['Reply_Editing_time_out'] = str_replace("1440", " ".$PowerBB->_CONF['info_row']['time_out'], $PowerBB->_CONF['template']['_CONF']['lang']['Reply_Editing_time_out']);
                     $PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['Reply_Editing_time_out']);
 	            }
 	     }
@@ -1891,8 +1922,8 @@ class PowerBBManagementMOD
 
 	               $time_out = $PowerBB->_CONF['info_row']['time_out']*60;
 	             if ($PowerBB->_CONF['now'] > $PowerBB->_CONF['template']['ReplyInfoTime']['write_time']+$time_out)
-	             {
-                  $PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['Reply_Editing_time_out']);
+	             {				   $PowerBB->_CONF['template']['_CONF']['lang']['Reply_Editing_time_out'] = str_replace("1440", " ".$PowerBB->_CONF['info_row']['time_out'], $PowerBB->_CONF['template']['_CONF']['lang']['Reply_Editing_time_out']);
+                   $PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['Reply_Editing_time_out']);
 	            }
 	     }
 
@@ -2027,6 +2058,7 @@ class PowerBBManagementMOD
 	               $time_out = $PowerBB->_CONF['info_row']['time_out']*60;
 	             if ($PowerBB->_CONF['now'] > $PowerBB->_CONF['template']['ReplyInfo']['write_time']+$time_out)
 	             {
+				    $PowerBB->_CONF['template']['_CONF']['lang']['Reply_Editing_time_out'] = str_replace("1440", " ".$PowerBB->_CONF['info_row']['time_out'], $PowerBB->_CONF['template']['_CONF']['lang']['Reply_Editing_time_out']);
                     $PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['Reply_Editing_time_out']);
 	             }
 	     }
@@ -2137,6 +2169,7 @@ class PowerBBManagementMOD
 			if ($PowerBB->_CONF['now'] > $PowerBB->_CONF['template']['ReplyInfo']['write_time']+$time_out)
 			{
 			$PowerBB->functions->ShowHeader();
+			$PowerBB->_CONF['template']['_CONF']['lang']['Reply_Editing_time_out'] = str_replace("1440", " ".$PowerBB->_CONF['info_row']['time_out'], $PowerBB->_CONF['template']['_CONF']['lang']['Reply_Editing_time_out']);
 			$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['Reply_Editing_time_out']);
 			}
 		}
@@ -2205,6 +2238,7 @@ class PowerBBManagementMOD
             if (empty($PowerBB->_POST['text']))
 			{
              $PowerBB->functions->ShowHeader();
+		     $PowerBB->_CONF['template']['_CONF']['lang']['post_text_min'] = str_replace("5", $PowerBB->_CONF['info_row']['post_text_min'], $PowerBB->_CONF['template']['_CONF']['lang']['post_text_min']);
             $PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['post_text_min']);
 			}
             $TextPost = utf8_decode($PowerBB->_POST['text']);
@@ -2213,6 +2247,7 @@ class PowerBBManagementMOD
      		if (isset($TextPost{$PowerBB->_CONF['info_row']['post_text_max']}))
      		{
      			$PowerBB->functions->ShowHeader();
+		     	$PowerBB->_CONF['template']['_CONF']['lang']['post_text_max'] = str_replace("30000", $PowerBB->_CONF['info_row']['post_text_max'], $PowerBB->_CONF['template']['_CONF']['lang']['post_text_max']);
      			$PowerBB->functions->msg($PowerBB->_CONF['template']['_CONF']['lang']['post_text_max']);
                 $this->_empty_bac_ReplyEdit();
                 $PowerBB->functions->error_stop();
@@ -2222,7 +2257,8 @@ class PowerBBManagementMOD
      		 if (!isset($TextPost{$PowerBB->_CONF['info_row']['post_text_min']}))
      		{
              $PowerBB->functions->ShowHeader();
-            $PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['post_text_min']);
+		     $PowerBB->_CONF['template']['_CONF']['lang']['post_text_min'] = str_replace("5", $PowerBB->_CONF['info_row']['post_text_min'], $PowerBB->_CONF['template']['_CONF']['lang']['post_text_min']);
+             $PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['post_text_min']);
      		}
 
 			 // Moderator And admin Editing Reply any time limit
@@ -2235,6 +2271,7 @@ class PowerBBManagementMOD
 		             if ($PowerBB->_CONF['now'] > $PowerBB->_CONF['template']['ReplyInfo']['write_time']+$time_out)
 		             {
 		               $PowerBB->functions->ShowHeader();
+			          $PowerBB->_CONF['template']['_CONF']['lang']['Reply_Editing_time_out'] = str_replace("1440", " ".$PowerBB->_CONF['info_row']['time_out'], $PowerBB->_CONF['template']['_CONF']['lang']['Reply_Editing_time_out']);
                       $PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['Reply_Editing_time_out']);
 		            }
 		     }

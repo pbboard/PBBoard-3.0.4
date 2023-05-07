@@ -17,7 +17,7 @@
 				<select name="from" id="select_from">
          		{Des::foreach}{forums_list}{forum}
         		{if {$forum['parent']} == 0}
-				<option value="{$forum['id']}" disabled="disabled">- {$forum['title']}</option>
+				<option value="{$forum['id']}">- {$forum['title']}</option>
 				{else}
 				<option value="{$forum['id']}" selected="selected">-- {$forum['title']}</option>
 				{/if}

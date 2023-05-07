@@ -398,7 +398,7 @@ class PowerBBTopicMOD
 
         $time_out = $PowerBB->_CONF['info_row']['time_out']*60;
 
-        if ($PowerBB->_CONF['now'] > $PowerBB->_CONF['template']['SubjectInfo']['write_time']+$time_out != false)
+        if ($PowerBB->_CONF['now'] > $PowerBB->_CONF['template']['SubjectInfo']['native_write_time']+$time_out != false)
         {
               $PowerBB->template->assign('timeout',false);
 		}

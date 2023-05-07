@@ -298,6 +298,7 @@ class PowerBBSearchEngineMOD
 		}
        if ((@time() - $PowerBB->_CONF['info_row']['flood_search']) <= $PowerBB->_CONF['member_row']['lastsearch_time'])
        {
+		  $PowerBB->_CONF['template']['_CONF']['lang']['flood_search1'] = str_replace("40", $PowerBB->_CONF['info_row']['flood_search'], $PowerBB->_CONF['template']['_CONF']['lang']['flood_search1']);
           $PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['flood_search1']. ' ' .$flood_search . ' ' .$PowerBB->_CONF['template']['_CONF']['lang']['flood_search2']);
        }
       else
@@ -416,6 +417,7 @@ class PowerBBSearchEngineMOD
 		else
 		{
 		$stop = ($PowerBB->_CONF['info_row']['ajax_search'] and !$PowerBB->_POST['ajax']) ? false : true;
+		$PowerBB->_CONF['template']['_CONF']['lang']['characters_keyword_search'] = str_replace("3", $PowerBB->_CONF['info_row']['characters_keyword_search'], $PowerBB->_CONF['template']['_CONF']['lang']['characters_keyword_search']);
 		$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['characters_keyword_search'],$stop);
 		}
 

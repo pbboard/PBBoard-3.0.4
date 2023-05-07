@@ -374,6 +374,7 @@ class PowerBBRegisterMOD
 			else
 			{
       		$PowerBB->functions->ShowHeader();
+		    $PowerBB->_CONF['template']['_CONF']['lang']['Character_name_a_few_user'] = str_replace("3", $PowerBB->_CONF['info_row']['reg_less_num'], $PowerBB->_CONF['template']['_CONF']['lang']['Character_name_a_few_user']);
    			$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['Character_name_a_few_user']);
 			$PowerBB->functions->GetFooter();
 			}
@@ -386,6 +387,7 @@ class PowerBBRegisterMOD
 			{
       		$PowerBB->functions->ShowHeader();
       		$PowerBB->_CONF['template']['_CONF']['lang']['characters_Username_many'] = str_replace("{User_num}", $PowerBB->_CONF['info_row']['reg_max_num'], $PowerBB->_CONF['template']['_CONF']['lang']['characters_Username_many']);
+		    $PowerBB->_CONF['template']['_CONF']['lang']['characters_Username_many'] = str_replace("25", $PowerBB->_CONF['info_row']['reg_max_num'], $PowerBB->_CONF['template']['_CONF']['lang']['characters_Username_many']);
 			$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['characters_Username_many']);
 			$PowerBB->functions->GetFooter();
 			}
@@ -401,6 +403,7 @@ class PowerBBRegisterMOD
       	if (!isset($PowerBB->_POST['password']{$PowerBB->_CONF['info_row']['reg_pass_min_num']-1}))
       	{
       		$PowerBB->functions->ShowHeader();
+		    $PowerBB->_CONF['template']['_CONF']['lang']['Character_pass_few'] = str_replace("5", $PowerBB->_CONF['info_row']['reg_pass_min_num'], $PowerBB->_CONF['template']['_CONF']['lang']['Character_pass_few']);
         	$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['Character_pass_few']);
 			$PowerBB->functions->GetFooter();
       	}
@@ -879,7 +882,7 @@ class PowerBBRegisterMOD
 
 			}
 			else
-			{
+			{		    $PowerBB->_CONF['template']['_CONF']['lang']['Character_name_a_few_user'] = str_replace("3", $PowerBB->_CONF['info_row']['reg_less_num'], $PowerBB->_CONF['template']['_CONF']['lang']['Character_name_a_few_user']);
 			$this->_AjaxTxtRed($PowerBB->_CONF['template']['_CONF']['lang']['Character_name_a_few_user']);
 			}
 
@@ -889,6 +892,7 @@ class PowerBBRegisterMOD
 			}
 			else
 			{      		$PowerBB->_CONF['template']['_CONF']['lang']['characters_Username_many'] = str_replace("{User_num}", $PowerBB->_CONF['info_row']['reg_max_num'], $PowerBB->_CONF['template']['_CONF']['lang']['characters_Username_many']);
+		    $PowerBB->_CONF['template']['_CONF']['lang']['characters_Username_many'] = str_replace("25", $PowerBB->_CONF['info_row']['reg_max_num'], $PowerBB->_CONF['template']['_CONF']['lang']['characters_Username_many']);
 			$this->_AjaxTxtRed($PowerBB->_CONF['template']['_CONF']['lang']['characters_Username_many']);
 			}
 			if ($PowerBB->banned->IsUsernameBanned(array('username' => $PowerBB->_POST['username'])))
@@ -899,7 +903,6 @@ class PowerBBRegisterMOD
 			{
 			$this->_AjaxTxtRed($PowerBB->_CONF['template']['_CONF']['lang']['can_not_register_Guest_name']);
 			}
-
 
 			// Ensure there is no person used the same username
 			if ($PowerBB->member->IsMember(array('where' =>

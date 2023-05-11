@@ -606,7 +606,11 @@ class FeedParser{
 	// Converts an HTML email into bbcode
 	// This function is loosely based on cbparser.php by corz.org
 	function html2bb($string)
-	{
+	{	  $string = str_replace("&quot;", '"', $string);
+	  $string = str_replace("&lt;","<", $string);
+	  $string = str_replace("&gt;",">", $string);
+	  $string = str_replace('\"','"', $string);
+	  $string = str_replace("&#39;","'", $string);
 		// Do common conversion stuff
 		$string = str_ireplace('</blockquote>', '[/quote]', $string);
 		$string = str_ireplace('</pre>', '[/code]', $string);

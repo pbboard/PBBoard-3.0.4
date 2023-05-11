@@ -1193,6 +1193,7 @@ class PowerBBCodeParse
    		$img = str_replace('\s', '', $img);
    		$img = str_replace('\r', '', $img);
         $img = str_ireplace("&nbsp;", '',$img);
+        /*
         //attach url img replace id
         $Adress = $PowerBB->functions->GetForumAdress();
         if(strstr($img,$PowerBB->_SERVER['HTTP_HOST']))
@@ -1202,6 +1203,7 @@ class PowerBBCodeParse
 		  $img = $this->attach_url_img_replace($matches[0],$Adress);
 		 }
         }
+        */
 		$fileParts = pathinfo($img);
 		if(isset($fileParts['filename']))
 		{
@@ -1249,6 +1251,7 @@ class PowerBBCodeParse
    		$img = str_replace('\s', '', $img);
    		$img = str_replace('\r', '', $img);
         $img = str_ireplace("&nbsp;", '',$img);
+         /*
         //attach url img replace id
         $Adress = $PowerBB->functions->GetForumAdress();
         if(strstr($img,$PowerBB->_SERVER['HTTP_HOST']))
@@ -1258,6 +1261,7 @@ class PowerBBCodeParse
 		  $img = $this->attach_url_img_replace($matches[0],$Adress);
 		 }
         }
+        */
 		$fileParts = pathinfo($img);
 		if(isset($fileParts['filename']))
 		{

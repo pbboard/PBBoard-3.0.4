@@ -3609,7 +3609,6 @@ function my_strlen($string)
 		               $permission = $PowerBB->functions->_MeterGroupsStart();
 		               return ($permission) ? true : false;
 					}
-							echo "false";
 
 				}
 			else
@@ -3671,7 +3670,6 @@ function my_strlen($string)
 	               $permission = $PowerBB->functions->_MeterGroupsStart();
 	               return ($permission) ? true : false;
 				}
-						echo "false";
 
 			}
 			else

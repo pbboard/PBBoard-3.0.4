@@ -680,34 +680,10 @@ class PowerBBTopicAddMOD
 				//$PowerBB->_POST['text'] 	= 	$PowerBB->functions->CleanVariable($PowerBB->_POST['text'],'sql');
 
                   // mention users tag replace
-                if($PowerBB->functions->mention_permissions())
-                {
-				  if(preg_match('/\[mention\](.*?)\[\/mention\]/s', $PowerBB->_POST['text'], $tags_w))
-					{
-					$username = trim($tags_w[1]);
-					$MemArr = $PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['member'] . " WHERE username = '$username' ");
-					$Member_row = $PowerBB->DB->sql_fetch_array($MemArr);
-                    if($Member_row)
-                    {
-						if ($Member_row['username'] == $PowerBB->_CONF['member_row']['username'])
-						{
-				        $PowerBB->_POST['text'] = str_replace("[mention]", "@", $PowerBB->_POST['text']);
-						$PowerBB->_POST['text'] = str_replace("[/mention]", "", $PowerBB->_POST['text']);
-						 $Member_row['username'] = '';
-						}
-						if (!empty($Member_row['username']))
-						{
-						$forum_url              =   $PowerBB->functions->GetForumAdress();
-						$url = $forum_url."index.php?page=profile&amp;show=1&amp;id=".$Member_row['id'];
-						$PowerBB->_POST['text'] = str_replace("[mention]", "[url=".$PowerBB->functions->rewriterule($url)."]@", $PowerBB->_POST['text']);
-						$PowerBB->_POST['text'] = str_replace("[/mention]", "[/url]", $PowerBB->_POST['text']);
-	                    // insert mention
-	                    $insert_mention = 	true;
-						}
-				    }
-                  }
-
-                }
+                 if($PowerBB->functions->mention_permissions())
+                 {
+				  $PowerBB->_POST['text'] = preg_replace_callback('#\[mention\](.+)\[\/mention\]#iUs', array($this, 'mention_subject_callback'), $PowerBB->_POST['text']);
+                 }
 
 
 		$SecInfoArr 			= 	array();
@@ -920,26 +896,6 @@ class PowerBBTopicAddMOD
                           }
 						}
                     }
-
-                       // insert mention
-                      if($PowerBB->functions->mention_permissions())
-                      {
-						if ($insert_mention)
-						{
-						$InsertArr 					= 	array();
-						$InsertArr['field']			=	array();
-
-						$InsertArr['field']['user_mention_about_you'] 			= 	$PowerBB->_CONF['member_row']['username'];
-						$InsertArr['field']['you'] 			= 	$Member_row['username'];
-						$InsertArr['field']['topic_id'] 				= 	intval($PowerBB->subject->id);
-						$InsertArr['field']['reply_id'] 			= 	0;
-						$InsertArr['field']['profile_id'] 			= 	$PowerBB->_CONF['member_row']['id'];
-						$InsertArr['field']['date'] 		= 	$PowerBB->_CONF['now'];
-						$InsertArr['field']['user_read'] 		    = 	'1';
-
-						$insert = $PowerBB->core->Insert($InsertArr,'mention');
-						}
-                      }
 
 		     		// Upload files
                   if ($PowerBB->_CONF['member_permission'])
@@ -1164,6 +1120,47 @@ class PowerBBTopicAddMOD
 		     	}
 
         }
+	}
+
+	function mention_subject_callback($matches)
+	{
+		global $PowerBB;
+
+        $username = trim($matches[1]);
+        if (!empty($username))
+         {
+			if($username == $PowerBB->_CONF['member_row']['username'])
+			{
+             return "@".$username."<br />";
+			}
+                $last_subject = $PowerBB->DB->sql_query("SELECT id FROM " . $PowerBB->table['subject'] . " ORDER BY id desc");
+                $last_subject_info = $PowerBB->DB->sql_fetch_array($last_subject);
+
+	        $reply_id = 0;
+	        $topic_id = $last_subject_info['id']+1;
+			// insert mention
+			$Getmention_youNumrs = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT *  FROM " . $PowerBB->prefix . "mention WHERE you = '$username' AND topic_id = '$topic_id' AND user_read = '1'"));
+			if(!$Getmention_youNumrs)
+			{
+					$InsertArr 					= 	array();
+					$InsertArr['field']			=	array();
+
+					$InsertArr['field']['user_mention_about_you'] 			= 	$PowerBB->_CONF['member_row']['username'];
+					$InsertArr['field']['you'] 			= 	$username;
+					$InsertArr['field']['topic_id'] 				= 	$topic_id;
+					$InsertArr['field']['reply_id'] 			= 	0;
+					$InsertArr['field']['profile_id'] 			= 	$PowerBB->_CONF['member_row']['id'];
+					$InsertArr['field']['date'] 		= 	$PowerBB->_CONF['now'];
+					$InsertArr['field']['user_read'] 		    = 	'1';
+
+					$insert = $PowerBB->core->Insert($InsertArr,'mention');
+			}
+
+			$MemArr = $PowerBB->DB->sql_query("SELECT id FROM " . $PowerBB->table['member'] . " WHERE username = '$username' ");
+			$Member_row = $PowerBB->DB->sql_fetch_array($MemArr);
+			$url = $forum_url."index.php?page=profile&amp;show=1&amp;id=".$Member_row['id'];
+			return "[url=".$PowerBB->functions->rewriterule($url)."]@".$username."[/url]<br />";
+	     }
 	}
 
 }

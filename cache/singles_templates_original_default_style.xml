@@ -2329,11 +2329,18 @@ title="{$lang['announcement']}" />
 {$AnnouncementList['visitor']}
 </td>
 <td class="row2 forum_sub_lasts wd20 a-center">
-{$lang['no_replys']}
+{$lang['last_writer']}
+ <a href="index.php?page=profile&amp;show=1&amp;username={$AnnouncementList['writer']}">
+{$AnnouncementList['writer']}
+</a>
+<br />
+<span class="smallfont">
+{$AnnouncementList['date']}
+</span>
 </td>
 {if !{$mod_toolbar}}
-<td class="row1 wd1 a-center">
-<input type="checkbox" name="che" value="" />
+<td class="row1 wd2 a-center">
+<img src="{$image_path}/overlay_bg.png" alt="" width="31" />
 </td>
 {/if}
 </tr>
@@ -2764,7 +2771,12 @@ alt="{$lang['s_special']}" class="f_special brd0" /> </span>
 </td>
 <td class="row2 forum_sub_lasts wd20 a-center">
 {if {$review_subject_list['reply_number']} <= 0}
-{$lang['no_replys']}
+{$lang['last_writer']}
+ <?php echo $PowerBB->functions->GetUsernameStyleAndUserId($PowerBB->_CONF['template']['while']['review_subject_list'][$this->x_loop]['writer']);?>
+<br />
+<span class="smallfont">
+{$review_subject_list['reply_date']}
+</span>
 {else}
 <?php echo $PowerBB->functions->GetUsernameStyleAndUserId($PowerBB->_CONF['template']['while']['review_subject_list'][$this->x_loop]['last_replier']);?>			<br />
 <span class="smallfont">
@@ -2900,7 +2912,12 @@ alt="{$lang['s_special']}" class="f_special brd0" /> </span>
 </td>
 <td class="row2 forum_sub_lasts wd20 a-center">
 {if {$stick_subject_list['reply_number']} <= 0}
-{$lang['no_replys']}
+{$lang['last_writer']}
+ <?php echo $PowerBB->functions->GetUsernameStyleAndUserId($PowerBB->_CONF['template']['while']['stick_subject_list'][$this->x_loop]['writer']);?>
+<br />
+<span class="smallfont">
+{$stick_subject_list['reply_date']}
+</span>
 {else}
 <?php echo $PowerBB->functions->GetUsernameStyleAndUserId($PowerBB->_CONF['template']['while']['stick_subject_list'][$this->x_loop]['last_replier']);?>
 <br />
@@ -3069,10 +3086,20 @@ alt="{$lang['s_special']}" /> </span>
 </td>
 <td class="row2 forum_sub_lasts wd20 a-center">
 {if {$subject_list['reply_number']} <= 0}
-{$lang['no_replys']}
+{$lang['last_writer']}
+ <?php echo $PowerBB->functions->GetUsernameStyleAndUserId($PowerBB->_CONF['template']['while']['subject_list'][$this->x_loop]['writer']);?>
+ <br />
+<span class="smallfont">
+{$subject_list['reply_date']}
+</span>
 {else}
 {if {$subject_list['last_replier']} == 'Guest'}
-{$lang['Guest_']}
+{$lang['last_writer']}
+ {$lang['Guest_']}
+ <br />
+<span class="smallfont">
+{$subject_list['reply_date']}
+</span>
 {else}
 <?php echo $PowerBB->functions->GetUsernameStyleAndUserId($PowerBB->_CONF['template']['while']['subject_list'][$this->x_loop]['last_replier']);?>
 <br />

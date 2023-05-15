@@ -408,6 +408,12 @@ class PBBTemplate
 			$first_replace = "last_post=1&amp;count=";
 			$string = str_replace($first_search,$first_replace,$string);
 			}
+			elseif ($filename == 'portal_main_categories')
+			{
+			$first_search = "forumsy_list";
+			$first_replace = "sections_list";
+			$string = str_replace($first_search,$first_replace,$string);
+			}
 			elseif ($filename == 'usercp_menu')
 			{
 			$search_coordination_array 	= 	array();
@@ -499,6 +505,7 @@ class PBBTemplate
 				$string = str_replace('<div class="btn-nav"></div>','<li><b class="btn-nav"></b></li>',$string);
 				}
 			$write  = @eval(" ?>".$string."<?php ");
+
 	}
 
 

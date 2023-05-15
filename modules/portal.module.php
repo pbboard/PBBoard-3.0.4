@@ -392,8 +392,8 @@ class PowerBBPortalMOD
 		// Get main sections
 		$catsy = $PowerBB->core->GetList($SecArr,'section');
 
-		// We will use forumsy_list to store list of forums which will view in main page
-		$PowerBB->_CONF['template']['foreach']['forumsy_list'] = array();
+		// We will use sections_list to store list of forums which will view in main page
+		$PowerBB->_CONF['template']['foreach']['sections_list'] = array();
 
 		// Loop to read the information of main sections
 		foreach ($catsy as $caty)
@@ -406,7 +406,7 @@ class PowerBBPortalMOD
 			{
 				if ($groups[$PowerBB->_CONF['group_info']['id']]['view_section'])
 				{
-					$PowerBB->_CONF['template']['foreach']['forumsy_list'][$caty['id'] . '_m'] = $caty;
+					$PowerBB->_CONF['template']['foreach']['sections_list'][$caty['id'] . '_m'] = $caty;
 				}
 			}
 

@@ -4258,6 +4258,12 @@ function dec_to_utf8($src)
 	{
 	   global $PowerBB;
 
+        //Check if a cookie exists and if not set its value
+		if(!isset($_COOKIE[$name]))
+		{
+		 setcookie($name, '');
+		}
+
 		if ($PowerBB->functions->GetServerProtocol() == 'https://')
 		{
 		 $secure = true;

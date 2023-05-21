@@ -1084,7 +1084,7 @@ class PowerBBManagementMOD
 			$AttachArr['where'][0]['value'] 	=	$PowerBB->_GET['subject_id'];
 			$AttachArr['where'][1] 				=	array();
 			$AttachArr['where'][1]['con']		=	'AND';
-			$AttachArr['where'][1]['name'] 		=	'reply';
+			$AttachArr['where'][1]['name'] 		=	"reply = '0' AND pm_id";
 			$AttachArr['where'][1]['oper'] 		=	'=';
 			$AttachArr['where'][1]['value'] 	=	'0';
 			$AttachArr['order'] 				=	 array();
@@ -1362,7 +1362,7 @@ class PowerBBManagementMOD
 			$AttachArr['where'][0]['value'] 	=	$PowerBB->_GET['subject_id'];
 			$AttachArr['where'][1] 				=	array();
 			$AttachArr['where'][1]['con']		=	'AND';
-			$AttachArr['where'][1]['name'] 		=	'reply';
+			$AttachArr['where'][1]['name'] 		=	"reply = '0' AND pm_id";
 			$AttachArr['where'][1]['oper'] 		=	'=';
 			$AttachArr['where'][1]['value'] 	=	'0';
 			$AttachArr['order'] 				=	 array();
@@ -1371,6 +1371,7 @@ class PowerBBManagementMOD
 
 			$PowerBB->_CONF['template']['while']['AttachList'] = $PowerBB->core->GetList($AttachArr,'attach');
 
+          			$PowerBB->template->assign('id',$PowerBB->_GET['subject_id']);
 
 
 				if ($PowerBB->_POST['stick'])
@@ -1442,6 +1443,7 @@ class PowerBBManagementMOD
 
 			$PowerBB->template->assign('prefix_subject_prev',$PowerBB->_POST['prefix_subject']);
 			$PowerBB->template->assign('subject_id',$PowerBB->_GET['subject_id']);
+			$PowerBB->template->assign('id',$PowerBB->_GET['subject_id']);
 
 			$this->_SubjectEditpreview();
 

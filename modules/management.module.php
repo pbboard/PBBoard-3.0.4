@@ -3417,11 +3417,11 @@ class PowerBBManagementMOD
 
       		$Subject['text'] = str_replace("('",'("', $Subject['text']);
       		$Subject['text'] = str_replace("')",'")', $Subject['text']);
-      		 if (strstr($Subjecturl['title'],$PowerBB->_CONF['template']['_CONF']['lang']['subject_merged']))
-            {
+      		// if (strstr($Subjecturl['title'],$PowerBB->_CONF['template']['_CONF']['lang']['subject_merged']))
+           // {
             $PowerBB->_CONF['template']['_CONF']['lang']['subject_merged'] = "";
             $PowerBB->_CONF['template']['_CONF']['lang']['subject_merged_from_multiple_subjects'] = "";
-            }
+           // }
 		    $UpdateArr 					= 	array();
 		    $UpdateArr['field'] 				= 	array();
 		    $UpdateArr['field']['title'] 		= 	$PowerBB->_CONF['template']['_CONF']['lang']['subject_merged'].$Subjecturl['title'];
@@ -3525,37 +3525,6 @@ class PowerBBManagementMOD
 
 					$UpdateLastReplier = $PowerBB->subject->UpdateSubject($UpdateSubjectArr);
 
-					// The number of section's reply number
-              		$sectionid = $Subjecturl['section'];
-                    $ReplyNumArr = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['reply'] . " WHERE section='$sectionid' and delete_topic <>1 and review_reply <>1"));
-                    $lastreplierInfo = $PowerBB->DB->sql_fetch_array($ReplyNumArr);
-			 		$Subjectid = $PowerBB->_GET['subject_id'];
-			        $PagerReplyNumArr = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['reply'] . " WHERE subject_id='$Subjectid' and delete_topic <>1"));
-			     		if($PagerReplyNumArr > $PowerBB->_CONF['info_row']['perpage'])
-			     		{
-							$last_page1 = $PagerReplyNumArr/$PowerBB->_CONF['info_row']['perpage'];
-							$last_pagef = round($last_page1, 0);
-							$countpage = $last_pagef;
-						    $countpage = str_replace("-", '', $countpage);
-                         }
-
-					// The number of section's subjects number
-		     		$UpdateArr 					= 	array();
-		     		$UpdateArr['field']			=	array();
-
-		     		$UpdateArr['field']['reply_num'] 	= 	$ReplyNumArr;
-					$UpdateArr['field']['last_writer'] 		= 	$lastreplierInfo['writer'];
-		     		$UpdateArr['field']['last_subject'] 		= 	$lastreplierInfo['title'];
-		     		$UpdateArr['field']['last_subjectid'] 	= 	$lastreplierInfo['subject_id'];
-		     		$UpdateArr['field']['last_date'] 	= 	$replierInfo['write_time'];
-		     		$UpdateArr['field']['last_time'] 	= 	$lastreplierInfo['write_time'];
-		     		$UpdateArr['field']['last_reply'] 	= 	$lastreplierInfo['id'];
-		     		$UpdateArr['field']['icon'] 	    = 	$lastreplierInfo['icon'];
-		     		$UpdateArr['field']['last_berpage_nm']  = 	$perpage_r;
-
-		     		$UpdateArr['where']					= 	array('id',$sectionid);
-
-		     		$UpdateSubjectNumber = $PowerBB->core->Update($UpdateArr,'section');
 
 		     		// Free memory
 		     		unset($UpdateArr);

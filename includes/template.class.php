@@ -434,6 +434,11 @@ class PBBTemplate
 			$first_search = 'ajax_moderator_options';
 			$first_replace = 'ajax_search"';
 			$string = str_replace($first_search,$first_replace,$string);
+
+			$first2_search = 'tabindex';
+			$first2_replace = 'style="height:auto;" tabindex';
+			$string = str_replace($first2_search,$first2_replace,$string);
+
 			}
 			elseif ($filename == 'forum_subject_table'
 			or $filename == 'forum_announcement_table')
@@ -448,6 +453,7 @@ class PBBTemplate
 
 			$string = str_replace($search_coordination_array,$replace_coordination_array,$string);
 			}
+
 
 			$first_searchss = "function uploadFile() {";
 			$first_replacess = 'function uploadFile() { var x = document.getElementById("files").value;if (!x){return false;}';

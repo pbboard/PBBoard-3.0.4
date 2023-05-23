@@ -570,7 +570,14 @@ function fetch_gzipped_text($source)
 					}
 					else
 					{
-					$value["$key"] = stripslashes($val);
+					 if(version_compare(PHP_VERSION, '7.4.0', "<"))
+		             {
+					  $value["$key"] = stripslashes($val);
+					 }
+					 else
+					 {
+					  $value["$key"] = $val;
+					 }
 					}
 				}
 		        else if (is_array($val) AND $depth < 10)
@@ -620,7 +627,8 @@ function fetch_gzipped_text($source)
 		$text = str_replace("mysql_num_rows",'$PowerBB->DB->sql_num_rows',$text);
 		$text = str_replace("mysql_insert_id",'$PowerBB->DB->sql_insert_id',$text);
 		$text = str_replace("mysql_fetch_assoc",'$PowerBB->DB->sql_fetch_assoc',$text);
-
+        $text = str_replace(">time(",">_date(",$text);
+        $text = str_replace(">date(",">_date(",$text);
 		return $text;
 	}
 

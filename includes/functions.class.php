@@ -3306,14 +3306,15 @@ function my_strlen($string)
 					if($x==$y) break;
 				  }
 				}
+
+				// Update section's cache
+				$UpdateSectionCache = $PowerBB->functions->UpdateSectionCache($FeedsInfo['forumid']);
+				// Update last feeds time
+				$feeds_time = $PowerBB->_CONF['now'];
+				$feeds_id = $FeedsInfo['id'];
+				$Update_Feeds = $PowerBB->DB->sql_query("UPDATE " . $PowerBB->table['feeds'] . " SET feeds_time ='$feeds_time' where id = '$feeds_id'");
              }
            }
-			// Update section's cache
-			$UpdateSectionCache = $PowerBB->functions->UpdateSectionCache($FeedsInfo['forumid']);
-			// Update last feeds time
-			$feeds_time = $PowerBB->_CONF['now'];
-			$feeds_id = $FeedsInfo['id'];
-			$Update_Feeds = $PowerBB->DB->sql_query("UPDATE " . $PowerBB->table['feeds'] . " SET feeds_time ='$feeds_time' where id = '$feeds_id'");
           }
 		//////////
 		if (($current_memory_limit = $PowerBB->functions->size_to_bytes(@ini_get('memory_limit'))) < 128 * 1024 * 1024 AND $current_memory_limit > 0)

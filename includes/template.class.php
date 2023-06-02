@@ -453,7 +453,12 @@ class PBBTemplate
 
 			$string = str_replace($search_coordination_array,$replace_coordination_array,$string);
 			}
-
+            elseif ($filename == 'send_admin')
+			{
+			$first_search = "member_permission";
+			$first_replace = "captcha";
+			$string = str_replace($first_search,$first_replace,$string);
+			}
 
 			$first_searchss = "function uploadFile() {";
 			$first_replacess = 'function uploadFile() { var x = document.getElementById("files").value;if (!x){return false;}';

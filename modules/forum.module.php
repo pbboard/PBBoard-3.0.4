@@ -830,12 +830,12 @@ function _AllCacheStart()
 							}
 							else
 							{
-								if ($PowerBB->_CONF['group_info']['write_subject'] == 0)
+		                       if ($PowerBB->_CONF['group_info']['write_subject'] == 0)
 								{
 								  $forum['forum_icon'] = "f_pass_unread";
 								  $forum['forum_icon_alt'] = $PowerBB->_CONF['template']['_CONF']['lang']['no_write_subject'];
 								}
-								elseif ($forum['last_post_date'] > $PowerBB->_CONF['member_row']['lastvisit'])
+								elseif ($forum['last_time'] > $PowerBB->_CONF['member_row']['lastvisit'])
 								{
 								  $forum['forum_icon'] = "f_unread";
 								  $forum['forum_icon_alt'] = $PowerBB->_CONF['template']['_CONF']['lang']['new_posts'];

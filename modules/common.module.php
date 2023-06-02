@@ -932,7 +932,7 @@ class PowerBBCommon
  		}
 		elseif ($IsBanned)
 		{
-            if($page !='logout' and $page !='send')
+            if($page !='logout')
 		    {
 				$PowerBB->_CONF['info_row']['sidebar_list_active'] = 0;
 				$PowerBB->_CONF['template']['_CONF']['info_row']['sidebar_list_active']= 0;
@@ -945,7 +945,7 @@ class PowerBBCommon
 		}
 		elseif($PowerBB->_CONF['member_row']['usergroup'] == '6')
 		{
-		    if($page !='logout' and $page !='send')
+		    if($page !='logout')
 		    {
 				$PowerBB->_CONF['info_row']['sidebar_list_active'] = 0;
 				$PowerBB->_CONF['template']['_CONF']['info_row']['sidebar_list_active']= 0;

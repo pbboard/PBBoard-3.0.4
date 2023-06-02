@@ -297,6 +297,7 @@ class PowerBBCoreMOD
          }
 
 		$PowerBB->functions->ShowHeader();
+
   		$PowerBB->_POST['email'] 	= 	$PowerBB->functions->CleanVariable($PowerBB->_POST['email'],'html');
 		$PowerBB->_POST['text']   = 	$PowerBB->functions->CleanVariable($PowerBB->_POST['text'] ,'html');
 
@@ -313,24 +314,28 @@ class PowerBBCoreMOD
 		$PowerBB->_POST['code']   = 	$PowerBB->functions->CleanVariable($PowerBB->_POST['code'],'sql');
 		$PowerBB->_POST['code']   = 	$PowerBB->functions->CleanVariable($PowerBB->_POST['code'],'html');
 
+		  // Check if the email is valid, This line will prevent any false email
+		  if(!$PowerBB->functions->CheckEmail($PowerBB->_POST['email']))
+		  {
+		   $PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['Please_enter_your_correct_email']);
+		  }
 
-	     			if (!$PowerBB->_CONF['member_permission'])
-			         {
-					        if($PowerBB->_CONF['info_row']['captcha_type'] == 'captcha_Q_A')
-							 {
-				                if($PowerBB->_POST['code'] != $PowerBB->_POST['code_answer'])
-								 {
-						            $PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['random_answer_not_correct']);
-							     }
-						     }
-					        if($PowerBB->_CONF['info_row']['captcha_type'] == 'captcha_IMG')
-							 {
-						        if(md5($PowerBB->_POST['code']) != $_SESSION['captcha_key'])
-								 {
-						            $PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['Code_that_you_enter_the_wrong']);
-							     }
-						    }
-                     }
+        if($PowerBB->_CONF['info_row']['captcha_type'] == 'captcha_Q_A')
+		 {
+             if($PowerBB->_POST['code'] != $PowerBB->_POST['code_answer'])
+			 {
+	            $PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['random_answer_not_correct']);
+		     }
+	     }
+
+       if($PowerBB->_CONF['info_row']['captcha_type'] == 'captcha_IMG')
+		 {
+	        if(md5($PowerBB->_POST['code']) != $_SESSION['captcha_key'])
+			 {
+	            $PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['Code_that_you_enter_the_wrong']);
+		     }
+	     }
+
      	//////////
 
 		if (empty($PowerBB->_POST['text']))

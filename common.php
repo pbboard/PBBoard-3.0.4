@@ -1,9 +1,10 @@
 <?php
 error_reporting(E_ERROR | E_PARSE);
-@set_time_limit(0);
-@ini_set('max_execution_time', 123456);
+@ini_set('set_time_limit', 0);
+@ini_set('max_input_time', 0);
+@ini_set('memory_limit', -1);
+@ini_set('default_socket_timeout', -1);
 @session_start();
-
 if(function_exists('date_default_timezone_set') && !ini_get('date.timezone'))
 {
 	@date_default_timezone_set('GMT');

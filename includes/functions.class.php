@@ -1,6 +1,4 @@
 <?php
-@set_time_limit(0);
-@ini_set('max_execution_time', 123456);
 class PowerBBFunctions
 {
 	var $PowerBB;
@@ -587,7 +585,7 @@ class PowerBBFunctions
 								  $forum['forum_icon'] = "f_pass_unread";
 								  $forum['forum_icon_alt'] = $PowerBB->_CONF['template']['_CONF']['lang']['no_write_subject'];
 								}
-								elseif ($forum['last_post_date'] < $PowerBB->_CONF['member_row']['lastvisit'])
+								elseif ($forum['last_time'] > $PowerBB->_CONF['member_row']['lastvisit'])
 								{
 								  $forum['forum_icon'] = "f_unread";
 								  $forum['forum_icon_alt'] = $PowerBB->_CONF['template']['_CONF']['lang']['new_posts'];

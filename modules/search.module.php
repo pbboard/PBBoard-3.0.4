@@ -291,6 +291,12 @@ class PowerBBSearchEngineMOD
 	function _StartSearch()
 	{
 		global $PowerBB;
+
+       	if (!$PowerBB->_CONF['member_permission'])
+		{
+			$PowerBB->_CONF['member_row']['lastsearch_time'] = $_SESSION['lastsearch_time'];
+		}
+
 		if (is_numeric($PowerBB->_CONF['member_row']['lastsearch_time']) && is_numeric($PowerBB->_CONF['info_row']['flood_search'])) {
 		 $flood_search = ($PowerBB->_CONF['member_row']['lastsearch_time'] - @time() + $PowerBB->_CONF['info_row']['flood_search']);
 		} else {
@@ -355,11 +361,19 @@ class PowerBBSearchEngineMOD
 			$this->_SearchTag();
 		}
 
+
+       	if (!$PowerBB->_CONF['member_permission'])
+		{
+			$_SESSION['lastsearch_time'] = $PowerBB->_CONF['now'];
+		}
+		else
+		{
 	    $MemberArr 				= 	array();
   		$MemberArr['field'] 	= 	array();
    		$MemberArr['field']['lastsearch_time'] 	=	$PowerBB->_CONF['now'];
    		$MemberArr['where']						=	array('id',$PowerBB->_CONF['member_row']['id']);
  		$UpdateMember = $PowerBB->member->UpdateMember($MemberArr);
+ 		}
      }
 	}
 

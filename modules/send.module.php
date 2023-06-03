@@ -1,16 +1,33 @@
 <?php
 session_start();
 (!defined('IN_PowerBB')) ? die() : '';
-
+// anti flood protection
+$uri = md5($_SERVER['REQUEST_URI']);
+$exp = 3; // 3 seconds
+$hash = $uri .'|'. time();
+if (!isset($_SESSION['ddos'])) {
+    $_SESSION['ddos'] = $hash;
+}
+list($_uri, $_exp) = explode('|', $_SESSION['ddos']);
+if ($_uri == $uri && time() - $_exp < $exp) {
+    header('HTTP/1.1 503 Service Unavailable');
+    die;
+}
+// Save last request
+$_SESSION['ddos'] = $hash;
 define('CLASS_NAME','PowerBBCoreMOD');
-
 include('common.php');
 class PowerBBCoreMOD
 {
 	function run()
 	{
 		global $PowerBB;
-
+ 		if (empty($PowerBB->_CONF['ip']))
+		{
+		header('HTTP/1.1 403 FORBIDDEN');
+		header('Status: 403 You Do Not Have Access To This Page');
+		 exit;
+        }
 		if ($PowerBB->_GET['member'])
 		{
 			if ($PowerBB->_GET['index'])
@@ -36,7 +53,6 @@ class PowerBBCoreMOD
 			exit;
 		}
 
-
 		$PowerBB->functions->GetFooter();
 	}
 
@@ -45,16 +61,14 @@ class PowerBBCoreMOD
 		global $PowerBB;
 
 		$PowerBB->functions->ShowHeader();
-     /*
+
 		if (!$PowerBB->_CONF['member_permission'])
      	{
-     		$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['Visitors_can_not_send_an_email']);
-     	}
-       */
+		  $PowerBB->template->display('login');
+		  $PowerBB->functions->error_stop();
+		}
+
      	$PowerBB->_GET['id'] = $PowerBB->functions->CleanVariable($PowerBB->_GET['id'],'intval');
-
-
-     	//////////
 
 		$MemArr = array();
 
@@ -72,8 +86,6 @@ class PowerBBCoreMOD
 		$PowerBB->_CONF['template']['MemberInfo'] = $PowerBB->core->GetInfo($MemusernameArr,'member');
 
 		}
-
-		//////////
 
 		if (!$PowerBB->_CONF['template']['MemberInfo'])
 		{
@@ -112,26 +124,40 @@ class PowerBBCoreMOD
 	{
 		global $PowerBB;
      	$PowerBB->_GET['id'] = $PowerBB->functions->CleanVariable($PowerBB->_GET['id'],'intval');
-
+ 		if (!$PowerBB->_CONF['info_row']['active_send_admin_message'])
+		{
+			header('HTTP/1.1 403 FORBIDDEN');
+			header('Status: 403 You Do Not Have Access To This Page');
+			exit;
+        }
          if ($PowerBB->_SERVER['REQUEST_METHOD'] != 'POST')
          {
-         	 header("Location: index.php?page=send&member=1&index=1&id=".$PowerBB->_GET['id']);
+			header('HTTP/1.1 403 FORBIDDEN');
+			header('Status: 403 You Do Not Have Access To This Page');
+			exit;
+         }
+         if ($PowerBB->_POST['insert'] != $PowerBB->_CONF['template']['_CONF']['lang']['Send_Message'])
+         {
+             header('HTTP/1.1 503 Service Unavailable');
 		     exit;
          }
 
 		$PowerBB->functions->ShowHeader();
-       /*
+		$flood_send_email_time = "40";
+		if ((@time() - $flood_send_email_time) <= $_SESSION['last_send_email_time'])
+		{
+		$PowerBB->functions->error(" <p>It requires you to wait ".$flood_send_email_time." seconds to send Mail again.</p>");
+		}
+
 		if (!$PowerBB->_CONF['member_permission'])
      	{
      		$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['Visitors_can_not_send_an_email']);
      	}
-      */
 
      	if (empty($PowerBB->_GET['id']))
      	{
      		$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['path_not_true']);
      	}
-
 
         if (empty($PowerBB->_POST['username']))
      	{
@@ -143,7 +169,6 @@ class PowerBBCoreMOD
 		$MemArr['where'] 	= 	array('id',$PowerBB->_GET['id']);
 
 		$MemberInfo = $PowerBB->core->GetInfo($MemArr,'member');
-
 
 			if (!$MemberInfo)
 			{
@@ -162,7 +187,6 @@ class PowerBBCoreMOD
 		{
 			$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['Please_fill_in_all_the_information']);
 		}
-
 
 		$PowerBB->_POST['title']   = 	$PowerBB->functions->CleanVariable($PowerBB->_POST['title'],'trim');
 		$PowerBB->_POST['title']   = 	$PowerBB->functions->CleanVariable($PowerBB->_POST['title'],'sql');
@@ -228,8 +252,9 @@ class PowerBBCoreMOD
 
 		if ($Send)
 		{
+		    $_SESSION['last_send_email_time'] = $PowerBB->_CONF['now'];
 			$PowerBB->functions->msg($PowerBB->_CONF['template']['_CONF']['lang']['The_message_was_sent_successfully']);
-			//$PowerBB->functions->redirect('index.php');
+			$PowerBB->functions->redirect('index.php');
 		}
 		else
 		{
@@ -243,7 +268,8 @@ class PowerBBCoreMOD
 		global $PowerBB;
 
  		if (!$PowerBB->_CONF['info_row']['active_send_admin_message'])
-		{
+		{		header('HTTP/1.1 403 FORBIDDEN');
+		header('Status: 403 You Do Not Have Access To This Page');
 		 exit;
         }
 
@@ -262,11 +288,9 @@ class PowerBBCoreMOD
 
 		$PowerBB->functions->ShowHeader();
 
-        $username = $PowerBB->_CONF['member_row']['username'];
-
-        if ($username)
+        if ($PowerBB->_CONF['member_permission'])
         {
-
+             $username = $PowerBB->_CONF['member_row']['username'];
 		     $Email = $PowerBB->DB->sql_query("SELECT  *   FROM " . $PowerBB->table['member'] . " WHERE username LIKE '$username' ");
 
 		       while ($getstyle_row = $PowerBB->DB->sql_fetch_array($Email))
@@ -278,7 +302,8 @@ class PowerBBCoreMOD
       	}
 		else
 		{
-			$PowerBB->template->display('send_admin');
+		  $PowerBB->template->display('login');
+		  $PowerBB->functions->error_stop();
 		}
 
 	}
@@ -286,18 +311,35 @@ class PowerBBCoreMOD
 	function _SendStart()
 	{
 		global $PowerBB;
- 		if (!$PowerBB->_CONF['info_row']['active_send_admin_message'])
+		if (!$PowerBB->_CONF['info_row']['active_send_admin_message'])
 		{
-		 exit;
-        }
-         if ($PowerBB->_SERVER['REQUEST_METHOD'] != 'POST')
-         {
-         	 header("Location: index.php?page=send&sendmessage=1");
-		     exit;
-         }
+		header('HTTP/1.1 403 FORBIDDEN');
+		header('Status: 403 You Do Not Have Access To This Page');
+		exit;
+		}
+		if ($PowerBB->_POST['insert'] != $PowerBB->_CONF['template']['_CONF']['lang']['Send_Message'])
+		{
+		header('HTTP/1.1 503 Service Unavailable');
+		exit;
+		}
 
+		if ($PowerBB->_SERVER['REQUEST_METHOD'] != 'POST')
+		{
+		header('HTTP/1.1 503 Service Unavailable');
+		exit;
+		}
 		$PowerBB->functions->ShowHeader();
 
+		if (!$PowerBB->_CONF['member_permission'])
+     	{
+     		$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['Visitors_can_not_send_an_email']);
+     	}
+
+		$flood_send_email_time = "40";
+		if ((@time() - $flood_send_email_time) <= $_SESSION['last_send_email_time'])
+		{
+		$PowerBB->functions->error(" <p>It requires you to wait ".$flood_send_email_time." seconds to send Mail again.</p>");
+		}
   		$PowerBB->_POST['email'] 	= 	$PowerBB->functions->CleanVariable($PowerBB->_POST['email'],'html');
 		$PowerBB->_POST['text']   = 	$PowerBB->functions->CleanVariable($PowerBB->_POST['text'] ,'html');
 
@@ -319,7 +361,6 @@ class PowerBBCoreMOD
 		  {
 		   $PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['Please_enter_your_correct_email']);
 		  }
-
         if($PowerBB->_CONF['info_row']['captcha_type'] == 'captcha_Q_A')
 		 {
              if($PowerBB->_POST['code'] != $PowerBB->_POST['code_answer'])
@@ -335,8 +376,6 @@ class PowerBBCoreMOD
 	            $PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['Code_that_you_enter_the_wrong']);
 		     }
 	     }
-
-     	//////////
 
 		if (empty($PowerBB->_POST['text']))
 		{
@@ -355,71 +394,29 @@ class PowerBBCoreMOD
 			$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['Please_enter_a_valid_e-mail']);
 		}
 
-
-      $AdminUsername = $PowerBB->DB->sql_query("SELECT  *   FROM " . $PowerBB->table['member'] . " WHERE usergroup = 1 ");
-
-
-            $PowerBB->_POST['text'] = str_replace("\n","<br>",$PowerBB->_POST['text']);
-          	$PowerBB->_POST['text'] = str_ireplace('{39}',"'",$PowerBB->_POST['text']);
-	        $PowerBB->_POST['text'] = str_ireplace('cookie','**',$PowerBB->_POST['text']);
-	        $censorwords = preg_split('#[ \r\n\t]+#', $PowerBB->_CONF['info_row']['censorwords'], -1, PREG_SPLIT_NO_EMPTY);
-	        $PowerBB->_POST['text'] = str_ireplace($censorwords,'**', $PowerBB->_POST['text']);
-
-       while ($getstyle_row = $PowerBB->DB->sql_fetch_array($AdminUsername))
-      {
-
-             /*
-
-				$MsgArr 			= 	array();
-				$MsgArr['field']	=	array();
-				$MsgArr['field']['user_from'] 	= 	$PowerBB->_POST['username'];
-				$MsgArr['field']['user_to'] 	= 	$getstyle_row['username'];
-				$MsgArr['field']['title'] 		= 	$PowerBB->_CONF['template']['_CONF']['lang']['This_message_received_from_the_Contact_Us_form'];
-				$MsgArr['field']['text'] 		= 	$PowerBB->_CONF['template']['_CONF']['lang']['reply_message'].'<br />' .$PowerBB->_POST['text'] . '<p>&nbsp; '.$PowerBB->_CONF['template']['_CONF']['lang']['email'].'</p>' .$PowerBB->_POST['email'];
-				$MsgArr['field']['date'] 		= 	$PowerBB->_CONF['now'];
-				$MsgArr['field']['folder'] 		= 	'inbox';
-				$Send = $PowerBB->core->Insert($MsgArr,'pm');
-
-            	$NumberArr 				= 	array();
-				$NumberArr['username'] 	= 	$getstyle_row['username'];
-
-				$Number = $PowerBB->pm->NewMessageNumber($NumberArr);
-
-				$CacheArr 					= 	array();
-				$CacheArr['field']			=	array();
-
-				$CacheArr['field']['unread_pm'] 	= 	$Number;
-				$CacheArr['where'] 					= 	array('username',$getstyle_row['username']);
-
-				$Cache = $PowerBB->member->UpdateMember($CacheArr);
-
-
-            $message = $PowerBB->_CONF['template']['_CONF']['lang']['This_message_received_from_the_Contact_Us_form'].'<br />'.$PowerBB->_POST['text'];
-      		$PowerBB->_POST['text'] = $PowerBB->Powerparse->replace($PowerBB->_POST['text']);
-
-        	$send_admin = $PowerBB->functions->send_this_php($getstyle_row['email'],$PowerBB->_POST['username'],$message,$PowerBB->_POST['email']);
-        	*/
-        }
-
-             $message = $PowerBB->_CONF['template']['_CONF']['lang']['This_message_received_from_the_Contact_Us_form'].'<br />'.$PowerBB->_POST['text'];
-      		 $PowerBB->_POST['text'] = str_replace("\n","<br>",$PowerBB->_POST['text']);
-
-			if ($PowerBB->_CONF['info_row']['mailer']=='phpmail')
-			{
-            $send_admin = $PowerBB->functions->send_this_php($PowerBB->_CONF['info_row']['admin_email'],$PowerBB->_POST['username'].' - '.$PowerBB->_CONF['template']['_CONF']['lang']['This_message_received_from_the_Contact_Us_form'],$message,$PowerBB->_POST['email']);
-            }
-			elseif ($PowerBB->_CONF['info_row']['mailer']=='smtp')
-			{
-			$to = $PowerBB->_CONF['info_row']['admin_email'];
-			$fromname = $PowerBB->_CONF['info_row']['title'];
-			$message = $message;
-			$subject = $PowerBB->_POST['username'];
-			$from = $PowerBB->_POST['email'];
-             $Send = $PowerBB->functions->send_this_smtp($to,$fromname,$message,$subject,$from);
-			}
-			$PowerBB->functions->msg($PowerBB->_CONF['template']['_CONF']['lang']['your_message_has_been_sent_successfully']);
-			$PowerBB->functions->redirect('index.php');
-
+		$PowerBB->_POST['text'] = str_replace("\n","<br>",$PowerBB->_POST['text']);
+		$PowerBB->_POST['text'] = str_ireplace('{39}',"'",$PowerBB->_POST['text']);
+		$PowerBB->_POST['text'] = str_ireplace('cookie','**',$PowerBB->_POST['text']);
+		$censorwords = preg_split('#[ \r\n\t]+#', $PowerBB->_CONF['info_row']['censorwords'], -1, PREG_SPLIT_NO_EMPTY);
+		$PowerBB->_POST['text'] = str_ireplace($censorwords,'**', $PowerBB->_POST['text']);
+		$message = $PowerBB->_CONF['template']['_CONF']['lang']['This_message_received_from_the_Contact_Us_form'].'<br />'.$PowerBB->_POST['text'];
+		$PowerBB->_POST['text'] = str_replace("\n","<br>",$PowerBB->_POST['text']);
+		if ($PowerBB->_CONF['info_row']['mailer']=='phpmail')
+		{
+		$send_admin = $PowerBB->functions->send_this_php($PowerBB->_CONF['info_row']['admin_email'],$PowerBB->_POST['username'].' - '.$PowerBB->_CONF['template']['_CONF']['lang']['This_message_received_from_the_Contact_Us_form'],$message,$PowerBB->_POST['email']);
+		}
+		elseif ($PowerBB->_CONF['info_row']['mailer']=='smtp')
+		{
+		$to = $PowerBB->_CONF['info_row']['admin_email'];
+		$fromname = $PowerBB->_CONF['info_row']['title'];
+		$message = $message;
+		$subject = $PowerBB->_POST['username'];
+		$from = $PowerBB->_POST['email'];
+		$Send = $PowerBB->functions->send_this_smtp($to,$fromname,$message,$subject,$from);
+		}
+		$_SESSION['last_send_email_time'] = $PowerBB->_CONF['now'];
+		$PowerBB->functions->msg($PowerBB->_CONF['template']['_CONF']['lang']['your_message_has_been_sent_successfully']);
+		$PowerBB->functions->redirect('index.php');
 
 	}
 }

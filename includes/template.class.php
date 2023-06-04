@@ -247,6 +247,7 @@ class PBBTemplate
 				$first_replace = "{$_CONF['member_permission']}";
 				$string = str_replace($first_search,$first_replace,$string);
 			  }
+			$string = str_replace("'http://'","'".$PowerBB->functions->GetServerProtocol()."'",$string);
 			}
             if ($filename == 'writer_info')
 			{

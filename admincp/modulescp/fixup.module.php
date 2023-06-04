@@ -536,7 +536,7 @@ class PowerBBFixMOD
 		echo('<br><br><table border="1" width="80%" cellspacing="0" cellpadding="0" bgcolor="#FFFFFF" style="border-collapse: collapse" align="center"><tr><td><font face="Tahoma" size="2">');
        	 $reply_num = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['reply'] . " LIMIT 1"));
 
-		$ReplyArr = $PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['reply'] . " ORDER BY id DESC LIMIT ".$startpoint.",".$perpage." LIMIT 1");
+		$ReplyArr = $PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['reply'] . " ORDER BY id DESC LIMIT ".$startpoint.",".$perpage." ");
 
 		while ($RepList = $PowerBB->DB->sql_fetch_array($ReplyArr))
 		{

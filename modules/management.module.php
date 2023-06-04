@@ -913,15 +913,24 @@ class PowerBBManagementMOD
 		         $DelReplyArr['where'] 	= 	array('subject_id',$PowerBB->_GET['subject_id']);
 
 				  $delReply = $PowerBB->core->Deleted($DelReplyArr,'reply');
+				if($delReply)
+				{
+				$reply_number = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query('SELECT COUNT(1),id FROM '.$PowerBB->table['reply'].' WHERE delete_topic <> 1 LIMIT 1'));
+				$update_reply_number = $PowerBB->info->UpdateInfo(array('value'=>$reply_number,'var_name'=>'reply_number'));
+				}
 
 			     $DelArr				=	array();
 		         $DelArr['where'] 	= 	array('id',$PowerBB->_GET['subject_id']);
 
 				  $del = $PowerBB->core->Deleted($DelArr,'subject');
 
-           $UpdateSectionCache = $PowerBB->functions->UpdateSectionCache($PowerBB->_GET['section']);
+				if($del)
+				{
+				$subject_number = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query('SELECT COUNT(1),id FROM '.$PowerBB->table['subject'].' WHERE delete_topic <> 1 LIMIT 1'));
+				$update_subject_number = $PowerBB->info->UpdateInfo(array('value'=>$subject_number,'var_name'=>'subject_number'));
+				}
 
-	        //$PowerBB->functions->msg($PowerBB->_CONF['template']['_CONF']['lang']['Was_delet_subject']);
+            $UpdateSectionCache = $PowerBB->functions->UpdateSectionCache($PowerBB->_GET['section']);
 			$PowerBB->functions->header_redirect('index.php?page=forum&show=1&id=' . $PowerBB->_GET['section']);
 
 		 }
@@ -1738,8 +1747,6 @@ class PowerBBManagementMOD
      		$UpdateArr['where']					= 	array('last_subjectid',$PowerBB->_GET['subject_id']);
 
      		$UpdateSubject = $PowerBB->core->Update($UpdateArr,'section');
-     		$PowerBB->cache->UpdateSubjectNumber(array('icon'	=>	$PowerBB->_POST['icon']));
-     		$PowerBB->cache->UpdateSubjectNumber(array('last_subject'	=>	$PowerBB->_POST['title']));
 
               // Update section's cache
                 $UpdateSectionCache = $PowerBB->functions->UpdateSectionCache($SubjectUpdate['section']);
@@ -2628,8 +2635,6 @@ class PowerBBManagementMOD
 
 		   			//////////
 
-		     		$UpdateSubjectNumber = $PowerBB->cache->UpdateReplyNumber(array('reply_num'	=>	$PowerBB->_CONF['info_row']['reply_number']));
-
 		     		// Free Lasts in subject
 					$UpdateSubjectArr 						= 	array();
 					$UpdateSubjectArr['field'] 				= 	array();
@@ -2969,8 +2974,6 @@ class PowerBBManagementMOD
 
 		     		// Free memory
 		     		unset($UpdateLastArr);
-
-     			$UpdateSubjectNumber = $PowerBB->cache->UpdateReplyNumber(array('reply_num'	=>	$PowerBB->_CONF['info_row']['reply_number']));
 
      			$LastArr = array();
 
@@ -3514,8 +3517,6 @@ class PowerBBManagementMOD
 
 		   			//////////
 
-		     		//$UpdateSubjectNumber = $PowerBB->cache->UpdateReplyNumber(array('reply_num'	=>	$PowerBB->_CONF['info_row']['reply_number']));
-
 		     		// Free Lasts in subject
 					$UpdateSubjectArr 						= 	array();
 					$UpdateSubjectArr['field'] 				= 	array();
@@ -3953,6 +3954,9 @@ class PowerBBManagementMOD
 				$DelArr['where'] 	= 	array('id',intval($GetThread));
 
                  $del = $PowerBB->core->Deleted($DelArr,'subject');
+
+				$subject_number = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query('SELECT COUNT(1),id FROM '.$PowerBB->table['subject'].' WHERE delete_topic <> 1 LIMIT 1'));
+				$update_subject_number = $PowerBB->info->UpdateInfo(array('value'=>$subject_number,'var_name'=>'subject_number'));
 
 	           $UpdateSectionCache = $PowerBB->functions->UpdateSectionCache($PowerBB->_GET['section']);
 

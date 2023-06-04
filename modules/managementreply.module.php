@@ -360,6 +360,10 @@ class PowerBBManagementMOD
 		          $DeleteReplyArr['where'] 	= 	array('id',intval($GetReply));
 				  $delReply = $PowerBB->reply->DeleteReply($DeleteReplyArr);
 
+				$reply_number = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query('SELECT COUNT(1),id FROM '.$PowerBB->table['reply'].' WHERE delete_topic <> 1 LIMIT 1'));
+				$update_reply_number = $PowerBB->info->UpdateInfo(array('value'=>$reply_number,'var_name'=>'reply_number'));
+
+
 				$subject_id = $PowerBB->_POST['subject_id'];
 				$Getlast_replier = $PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['reply'] . " WHERE subject_id = '$subject_id' AND delete_topic<>1 AND review_reply<>1 ORDER by write_time DESC");
 				$GetLast_replierForm = $PowerBB->DB->sql_fetch_array($Getlast_replier);
@@ -876,6 +880,10 @@ class PowerBBManagementMOD
 
 			$insert = $PowerBB->core->Insert($SmLogsArr,'supermemberlogs');
 
+
+			$reply_number = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query('SELECT COUNT(1),id FROM '.$PowerBB->table['reply'].' WHERE delete_topic <> 1 LIMIT 1'));
+			$update_reply_number = $PowerBB->info->UpdateInfo(array('value'=>$reply_number,'var_name'=>'reply_number'));
+
            $UpdateSectionCache2 = $PowerBB->functions->UpdateSectionCache($PowerBB->_GET['section']);
 
 			//$PowerBB->functions->msg($PowerBB->_CONF['template']['_CONF']['lang']['Deleted_reply_successfully']);
@@ -1130,6 +1138,9 @@ class PowerBBManagementMOD
 		  $DeleteReplyArr				=	array();
           $DeleteReplyArr['where'] 	= 	array('id',intval($GetReply));
 		  $delReply = $PowerBB->reply->DeleteReply($DeleteReplyArr);
+
+			$reply_number = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query('SELECT COUNT(1),id FROM '.$PowerBB->table['reply'].' WHERE delete_topic <> 1 LIMIT 1'));
+			$update_reply_number = $PowerBB->info->UpdateInfo(array('value'=>$reply_number,'var_name'=>'reply_number'));
 
 		  }
 

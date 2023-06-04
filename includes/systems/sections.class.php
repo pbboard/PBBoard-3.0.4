@@ -268,7 +268,7 @@ class PowerBBSection
  		{
  			return false;
  		}
-
+        $cache = str_replace("'", '', $cache);
 		return $cache;
 	}
 
@@ -281,7 +281,8 @@ class PowerBBSection
  		{
  			$param = array();
  		}
-       $maxsize = '300000';
+
+        $maxsize = '300000';
    		$SecArr 			= 	array();
 		$SecArr['where'] 	= 	array('id',$param['id']);
 		$SectionInfo = $this->GetSectionInfo($SecArr);
@@ -289,6 +290,8 @@ class PowerBBSection
           if ($SectionInfo and !$SectionInfo['parent']== "0")
  	       {
               	$cache = $this->CreateSectionsCache($SectionInfo);
+                $cache = str_replace("'", '', $cache);
+
 				if ($cache == false)
 				 {
 				  $cache = '';
@@ -330,6 +333,8 @@ class PowerBBSection
               if($param['parent'])
               {
 	                $cache = $this->CreateSectionsCache($param);
+                    $cache = str_replace("'", '', $cache);
+
 					if ($cache == false)
 					{
 					$cache = '';

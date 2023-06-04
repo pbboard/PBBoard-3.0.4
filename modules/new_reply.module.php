@@ -846,8 +846,9 @@ class PowerBBReplyAddMOD
 
 		     		$UpdateReplyNumber = $PowerBB->subject->UpdateReplyNumber($RepArr);
 
-
-                   $UpdateSubjectNumber = $PowerBB->cache->UpdateReplyNumber(array('reply_num'	=>	$PowerBB->_CONF['info_row']['reply_number']));
+                    // The overall number of replys
+					$reply_number = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query('SELECT COUNT(1),id FROM '.$PowerBB->table['reply'].' WHERE delete_topic <> 1 LIMIT 1'));
+					$update_reply_number = $PowerBB->info->UpdateInfo(array('value'=>$reply_number,'var_name'=>'reply_number'));
 
 		     		//////////
 		     		if (!$PowerBB->_CONF['member_permission'])

@@ -986,7 +986,8 @@ class PowerBBTopicAddMOD
 
 
 				     		// The overall number of subjects
-				     		$UpdateSubjectNumber = $PowerBB->cache->UpdateSubjectNumber(array('subject_num'	=>	$PowerBB->_CONF['info_row']['subject_number']));
+							$subject_number = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query('SELECT COUNT(1),id FROM '.$PowerBB->table['subject'].' WHERE delete_topic <> 1 LIMIT 1'));
+							$update_subject_number = $PowerBB->info->UpdateInfo(array('value'=>$subject_number,'var_name'=>'subject_number'));
 
 				     		//////////
 				     		if (!$PowerBB->_CONF['member_permission'])

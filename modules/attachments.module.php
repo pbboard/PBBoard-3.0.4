@@ -390,7 +390,7 @@ class PowerBBCoreMOD
 				   $GetSubjectAttachArr['where'] 			= 	array('id',$PowerBB->_GET['subject_id']);
 				   $SubjectAttachinfo = $PowerBB->core->GetInfo($GetSubjectAttachArr,'attach');
 
-           		   $GetattachNumrs = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT ID FROM " . $PowerBB->table['attach'] . " WHERE subject_id = ".$PowerBB->_GET['subject_id']." and reply = '0'"));
+           		   $GetattachNumrs = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['attach'] . " WHERE subject_id = ".$PowerBB->_GET['subject_id']." and reply = '0'"));
 
 					if (!$SubjectAttachinfo)
 					{		              if ($GetattachNumrs < 0)
@@ -709,7 +709,7 @@ class PowerBBCoreMOD
 
 		         $ReplyInfo = $PowerBB->core->GetInfo($GetReplyInfo,'reply');
 
-           		$GetattachNumrs = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT ID FROM " . $PowerBB->table['attach'] . " WHERE subject_id = ".$PowerBB->_GET['reply_id']." and reply = '1'"));
+           		$GetattachNumrs = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['attach'] . " WHERE subject_id = ".$PowerBB->_GET['reply_id']." and reply = '1'"));
               if ($GetattachNumrs < 0)
 		      {
 		            // Delete attachment to the database

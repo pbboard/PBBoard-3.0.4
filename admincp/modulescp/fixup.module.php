@@ -234,7 +234,7 @@ class PowerBBFixMOD
 		$perpage = 4;
 		$startpoint = ($page * $perpage) - $perpage;
  		$forumArr = $PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['section'] . " WHERE parent > '0' ORDER BY id ASC LIMIT ".$startpoint.",".$perpage." ");
-		$forum_nm = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['section'] . " WHERE parent > 0"));
+		$forum_nm = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['section'] . " WHERE parent > 0"));
 
         $pagesnum = round(ceil($forum_nm / $perpage));
         echo('<br><br><table border="1" width="80%" cellspacing="0" cellpadding="0" bgcolor="#FFFFFF" style="border-collapse: collapse" align="center"><tr><td><font face="Tahoma" size="2">');
@@ -426,7 +426,7 @@ class PowerBBFixMOD
 		$page = ($page == 0 ? 1 : $page);
 
 		$startpoint = ($page * $perpage) - $perpage;
-		$member_nm = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['member'] . " WHERE id"));
+		$member_nm = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['member'] . " WHERE id"));
               $br = '<br>';
 		echo('<br><br><table border="1" width="80%" cellspacing="0" cellpadding="0" bgcolor="#FFFFFF" style="border-collapse: collapse" align="center"><tr><td><font face="Tahoma" size="2">');
 
@@ -434,8 +434,8 @@ class PowerBBFixMOD
 	    while ($MemInfo = $PowerBB->DB->sql_fetch_array($getmember_query))
         {
         	$MemUsername = $MemInfo['username'];
-		    $member_nm_reply = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['reply'] . " WHERE writer = '$MemUsername'"));
-		    $member_nm_subject = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['subject'] . " WHERE writer = '$MemUsername'"));
+		    $member_nm_reply = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['reply'] . " WHERE writer = '$MemUsername' LIMIT 1"));
+		    $member_nm_subject = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['subject'] . " WHERE writer = '$MemUsername'"));
 
 		  // change the cache of username style
 
@@ -504,9 +504,9 @@ class PowerBBFixMOD
 		global $PowerBB;
 
 
-	         $reply_number = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query('SELECT ID FROM '.$PowerBB->table['reply'].' WHERE delete_topic <> 1 '));
-	         $subject_number = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query('SELECT ID FROM '.$PowerBB->table['subject'].' WHERE delete_topic <> 1 '));
-	         $member_number = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query('SELECT ID FROM '.$PowerBB->table['member'].' '));
+	         $reply_number = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query('SELECT COUNT(1),id FROM '.$PowerBB->table['reply'].' WHERE delete_topic <> 1 LIMIT 1'));
+	         $subject_number = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query('SELECT COUNT(1),id FROM '.$PowerBB->table['subject'].' WHERE delete_topic <> 1 LIMIT 1'));
+	         $member_number = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query('SELECT COUNT(1),id FROM '.$PowerBB->table['member'].' LIMIT 1'));
 
 	        $update = array();
 			$update[0] = $PowerBB->info->UpdateInfo(array('value'=>$member_number,'var_name'=>'member_number'));
@@ -534,9 +534,9 @@ class PowerBBFixMOD
 		$startpoint = ($page * $perpage) - $perpage;
         $br = '<br>';
 		echo('<br><br><table border="1" width="80%" cellspacing="0" cellpadding="0" bgcolor="#FFFFFF" style="border-collapse: collapse" align="center"><tr><td><font face="Tahoma" size="2">');
-       	 $reply_num = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['reply'] . " "));
+       	 $reply_num = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['reply'] . " LIMIT 1"));
 
-		$ReplyArr = $PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['reply'] . " ORDER BY id DESC LIMIT ".$startpoint.",".$perpage." ");
+		$ReplyArr = $PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['reply'] . " ORDER BY id DESC LIMIT ".$startpoint.",".$perpage." LIMIT 1");
 
 		while ($RepList = $PowerBB->DB->sql_fetch_array($ReplyArr))
 		{
@@ -560,8 +560,8 @@ class PowerBBFixMOD
 				{
 					$cache = $PowerBB->section->UpdateSectionsCache(array('parent'=>$SubjectInfo['section']));
 					//////////
-                     $reply_nm = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT id FROM " . $PowerBB->table['reply'] . " WHERE section = ".$SubjectInfo['section'].""));
-                     $review_reply_nm = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT review_reply FROM " . $PowerBB->table['reply'] . " WHERE subject_id = ".$RepList['subject_id']." and review_reply = '1'"));
+                     $reply_nm = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['reply'] . " WHERE section = ".$SubjectInfo['section']." LIMIT 1"));
+                     $review_reply_nm = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),review_reply FROM " . $PowerBB->table['reply'] . " WHERE subject_id = ".$RepList['subject_id']." and review_reply = '1' LIMIT 1"));
 
 					$SubArr 				= 	array();
 					$SubArr['field']		=	array();
@@ -653,7 +653,7 @@ class PowerBBFixMOD
 		$page = ($page == 0 ? 1 : $page);
 
 		$startpoint = ($page * $perpage) - $perpage;
-		$member_nm = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['member'] . " WHERE id"));
+		$member_nm = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['member'] . " WHERE id"));
               $br = '<br>';
 		echo('<br><br><table border="1" width="80%" cellspacing="0" cellpadding="0" bgcolor="#FFFFFF" style="border-collapse: collapse" align="center"><tr><td><font face="Tahoma" size="2">');
 

@@ -185,7 +185,7 @@ class PowerBBManagementMOD
 
               if($updateMove)
               {
-              $subject_id = $PowerBB->_POST['subject_id'];              $reply_nm = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['reply'] . " WHERE subject_id='$subject_id' "));
+              $subject_id = $PowerBB->_POST['subject_id'];              $reply_nm = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['reply'] . " WHERE subject_id='$subject_id' LIMIT 1"));
 
 				$Getlast_replier = $PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['reply'] . " WHERE subject_id = '$subject_id' AND delete_topic<>1 AND review_reply<>1 ORDER by write_time DESC");
 				$GetLast_replierForm = $PowerBB->DB->sql_fetch_array($Getlast_replier);
@@ -218,7 +218,7 @@ class PowerBBManagementMOD
                 //
 
               $Subjectoldid = $PowerBB->_POST['subject_old'];
-              $replyold_nm = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['reply'] . " WHERE subject_id='$Subjectoldid' "));
+              $replyold_nm = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['reply'] . " WHERE subject_id='$Subjectoldid' LIMIT 1"));
 
 				$Getlast_replierold = $PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['reply'] . " WHERE subject_id = '$Subjectoldid' AND delete_topic<>1 AND review_reply<>1 ORDER by write_time DESC");
 				$GetLast_replierFormold = $PowerBB->DB->sql_fetch_array($Getlast_replierold);
@@ -450,7 +450,7 @@ class PowerBBManagementMOD
 
 		     // Update subject review number
 		      $SubjectInfid = $PowerBB->_GET['subject_id'];
-		      $SubjectInfReviewNum = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT id FROM " . $PowerBB->table['reply'] . " WHERE subject_id='$SubjectInfid' and review_reply='1'"));
+		      $SubjectInfReviewNum = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['reply'] . " WHERE subject_id='$SubjectInfid' and review_reply='1' LIMIT 1"));
 		      $PowerBB->DB->sql_query("UPDATE " . $PowerBB->table['subject'] . " SET review_reply='$SubjectInfReviewNum' WHERE id='$SubjectInfid'");
 
            // $PowerBB->functions->msg($PowerBB->_CONF['template']['_CONF']['lang']['Approved_posts_specific_successfully']);
@@ -497,7 +497,7 @@ class PowerBBManagementMOD
 	     }
 		     // Update subject review number
 		      $SubjectInfid = $PowerBB->_GET['subject_id'];
-		      $SubjectInfReviewNum = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT id FROM " . $PowerBB->table['reply'] . " WHERE subject_id='$SubjectInfid' and review_reply='1'"));
+		      $SubjectInfReviewNum = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['reply'] . " WHERE subject_id='$SubjectInfid' and review_reply='1' LIMIT 1"));
 		      $PowerBB->DB->sql_query("UPDATE " . $PowerBB->table['subject'] . " SET review_reply='$SubjectInfReviewNum' WHERE id='$SubjectInfid'");
 
             //$PowerBB->functions->msg($PowerBB->_CONF['template']['_CONF']['lang']['Was_not_to_approve_the_posts_identified_successfully']);
@@ -767,7 +767,7 @@ class PowerBBManagementMOD
 				 	 */
                     $SectionCache = $PowerBB->_GET['section'];
 					// The number of section's subjects number
-					$reply_num = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT id FROM " . $PowerBB->table['reply'] . " WHERE section = '$SectionCache' "));
+					$reply_num = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['reply'] . " WHERE section = '$SectionCache' LIMIT 1"));
 
 					$UpdateArr 					= 	array();
 					$UpdateArr['field']			=	array();
@@ -780,7 +780,7 @@ class PowerBBManagementMOD
 					$PowerBB->cache->UpdateReplyNumber(array('reply_num'	=>	$reply_num));
 
 
-					$subject_nm = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT id FROM " . $PowerBB->table['subject'] . " WHERE section = '$SectionCache' "));
+					$subject_nm = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['subject'] . " WHERE section = '$SectionCache' "));
 
 					// The number of section's subjects number
 					$UpdateArr 					= 	array();
@@ -920,7 +920,7 @@ class PowerBBManagementMOD
 
 
 				$Subjectid =  $this->ReplyInfo['subject_id'];
-				//$review_reply_nm = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['reply'] . " WHERE section = '$section' and subject_id='$Subjectid' and review_reply='1' "));
+				//$review_reply_nm = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['reply'] . " WHERE section = '$section' and subject_id='$Subjectid' and review_reply='1' LIMIT 1"));
 
 				$SubjectArr 							= 	array();
 				$SubjectArr['field'] 					= 	array();
@@ -937,7 +937,7 @@ class PowerBBManagementMOD
 
 		     // Update subject review number
 		      $SubjectInfid = $PowerBB->_GET['subject_id'];
-		      $SubjectInfReviewNum = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT id FROM " . $PowerBB->table['reply'] . " WHERE subject_id='$SubjectInfid' and review_reply='1'"));
+		      $SubjectInfReviewNum = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['reply'] . " WHERE subject_id='$SubjectInfid' and review_reply='1' LIMIT 1"));
 		      $PowerBB->DB->sql_query("UPDATE " . $PowerBB->table['subject'] . " SET review_reply='$SubjectInfReviewNum' WHERE id='$SubjectInfid'");
 
 				$PowerBB->functions->ShowHeader();
@@ -985,8 +985,8 @@ class PowerBBManagementMOD
 
 
           $Subjectid =  $this->ReplyInfo['subject_id'];
-           $review_reply_nm = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['reply'] . " WHERE section = '$section' and subject_id='$Subjectid' and review_reply='1' "));
-           $reply_nm = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['reply'] . " WHERE section = '$section' and subject_id='$Subjectid' "));
+           $review_reply_nm = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['reply'] . " WHERE section = '$section' and subject_id='$Subjectid' and review_reply='1' LIMIT 1"));
+           $reply_nm = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['reply'] . " WHERE section = '$section' and subject_id='$Subjectid' LIMIT 1"));
 
 				$SecArr 			= 	array();
 		        $SecArr['where'] 	= 	array('id',$PowerBB->_GET['section']);
@@ -1039,7 +1039,7 @@ class PowerBBManagementMOD
 				 	 */
                     $SectionCache = $PowerBB->_GET['section'];
 					// The number of section's subjects number
-					$reply_num = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT id FROM " . $PowerBB->table['reply'] . " WHERE section = '$SectionCache' "));
+					$reply_num = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['reply'] . " WHERE section = '$SectionCache' LIMIT 1"));
 
 					$UpdateArr 					= 	array();
 					$UpdateArr['field']			=	array();
@@ -1052,7 +1052,7 @@ class PowerBBManagementMOD
 					$PowerBB->cache->UpdateReplyNumber(array('reply_num'	=>	$reply_num));
 
 
-					$subject_nm = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT id FROM " . $PowerBB->table['subject'] . " WHERE section = '$SectionCache' "));
+					$subject_nm = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['subject'] . " WHERE section = '$SectionCache' "));
 
 					// The number of section's subjects number
 					$UpdateArr 					= 	array();

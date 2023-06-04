@@ -479,7 +479,7 @@ class PowerBBTopicMOD
 		$SubjectInfoid = $PowerBB->_CONF['template']['SubjectInfo']['id'];
 		$member_row_id = $PowerBB->_CONF['member_row']['id'];
 
-		$subject_user_emailed_nm = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['emailed'] . " WHERE subject_id='$SubjectInfoid' and user_id ='$member_row_id'"));
+		$subject_user_emailed_nm = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['emailed'] . " WHERE subject_id='$SubjectInfoid' and user_id ='$member_row_id' LIMIT 1"));
          $PowerBB->template->assign('is_subscribe',$subject_user_emailed_nm);
 
 		//show list last 5 posts member
@@ -512,7 +512,7 @@ class PowerBBTopicMOD
 
 		//////////
 		//show Award member
-       $ALL_Awards_nm = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT id FROM " . $PowerBB->table['award'] . " "));
+       $ALL_Awards_nm = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['award'] . " LIMIT 1"));
        if ($ALL_Awards_nm > 0)
 		{
 
@@ -753,11 +753,11 @@ class PowerBBTopicMOD
 		$SubjectInfid = $PowerBB->_GET['id'];
 		if ($PowerBB->functions->ModeratorCheck($this->SectionInfo['moderators']))
 		{
-		$SubjectInfReplyNum = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT id FROM " . $PowerBB->table['reply'] . " WHERE subject_id='$SubjectInfid' and delete_topic <>1"));
+		$SubjectInfReplyNum = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['reply'] . " WHERE subject_id='$SubjectInfid' and delete_topic <>1 LIMIT 1"));
 		}
 		else
 		{
-		$SubjectInfReplyNum = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT id FROM " . $PowerBB->table['reply'] . " WHERE subject_id='$SubjectInfid' and delete_topic <>1 and review_reply <>1"));
+		$SubjectInfReplyNum = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['reply'] . " WHERE subject_id='$SubjectInfid' and delete_topic <>1 and review_reply <>1 LIMIT 1"));
 		}
               // Update rely reply number to Subject & no Update in Again on the same link
              $Get_Page_URL  = "http://".$PowerBB->_SERVER['HTTP_HOST'].$PowerBB->_SERVER['REQUEST_URI'];
@@ -820,7 +820,7 @@ class PowerBBTopicMOD
           if ($SubjectInfReplyNum > $PowerBB->_CONF['info_row']['perpage'])
           {
               	$subject_id = $PowerBB->_GET['id'];
-				$Reply_NumArr = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['reply'] . " WHERE subject_id='$subject_id' and delete_topic <>1"));
+				$Reply_NumArr = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['reply'] . " WHERE subject_id='$subject_id' and delete_topic <>1 LIMIT 1"));
 				$ss_r = $PowerBB->_CONF['info_row']['perpage']/2+1;
 				$roun_ss_r = round($ss_r, 0);
 				$reply_number_r = $Reply_NumArr-$roun_ss_r;
@@ -903,7 +903,7 @@ class PowerBBTopicMOD
                   if (!empty($answers))
                   {
 					$subject_id  = $PowerBB->_GET['id'];
-					$vote_nm = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['vote'] . " WHERE answer_number = " . $answers_number . " AND subject_id = " . $subject_id . " "));
+					$vote_nm = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['vote'] . " WHERE answer_number = " . $answers_number . " AND subject_id = " . $subject_id . " LIMIT 1"));
 
 					$answers =$PowerBB->Powerparse->censor_words($answers);
 					$answers = $PowerBB->functions->CleanVariable($answers,'sql');
@@ -969,7 +969,7 @@ class PowerBBTopicMOD
 					$PowerBB->template->assign('ShowVote',$ShowVote);
 
 					$subject_id  = $PowerBB->_GET['id'];
-					$Allvote_nm = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['vote'] . " WHERE votes AND subject_id = " . $subject_id . " "));
+					$Allvote_nm = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['vote'] . " WHERE votes AND subject_id = " . $subject_id . " LIMIT 1"));
 					$PowerBB->template->assign('AllVote',$Allvote_nm);
 					$PowerBB->template->assign('Info',$PowerBB->_CONF['template']['SubjectInfo']);
 				}

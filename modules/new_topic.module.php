@@ -216,7 +216,7 @@ class PowerBBTopicAddMOD
 			$to 	= 	mktime(23,59,59,$month,$day,$year);
 
             $user = $PowerBB->_CONF['rows']['member_row']['username'];
-	        $user_topic_day_number = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT ID FROM " . $PowerBB->table['subject'] . " WHERE native_write_time BETWEEN " . $from . " AND " . $to . " AND writer = '$user' "));
+	        $user_topic_day_number = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['subject'] . " WHERE native_write_time BETWEEN " . $from . " AND " . $to . " AND writer = '$user' LIMIT 1"));
 	        if ($user_topic_day_number>= $PowerBB->_CONF['group_info']['topic_day_number'])
 	        {
 		        $PowerBB->_CONF['template']['_CONF']['lang']['sorry_can_not_add_topic_more_than_in_day'] = str_replace("{topic_day}",$PowerBB->_CONF['group_info']['topic_day_number'],$PowerBB->_CONF['template']['_CONF']['lang']['sorry_can_not_add_topic_more_than_in_day']);
@@ -1156,7 +1156,7 @@ class PowerBBTopicAddMOD
 	        $reply_id = 0;
 	        $topic_id = $last_subject_info['id']+1;
 			// insert mention
-			$Getmention_youNumrs = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT *  FROM " . $PowerBB->prefix . "mention WHERE you = '$username' AND topic_id = '$topic_id' AND user_read = '1'"));
+			$Getmention_youNumrs = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->prefix . "mention WHERE you = '$username' AND topic_id = '$topic_id' AND user_read = '1'"));
 			if(!$Getmention_youNumrs)
 			{
 					$InsertArr 					= 	array();

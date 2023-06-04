@@ -14916,7 +14916,7 @@ img.src = $('#url_input').val();
 {Des::while}{subject_list}
 <?php
 $subject_id = $PowerBB->_CONF['template']['while']['subject_list'][$this->x_loop]['id'];
-$GetReplyNumberSubject = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['reply'] . " WHERE subject_id = '$subject_id'"));
+$GetReplyNumberSubject = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['reply'] . " WHERE subject_id = '$subject_id' LIMIT 1"));
 $GetlastReplySubject = $PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['reply'] . " WHERE subject_id = '$subject_id' ORDER BY write_time DESC");
 $LastReplySubject= $PowerBB->DB->sql_fetch_array($GetlastReplySubject);
 ?>

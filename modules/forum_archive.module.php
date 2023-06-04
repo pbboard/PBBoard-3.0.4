@@ -1079,7 +1079,7 @@ class PowerBBForumMOD
 		   $PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['no_search_results']);
 		 }
 
-          	$subject_nm = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['subject'] . " WHERE text LIKE '%$keyword%' AND section = '$section'"));
+          	$subject_nm = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['subject'] . " WHERE text LIKE '%$keyword%' AND section = '$section' LIMIT 1"));
 
 
             $sec = ' AND section =  ';

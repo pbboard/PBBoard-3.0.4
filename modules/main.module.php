@@ -255,7 +255,7 @@ class PowerBBCoreMOD
        $PowerBB->_CONF['template']['while']['TodayList'] = $PowerBB->core->GetList($TodayArr,'today');
 
        //////////
-     $GetGuestTodayNumber = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT ID FROM " . $PowerBB->table['visitor'] . ""));
+     $GetGuestTodayNumber = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['visitor'] . " LIMIT 1"));
      $PowerBB->_CONF['template']['TodayNumber'] = sizeof($PowerBB->_CONF['template']['while']['TodayList']);
       $PowerBB->_CONF['template']['GuestTodayNumber'] = $GetGuestTodayNumber;
      $PowerBB->_CONF['template']['AllTodayNumber'] = $GetGuestTodayNumber+$PowerBB->_CONF['template']['TodayNumber'];
@@ -305,55 +305,14 @@ class PowerBBCoreMOD
           }
 
       }
-       ////
+
       if ($PowerBB->_CONF['info_row']['active_static'] == 1)
        {
-	       $lastmember = array();
-	       $lastmember['order']        = array();
-	       $lastmember['order']['field'] = 'id';
-	       $lastmember['order']['type']  = 'DESC';
-	       $lastmember['limit']        = '1';
-
-	       $lm = $PowerBB->core->GetInfo($lastmember,'member');
-           if($lm['username'] != $PowerBB->_CONF['info_row']['last_member'])
-           {
-           	$PowerBB->info->UpdateInfo(array('var_name'=>'last_member','value'=>$lm['username']));
-           	$PowerBB->info->UpdateInfo(array('var_name'=>'last_member_id','value'=>$lm['id']));
-           }
-
-	       $PowerBB->template->assign('lm',$lm);
-
-	       $arr                = array();
-	       $arr['get_from']      = 'db';
-	       $mn = $PowerBB->core->GetNumber($arr,'member');
-           if($mn != $PowerBB->_CONF['info_row']['member_number'])
-           {
-           	$PowerBB->info->UpdateInfo(array('var_name'=>'member_number','value'=>$mn));
-           }
-	       $PowerBB->template->assign('mn',$PowerBB->functions->with_comma($mn));
-
-	       $arrr            = array();
-	       $arrr['get_from']  = 'db';
-	       $arrr['where']    = array('delete_topic',0);
-
-	       $sn = $PowerBB->core->GetNumber($arrr,'subject');
-           if($sn != $PowerBB->_CONF['info_row']['subject_number'])
-           {
-           	$PowerBB->info->UpdateInfo(array('var_name'=>'subject_number','value'=>$sn));
-           }
-	       $PowerBB->template->assign('sn',$PowerBB->functions->with_comma($sn));
-
-	       $arrrr            = array();
-	       $arrrr['get_from']  = 'db';
-	       $arrrr['where']    = array('delete_topic',0);
-
-	       $rn = $PowerBB->core->GetNumber($arrrr,'reply');
-           if($rn != $PowerBB->_CONF['info_row']['reply_number'])
-           {
-           	$PowerBB->info->UpdateInfo(array('var_name'=>'reply_number','value'=>$rn));
-           }
-	       $PowerBB->template->assign('rn',$PowerBB->functions->with_comma($rn));
-
+           $PowerBB->_CONF['template']['lm']['username_style_cache'] = $PowerBB->_CONF['info_row']['last_member'];
+           $PowerBB->_CONF['template']['lm']['id'] = $PowerBB->_CONF['info_row']['last_member_id'];
+	       $PowerBB->template->assign('mn',$PowerBB->functions->with_comma($PowerBB->_CONF['info_row']['member_number']));
+	       $PowerBB->template->assign('sn',$PowerBB->functions->with_comma($PowerBB->_CONF['info_row']['subject_number']));
+	       $PowerBB->template->assign('rn',$PowerBB->functions->with_comma($PowerBB->_CONF['info_row']['reply_number']));
       }
         ////////////// Get Statistics
 

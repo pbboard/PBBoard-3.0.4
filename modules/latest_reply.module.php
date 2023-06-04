@@ -58,9 +58,9 @@ class PowerBBLatestMOD
 
         $forum_not = $PowerBB->_CONF['info_row']['last_subject_writer_not_in'];
 
-        $subject_today_nm = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['subject'] . " WHERE write_time BETWEEN " . $from . " AND " . $to . " AND section not in (" .$forum_not. ") AND review_subject<>1 AND delete_topic<>1 "));
+        $subject_today_nm = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['subject'] . " WHERE write_time BETWEEN " . $from . " AND " . $to . " AND section not in (" .$forum_not. ") AND review_subject<>1 AND delete_topic<>1 LIMIT 1"));
 
-        $reply_today_nm = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['reply'] . " WHERE write_time BETWEEN " . $from . " AND " . $to . " AND section not in (" .$forum_not. ") AND delete_topic<>'1' AND review_reply<>'1'"));
+        $reply_today_nm = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['reply'] . " WHERE write_time BETWEEN " . $from . " AND " . $to . " AND section not in (" .$forum_not. ") AND delete_topic<>'1' AND review_reply<>'1' LIMIT 1"));
 
 		$LastSubjectArr 							= 	array();
 

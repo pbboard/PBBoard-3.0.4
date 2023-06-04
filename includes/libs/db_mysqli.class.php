@@ -184,6 +184,12 @@ class PowerBBSQL
 		$this->sql_free_result($result);
 	}
 
+	function sql_fetch_row($result)
+	{
+		$rows = mysqli_fetch_row($result);
+		return $rows[0];
+	}
+
 	function sql_num_rows($result)
 	{
 		$out = mysqli_num_rows($result);

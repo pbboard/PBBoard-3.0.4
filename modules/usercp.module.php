@@ -1394,7 +1394,7 @@ class PowerBBCoreMOD
 
       	// Get the Member Subjects num
       	$writer = $PowerBB->_CONF['rows']['member_row']['username'];
-        $GetMemberSubjectNum = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['subject'] . " WHERE writer = '$writer'"));
+        $GetMemberSubjectNum = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['subject'] . " WHERE writer = '$writer'"));
        	$PowerBB->template->assign('member_subject_num',$GetMemberSubjectNum );
 
        // Get the Member Subjects information
@@ -1446,7 +1446,7 @@ class PowerBBCoreMOD
 
       	// Get the Member attachments num
       	$u_id = $PowerBB->_CONF['member_row']['id'];
-        $GetMemberAttachmentNum = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['attach'] . " WHERE u_id = '$u_id'"));
+        $GetMemberAttachmentNum = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['attach'] . " WHERE u_id = '$u_id'"));
        	$PowerBB->template->assign('member_Attachment_num',$GetMemberAttachmentNum );
 
 		// Get the attachment information
@@ -1510,7 +1510,7 @@ class PowerBBCoreMOD
 
       		// Get the Emailed num
       	$user_id = $PowerBB->_CONF['member_row']['id'];
-        $GetEmailedNum = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['emailed'] . " WHERE user_id = '$user_id'"));
+        $GetEmailedNum = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['emailed'] . " WHERE user_id = '$user_id'"));
        	$PowerBB->template->assign('emailed_num',$GetEmailedNum );
 		// Get the Emailed information
 			$EmailedArr 							= 	array();
@@ -1797,7 +1797,7 @@ class PowerBBCoreMOD
 
 		$PowerBB->_CONF['template']['MemberInfo'] = $PowerBB->core->GetInfo($MemberArr,'member');
 
-       $IsFreind = $PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['friends'] . " WHERE username='".$PowerBB->_CONF['template']['MemberInfo']['username']."' AND username_friend='".$PowerBB->_CONF['member_row']['username']."' or username_friend='".$PowerBB->_CONF['template']['MemberInfo']['username']."' AND username='".$PowerBB->_CONF['member_row']['username']."'" );
+       $IsFreind = $PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['friends'] . " WHERE username='".$PowerBB->_CONF['template']['MemberInfo']['username']."' AND username_friend='".$PowerBB->_CONF['member_row']['username']."' or username_friend='".$PowerBB->_CONF['template']['MemberInfo']['username']."' AND username='".$PowerBB->_CONF['member_row']['username']."'" );
        $IsFreind_row = $PowerBB->DB->sql_fetch_array($IsFreind);
 		if($PowerBB->DB->sql_num_rows($IsFreind) > 0)
 		{
@@ -1882,7 +1882,7 @@ class PowerBBCoreMOD
 
       	// Get the Member Subjects num
       	$username = $PowerBB->_CONF['rows']['member_row']['username'];
-        $GetMemberReputationNum = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['reputation'] . " WHERE username = '$username'"));
+        $GetMemberReputationNum = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['reputation'] . " WHERE username = '$username'"));
        	$PowerBB->template->assign('member_reputation_num',$GetMemberReputationNum );
 
 
@@ -1958,7 +1958,7 @@ class PowerBBCoreMOD
 
       	// Get the Member Subjects num
       	$username = $PowerBB->_CONF['rows']['member_row']['username'];
-        $allmentionNumrs = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT *  FROM " . $PowerBB->prefix . "mention WHERE you = '$member_username'"));
+        $allmentionNumrs = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->prefix . "mention WHERE you = '$member_username'"));
        	$PowerBB->template->assign('member_mention_num',$allmentionNumrs );
 
 

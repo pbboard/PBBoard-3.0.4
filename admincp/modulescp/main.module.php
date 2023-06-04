@@ -14,27 +14,7 @@ class PowerBBMainMOD
 
 		if ($PowerBB->_CONF['member_permission'])
 		{
-/*			if (empty($PowerBB->_GET['top'])
-				and empty($PowerBB->_GET['right'])
-				and empty($PowerBB->_GET['left']))
-			{
-				$PowerBB->template->display('main');
-			}
-
-			elseif ($PowerBB->_GET['top'])
-			{
-				$this->_DisplayTopPage();
-			}
-
-			elseif ($PowerBB->_GET['right'])
-			{
-				$this->_DisplayMenuPage();
-			}
-
-			elseif ($PowerBB->_GET['left'])
-			{*/
-				$this->_DisplayBodyPage();
-//			}
+		$this->_DisplayBodyPage();
 		}
 	}
 
@@ -64,22 +44,6 @@ class PowerBBMainMOD
 	{
 		global $PowerBB;
 
-		$PowerBB->_CONF['template']['MemberNumber'] = $PowerBB->member->GetMemberNumber(array('get_from'	=>	'db'));
-
-		$PowerBB->_CONF['template']['ActiveMember'] = $PowerBB->member->GetActiveMemberNumber();
-
-		$SecArr 						= 	array();
-		$SecArr['where'] 				= 	array();
-		$SecArr['where'][0] 			= 	array();
-		$SecArr['where'][0]['name'] 	= 	'parent';
-		$SecArr['where'][0]['oper'] 	= 	'<>';
-		$SecArr['where'][0]['value'] 	= 	'0';
-
-		$PowerBB->_CONF['template']['ForumsNumber'] = $PowerBB->core->GetNumber($SecArr,'section');
-
-		$PowerBB->_CONF['template']['SubjectNumber'] = $PowerBB->core->GetNumber(array('get_from'	=>	'db'),'subject');
-
-		$PowerBB->_CONF['template']['ReplyNumber'] = $PowerBB->core->GetNumber(array('get_from'	=>	'db'),'reply');
 
 		$day 	= 	date('j');
 		$month 	= 	date('n');
@@ -88,64 +52,24 @@ class PowerBBMainMOD
 		$from 	= 	mktime(0,0,0,$month,$day,$year);
 		$to 	= 	mktime(23,59,59,$month,$day,$year);
 
-		$TodayMemberArr 				= 	array();
-		$TodayMemberArr['get_from'] 	= 	'db';
-		$TodayMemberArr['where'] 		= 	array();
+		$SecArr 						= 	array();
+		$SecArr['where'] 				= 	array();
+		$SecArr['where'][0] 			= 	array();
+		$SecArr['where'][0]['name'] 	= 	'parent';
+		$SecArr['where'][0]['oper'] 	= 	'<>';
+		$SecArr['where'][0]['value'] 	= 	'0';
 
-		$TodayMemberArr['where'][0] 			= 	array();
-		$TodayMemberArr['where'][0]['name'] 	= 	'register_date';
-		$TodayMemberArr['where'][0]['oper'] 	= 	'BETWEEN';
-		$TodayMemberArr['where'][0]['value'] 	= 	$from . ' AND ' . $to;
+        $PowerBB->_CONF['template']['MemberNumber']       = $PowerBB->functions->with_comma($PowerBB->_CONF['info_row']['member_number']);
+		$PowerBB->_CONF['template']['SubjectNumber']      = $PowerBB->functions->with_comma($PowerBB->_CONF['info_row']['subject_number']);
+		$PowerBB->_CONF['template']['ReplyNumber']        = $PowerBB->functions->with_comma($PowerBB->_CONF['info_row']['reply_number']);
 
-		$PowerBB->_CONF['template']['TodayMemberNumber'] = $PowerBB->member->GetMemberNumber($TodayMemberArr);
-
-		$TodaySubjectArr 				= 	array();
-		$TodaySubjectArr['get_from'] 	= 	'db';
-		$TodaySubjectArr['where'] 		= 	array();
-
-		$TodaySubjectArr['where'][0] 			= 	array();
-		$TodaySubjectArr['where'][0]['name'] 	= 	'native_write_time';
-		$TodaySubjectArr['where'][0]['oper'] 	= 	'BETWEEN';
-		$TodaySubjectArr['where'][0]['value'] 	= 	$from . ' AND ' . $to;
-
-		$PowerBB->_CONF['template']['TodaySubjectNumber'] = $PowerBB->core->GetNumber($TodaySubjectArr,'subject');
-
-		$TodayReplyArr 				= 	array();
-		$TodayReplyArr['get_from'] 	= 	'db';
-		$TodayReplyArr['where'] 	= 	array();
-
-		$TodayReplyArr['where'][0] 				= 	array();
-		$TodayReplyArr['where'][0]['name'] 		= 	'write_time';
-		$TodayReplyArr['where'][0]['oper'] 		= 	'BETWEEN';
-		$TodayReplyArr['where'][0]['value'] 	= 	$from . ' AND ' . $to;
-
-		$PowerBB->_CONF['template']['TodayReplyNumber'] = $PowerBB->core->GetNumber($TodayReplyArr,'reply');
-
-     //  Waiting Members Number
-
-		$WaitingMemberArr 				= 	array();
-		$WaitingMemberArr['get_from'] 	= 	'db';
-		$WaitingMemberArr['where'] 		= 	array();
-
-		$WaitingMemberArr['where'][0] 			= 	array();
-		$WaitingMemberArr['where'][0]['name'] 	= 	'usergroup';
-		$WaitingMemberArr['where'][0]['oper'] 	= 	'=';
-		$WaitingMemberArr['where'][0]['value'] 	= 	'5';
-
-		$PowerBB->_CONF['template']['MembersActiveList'] = $PowerBB->member->GetMemberNumber($WaitingMemberArr);
-
-      // Forums moderators users Number
-
-		$WaitingMemberArr 				= 	array();
-		$WaitingMemberArr['get_from'] 	= 	'db';
-		$WaitingMemberArr['where'] 		= 	array();
-
-		$WaitingMemberArr['where'][0] 			= 	array();
-		$WaitingMemberArr['where'][0]['name'] 	= 	'usergroup';
-		$WaitingMemberArr['where'][0]['oper'] 	= 	'=';
-		$WaitingMemberArr['where'][0]['value'] 	= 	'3';
-
-		$PowerBB->_CONF['template']['ModeratorsNumber'] = $PowerBB->member->GetMemberNumber($WaitingMemberArr);
+        $PowerBB->_CONF['template']['ActiveMember']       = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['member'] . " WHERE posts > 0 LIMIT 1"));
+		$PowerBB->_CONF['template']['ForumsNumber']       = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['section'] . " WHERE parent <> 0 LIMIT 1"));
+        $PowerBB->_CONF['template']['TodayMemberNumber']  = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['member'] . " WHERE register_date BETWEEN ".$from ." AND " . $to ." LIMIT 1"));
+        $PowerBB->_CONF['template']['TodaySubjectNumber'] = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['subject'] . " WHERE native_write_time BETWEEN ".$from ." AND " . $to ." LIMIT 1"));
+        $PowerBB->_CONF['template']['TodayReplyNumber']   = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['reply'] . " WHERE write_time BETWEEN ".$from ." AND " . $to ." LIMIT 1"));
+        $PowerBB->_CONF['template']['MembersActiveList']  = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['member'] . " WHERE usergroup = 5 LIMIT 1"));
+        $PowerBB->_CONF['template']['ModeratorsNumber']   = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['member'] . " WHERE usergroup = 3 LIMIT 1"));
 
 
 		$PowerBB->_CONF['template']['_CONF']['lang']['copyright'] = $PowerBB->functions->copyright();

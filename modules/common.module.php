@@ -1027,14 +1027,14 @@ class PowerBBCommon
 			$to 	= 	@mktime(23,59,59,$month,$day,$year);
 
 		     $forum_not = $PowerBB->_CONF['info_row']['last_subject_writer_not_in'];
-		     $subject_today_nm = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT ID FROM " . $PowerBB->table['subject'] . " WHERE native_write_time BETWEEN " . $from . " AND " . $to . " AND section not in (" .$forum_not. ") AND review_subject<>1 AND delete_topic<>1 "));
+		     $subject_today_nm = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['subject'] . " WHERE native_write_time BETWEEN " . $from . " AND " . $to . " AND section not in (" .$forum_not. ") AND review_subject<>1 AND delete_topic<>1 LIMIT 1"));
 			 $PowerBB->template->assign('subject_today_nm',$subject_today_nm);
 
 		}
 			/**
 		 * Get subject special nm
 		 */
-         $subject_special_nm = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT ID FROM " . $PowerBB->table['subject'] . " WHERE special='1'"));
+         $subject_special_nm = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['subject'] . " WHERE special='1' LIMIT 1"));
 		 $PowerBB->template->assign('subject_special_nm',$subject_special_nm);
 			/**
 		 * Get last posts bar
@@ -1223,27 +1223,27 @@ class PowerBBCommon
 		{
 			 if ($PowerBB->_CONF['info_row']['pm_feature'])
 			 {
-			   $GetPmNum = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT ID FROM " . $PowerBB->table['pm'] . " WHERE user_to = '$user_name' and user_read = '' and folder = 'inbox'"));
-		       $GetTotalPmNum = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT ID FROM " . $PowerBB->table['pm'] . " WHERE user_to = '$user_name' and folder = 'inbox'"));
+			   $GetPmNum = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['pm'] . " WHERE user_to = '$user_name' and user_read = '' and folder = 'inbox' LIMIT 1"));
+		       $GetTotalPmNum = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['pm'] . " WHERE user_to = '$user_name' and folder = 'inbox' LIMIT 1"));
 			 }
 			 if ($PowerBB->_CONF['info_row']['active_visitor_message'])
 			 {
-		       $GetVisitorMessageNumrs = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT ID FROM " . $PowerBB->table['visitormessage'] . " WHERE userid = '$user_id' and messageread = '1'"));
+		       $GetVisitorMessageNumrs = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['visitormessage'] . " WHERE userid = '$user_id' and messageread = '1' LIMIT 1"));
 			 }
 			 if ($PowerBB->_CONF['info_row']['active_friend'])
 			 {
-		       $GetFriendsNum = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT ID FROM " . $PowerBB->table['friends'] . " WHERE username_friend = '$user_name' and approval = '0'"));
+		       $GetFriendsNum = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['friends'] . " WHERE username_friend = '$user_name' and approval = '0' LIMIT 1"));
 			 }
 			 if ($PowerBB->_CONF['info_row']['reputationallw'])
 			 {
-		      $GetReputationNum = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT ID FROM " . $PowerBB->table['reputation'] . " WHERE username = '$user_name' and reputationread = '1'"));
+		      $GetReputationNum = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['reputation'] . " WHERE username = '$user_name' and reputationread = '1' LIMIT 1"));
 			 }
         }
 
 			// Get alerts num mention
 			if($PowerBB->functions->mention_permissions())
 			{
-			$GetMentionNum = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT *  FROM " . $PowerBB->prefix . "mention WHERE you = '$user_name' AND user_read = '1'"));
+			$GetMentionNum = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->prefix . "mention WHERE you = '$user_name' AND user_read = '1' LIMIT 1"));
 
 			if (!$GetMentionNum)
 			{

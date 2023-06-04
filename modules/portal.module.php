@@ -103,7 +103,7 @@ class PowerBBPortalMOD
         }
 
         $News_Numr = $PowerBB->_CONF['info_row']['portal_news_num'];
-        $LastNews_nm = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['subject'] . " WHERE " .$section. " AND review_subject<>1 AND delete_topic<>1 "));
+        $LastNews_nm = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['subject'] . " WHERE " .$section. " AND review_subject<>1 AND delete_topic<>1 LIMIT 1"));
 
         // LastNews topics in section
 		$LastNewsArr                        =    array();

@@ -45,38 +45,14 @@ class PowerBBStaticMOD
 		 */
 		$StaticInfo['Age'] 			= 	$PowerBB->misc->GetForumAge(array('date'=>$PowerBB->_CONF['info_row']['create_date']));
 		$StaticInfo['InstallDate']	=	$PowerBB->functions->_date($PowerBB->_CONF['info_row']['create_date']);
-
 		/**
 		 * Get the number of members , subjects , replies , active members and sections
 		 */
-		$SecArr 						= 	array();
-		$SecArr['where'] 				= 	array();
-		$SecArr['where'][0] 			= 	array();
-		$SecArr['where'][0]['name'] 	= 	'parent';
-		$SecArr['where'][0]['oper'] 	= 	'<>';
-		$SecArr['where'][0]['value'] 	= 	'0';
-
-		$SubjectNumber              = array();
-		$SubjectNumber['get_from']  = 'db';
-		$SubjectNumber['where']     = array('delete_topic',0);
-
-		$StaticInfo['GetSubjectNumber'] = $PowerBB->core->GetNumber($SubjectNumber,'subject');
-
-		$ReplyNumber              = array();
-		$ReplyNumber['get_from']  = 'db';
-		$ReplyNumber['where']     = array('delete_topic',0);
-
-		$StaticInfo['GetReplyNumber'] = $PowerBB->core->GetNumber($ReplyNumber,'reply');
-
-		// Get Member Number
-        $arr                   = array();
-		$arr['get_from']       = 'db';
-
-		$mn = $PowerBB->core->GetNumber($arr,'member');
-
-		$StaticInfo['GetMemberNumber']	= $mn;
-		$StaticInfo['GetActiveMember']	= $PowerBB->member->GetActiveMemberNumber();
-		$StaticInfo['GetSectionNumber']	= $PowerBB->core->GetNumber($SecArr,'section');
+		$StaticInfo['GetSubjectNumber'] = $PowerBB->functions->with_comma($PowerBB->_CONF['info_row']['subject_number']);
+		$StaticInfo['GetReplyNumber']   = $PowerBB->functions->with_comma($PowerBB->_CONF['info_row']['reply_number']);
+		$StaticInfo['GetMemberNumber']  = $PowerBB->functions->with_comma($PowerBB->_CONF['info_row']['member_number']);
+        $StaticInfo['GetActiveMember']  = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['member'] . " WHERE posts > 0 LIMIT 1"));
+		$StaticInfo['GetSectionNumber'] = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['section'] . " WHERE parent <> 0 LIMIT 1"));
 
 		/**
 		 * Get the writer of oldest subject , the most subject of riplies and the newer subject

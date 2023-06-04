@@ -446,7 +446,7 @@ class PowerBBSearchEngineMOD
            if ($search_only == '1')
 	        {
 
-				$subject_nm = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['subject'] . "  WHERE text LIKE '%$keyword%' or title LIKE '%$keyword%' AND delete_topic<>'1' AND review_subject<>'1' AND sec_subject<>'1'"));
+				$subject_nm = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['subject'] . "  WHERE text LIKE '%$keyword%' or title LIKE '%$keyword%' AND delete_topic<>'1' AND review_subject<>'1' AND sec_subject<>'1'"));
 
 	          if ($subject_nm  > '0')
 	          {
@@ -462,7 +462,7 @@ class PowerBBSearchEngineMOD
 	        }
 	        if ($search_only == '2')
 	        {
-             	 $reply_nm = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['reply'] . " WHERE text LIKE '%$keyword%' or title LIKE '%$keyword%' AND delete_topic<>'1' AND review_reply<>'1'"));
+             	 $reply_nm = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['reply'] . " WHERE text LIKE '%$keyword%' or title LIKE '%$keyword%' AND delete_topic<>'1' AND review_reply<>'1' LIMIT 1"));
 		          if ($reply_nm  > '0')
 		          {
 			       $PowerBB->functions->msg($PowerBB->_CONF['template']['_CONF']['lang']['Search_successful']);
@@ -478,7 +478,7 @@ class PowerBBSearchEngineMOD
 
 	        if ($search_only == '3')
 	        {
-				$subject_title = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['subject'] . "  WHERE title LIKE '%$keyword%' AND delete_topic<>'1' AND review_subject<>'1' AND sec_subject<>'1'"));
+				$subject_title = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['subject'] . "  WHERE title LIKE '%$keyword%' AND delete_topic<>'1' AND review_subject<>'1' AND sec_subject<>'1'"));
 	          if ($subject_title > '0')
 	          {
 		       $PowerBB->functions->msg($PowerBB->_CONF['template']['_CONF']['lang']['Search_successful']);
@@ -496,7 +496,7 @@ class PowerBBSearchEngineMOD
 
             if ($search_only == '1')
 	        {
-          	$subject_nm = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['subject'] . " WHERE text LIKE '%$keyword%' AND section = '$section' AND delete_topic<>'1' AND review_subject<>'1' AND sec_subject<>'1'"));
+          	$subject_nm = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['subject'] . " WHERE text LIKE '%$keyword%' AND section = '$section' AND delete_topic<>'1' AND review_subject<>'1' AND sec_subject<>'1'"));
 
 	          if ($subject_nm  > '0')
 	          {
@@ -513,7 +513,7 @@ class PowerBBSearchEngineMOD
 
 	        if ($search_only == '2')
 	        {
-			$reply_nm = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['reply'] . " WHERE text LIKE '%$keyword%' AND section = '$section' AND delete_topic<>'1' AND review_reply<>'1'"));
+			$reply_nm = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['reply'] . " WHERE text LIKE '%$keyword%' AND section = '$section' AND delete_topic<>'1' AND review_reply<>'1' LIMIT 1"));
 
 	          if ($reply_nm  > '0')
 	          {
@@ -530,7 +530,7 @@ class PowerBBSearchEngineMOD
 
 	        if ($search_only == '3')
 	        {
-            $subject_title = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['subject'] . " WHERE title LIKE '%$keyword%' AND section = '$section' AND delete_topic<>'1' AND review_subject<>'1' AND sec_subject<>'1'"));
+            $subject_title = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['subject'] . " WHERE title LIKE '%$keyword%' AND section = '$section' AND delete_topic<>'1' AND review_subject<>'1' AND sec_subject<>'1'"));
 
 	          if ($subject_title > '0')
 	          {
@@ -625,7 +625,7 @@ class PowerBBSearchEngineMOD
 
            if ($starteronly == '0')
 	        {
-       	        $username_subject_nm = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['subject'] . " WHERE writer LIKE '$user_name' AND delete_topic<>'1' AND review_subject<>'1' AND sec_subject<>'1' ".$section." "));
+       	        $username_subject_nm = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['subject'] . " WHERE writer LIKE '$user_name' AND delete_topic<>'1' AND review_subject<>'1' AND sec_subject<>'1' ".$section." "));
 	          if ($username_subject_nm > '0')
 	          {
 		       $PowerBB->functions->msg($PowerBB->_CONF['template']['_CONF']['lang']['Search_successful']);
@@ -639,7 +639,7 @@ class PowerBBSearchEngineMOD
 	           }
 		      elseif ($starteronly == '1')
 		       {
-	             $username_reply_nm = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['reply'] . " WHERE writer LIKE '$username' AND section not in (" .$forum_not. ") AND delete_topic<>1 AND review_reply<>1 ".$section." "));
+	             $username_reply_nm = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['reply'] . " WHERE writer LIKE '$username' AND section not in (" .$forum_not. ") AND delete_topic<>1 AND review_reply<>1 ".$section." LIMIT 1"));
 		         $PowerBB->functions->msg($PowerBB->_CONF['template']['_CONF']['lang']['Search_successful']);
 	          if ($username_reply_nm > '0')
 	          {
@@ -772,7 +772,7 @@ class PowerBBSearchEngineMOD
 	        if ($search_only == '1')
              {
 
-				$subject_nm = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['subject'] . "  WHERE text LIKE '%$keyword%' or title LIKE '%$keyword%' AND delete_topic<>'1' AND review_subject<>'1' AND sec_subject<>'1'"));
+				$subject_nm = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['subject'] . "  WHERE text LIKE '%$keyword%' or title LIKE '%$keyword%' AND delete_topic<>'1' AND review_subject<>'1' AND sec_subject<>'1'"));
 				$PowerBB->template->assign('nm',$subject_nm);
                 $SubjectArr 						= 	array();
 				$SubjectArr['where'] 				= 	array();
@@ -823,7 +823,7 @@ class PowerBBSearchEngineMOD
 
              if ($search_only == '2')
              {
-             	 $reply_nm = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['reply'] . " WHERE text LIKE '%$keyword%' or title LIKE '%$keyword%' AND delete_topic<>'1' AND review_reply<>'1'"));
+             	 $reply_nm = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['reply'] . " WHERE text LIKE '%$keyword%' or title LIKE '%$keyword%' AND delete_topic<>'1' AND review_reply<>'1' LIMIT 1"));
                  $PowerBB->template->assign('nm',$reply_nm);
 				$ReplyArr 						= 	array();
 				$ReplyArr['where']				=	array();
@@ -873,7 +873,7 @@ class PowerBBSearchEngineMOD
 
             if ($search_only == '3')
              {
-             	$subject_title = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['subject'] . " WHERE title LIKE '%$keyword%' AND delete_topic<>'1' AND review_subject<>'1' AND sec_subject<>'1'"));
+             	$subject_title = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['subject'] . " WHERE title LIKE '%$keyword%' AND delete_topic<>'1' AND review_subject<>'1' AND sec_subject<>'1'"));
                 $PowerBB->template->assign('nm',$subject_title);
 				$SubjectTitleArr = array();
 
@@ -994,7 +994,7 @@ class PowerBBSearchEngineMOD
 
           if ($search_only == '1')
           {
-          	$subject_nm = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['subject'] . " WHERE text LIKE '%$keyword%' AND section = '$section' AND delete_topic<>'1' AND review_subject<>'1' AND sec_subject<>'1'"));
+          	$subject_nm = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['subject'] . " WHERE text LIKE '%$keyword%' AND section = '$section' AND delete_topic<>'1' AND review_subject<>'1' AND sec_subject<>'1'"));
 
 			$PowerBB->template->assign('nm',$subject_nm);
 
@@ -1054,7 +1054,7 @@ class PowerBBSearchEngineMOD
          if ($search_only == '2')
           {
 
-			$reply_nm = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['reply'] . " WHERE text LIKE '%$keyword%' AND section = '$section' AND delete_topic<>'1' AND review_reply<>'1'"));
+			$reply_nm = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['reply'] . " WHERE text LIKE '%$keyword%' AND section = '$section' AND delete_topic<>'1' AND review_reply<>'1' LIMIT 1"));
             $PowerBB->template->assign('nm',$reply_nm);
 
 			$ReplyOneArr 						= 	array();
@@ -1115,7 +1115,7 @@ class PowerBBSearchEngineMOD
 
          if ($search_only == '3')
           {
-            $subject_title = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['subject'] . " WHERE title LIKE '%$keyword%' AND section = '$section' AND delete_topic<>'1' AND review_subject<>'1' AND sec_subject<>'1'"));
+            $subject_title = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['subject'] . " WHERE title LIKE '%$keyword%' AND section = '$section' AND delete_topic<>'1' AND review_subject<>'1' AND sec_subject<>'1'"));
             $PowerBB->template->assign('nm',$subject_title);
 
 			$SubjectTitleOneArr = array();
@@ -1273,7 +1273,7 @@ class PowerBBSearchEngineMOD
 	           	$username    =  '%' .$username .'%';
 		       }
 
-       	        $username_subject_nm = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['subject'] . " WHERE writer LIKE '$username' AND delete_topic<>'1' AND review_subject<>'1' AND sec_subject<>'1' ".$section." "));
+       	        $username_subject_nm = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['subject'] . " WHERE writer LIKE '$username' AND delete_topic<>'1' AND review_subject<>'1' AND sec_subject<>'1' ".$section." "));
 
 				$PowerBB->template->assign('username_nm',$username_subject_nm);
 
@@ -1421,7 +1421,7 @@ class PowerBBSearchEngineMOD
 	           {
 		       	$username    =  '%' .$username .'%';
 		       }
-	           $username_reply_nm = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['reply'] . " WHERE writer LIKE '$username' AND section not in (" .$forum_not. ") AND delete_topic<>1 AND review_reply<>1 ".$section." "));
+	           $username_reply_nm = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['reply'] . " WHERE writer LIKE '$username' AND section not in (" .$forum_not. ") AND delete_topic<>1 AND review_reply<>1 ".$section." LIMIT 1"));
 
 				$PowerBB->template->assign('username_nm',$username_reply_nm);
 		     	$MemReplyArr 								= 	array();
@@ -1602,7 +1602,7 @@ class PowerBBSearchEngineMOD
 				$section	= 	$PowerBB->functions->CleanVariable($section,'sql');
 				$count	= 	$PowerBB->functions->CleanVariable($count,'sql');
 
-                 $review_reply_nm = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT id FROM " . $PowerBB->table['reply'] . " WHERE section = '$section' and review_reply = '1' "));
+                 $review_reply_nm = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['reply'] . " WHERE section = '$section' and review_reply = '1' LIMIT 1"));
 
 				if ($review_reply_nm  == '0')
 				{

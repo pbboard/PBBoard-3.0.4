@@ -205,8 +205,42 @@ class PowerBBAJAXtMOD
 			{
 			 $PowerBB->_POST['message'] = preg_replace_callback('#\[mention\](.+)\[\/mention\]#iUs', array($this, 'mention_subject_callback'), $PowerBB->_POST['message']);
 			}
+        $error_stop = true;
+		$TextPost = utf8_decode($PowerBB->_POST['message']);
+ 		$TextPost = preg_replace('/\s+/', '', $TextPost);
+		$TextPost = preg_replace('#\[IMG\](.*)\[/IMG\]#siU', '', $TextPost);
+		$TextPost = preg_replace('#[(.*)]#siU', '', $TextPost);
+		$TextPost = preg_replace('#[/(.*)]#siU', '', $TextPost);
+		$TextPost = $PowerBB->Powerparse->remove_message_quotes($TextPost);
 
+		if (empty($TextPost))
+		{
+		$PowerBB->_CONF['template']['_CONF']['lang']['post_text_min'] = str_replace("5", $PowerBB->_CONF['info_row']['post_text_min'], $PowerBB->_CONF['template']['_CONF']['lang']['post_text_min']);
+		$error_msg =($PowerBB->_CONF['template']['_CONF']['lang']['post_text_min']);
+		$error_stop = false;
 
+		}
+
+		if(strlen($TextPost) >= $PowerBB->_CONF['info_row']['post_text_min'])
+		{
+		// Continue
+		}
+		else
+		{
+		$PowerBB->_CONF['template']['_CONF']['lang']['post_text_min'] = str_replace("5", $PowerBB->_CONF['info_row']['post_text_min'], $PowerBB->_CONF['template']['_CONF']['lang']['post_text_min']);
+		$error_msg =($PowerBB->_CONF['template']['_CONF']['lang']['post_text_min']);
+		$error_stop = false;
+		}
+
+		if (isset($TextPost{$PowerBB->_CONF['info_row']['post_text_max']}))
+		{
+		 $PowerBB->_CONF['template']['_CONF']['lang']['post_text_max'] = str_replace("30000", $PowerBB->_CONF['info_row']['post_text_max'], $PowerBB->_CONF['template']['_CONF']['lang']['post_text_max']);
+		 $error_msg =($PowerBB->_CONF['template']['_CONF']['lang']['post_text_max']);
+		 $error_stop = false;
+		}
+
+       if($error_stop)
+       {
 		$ReplyArr 			= 	array();
 		$ReplyArr['field'] 	= 	array();
 
@@ -216,7 +250,7 @@ class PowerBBAJAXtMOD
 		$ReplyArr['where']			        = 	array('id',$PowerBB->_POST['reply_id']);
 
 		$update = $PowerBB->core->Update($ReplyArr,'reply');
-
+       }
 		// show message
 		//$PowerBB->_POST['message'] = $PowerBB->Powerparse->replace_htmlentities($PowerBB->_POST['message']);
 		$PowerBB->_POST['message'] = $PowerBB->Powerparse->replace($PowerBB->_POST['message']);
@@ -224,8 +258,13 @@ class PowerBBAJAXtMOD
 		$PowerBB->_POST['message'] = $PowerBB->Powerparse->censor_words($PowerBB->_POST['message']);
 
 		echo '<div class="text">'.$PowerBB->_POST['message'].'</div>';
+		if($error_stop == false)
+		{
+		echo '<br /><div class="msg_row1" style="width:auto;padding:10px;border:1px solid #F9AA00;">'.$error_msg.'</div><br />';
+		}
         exit;
 	 }
+
 	function _editsubjectajax()
 	{
 		global $PowerBB;
@@ -242,6 +281,41 @@ class PowerBBAJAXtMOD
 			 $PowerBB->_POST['message'] = preg_replace_callback('#\[mention\](.+)\[\/mention\]#iUs', array($this, 'mention_reply_callback'), $PowerBB->_POST['message']);
 			}
 
+        $error_stop = true;
+		$TextPost = utf8_decode($PowerBB->_POST['message']);
+ 		$TextPost = preg_replace('/\s+/', '', $TextPost);
+		$TextPost = preg_replace('#\[IMG\](.*)\[/IMG\]#siU', '', $TextPost);
+		$TextPost = preg_replace('#[(.*)]#siU', '', $TextPost);
+		$TextPost = preg_replace('#[/(.*)]#siU', '', $TextPost);
+		$TextPost = $PowerBB->Powerparse->remove_message_quotes($TextPost);
+
+		if (empty($TextPost))
+		{
+		$PowerBB->_CONF['template']['_CONF']['lang']['post_text_min'] = str_replace("5", $PowerBB->_CONF['info_row']['post_text_min'], $PowerBB->_CONF['template']['_CONF']['lang']['post_text_min']);
+		$error_msg =($PowerBB->_CONF['template']['_CONF']['lang']['post_text_min']);
+		$error_stop = false;
+		}
+
+		if(strlen($TextPost) >= $PowerBB->_CONF['info_row']['post_text_min'])
+		{
+		// Continue
+		}
+		else
+		{
+		$PowerBB->_CONF['template']['_CONF']['lang']['post_text_min'] = str_replace("5", $PowerBB->_CONF['info_row']['post_text_min'], $PowerBB->_CONF['template']['_CONF']['lang']['post_text_min']);
+		$error_msg =($PowerBB->_CONF['template']['_CONF']['lang']['post_text_min']);
+		$error_stop = false;
+		}
+
+		if (isset($TextPost{$PowerBB->_CONF['info_row']['post_text_max']}))
+		{
+		 $PowerBB->_CONF['template']['_CONF']['lang']['post_text_max'] = str_replace("30000", $PowerBB->_CONF['info_row']['post_text_max'], $PowerBB->_CONF['template']['_CONF']['lang']['post_text_max']);
+		 $error_msg =($PowerBB->_CONF['template']['_CONF']['lang']['post_text_max']);
+		 $error_stop = false;
+		}
+
+       if($error_stop)
+       {
 		$SubjectArr 			= 	array();
 		$SubjectArr['field'] 	= 	array();
         $SubjectArr['field']['text'] 	        = 	$PowerBB->functions->CleanVariable($PowerBB->_POST['message'],'nohtml');
@@ -250,7 +324,7 @@ class PowerBBAJAXtMOD
 		$SubjectArr['where']			    = 	array('id',$PowerBB->_POST['subject_id']);
 
 		$update = $PowerBB->core->Update($SubjectArr,'subject');
-
+       }
 		// show message
 		//$PowerBB->_POST['message'] = $PowerBB->Powerparse->replace_htmlentities($PowerBB->_POST['message']);
 
@@ -259,6 +333,11 @@ class PowerBBAJAXtMOD
 		$PowerBB->_POST['message'] = $PowerBB->Powerparse->censor_words($PowerBB->_POST['message']);
 
 		echo '<div class="text">'.$PowerBB->_POST['message'].'</div>';
+
+		if($error_stop == false)
+		{
+		echo '<br /><div class="msg_row1" style="width:auto;padding:10px;border:1px solid #F9AA00;">'.$error_msg.'</div><br />';
+		}
         exit;
 	 }
 
@@ -276,7 +355,7 @@ class PowerBBAJAXtMOD
 			}
 	        $reply_id = intval($PowerBB->_POST['reply_id']);
 			// insert mention
-			$Getmention_youNumrs = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT *  FROM " . $PowerBB->prefix . "mention WHERE you = '$username' AND reply_id = '$reply_id' AND user_read = '1'"));
+			$Getmention_youNumrs = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->prefix . "mention WHERE you = '$username' AND reply_id = '$reply_id' AND user_read = '1'"));
 			if(!$Getmention_youNumrs)
 			{
 			$InsertArr 					= 	array();
@@ -315,7 +394,7 @@ class PowerBBAJAXtMOD
 	        $reply_id = 0;
 	        $topic_id = intval($PowerBB->_POST['subject_id']);
 			// insert mention
-			$Getmention_youNumrs = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT *  FROM " . $PowerBB->prefix . "mention WHERE you = '$username' AND topic_id = '$topic_id' AND user_read = '1'"));
+			$Getmention_youNumrs = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->prefix . "mention WHERE you = '$username' AND topic_id = '$topic_id' AND user_read = '1'"));
 			if(!$Getmention_youNumrs)
 			{
 				$InsertArr 					= 	array();

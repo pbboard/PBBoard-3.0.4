@@ -557,10 +557,10 @@ class PowerBBFunctions
 							// Get online forums
 							if ($PowerBB->_CONF['info_row']['active_forum_online_number'])
 							{
-							  $Forum_online_number = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT id FROM " . $PowerBB->table['online'] . " WHERE section_id='" . $forum['id'] . "'"));
+							  $Forum_online_number = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['online'] . " WHERE section_id='" . $forum['id'] . "' LIMIT 1"));
 							  if ($forum['is_sub'])
 							  {
-							  $Forum_online_number_sub = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT id FROM " . $PowerBB->table['online'] . " WHERE subject_show ='" . $forum['id'] . "' "));
+							  $Forum_online_number_sub = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['online'] . " WHERE subject_show ='" . $forum['id'] . "' LIMIT 1"));
 							  $forum['forum_online'] = $Forum_online_number+$Forum_online_number_sub;
 							  }
 							  else
@@ -2253,7 +2253,7 @@ return preg_replace($pattern, $replacement, $email);
  	function GetDisplayForums()
  	{
  		global $PowerBB;
-        $display_forums_nm = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT id FROM " . $PowerBB->table['section'] . "  WHERE sec_section<>0"));
+        $display_forums_nm = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['section'] . "  WHERE sec_section<>0 LIMIT 1"));
 	   if ($display_forums_nm == '0')
 	   {
 		$update = $PowerBB->DB->sql_query("UPDATE " . $PowerBB->table['info'] . " SET value='0' WHERE var_name='last_subject_writer_not_in'");
@@ -2440,14 +2440,14 @@ return preg_replace($pattern, $replacement, $email);
  	{
      global $PowerBB;
 		// The number of section's replys number
-		$reply_num = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT id FROM " . $PowerBB->table['reply'] . " WHERE section = '$SectionCache' "));
+		$reply_num = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['reply'] . " WHERE section = '$SectionCache' LIMIT 1"));
 		$UpdateArr 					= 	array();
 		$UpdateArr['field']			=	array();
 		$UpdateArr['field']['reply_num'] 	= 	$reply_num;
 		$UpdateArr['where']					= 	array('id',$SectionCache);
 		$UpdateReplyNumber = $PowerBB->core->Update($UpdateArr,'section');
 		// The number of section's subjects number
-		$subject_nm = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT id FROM " . $PowerBB->table['subject'] . " WHERE section = '$SectionCache' AND delete_topic='0'"));
+		$subject_nm = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['subject'] . " WHERE section = '$SectionCache' AND delete_topic='0' LIMIT 1"));
 
 		$UpdateArr 					= 	array();
 		$UpdateArr['field']			=	array();
@@ -2557,8 +2557,8 @@ return preg_replace($pattern, $replacement, $email);
 		}
 		else
 		{
-		$review_replyNumArr = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT id FROM " . $PowerBB->table['reply'] . " WHERE section='$SectionCache' and review_reply=1 "));
-		$review_subjectNumArr = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT id FROM " . $PowerBB->table['subject'] . " WHERE section='$SectionCache' and review_subject=1 "));
+		$review_replyNumArr = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['reply'] . " WHERE section='$SectionCache' and review_reply=1 LIMIT 1"));
+		$review_subjectNumArr = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['subject'] . " WHERE section='$SectionCache' and review_subject=1 LIMIT 1"));
 			$CacheArr 			= 	array();
 			$CacheArr['where'] 	= 	array('section_id',$SectionCache);
 			$cache = $PowerBB->moderator->CreateModeratorsCache($CacheArr);

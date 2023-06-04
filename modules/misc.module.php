@@ -550,7 +550,7 @@ class PowerBBMiscMOD
 
 		 // Who posted
         $PowerBB->_GET['subject_id'] = $PowerBB->functions->CleanVariable($PowerBB->_GET['subject_id'],'intval');
-        $Posted_number = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['reply'] . " WHERE subject_id='" . $PowerBB->_GET['subject_id'] . "' and delete_topic <>1"));
+        $Posted_number = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['reply'] . " WHERE subject_id='" . $PowerBB->_GET['subject_id'] . "' and delete_topic <>1 LIMIT 1"));
         $PowerBB->template->assign('Posted_number',$Posted_number);
 
          $PowerBB->template->display('who_posted1');
@@ -563,7 +563,7 @@ class PowerBBMiscMOD
 
  				$PowerBB->template->assign('WhoPosted',$r);
 
- 				  $Posted_writer_number = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['reply'] . " WHERE subject_id='" . $PowerBB->_GET['subject_id'] . "' and writer='" . $r['writer'] . "' and delete_topic <>1"));
+ 				  $Posted_writer_number = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['reply'] . " WHERE subject_id='" . $PowerBB->_GET['subject_id'] . "' and writer='" . $r['writer'] . "' and delete_topic <>1 LIMIT 1"));
                   $PowerBB->template->assign('Posted_writer_number',$Posted_writer_number);
                   $PowerBB->template->assign('subject_id',$subject_id);
                   $PowerBB->template->assign('reply_id',$r['id']);
@@ -758,7 +758,7 @@ class PowerBBMiscMOD
 		$SubjectInfoid = $PowerBB->_GET['id'];
 		$member_row_id = $PowerBB->_CONF['member_row']['id'];
 
-		$subject_user_emailed_nm = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['emailed'] . " WHERE subject_id='$SubjectInfoid' and user_id ='$member_row_id'"));
+		$subject_user_emailed_nm = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['emailed'] . " WHERE subject_id='$SubjectInfoid' and user_id ='$member_row_id'"));
 
 
 

@@ -389,12 +389,12 @@ class PowerBBProfileMOD
 
 		//////////
 		//show Award member
-       $ALL_Awards_nm = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT id FROM " . $PowerBB->table['award'] . " "));
+       $ALL_Awards_nm = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['award'] . " "));
        if ($ALL_Awards_nm > 0)
 		{
 
 		 $username = $PowerBB->_CONF['template']['MemberInfo']['username'];
-         $Award_nm = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT id FROM " . $PowerBB->table['award'] . " WHERE username='$username'"));
+         $Award_nm = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['award'] . " WHERE username='$username'"));
          $PowerBB->template->assign('Awards_nm',$Award_nm);
 
 		$AwardArr 							= 	array();
@@ -424,7 +424,7 @@ class PowerBBProfileMOD
  		 if ($PowerBB->_CONF['info_row']['active_visitor_message'] == '1')
 		 {
 		      	$userid = $PowerBB->_CONF['template']['MemberInfo']['id'];
-		        $GetVisitorMessageNum = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['visitormessage'] . " WHERE userid = '$userid'"));
+		        $GetVisitorMessageNum = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['visitormessage'] . " WHERE userid = '$userid'"));
 		       	$PowerBB->template->assign('visitor_message_num',$GetVisitorMessageNum);
 		       	$perpage = '8';
 

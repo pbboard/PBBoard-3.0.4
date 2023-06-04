@@ -512,7 +512,7 @@ class PowerBBReplyAddMOD
         $PowerBB->_GET['reply_id'] = $PowerBB->functions->CleanVariable($PowerBB->_GET['reply_id'],'intval');
         $PowerBB->_GET['subject_id'] = $PowerBB->functions->CleanVariable($PowerBB->_GET['subject_id'],'intval');
   		$Subjectid = $PowerBB->_GET['id'];
-        $PagerReplyNumArr = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['reply'] . " WHERE subject_id='$Subjectid' and delete_topic <>1"));
+        $PagerReplyNumArr = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['reply'] . " WHERE subject_id='$Subjectid' and delete_topic <>1 LIMIT 1"));
 
 		$PowerBB->_POST['title'] = $PowerBB->functions->CleanVariable($PowerBB->_POST['title'],'trim');
 
@@ -560,16 +560,16 @@ class PowerBBReplyAddMOD
 		     		else
 		     		{
 
-		              	if (empty($PowerBB->_POST['text']))
+			                    $TextPost = utf8_decode($PowerBB->_POST['text']);
+			                    $TextPost = preg_replace('#\[IMG\](.*)\[/IMG\]#siU', '', $TextPost);
+			                    $TextPost = $PowerBB->Powerparse->remove_message_quotes($TextPost);
+
+		              	if (empty($TextPost))
 						{
 		     				   $PowerBB->functions->ShowHeader($PowerBB->_CONF['template']['_CONF']['lang']['Mistake']);
 		     				   $PowerBB->_CONF['template']['_CONF']['lang']['post_text_min'] = str_replace("5", $PowerBB->_CONF['info_row']['post_text_min'], $PowerBB->_CONF['template']['_CONF']['lang']['post_text_min']);
 		                       $PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['post_text_min']);
 						}
-
-
-			                    $TextPost = utf8_decode($PowerBB->_POST['text']);
-			                    $TextPost = preg_replace('#\[IMG\](.*)\[/IMG\]#siU', '', $TextPost);
 
 			      				$text_max_num = strlen($TextPost) <= $PowerBB->_CONF['info_row']['post_text_max'];
 					     		if ($text_max_num)
@@ -847,9 +847,6 @@ class PowerBBReplyAddMOD
 		     		$UpdateReplyNumber = $PowerBB->subject->UpdateReplyNumber($RepArr);
 
 
-
-
-
                    $UpdateSubjectNumber = $PowerBB->cache->UpdateReplyNumber(array('reply_num'	=>	$PowerBB->_CONF['info_row']['reply_number']));
 
 		     		//////////
@@ -921,13 +918,11 @@ class PowerBBReplyAddMOD
 							if ($PowerBB->_CONF['info_row']['allowed_emailed'] == '1')
 							{
 
-
-
 							$SectionInfoid = $this->SectionInfo['id'];
 							$SubjectInfoid = $this->SubjectInfo['id'];
 							$member_row_id = $PowerBB->_CONF['member_row']['id'];
 
-							$subject_user_emailed_nm = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['emailed'] . " WHERE subject_id='$SubjectInfoid' and user_id ='$member_row_id'"));
+							$subject_user_emailed_nm = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['emailed'] . " WHERE subject_id='$SubjectInfoid' and user_id ='$member_row_id' LIMIT 1"));
 
 
 							if ($PowerBB->_POST['emailed'])
@@ -1097,7 +1092,7 @@ class PowerBBReplyAddMOD
                    eval($PowerBB->functions->get_fetch_hooks('insert_reply'));
 
 					// get url to last reply
-					$Reply_NumArr = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['reply'] . " WHERE subject_id='$Subjectid' and delete_topic <>1"));
+					$Reply_NumArr = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['reply'] . " WHERE subject_id='$Subjectid' and delete_topic <>1 LIMIT 1"));
 					$ss_r = $PowerBB->_CONF['info_row']['perpage']/2+1;
 					$roun_ss_r = round($ss_r, 0);
 					$reply_number_r = $Reply_NumArr-$roun_ss_r+1;
@@ -1326,7 +1321,7 @@ class PowerBBReplyAddMOD
 
 	        $reply_id = $last_reply_info['id']+1;
 			// insert mention
-			$Getmention_youNumrs = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT *  FROM " . $PowerBB->prefix . "mention WHERE you = '$username' AND reply_id = '$reply_id' AND user_read = '1'"));
+			$Getmention_youNumrs = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->prefix . "mention WHERE you = '$username' AND reply_id = '$reply_id' AND user_read = '1' LIMIT 1"));
 			if(!$Getmention_youNumrs)
 			{
 				$InsertArr 					= 	array();

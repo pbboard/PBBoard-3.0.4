@@ -150,7 +150,7 @@ class PowerBBCoreMOD
 
 		$PowerBB->_CONF['template']['while']['TagSubjectList'] = $PowerBB->tag_subject->GetSubjectList($TagSubjectArr);
 		$subject_id = $PowerBB->_GET['id'];
-        $SubjectTagNm = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['tag_subject'] . " WHERE subject_id='$subject_id'"));
+        $SubjectTagNm = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['tag_subject'] . " WHERE subject_id='$subject_id' LIMIT 1"));
 		 $PowerBB->template->assign('SubjectTagNm',$SubjectTagNm);
 		 $PowerBB->template->assign('subjectid',$PowerBB->_GET['id']);
          $PowerBB->template->display('tags_edit_subject');

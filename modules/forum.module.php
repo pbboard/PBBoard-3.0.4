@@ -346,7 +346,7 @@ function _AllCacheStart()
 		$PowerBB->_CONF['template']['while']['SectionVisitor'] = $PowerBB->core->GetList($SecArr,'online');
 
 
-		$Forum_online_number = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT id FROM " . $PowerBB->table['online'] . " WHERE section_id='" . $PowerBB->_GET['id'] . "' AND username='Guest'"));
+		$Forum_online_number = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['online'] . " WHERE section_id='" . $PowerBB->_GET['id'] . "' AND username='Guest' LIMIT 1"));
 		$PowerBB->_CONF['template']['GuestNumber'] = $Forum_online_number;
 
     	$PowerBB->_CONF['template']['MemberNumber'] = sizeof($PowerBB->_CONF['template']['while']['SectionVisitor']);
@@ -805,10 +805,10 @@ function _AllCacheStart()
 							// Get online forums
 							if ($PowerBB->_CONF['info_row']['active_forum_online_number'])
 							{
-							  $Forum_online_number = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT id FROM " . $PowerBB->table['online'] . " WHERE section_id='" . $forum['id'] . "'"));
+							  $Forum_online_number = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['online'] . " WHERE section_id='" . $forum['id'] . "' LIMIT 1"));
 							  if ($forum['is_sub'])
 							  {
-							  $Forum_online_number_sub = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT id FROM " . $PowerBB->table['online'] . " WHERE subject_show ='" . $forum['id'] . "' "));
+							  $Forum_online_number_sub = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['online'] . " WHERE subject_show ='" . $forum['id'] . "' LIMIT 1"));
 							  $forum['forum_online'] = $Forum_online_number+$Forum_online_number_sub;
 							  }
 							  else
@@ -1048,7 +1048,7 @@ function _AllCacheStart()
           }
           else
 		  {
-		  $Forum_user_subject_number = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT id FROM " . $PowerBB->table['subject'] . " WHERE section ='" . $this->Section['id'] . "' AND writer='" . $PowerBB->_CONF['member_row']['username'] . "'"));
+		  $Forum_user_subject_number = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['subject'] . " WHERE section ='" . $this->Section['id'] . "' AND writer='" . $PowerBB->_CONF['member_row']['username'] . "' LIMIT 1"));
           $subject_nums = $Forum_user_subject_number;
           }
         }
@@ -1134,7 +1134,7 @@ function _AllCacheStart()
 
 // Get the list of subjects that need review
 				 $username = $PowerBB->_CONF['member_row']['username'];
-			     $SUBJECTS_review_subject_mem = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['subject'] . " WHERE section = ".$PowerBB->_GET['id']." AND writer='$username' AND review_subject='1' "));
+			     $SUBJECTS_review_subject_mem = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['subject'] . " WHERE section = ".$PowerBB->_GET['id']." AND writer='$username' AND review_subject='1' LIMIT 1"));
 
 			 if ($PowerBB->functions->ModeratorCheck($this->Section['id']))
 			 {
@@ -1279,7 +1279,7 @@ function _AllCacheStart()
 		   $PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['no_search_results']);
 		 }
 
-          	$subject_nm = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT id FROM " . $PowerBB->table['subject'] . " WHERE text LIKE '%$keyword%' AND section = '$section'"));
+          	$subject_nm = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['subject'] . " WHERE text LIKE '%$keyword%' AND section = '$section' LIMIT 1"));
 
 
             $sec = ' AND section =  ';
@@ -1362,11 +1362,11 @@ function _AllCacheStart()
 
 			if ($PowerBB->functions->ModeratorCheck($tSection['moderators']))
 			{
-          	 $subject_nm = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['subject'] . " WHERE text LIKE '%$keyword%' AND section = '$section'"));
+          	 $subject_nm = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['subject'] . " WHERE text LIKE '%$keyword%' AND section = '$section' LIMIT 1"));
             }
              else
 			{
-          	 $subject_nm = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['subject'] . " WHERE text LIKE '%$keyword%' AND section = '$section' AND sec_subject = 0"));
+          	 $subject_nm = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['subject'] . " WHERE text LIKE '%$keyword%' AND section = '$section' AND sec_subject = 0 LIMIT 1"));
             }
 
             $PowerBB->template->assign('nm',$subject_nm);

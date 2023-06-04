@@ -559,7 +559,7 @@ class PowerBBCodeParse
 			else
             {
 
-			$Reply_NumArr = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['reply'] . " WHERE subject_id='$Subjectid' and id <'$id' and delete_topic <>1"));
+			$Reply_NumArr = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['reply'] . " WHERE subject_id='$Subjectid' and id <'$id' and delete_topic <>1 LIMIT 1"));
 			$ss_r = $PowerBB->_CONF['info_row']['perpage']/2+1;
 			$roun_ss_r = round($ss_r, 0);
 			$reply_number_r = $Reply_NumArr-$roun_ss_r+1;

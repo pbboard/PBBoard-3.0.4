@@ -91,7 +91,7 @@ class PowerBBMemberlistMOD
 		$PowerBB->_GET['count'] = (!isset($PowerBB->_GET['count'])) ? 0 : $PowerBB->_GET['count'];
        $PowerBB->_GET['count'] = $PowerBB->functions->CleanVariable($PowerBB->_GET['count'],'intval');
 
-       $mn = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['member'] . ""));
+       $mn = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['member'] . ""));
 
 		$ListArr 						= 	array();
 
@@ -128,11 +128,11 @@ class PowerBBMemberlistMOD
 
 	}
 
-		function _GetMemberList1()
+	function _GetMemberList1()
 	{
 		global $PowerBB;
 
-       $mn = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['member'] . ""));
+       $mn = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['member'] . ""));
 
 
 		$PowerBB->_GET['count'] = (!isset($PowerBB->_GET['count'])) ? 0 : $PowerBB->_GET['count'];
@@ -172,11 +172,11 @@ class PowerBBMemberlistMOD
 
 	}
 
-		function _GetMemberList2()
+	function _GetMemberList2()
 	{
 		global $PowerBB;
 
-       $mn = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['member'] . ""));
+       $mn = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['member'] . ""));
 
 
 		$PowerBB->_GET['count'] = (!isset($PowerBB->_GET['count'])) ? 0 : $PowerBB->_GET['count'];
@@ -216,11 +216,11 @@ class PowerBBMemberlistMOD
 
 	}
 
-		function _GetMemberList3()
+	function _GetMemberList3()
 	{
 		global $PowerBB;
 
-       $mn = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['member'] . ""));
+       $mn = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['member'] . ""));
 
 
 		$PowerBB->_GET['count'] = (!isset($PowerBB->_GET['count'])) ? 0 : $PowerBB->_GET['count'];
@@ -294,7 +294,7 @@ class PowerBBMemberlistMOD
 			$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['path_not_true']);
 		}
   		$letr 	= 	$PowerBB->_GET['letr'] . "%";
-       $mn = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['member'] . " WHERE username LIKE '$letr' "));
+       $mn = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['member'] . " WHERE username LIKE '$letr' "));
 		$ListArr 						= 	array();
 
 		$ListArr['where'][0] 			= 	array();
@@ -370,7 +370,7 @@ class PowerBBMemberlistMOD
   		$oper 	= 	" LIKE";
   		}
 
-       $mn = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['member'] . " WHERE username " .$oper.$username. " "));
+       $mn = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['member'] . " WHERE username " .$oper.$username. " "));
 
 
 		$ListArr 						= 	array();

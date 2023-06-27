@@ -1054,7 +1054,15 @@ function _AllCacheStart()
         }
         else
         {
+		  if ($PowerBB->functions->ModeratorCheck($this->Section['moderators']))
+		  {
           $subject_nums = $this->Section['subject_num'];
+          }
+          else
+		  {
+		  $Forum_no_review_subject = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['subject'] . " WHERE section ='" . $this->Section['id'] . "' AND review_subject <> 1 and delete_topic <> 1 LIMIT 1"));
+          $subject_nums = $Forum_no_review_subject;
+          }
         }
 
 	    $SubjectArr['proc'] 						= 	array();

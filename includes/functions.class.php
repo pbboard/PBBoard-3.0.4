@@ -966,6 +966,11 @@ class PowerBBFunctions
 	   $temparray = explode(".", $filename);
 	   $extension = $temparray[count($temparray) - 1];
 	   $extension = strtolower($extension);
+	    // Clean Variable extenstion
+	    // I hate SQL injections
+		// I hate XSS
+		$extension = $PowerBB->functions->CleanVariable($extension,'html');
+		$extension = $PowerBB->functions->CleanVariable($extension,'sql');
 	   return '.' . $extension;
 	}
  	/**

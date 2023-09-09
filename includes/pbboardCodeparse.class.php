@@ -230,6 +230,21 @@ class PowerBBCodeParse
 	        $string = str_replace('[/table]', '</table>', $string);
 	        $string = str_replace('[/tbody]', '</tbody>', $string);
 	        $string = str_replace('[/thead]', '</thead>', $string);
+
+		$regexcode_iframe['[iframe]'] = '#\[iframe\](.+)\[\/iframe\]#iUs';
+		$string = preg_replace_callback($regexcode_iframe, function($matches_iframe) {
+        $matches_iframe[1] = str_replace('=', '', $matches_iframe[1]);
+        $matches_iframe[1] = str_replace('location', '', $matches_iframe[1]);
+         if (@filter_var($matches_iframe[1], FILTER_VALIDATE_URL) === FALSE)
+         {
+         return $matches_iframe[1];
+         }
+         else
+         {
+		 return "[iframe]".$matches_iframe[1]."[/iframe]";
+		 }
+		}, $string);
+
             $string = preg_replace('#\[iframe\](.+)\[\/iframe\]#iUs', '<iframe width="560" height="315" src="$1" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>', $string);
 
             $string = preg_replace("#\[(left|center|right|justify)\](.*?)\[/(left|center|right|justify)\]#si", "<div style=\"text-align: $1;\" class=\"mycode_align\">$2</div>", $string);

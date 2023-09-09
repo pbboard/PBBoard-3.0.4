@@ -233,7 +233,6 @@ class PowerBBCodeParse
 
 		$regexcode_iframe['[iframe]'] = '#\[iframe\](.+)\[\/iframe\]#iUs';
 		$string = preg_replace_callback($regexcode_iframe, function($matches_iframe) {
-        $matches_iframe[1] = str_replace('=', '', $matches_iframe[1]);
         $matches_iframe[1] = str_replace('location', '', $matches_iframe[1]);
          if (@filter_var($matches_iframe[1], FILTER_VALIDATE_URL) === FALSE)
          {

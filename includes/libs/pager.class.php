@@ -319,8 +319,9 @@ class PowerBBPager
 	  	 echo "<META HTTP-EQUIV=\"refresh\" CONTENT=\"0; URL=$url\">\n";
         }
 
-$string = str_replace('[action]',"index.php?page=misc&amp;pagenav_general=1",$string);
-
+        $string = str_replace('[action]',"index.php?page=misc&amp;pagenav_general=1",$string);
+        $string = str_replace('&amp;count=1"','"',$string);
+        $string = str_replace("&amp;count=1'","'",$string);
 		return $string;
 	}
 }

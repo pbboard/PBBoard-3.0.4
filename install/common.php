@@ -1,4 +1,5 @@
 <?php
+error_reporting(E_ERROR | E_PARSE);
 // check Requirements
 if (function_exists('idate')) {
 $check_PHP ='0';

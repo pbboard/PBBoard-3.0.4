@@ -1,7 +1,7 @@
 <br />
 
 <div class="address_bar">{$lang['Control_Panel']} &raquo;
- <a href="index.php?page=warn&amp;main=1">{$lang['warns']}</a></div>
+ <a href="index.php?page=warn&amp;main=1">{$lang['warns']}</a> <b>{$WarnNumber}</b></div>
 
 <br />
 
@@ -24,5 +24,10 @@
    </td>
 </tr>
 {/Des::while}
+<tr valign="top" align="center">
+<td class="row1" colspan="2">
+<span class="pager-left">{$pager} </span>
+</td>
+</tr>
 </table>
 

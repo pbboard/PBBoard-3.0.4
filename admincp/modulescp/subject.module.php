@@ -96,6 +96,20 @@ class PowerBBSubjectMOD extends _functions
 				{
 					$this->_ReviewSubject();
 				}
+                elseif ($PowerBB->_GET['do_review_subject'])
+				{
+					$this->_Do_Review_Subject();
+				}
+				elseif ($PowerBB->_GET['review_reply'])
+				{				  if ($PowerBB->_GET['main_replys'])
+				  {
+					$this->_Review_Reply();
+				  }
+				 elseif ($PowerBB->_GET['do_review_reply'])
+				  {
+					$this->_Do_Review_Reply();
+				  }
+				}
 			}
 
 			$PowerBB->template->display('footer');
@@ -106,21 +120,37 @@ class PowerBBSubjectMOD extends _functions
 	{
 		global $PowerBB;
 
-		$CloseArr 							= 	array();
-		$CloseArr['proc'] 					= 	array();
-		$CloseArr['proc']['*'] 				= 	array('method'=>'clean','param'=>'html');
+		$PowerBB->_GET['count'] = (!isset($PowerBB->_GET['count'])) ? 0 : $PowerBB->_GET['count'];
+		$PowerBB->_GET['count'] = $PowerBB->functions->CleanVariable($PowerBB->_GET['count'],'intval');
 
+ 	    $close_nm = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['subject'] . " WHERE close = 1 "));
+        $subject_perpage = '32';
+
+		$CloseArr 					= 	array();
+		$CloseArr['order']			=	array();
+		$CloseArr['order']['field']	=	'id';
+		$CloseArr['order']['type']	=	'DESC';
+		$CloseArr['proc'] 			= 	array();
+		$CloseArr['proc']['*'] 		= 	array('method'=>'clean','param'=>'html');
 		$CloseArr['where']					=	array();
 		$CloseArr['where'][0]				=	array();
 		$CloseArr['where'][0]['name']		=	'close';
 		$CloseArr['where'][0]['oper']		=	'=';
 		$CloseArr['where'][0]['value']		=	'1';
 
-		$CloseArr['order']					=	array();
-		$CloseArr['order']['field']			=	'id';
-		$CloseArr['order']['type']			=	'DESC';
+		$CloseArr['pager'] 				= 	array();
+		$CloseArr['pager']['total']		= 	$close_nm;
+		$CloseArr['pager']['perpage'] 	= 	$subject_perpage;
+		$CloseArr['pager']['count'] 		= 	$PowerBB->_GET['count'];
+		$CloseArr['pager']['location'] 	= 	'index.php?page=subject&amp;close=1&amp;main=1';
+		$CloseArr['pager']['var'] 		= 	'count';
 
-		$PowerBB->_CONF['template']['while']['CloseList'] = $PowerBB->subject->GetSubjectList($CloseArr);
+		$PowerBB->_CONF['template']['while']['CloseList'] = $PowerBB->core->GetList($CloseArr,'subject');
+        if ($close_nm > $subject_perpage)
+        {
+		$PowerBB->template->assign('pager',$PowerBB->pager->show());
+        }
+        $PowerBB->template->assign('CloseNumber',$close_nm);
 
 		$PowerBB->template->display('subjects_closed');
 	}
@@ -128,23 +158,37 @@ class PowerBBSubjectMOD extends _functions
 	function _AttachSubject()
 	{
 		global $PowerBB;
+		$PowerBB->_GET['count'] = (!isset($PowerBB->_GET['count'])) ? 0 : $PowerBB->_GET['count'];
+		$PowerBB->_GET['count'] = $PowerBB->functions->CleanVariable($PowerBB->_GET['count'],'intval');
 
-		$AttachArr 							= 	array();
-		$AttachArr['proc'] 					= 	array();
-		$AttachArr['proc']['*'] 			= 	array('method'=>'clean','param'=>'html');
+ 	    $attach_nm = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['subject'] . " WHERE attach_subject = 1 "));
+        $subject_perpage = '32';
 
+		$AttachArr 					= 	array();
+		$AttachArr['order']			=	array();
+		$AttachArr['order']['field']	=	'id';
+		$AttachArr['order']['type']	=	'DESC';
+		$AttachArr['proc'] 			= 	array();
+		$AttachArr['proc']['*'] 		= 	array('method'=>'clean','param'=>'html');
 		$AttachArr['where']					=	array();
 		$AttachArr['where'][0]				=	array();
 		$AttachArr['where'][0]['name']		=	'attach_subject';
 		$AttachArr['where'][0]['oper']		=	'=';
 		$AttachArr['where'][0]['value']		=	'1';
 
-		$AttachArr['order']					=	array();
-		$AttachArr['order']['field']		=	'id';
-		$AttachArr['order']['type']			=	'DESC';
+		$AttachArr['pager'] 				= 	array();
+		$AttachArr['pager']['total']		= 	$attach_nm;
+		$AttachArr['pager']['perpage'] 	= 	$subject_perpage;
+		$AttachArr['pager']['count'] 		= 	$PowerBB->_GET['count'];
+		$AttachArr['pager']['location'] 	= 	'index.php?page=subject&amp;attach=1&amp;main=1';
+		$AttachArr['pager']['var'] 		= 	'count';
 
-		$PowerBB->_CONF['template']['while']['AttachList'] = $PowerBB->subject->GetSubjectList($AttachArr);
-
+		$PowerBB->_CONF['template']['while']['AttachList'] = $PowerBB->core->GetList($AttachArr,'subject');
+        if ($attach_nm > $subject_perpage)
+        {
+		$PowerBB->template->assign('pager',$PowerBB->pager->show());
+        }
+        $PowerBB->template->assign('AttachNumber',$attach_nm);
 		$PowerBB->template->display('subjects_attach');
 	}
 
@@ -806,25 +850,577 @@ class _functions
 	{
 		global $PowerBB;
 
-		$ReviewArr 							= 	array();
-		$ReviewArr['proc'] 					= 	array();
-		$ReviewArr['proc']['*'] 				= 	array('method'=>'clean','param'=>'html');
+		$PowerBB->_GET['count'] = (!isset($PowerBB->_GET['count'])) ? 0 : $PowerBB->_GET['count'];
+		$PowerBB->_GET['count'] = $PowerBB->functions->CleanVariable($PowerBB->_GET['count'],'intval');
 
+ 	    $review_nm = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['subject'] . " WHERE review_subject = 1 "));
+        $subject_perpage = $PowerBB->_CONF['info_row']['subject_perpage'];
+
+		$ReviewArr 					= 	array();
+		$ReviewArr['order']			=	array();
+		$ReviewArr['order']['field']	=	'id';
+		$ReviewArr['order']['type']	=	'DESC';
+		$ReviewArr['proc'] 			= 	array();
+		$ReviewArr['proc']['*'] 		= 	array('method'=>'clean','param'=>'html');
 		$ReviewArr['where']					=	array();
 		$ReviewArr['where'][0]				=	array();
 		$ReviewArr['where'][0]['name']		=	'review_subject';
 		$ReviewArr['where'][0]['oper']		=	'=';
 		$ReviewArr['where'][0]['value']		=	'1';
 
-		$ReviewArr['order']					=	array();
-		$ReviewArr['order']['field']			=	'id';
-		$ReviewArr['order']['type']			=	'DESC';
+		$ReviewArr['pager'] 				= 	array();
+		$ReviewArr['pager']['total']		= 	$review_nm;
+		$ReviewArr['pager']['perpage'] 	= 	$subject_perpage;
+		$ReviewArr['pager']['count'] 		= 	$PowerBB->_GET['count'];
+		$ReviewArr['pager']['location'] 	= 	'index.php?page=subject&amp;review=1&amp;main=1';
+		$ReviewArr['pager']['var'] 		= 	'count';
 
-		$PowerBB->_CONF['template']['while']['ReviewList'] = $PowerBB->subject->GetSubjectList($ReviewArr);
-
+		$PowerBB->_CONF['template']['while']['ReviewList'] = $PowerBB->core->GetList($ReviewArr,'subject');
+        if ($review_nm > $subject_perpage)
+        {
+		$PowerBB->template->assign('pager',$PowerBB->pager->show());
+        }
+        $PowerBB->template->assign('ReviewNumber',$review_nm);
+        $PowerBB->template->assign('Reviewreplys','1');
 		$PowerBB->template->display('subjects_reviewd');
 	}
 
+
+	function _Do_Review_Subject()
+	{
+       global $PowerBB;
+
+		if ($PowerBB->_POST['deletposts'])
+		{
+
+		if ($PowerBB->_CONF['group_info']['group_mod'] == '1')
+		{
+		if ($PowerBB->_CONF['group_info']['del_subject'] == '0')
+		{
+		$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['error_permission']);
+		}
+		}
+
+		if (empty($PowerBB->_POST['check']))
+		{
+		$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['Choose_incorrectl']);
+		}
+
+		$Subject_D = $PowerBB->_POST['check'];
+		foreach ($Subject_D as $GetSubject)
+		{
+
+		$UpdateArr 				= 	array();
+		$UpdateArr['field']		= 	array();
+		$UpdateArr['field']['review_subject'] 		= 	'0';
+		$UpdateArr['where'] 				= 	array('id',intval($GetSubject));
+
+		$update = $PowerBB->subject->UpdateSubject($UpdateArr);
+
+		$SubjectArr 			= 	array();
+		$SubjectArr['where'] 	= 	array('id',intval($GetSubject));
+
+		$this->SubjectInfo = $PowerBB->core->GetInfo($SubjectArr,'subject');
+
+
+		$Subjectid =  $this->SubjectInfo['id'];
+		$review_subject_nm = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['subject'] . " WHERE id='$Subjectid' and review_subject='1' "));
+		$subject_nm = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['subject'] . " WHERE section = '$section' and id='$Subjectid' "));
+
+		$SecArr 			= 	array();
+		$SecArr['where'] 	= 	array('id',$this->SubjectInfo['section']);
+
+		$this->SectionInfo = $PowerBB->core->GetInfo($SecArr,'section');
+
+
+
+		$SubjectArr = array();
+		$SubjectArr['where'] = array('id',$this->SubjectInfo['id']);
+
+		$SubjectInfo = $PowerBB->core->GetInfo($SubjectArr,'subject');
+
+
+		$subject_id = $this->SubjectInfo['id'];
+		$Getlast_Subjectr = $PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['subject'] . " WHERE id = '$subject_id' AND delete_topic<>1 AND review_subject<>1 ORDER by write_time DESC");
+		$GetLast_SubjectForm = $PowerBB->DB->sql_fetch_array($Getlast_Subjectr);
+		if (!$GetLast_SubjectForm)
+		{
+		$last_Subjectr = '';
+		}
+		else
+		{
+		$last_Subjectr = $GetLast_replierForm['writer'];
+		}
+
+		// Update Subject
+		if (empty($GetLast_SubjectForm['write_time']))
+		{
+		$write_time = $SubjectInfo['native_write_time'];
+		}
+		else
+		{
+		$write_time = $GetLast_SubjectForm['write_time'];
+		}
+
+
+		if ($this->SectionInfo['last_subjectid'] == $subject_id)
+		{
+		/**
+		*Update Section Cache ;)
+		*/
+		$SectionCache = $this->SubjectInfo['section'];
+		// The number of section's subjects number
+		$subject_num = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT id FROM " . $PowerBB->table['subject'] . " WHERE section = '$SectionCache' "));
+
+		$UpdateArr 					= 	array();
+		$UpdateArr['field']			=	array();
+		$UpdateArr['field']['subject_num'] 	= 	$subject_num;
+		$UpdateArr['where']					= 	array('id',$SectionCache);
+
+		$UpdateSubjectNumber = $PowerBB->core->Update($UpdateArr,'section');
+
+
+		$PowerBB->cache->UpdateSubjectNumber(array('subject_num'	=>	$subject_num));
+
+
+		$subject_nm = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT id FROM " . $PowerBB->table['subject'] . " WHERE section = '$SectionCache' "));
+
+		// The number of section's subjects number
+		$UpdateArr 					= 	array();
+		$UpdateArr['field']			=	array();
+
+		$UpdateArr['field']['subject_num'] 	= 	$subject_nm;
+		$UpdateArr['where']					= 	array('id',$SectionCache);
+
+		$UpdateSubjectNumber = $PowerBB->core->Update($UpdateArr,'section');
+
+
+		$PowerBB->cache->UpdateSubjectNumber(array('subject_num'	=>	$subject_nm));
+
+		$GetLastquerySubjectForm = $PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['subject'] . " WHERE id = '$subject_id' AND delete_topic<>1 ORDER by write_time DESC");
+		$GetLastSubjectForm = $PowerBB->DB->sql_fetch_array($GetLastquerySubjectForm);
+
+		if (!$GetLastReplyForm)
+		{
+		// Update Last subject's information in Section Form
+		$UpdateLastFormSecArr = array();
+		$UpdateLastFormSecArr['field']			=	array();
+
+		$UpdateLastFormSecArr['field']['last_writer'] 		= 	$SubjectInfo['writer'];
+		$UpdateLastFormSecArr['field']['last_subject'] 		= 	$SubjectInfo['title'];
+		$UpdateLastFormSecArr['field']['last_subjectid'] 	= 	$subject_id;
+		$UpdateLastFormSecArr['field']['last_date'] 	= 	$PowerBB->_CONF['now'];
+		$UpdateLastFormSecArr['field']['last_time'] 	= 	$PowerBB->_CONF['now'];
+		$UpdateLastFormSecArr['field']['icon'] 		    = 	$SubjectInfo['icon'];
+		$UpdateLastFormSecArr['field']['last_reply'] 	= 	0;
+		$UpdateLastFormSecArr['field']['last_berpage_nm']  = 	0;
+
+		$UpdateLastFormSecArr['where'] 		        = 	array('id',$SectionCache);
+
+		// Update Last Form Sec subject's information
+		$UpdateLastFormSec = $PowerBB->section->UpdateSection($UpdateLastFormSecArr);
+		}
+		else
+		{
+
+		// Update Last subject's information in Section Form
+		$UpdateLastFormSecArr = array();
+		$UpdateLastFormSecArr['field']			=	array();
+
+		$UpdateLastFormSecArr['field']['last_writer'] 		= 	$GetLastSubjectForm['writer'];
+		$UpdateLastFormSecArr['field']['last_subject'] 		= 	$GetLastSubjectForm['title'];
+		$UpdateLastFormSecArr['field']['last_subjectid'] 	= 	$GetLastSubjectForm['id'];
+		$UpdateLastFormSecArr['field']['last_date'] 	= 	$GetLastSubjectForm['write_time'];
+		$UpdateLastFormSecArr['field']['last_time'] 	= 	$GetLastSubjectForm['write_time'];
+		$UpdateLastFormSecArr['field']['icon'] 		    = 	$GetLastSubjectForm['icon'];
+		$UpdateLastFormSecArr['field']['last_reply'] 	= 	0;
+		$UpdateLastFormSecArr['field']['last_berpage_nm']  = 	0;
+
+		$UpdateLastFormSecArr['where'] 		        = 	array('id',$SectionCache);
+
+		// Update Last Form Sec subject's information
+		$UpdateLastFormSec = $PowerBB->section->UpdateSection($UpdateLastFormSecArr);
+		}
+
+		// Get Section Info
+		$SecaArr 			= 	array();
+		$SecaArr['where'] 	= 	array('id',$SectionCache);
+
+		$this->SecInfo = $PowerBB->section->GetSectionInfo($SecaArr);
+
+		// Update section's cache
+		$UpdateArr 				= 	array();
+		$UpdateArr['parent'] 	= 	$this->SecInfo['parent'];
+
+		$update_cache = $PowerBB->section->UpdateSectionsCache($UpdateArr);
+
+
+		unset($UpdateArr);
+		}
+
+		$DeleteSubjectArr				=	array();
+		$DeleteSubjectArr['where'] 	= 	array('id',intval($GetSubject));
+		$delSubject = $PowerBB->subject->DeleteSubject($DeleteSubjectArr);
+
+		$UpdateSectionCache1 = $PowerBB->functions->UpdateSectionCache($this->SubjectInfo['section']);
+
+		}
+
+		$UpdateSubjectNumber = $PowerBB->cache->UpdateSubjectNumber(array('subject_num'	=>	$PowerBB->_CONF['info_row']['subject_number']));
+
+		$PowerBB->functions->redirect($PowerBB->_SERVER['HTTP_REFERER']);
+
+ 		}
+		elseif($PowerBB->_POST['approveposts'])
+		{
+
+		if (empty($PowerBB->_POST['check']))
+		{
+		$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['Choose_incorrectl']);
+		}
+
+		$Subject_M = $PowerBB->_POST['check'];
+		foreach ($Subject_M as $GetSubject)
+		{
+		$UpdateArr 				= 	array();
+		$UpdateArr['field']		= 	array();
+		$UpdateArr['field']['review_subject'] 		= 	'0';
+		$UpdateArr['where'] 				= 	array('id',intval($GetSubject));
+
+		$update = $PowerBB->subject->UpdateSubject($UpdateArr);
+
+
+		$SubjectArr 			= 	array();
+		$SubjectArr['where'] 	= 	array('id',intval($GetSubject));
+
+		$this->SubjectInfo = $PowerBB->core->GetInfo($SubjectArr,'subject');
+
+
+
+		$Subjectid =  $this->SubjectInfo['id'];
+
+		$SubjectArr 							= 	array();
+		$SubjectArr['field'] 					= 	array();
+		$SubjectArr['field']['review_subject'] 	= 	$this->SubjectInfo['review_subject']-1;
+		$SubjectArr['where'] 					= 	array('id',$this->SubjectInfo['id']);
+
+		$update = $PowerBB->subject->UpdateSubject($SubjectArr);
+
+		$SubjectNegArr 							= 	array();
+		$SubjectNegArr['field'] 					= 	array();
+		$SubjectNegArr['field']['review_subject'] 	= 	'0';
+		$SubjectNegArr['where'] 					= 	array('review_subject','-1');
+
+		$updateNeg = $PowerBB->subject->UpdateSubject($SubjectNegArr);
+
+		$UpdateSectionCache = $PowerBB->functions->UpdateSectionCache($this->SubjectInfo['section']);
+
+		}
+
+		// Update subject review number
+		$SubjectInfid = $this->SubjectInfo['id'];
+		$SubjectInfReviewNum = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT id FROM " . $PowerBB->table['subject'] . " WHERE id='$SubjectInfid' and review_subject='1'"));
+		$PowerBB->DB->sql_query("UPDATE " . $PowerBB->table['subject'] . " SET review_subject='$SubjectInfReviewNum' WHERE id='$SubjectInfid'");
+
+		$PowerBB->functions->redirect($PowerBB->_SERVER['HTTP_REFERER']);
+
+		}
+
+    }
+
+	function _Review_Reply()
+	{
+		global $PowerBB;
+
+		$PowerBB->_GET['count'] = (!isset($PowerBB->_GET['count'])) ? 0 : $PowerBB->_GET['count'];
+		$PowerBB->_GET['count'] = $PowerBB->functions->CleanVariable($PowerBB->_GET['count'],'intval');
+
+ 	    $review_nm = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['reply'] . " WHERE review_reply = 1 "));
+        $reply_perpage = $PowerBB->_CONF['info_row']['subject_perpage'];
+
+		$ReviewArr 					= 	array();
+		$ReviewArr['order']			=	array();
+		$ReviewArr['order']['field']	=	'id';
+		$ReviewArr['order']['type']	=	'DESC';
+		$ReviewArr['proc'] 			= 	array();
+		$ReviewArr['proc']['*'] 		= 	array('method'=>'clean','param'=>'html');
+		$ReviewArr['where']					=	array();
+		$ReviewArr['where'][0]				=	array();
+		$ReviewArr['where'][0]['name']		=	'review_reply';
+		$ReviewArr['where'][0]['oper']		=	'=';
+		$ReviewArr['where'][0]['value']		=	'1';
+
+		$ReviewArr['pager'] 				= 	array();
+		$ReviewArr['pager']['total']		= 	$review_nm;
+		$ReviewArr['pager']['perpage'] 	= 	$reply_perpage;
+		$ReviewArr['pager']['count'] 		= 	$PowerBB->_GET['count'];
+		$ReviewArr['pager']['location'] 	= 	'index.php?page=subject&amp;review=1&amp;replys=1&amp;main=1';
+		$ReviewArr['pager']['var'] 		= 	'count';
+
+		$PowerBB->_CONF['template']['while']['ReviewList'] = $PowerBB->core->GetList($ReviewArr,'reply');
+        if ($review_nm > $reply_perpage)
+        {
+		$PowerBB->template->assign('pager',$PowerBB->pager->show());
+        }
+        $PowerBB->template->assign('ReviewNumber',$review_nm);
+        $PowerBB->template->assign('Reviewsubjects','1');
+
+		$PowerBB->template->display('replys_reviewd');
+	}
+
+	function _Do_Review_Reply()
+	{
+        global $PowerBB;
+
+		if ($PowerBB->_POST['deletposts'])
+		{
+
+		if ($PowerBB->_CONF['group_info']['group_mod'] == '1')
+		{
+		if ($PowerBB->_CONF['group_info']['del_reply'] == '0')
+		{
+		$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['error_permission']);
+		}
+		}
+
+		$Reply_D = $PowerBB->_POST['check'];
+		foreach ($Reply_D as $GetReply)
+		{
+
+		$UpdateArr 				= 	array();
+		$UpdateArr['field']		= 	array();
+		$UpdateArr['field']['review_reply'] 		= 	'0';
+		$UpdateArr['where'] 				= 	array('id',intval($GetReply));
+
+		$update = $PowerBB->reply->UpdateReply($UpdateArr);
+
+		$ReplyArr 			= 	array();
+		$ReplyArr['where'] 	= 	array('id',intval($GetReply));
+
+		$this->ReplyInfo = $PowerBB->core->GetInfo($ReplyArr,'reply');
+
+
+		$Subjectid =  $this->ReplyInfo['subject_id'];
+		$review_reply_nm = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['reply'] . " WHERE subject_id='$Subjectid' and review_reply='1' "));
+		$reply_nm = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['reply'] . " WHERE section = '$section' and subject_id='$Subjectid' "));
+
+		$SecArr 			= 	array();
+		$SecArr['where'] 	= 	array('id',$this->ReplyInfo['section']);
+
+		$this->SectionInfo = $PowerBB->core->GetInfo($SecArr,'section');
+
+
+
+		$SubjectArr = array();
+		$SubjectArr['where'] = array('id',$this->ReplyInfo['subject_id']);
+
+		$SubjectInfo = $PowerBB->core->GetInfo($SubjectArr,'subject');
+
+
+		$subject_id = $this->ReplyInfo['subject_id'];
+		$Getlast_replier = $PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['reply'] . " WHERE subject_id = '$subject_id' AND delete_topic<>1 AND review_reply<>1 ORDER by write_time DESC");
+		$GetLast_replierForm = $PowerBB->DB->sql_fetch_array($Getlast_replier);
+		if (!$GetLast_replierForm)
+		{
+		$last_replier = '';
+		}
+		else
+		{
+		$last_replier = $GetLast_replierForm['writer'];
+		}
+
+		// Update Subject
+		if (empty($GetLast_replierForm['write_time']))
+		{
+		$write_time = $SubjectInfo['native_write_time'];
+		}
+		else
+		{
+		$write_time = $GetLast_replierForm['write_time'];
+		}
+		$SubjectArr 							= 	array();
+		$SubjectArr['field'] 					= 	array();
+		$SubjectArr['field']['review_reply'] 	= 	$SubjectInfo['review_reply']-1;
+		$SubjectArr['field']['reply_number'] 	= 	$reply_nm-1;
+		$SubjectArr['field']['last_replier'] 	= 	$last_replier;
+		$SubjectArr['field']['write_time']   	= 	$write_time;
+		$SubjectArr['where'] 					= 	array('id',$subject_id);
+
+		$update = $PowerBB->subject->UpdateSubject($SubjectArr);
+
+		if ($this->SectionInfo['last_subjectid'] == $subject_id)
+		{
+		/**
+		*Update Section Cache ;)
+		*/
+		$SectionCache = $this->ReplyInfo['section'];
+		// The number of section's subjects number
+		$reply_num = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT id FROM " . $PowerBB->table['reply'] . " WHERE section = '$SectionCache' "));
+
+		$UpdateArr 					= 	array();
+		$UpdateArr['field']			=	array();
+		$UpdateArr['field']['reply_num'] 	= 	$reply_num;
+		$UpdateArr['where']					= 	array('id',$SectionCache);
+
+		$UpdateReplyNumber = $PowerBB->core->Update($UpdateArr,'section');
+
+
+		$PowerBB->cache->UpdateReplyNumber(array('reply_num'	=>	$reply_num));
+
+
+		$subject_nm = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT id FROM " . $PowerBB->table['subject'] . " WHERE section = '$SectionCache' "));
+
+		// The number of section's subjects number
+		$UpdateArr 					= 	array();
+		$UpdateArr['field']			=	array();
+
+		$UpdateArr['field']['subject_num'] 	= 	$subject_nm;
+		$UpdateArr['where']					= 	array('id',$SectionCache);
+
+		$UpdateSubjectNumber = $PowerBB->core->Update($UpdateArr,'section');
+
+
+		$PowerBB->cache->UpdateSubjectNumber(array('subject_num'	=>	$subject_nm));
+
+		$GetLastqueryReplyForm = $PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['reply'] . " WHERE subject_id = '$subject_id' AND delete_topic<>1 AND review_reply<>1 ORDER by write_time DESC");
+		$GetLastReplyForm = $PowerBB->DB->sql_fetch_array($GetLastqueryReplyForm);
+
+		if (!$GetLastReplyForm)
+		{
+		// Update Last subject's information in Section Form
+		$UpdateLastFormSecArr = array();
+		$UpdateLastFormSecArr['field']			=	array();
+
+		$UpdateLastFormSecArr['field']['last_writer'] 		= 	$SubjectInfo['writer'];
+		$UpdateLastFormSecArr['field']['last_subject'] 		= 	$SubjectInfo['title'];
+		$UpdateLastFormSecArr['field']['last_subjectid'] 	= 	$subject_id;
+		$UpdateLastFormSecArr['field']['last_date'] 	= 	$PowerBB->_CONF['now'];
+		$UpdateLastFormSecArr['field']['last_time'] 	= 	$PowerBB->_CONF['now'];
+		$UpdateLastFormSecArr['field']['icon'] 		    = 	$SubjectInfo['icon'];
+		$UpdateLastFormSecArr['field']['last_reply'] 	= 	0;
+		$UpdateLastFormSecArr['field']['last_berpage_nm']  = 	0;
+
+		$UpdateLastFormSecArr['where'] 		        = 	array('id',$SectionCache);
+
+		// Update Last Form Sec subject's information
+		$UpdateLastFormSec = $PowerBB->section->UpdateSection($UpdateLastFormSecArr);
+		 // Update section's cache
+    	 $PowerBB->functions->UpdateSectionCache($SectionCache);
+		}
+		else
+		{
+
+		// Update Last subject's information in Section Form
+		$UpdateLastFormSecArr = array();
+		$UpdateLastFormSecArr['field']			=	array();
+
+		$UpdateLastFormSecArr['field']['last_writer'] 		= 	$GetLastReplyForm['writer'];
+		$UpdateLastFormSecArr['field']['last_subject'] 		= 	$GetLastReplyForm['title'];
+		$UpdateLastFormSecArr['field']['last_subjectid'] 	= 	$GetLastReplyForm['subject_id'];
+		$UpdateLastFormSecArr['field']['last_date'] 	= 	$GetLastReplyForm['write_time'];
+		$UpdateLastFormSecArr['field']['last_time'] 	= 	$GetLastReplyForm['write_time'];
+		$UpdateLastFormSecArr['field']['icon'] 		    = 	$GetLastReplyForm['icon'];
+		$UpdateLastFormSecArr['field']['last_reply'] 	= 	0;
+		$UpdateLastFormSecArr['field']['last_berpage_nm']  = 	0;
+
+		$UpdateLastFormSecArr['where'] 		        = 	array('id',$SectionCache);
+
+		// Update Last Form Sec subject's information
+		$UpdateLastFormSec = $PowerBB->section->UpdateSection($UpdateLastFormSecArr);
+		}
+
+		// Get Section Info
+		$SecaArr 			= 	array();
+		$SecaArr['where'] 	= 	array('id',$SectionCache);
+
+		$this->SecInfo = $PowerBB->section->GetSectionInfo($SecaArr);
+
+		// Update section's cache
+		$UpdateArr 				= 	array();
+		$UpdateArr['parent'] 	= 	$this->SecInfo['parent'];
+
+		$update_cache = $PowerBB->section->UpdateSectionsCache($UpdateArr);
+
+
+		unset($UpdateArr);
+		}
+
+		$DeleteReplyArr				=	array();
+		$DeleteReplyArr['where'] 	= 	array('id',intval($GetReply));
+		$delReply = $PowerBB->reply->DeleteReply($DeleteReplyArr);
+
+		$UpdateSectionCache1 = $PowerBB->functions->UpdateSectionCache($this->ReplyInfo['section']);
+		}
+
+		$UpdateSubjectNumber = $PowerBB->cache->UpdateReplyNumber(array('reply_num'	=>	$PowerBB->_CONF['info_row']['reply_number']));
+
+		$PowerBB->functions->redirect($PowerBB->_SERVER['HTTP_REFERER']);
+
+
+ 		}
+		elseif($PowerBB->_POST['approveposts'])
+		{
+
+		if (empty($PowerBB->_POST['check']))
+		{
+		$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['Choose_incorrectl']);
+		}
+
+		$Reply_M = $PowerBB->_POST['check'];
+		foreach ($Reply_M as $GetReply)
+		{
+		$UpdateArr 				= 	array();
+		$UpdateArr['field']		= 	array();
+		$UpdateArr['field']['review_reply'] 		= 	'0';
+		$UpdateArr['where'] 				= 	array('id',intval($GetReply));
+
+		$update = $PowerBB->reply->UpdateReply($UpdateArr);
+
+
+		$ReplyArr 			= 	array();
+		$ReplyArr['where'] 	= 	array('id',intval($GetReply));
+
+		$this->ReplyInfo = $PowerBB->core->GetInfo($ReplyArr,'reply');
+
+
+		$SecArr 			= 	array();
+		$SecArr['where'] 	= 	array('id',$this->ReplyInfo['subject_id']);
+
+		$this->SubjectInfo = $PowerBB->core->GetInfo($SecArr,'subject');
+
+
+		$Subjectid =  $this->ReplyInfo['subject_id'];
+		//$review_reply_nm = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['reply'] . " WHERE section = '$section' and subject_id='$Subjectid' and review_reply='1' "));
+
+		$SubjectArr 							= 	array();
+		$SubjectArr['field'] 					= 	array();
+		$SubjectArr['field']['review_reply'] 	= 	$this->SubjectInfo['review_reply']-1;
+		$SubjectArr['where'] 					= 	array('id',$this->ReplyInfo['subject_id']);
+
+		$update = $PowerBB->subject->UpdateSubject($SubjectArr);
+
+		$SubjectNegArr 							= 	array();
+		$SubjectNegArr['field'] 					= 	array();
+		$SubjectNegArr['field']['review_reply'] 	= 	'0';
+		$SubjectNegArr['where'] 					= 	array('review_reply','-1');
+
+		$updateNeg = $PowerBB->subject->UpdateSubject($SubjectNegArr);
+
+		$UpdateSectionCache = $PowerBB->functions->UpdateSectionCache($this->ReplyInfo['section']);
+
+
+
+		}
+
+		// Update subject review number
+		$SubjectInfid = $this->ReplyInfo['subject_id'];
+		$SubjectInfReviewNum = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT id FROM " . $PowerBB->table['reply'] . " WHERE subject_id='$SubjectInfid' and review_reply='1'"));
+		$PowerBB->DB->sql_query("UPDATE " . $PowerBB->table['subject'] . " SET review_reply='$SubjectInfReviewNum' WHERE id='$SubjectInfid'");
+
+		$PowerBB->functions->redirect($PowerBB->_SERVER['HTTP_REFERER']);
+		}
+
+   }
 
 }
 

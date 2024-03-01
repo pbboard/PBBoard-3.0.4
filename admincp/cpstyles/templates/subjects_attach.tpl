@@ -16,4 +16,10 @@
 	<td class="row1"><a href="../index.php?page=profile&amp;show=1&amp;username={$AttachList['writer']}" target="_blank">{$AttachList['writer']}</a></td>
 </tr>
 {/Des::while}
+
+<tr valign="top" align="center">
+<td class="row1" colspan="2">
+<span class="pager-left">{$pager} </span>
+</td>
+</tr>
 </table>

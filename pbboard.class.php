@@ -584,7 +584,7 @@ class PowerBB
  	    $arr['where'][0]['name'] 		= 	'languageid';
  	    $arr['where'][0]['oper'] 		= 	'=';
  	    $arr['where'][0]['value'] 		= 	$languageid;
- 	    if ($page != 'chat_message' and $page != 'options')
+ 	    if ($page != 'chat_message' and $page != 'options' and !isset($this->_GET['review']))
  	    {
 
 		  if (defined('IN_ADMIN'))

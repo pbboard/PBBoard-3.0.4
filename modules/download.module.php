@@ -90,6 +90,41 @@ class PowerBBDownloadMOD
 			$PowerBB->functions->GetFooter();
 		}
 
+       		// if section Allw hide subject can't show this subject  , so stop the page
+   		if ($SectionInfo['hide_subject']
+   		and !$PowerBB->functions->ModeratorCheck($SectionInfo['moderators']))
+   		{
+
+	   		if ($PowerBB->_CONF['member_row']['username'] != $SubjectInfo['writer'])
+	   		{
+	   		$PowerBB->functions->ShowHeader();
+	        $PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['Sorry_you_can_not_see_on_this_topic']);
+			$PowerBB->functions->GetFooter();
+	        }
+        }
+
+        if ($SubjectInfo['review_subject']
+   		and !$PowerBB->functions->ModeratorCheck($SectionInfo['moderators']))
+   		{
+
+	   		if ($PowerBB->_CONF['member_row']['username'] != $SubjectInfo['writer']
+	   		and 'Guest' != $SubjectInfo['writer'])
+	   		{
+	   		$PowerBB->functions->ShowHeader();
+	        $PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['Sorry_you_can_not_see_on_this_topic']);
+			$PowerBB->functions->GetFooter();
+	        }
+        }
+
+		// hmmmmmmm , this subject deleted , so the members and visitor can't show it
+		if ($SubjectInfo['delete_topic']
+			and !$PowerBB->_CONF['group_info']['admincp_allow'])
+		{
+		    $PowerBB->functions->ShowHeader();
+			$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['Subject_Was_Trasht']);
+			$PowerBB->functions->GetFooter();
+		}
+
 		$filename = str_replace(' ','_',$SubjectInfo['title']);
 		$filename .= '.html';
 

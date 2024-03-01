@@ -460,7 +460,30 @@ class PBBTemplate
 			$first_replace = "captcha";
 			$string = str_replace($first_search,$first_replace,$string);
 			}
+            elseif ($filename == 'usercp_options_attach')
+			{				if ($PowerBB->_CONF['group_info']['del_own_subject'] == '0'
+				or $PowerBB->_CONF['group_info']['del_own_reply'] == '0')
+				{				$search_attach_array 	= 	array();
+				$replace_attach_array 	= 	array();
+				$search_attach_array[] = "button button_b";
+				$replace_attach_array[] = "buttons_no_link";
 
+				$search_attach_array[] = 'type="submit"';
+				$replace_attach_array[] = 'type="button"';
+
+				$search_attach_array[] = 'index.php?page=usercp&amp;attach=1&amp;del=1&amp;options=1';
+				$replace_attach_array[] = 'index.php?page=usercp&amp;attach=1&amp;main=1&amp;options=1';
+
+				$string = str_replace($search_attach_array,$replace_attach_array,$string);
+				}
+
+			}
+            elseif ($filename == 'search')
+			{
+			$first_search = ">- ";
+			$first_replace = ' class="row2" disabled="disabled">';
+			$string = str_replace($first_search,$first_replace,$string);
+			}
 			$first_searchss = "function uploadFile() {";
 			$first_replacess = 'function uploadFile() { var x = document.getElementById("files").value;if (!x){return false;}';
 			$string = str_replace($first_searchss,$first_replacess,$string);

@@ -1821,7 +1821,13 @@ class PowerBBCoreMOD
 		global $PowerBB;
 		$PowerBB->functions->ShowHeader();
 
+		if ($PowerBB->_CONF['group_info']['del_own_subject'] == '0'
+		or $PowerBB->_CONF['group_info']['del_own_reply'] == '0')
+		{
+		$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['error_permission']);
+		$PowerBB->functions->GetFooter();
 
+		}
 		if (empty($PowerBB->_POST['check']))
 		{
 			$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['You_do_not_select_any_attach']);

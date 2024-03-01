@@ -592,6 +592,47 @@ class PowerBBMiscMOD
 
 		$this->Subject = $PowerBB->core->GetInfo($SubjectArr,'subject');
 
+		$SecArr 			= 	array();
+		$SecArr['where'] 	= 	array('id',$this->Subject['section']);
+
+		$SectionInfo = $PowerBB->core->GetInfo($SecArr,'section');
+
+
+         if ($PowerBB->functions->section_group_permission($SectionInfo['id'],$PowerBB->_CONF['group_info']['id'],'view_section') == 0
+         or $PowerBB->functions->section_group_permission($SectionInfo['id'],$PowerBB->_CONF['group_info']['id'],'view_subject') == 0)
+		{
+			$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['Sorry_You_do_not_have_powers_to_access_this_page']);
+		}
+
+       		// if section Allw hide subject can't show this subject  , so stop the page
+   		if ($SectionInfo['hide_subject']
+   		and !$PowerBB->functions->ModeratorCheck($SectionInfo['moderators']))
+   		{
+
+	   		if ($PowerBB->_CONF['member_row']['username'] != $this->Subject['writer'])
+	   		{
+	        $PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['Sorry_You_do_not_have_powers_to_access_this_page']);
+	        }
+        }
+
+        if ($this->Subject['review_subject']
+   		and !$PowerBB->functions->ModeratorCheck($SectionInfo['moderators']))
+   		{
+
+	   		if ($PowerBB->_CONF['member_row']['username'] != $this->Subject['writer']
+	   		and 'Guest' != $this->Subject['writer'])
+	   		{
+	        $PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['Sorry_You_do_not_have_powers_to_access_this_page']);
+	        }
+        }
+
+		// hmmmmmmm , this subject deleted , so the members and visitor can't show it
+		if ($this->Subject['delete_topic']
+			and !$PowerBB->_CONF['group_info']['admincp_allow'])
+		{
+			$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['Subject_Was_Trasht']);
+		}
+
 		$PowerBB->template->assign('SubjectInfo',$this->Subject);
 		if ($PowerBB->_CONF['member_permission'])
 		{
@@ -753,6 +794,47 @@ class PowerBBMiscMOD
 		$SubjectArr['where'] = array('id',$PowerBB->_GET['id']);
 
 		$this->Subject = $PowerBB->core->GetInfo($SubjectArr,'subject');
+
+	    $SecArr 			= 	array();
+		$SecArr['where'] 	= 	array('id',$this->Subject['section']);
+
+		$SectionInfo = $PowerBB->core->GetInfo($SecArr,'section');
+
+
+         if ($PowerBB->functions->section_group_permission($SectionInfo['id'],$PowerBB->_CONF['group_info']['id'],'view_section') == 0
+         or $PowerBB->functions->section_group_permission($SectionInfo['id'],$PowerBB->_CONF['group_info']['id'],'view_subject') == 0)
+		{
+			$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['Sorry_You_do_not_have_powers_to_access_this_page']);
+		}
+
+       		// if section Allw hide subject can't show this subject  , so stop the page
+   		if ($SectionInfo['hide_subject']
+   		and !$PowerBB->functions->ModeratorCheck($SectionInfo['moderators']))
+   		{
+
+	   		if ($PowerBB->_CONF['member_row']['username'] != $this->Subject['writer'])
+	   		{
+	        $PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['Sorry_You_do_not_have_powers_to_access_this_page']);
+	        }
+        }
+
+        if ($this->Subject['review_subject']
+   		and !$PowerBB->functions->ModeratorCheck($SectionInfo['moderators']))
+   		{
+
+	   		if ($PowerBB->_CONF['member_row']['username'] != $this->Subject['writer']
+	   		and 'Guest' != $this->Subject['writer'])
+	   		{
+	        $PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['Sorry_You_do_not_have_powers_to_access_this_page']);
+	        }
+        }
+
+		// hmmmmmmm , this subject deleted , so the members and visitor can't show it
+		if ($this->Subject['delete_topic']
+			and !$PowerBB->_CONF['group_info']['admincp_allow'])
+		{
+			$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['Subject_Was_Trasht']);
+		}
 
 		$SectionInfoid = $this->Subject['section'];
 		$SubjectInfoid = $PowerBB->_GET['id'];

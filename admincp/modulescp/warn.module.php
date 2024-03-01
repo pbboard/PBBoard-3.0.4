@@ -44,13 +44,32 @@ class PowerBBWarnLogMOD
 		function _ShowLog()
 		{
 		global $PowerBB;
-		$LogArr 				= 	array();
-		$LogArr['proc'] 			= 	array();
-		$LogArr['proc']['*'] 		= 	array('method'=>'clean','param'=>'html');
+		$PowerBB->_GET['count'] = (!isset($PowerBB->_GET['count'])) ? 0 : $PowerBB->_GET['count'];
+		$PowerBB->_GET['count'] = $PowerBB->functions->CleanVariable($PowerBB->_GET['count'],'intval');
+
+ 	    $warn_nm = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['warnlog'] . " "));
+        $subject_perpage = '32';
+
+		$LogArr 					= 	array();
 		$LogArr['order']			=	array();
 		$LogArr['order']['field']	=	'id';
 		$LogArr['order']['type']	=	'DESC';
+		$LogArr['proc'] 			= 	array();
+		$LogArr['proc']['*'] 		= 	array('method'=>'clean','param'=>'html');
+		$LogArr['pager'] 				= 	array();
+		$LogArr['pager']['total']		= 	$warn_nm;
+		$LogArr['pager']['perpage'] 	= 	$subject_perpage;
+		$LogArr['pager']['count'] 		= 	$PowerBB->_GET['count'];
+		$LogArr['pager']['location'] 	= 	'index.php?page=warn&amp;warn=1&amp;main=1';
+		$LogArr['pager']['var'] 		= 	'count';
+
 		$PowerBB->_CONF['template']['while']['WarningLog'] = $PowerBB->warnlog->Show($LogArr);
+        if ($warn_nm > $subject_perpage)
+        {
+		$PowerBB->template->assign('pager',$PowerBB->pager->show());
+        }
+        $PowerBB->template->assign('WarnNumber',$warn_nm);
+
 		$PowerBB->template->display('warnlog');
 
 		}

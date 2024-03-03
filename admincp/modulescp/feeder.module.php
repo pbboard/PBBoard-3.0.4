@@ -90,83 +90,13 @@ class PowerBBCoreMOD
 		global $PowerBB;
 
 		$PowerBB->template->display('header');
-
-		//////////
-
-        $SecArr 						= 	array();
-		$SecArr['get_from']				=	'db';
-
-		$SecArr['proc'] 				= 	array();
-		$SecArr['proc']['*'] 			= 	array('method'=>'clean','param'=>'html');
-
-		$SecArr['order']				=	array();
-		$SecArr['order']['field']		=	'sort';
-		$SecArr['order']['type']		=	'ASC';
-
-		$SecArr['where']				=	array();
-		$SecArr['where'][0]['name']		= 	'parent';
-		$SecArr['where'][0]['oper']		= 	'=';
-		$SecArr['where'][0]['value']	= 	'0';
-
-		// Get main sections
-		$cats = $PowerBB->core->GetList($SecArr,'section');
-
-		// We will use forums_list to store list of forums which will view in main page
-		$PowerBB->_CONF['template']['foreach']['forums_list'] = array();
-
-		// Loop to read the information of main sections
-		foreach ($cats as $cat)
-		{
-			// Get the groups information to know view this section or not
-
-			$PowerBB->_CONF['template']['foreach']['forums_list'][$cat['id'] . '_m'] = $cat;
-
-			if (!empty($cat['forums_cache']))
-			{
-				$forums = json_decode(base64_decode($forums_cache), true);
-
-				foreach ($forums as $forum)
-				{
-
-
-							$forum['is_sub'] 	= 	0;
-							$forum['sub']		=	'';
-
-							if (!empty($forum['forums_cache']))
-							{
-								$subs = json_decode(base64_decode($forum['forums_cache']), true);
-
-								if (is_array($subs))
-								{
-									foreach ($subs as $sub)
-									{
-
-												if (!$forum['is_sub'])
-												{
-													$forum['is_sub'] = 1;
-												}
-
-												$forum['sub'] .= ('<option value="' .$sub['id'] . '" selected="selected">---'  . $sub['title'] . '</option>');
-
-									}
-								}
-							}
-
-
-							$PowerBB->_CONF['template']['foreach']['forums_list'][$forum['id'] . '_f'] = $forum;
-					} // end if is_array
-				} // end foreach ($forums)
-			} // end !empty($forums_cache)
-
-					// Show Jump List to:)
+		// Show Jump List to:)
 		$result = $PowerBB->DB->sql_query("SELECT id,title,parent FROM " . $PowerBB->table['section'] . " ORDER BY id ASC");
-
 		$Master = array();
-		while ($row = $PowerBB->DB->sql_fetch_array($result)) {
+		$row = $PowerBB->DB->sql_fetch_array($result);
 			extract($row);
 		    $Master = $PowerBB->core->GetList(array ('id'=>$id,'title'=>"".$title."",'parent'=>$parent."",'parent'=>$parent),'section');
 		    $PowerBB->_CONF['template']['foreach']['SecList'] = $Master;
-		}
 
 		$MainAndSub = new PowerBBCommon;
           	$PowerBB->template->assign('DoJumpList',$MainAndSub->DoJumpList($Master,$url,1));
@@ -192,10 +122,21 @@ class PowerBBCoreMOD
 		if(empty($PowerBB->_POST['link']) or empty($PowerBB->_POST['title'])){
 
 			$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['Please_fill_in_all_the_information']);
-
 		}
 
+		if($PowerBB->core->Is(array('where' => array('rsslink',$PowerBB->_POST['link'])),'feeds')){
 
+		$PowerBB->_CONF['template']['_CONF']['lang']['please_choose_another_name']= str_replace("اسم المستخدم", $PowerBB->_CONF['template']['_CONF']['lang']['Feed_URL'],$PowerBB->_CONF['template']['_CONF']['lang']['please_choose_another_name']);
+		$PowerBB->_CONF['template']['_CONF']['lang']['please_choose_another_name']= str_replace("اختيار اسم", $PowerBB->_CONF['template']['_CONF']['lang']['l_link'],$PowerBB->_CONF['template']['_CONF']['lang']['please_choose_another_name']);
+		$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['please_choose_another_name']);
+		}
+
+		$file = $PowerBB->_POST['link'];
+		$file_headers = @get_headers($file);
+		if(!$file_headers || $file_headers[0] == 'HTTP/1.1 404 Not Found') {
+		$PowerBB->_CONF['template']['_CONF']['lang']['feed_has_been_not_brought']= str_replace("{linkrss}", $PowerBB->_POST['link'],$PowerBB->_CONF['template']['_CONF']['lang']['feed_has_been_not_brought']);
+		$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['feed_has_been_not_brought']);
+		}
 		$SectionArr = array();
 
 		$SectionArr['where']	=	array();
@@ -225,6 +166,7 @@ class PowerBBCoreMOD
 		$PowerBB->_CONF['template']['_CONF']['lang']['feed_has_been_not_brought']= str_replace("{linkrss}", $PowerBB->_POST['link'],$PowerBB->_CONF['template']['_CONF']['lang']['feed_has_been_not_brought']);
 		$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['feed_has_been_not_brought']);
 		}
+
 
 		foreach($Items as $Item){
 		// Kill XSS & SQL Injection and clean the topic title
@@ -439,32 +381,39 @@ class PowerBBCoreMOD
 		// Loop to read the information of main sections
 		foreach ($cats as $cat)
 		{
-			include("../cache/sectiongroup_cache/sectiongroup_cache_".$cat['id'].".php");
-
              // foreach main sections
 			$PowerBB->_CONF['template']['foreach']['forums_list'][$cat['id'] . '_m'] = $cat;
 
 			unset($sectiongroup);
 
+			if($PowerBB->_CONF['files_forums_Cache'])
+			{
 			@include("../cache/forums_cache/forums_cache_".$cat['id'].".php");
+			}
+			else
+			{
+			$forums_cache = $PowerBB->functions->get_forum_cache($cat['id'],$cat['forums_cache']);
+			}
 			if (!empty($forums_cache))
 			{
-                $forums = json_decode(base64_decode($forums_cache), true);
-
+                $forums = $PowerBB->functions->decode_forum_cache($forums_cache);
 
 					foreach ($forums as $forum)
 					{
-						//////////////////////////
-
 							$forum['is_sub'] 	= 	0;
 							$forum['sub']		=	'';
 
-                              @include("../cache/forums_cache/forums_cache_".$forum['id'].".php");
-                               if (!empty($forums_cache))
+								if ($PowerBB->_CONF['files_forums_Cache'])
+								{
+								@include("../cache/forums_cache/forums_cache_".$forum['id'].".php");
+								}
+								else
+								{
+								$forums_cache = $PowerBB->functions->get_forum_cache($forum['id'],$forum['forums_cache']);
+								}
+								if (!empty($forums_cache))
 	                           {
-
-									$subs = json_decode(base64_decode($forums_cache), true);
-
+									$subs = $PowerBB->functions->decode_forum_cache($forums_cache);
 	                               foreach ($subs as $sub)
 									{
 									   if ($forum['id'] == $sub['parent'])
@@ -492,11 +441,18 @@ class PowerBBCoreMOD
 													$forum['is_sub_sub'] 	= 	0;
 													$forum['sub_sub']		=	'';
 
-		                                       @include("../cache/forums_cache/forums_cache_".$sub['id'].".php");
-		                                   if (!empty($forums_cache))
+											if ($PowerBB->_CONF['files_forums_Cache'])
+											{
+											@include("../cache/forums_cache/forums_cache_".$sub['id'].".php");
+											}
+											else
+											{
+											$forums_cache = $PowerBB->functions->get_forum_cache($sub['id'],$sub['forums_cache']);
+											}
+										 if (!empty($forums_cache))
 				                           {
 
-												$subs_sub = json_decode(base64_decode($forums_cache), true);
+												$subs_sub = $PowerBB->functions->decode_forum_cache($forums_cache);
 
 				                               foreach ($subs_sub as $sub_sub)
 												{

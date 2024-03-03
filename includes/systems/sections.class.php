@@ -193,42 +193,81 @@ class PowerBBSection
  				$cache[$x] 							= 	array();
 				$cache[$x]['id'] 					= 	$forums[$x]['id'];
 				$cache[$x]['title'] 				= 	$forums[$x]['title'];
+				if(!empty($forums[$x]['section_describe']))
+				{
 				$cache[$x]['section_describe'] 		= 	$forums[$x]['section_describe'];
+				}
 				$cache[$x]['parent'] 				= 	$forums[$x]['parent'];
 				$cache[$x]['sort'] 					= 	$forums[$x]['sort'];
+				if(!empty($forums[$x]['section_picture']))
+				{
 				$cache[$x]['section_picture'] 		= 	$forums[$x]['section_picture'];
+				}
+				if(!empty($forums[$x]['sectionpicture_type']))
+				{
 				$cache[$x]['sectionpicture_type'] 	= 	$forums[$x]['sectionpicture_type'];
+				}
+				if(!empty($forums[$x]['use_section_picture']))
+				{
 				$cache[$x]['use_section_picture'] 	= 	$forums[$x]['use_section_picture'];
+				}
+				if(!empty($forums[$x]['linksection']))
+				{
 				$cache[$x]['linksection'] 			= 	$forums[$x]['linksection'];
+				}
+				if(!empty($forums[$x]['linkvisitor']))
+				{
 				$cache[$x]['linkvisitor'] 			= 	$forums[$x]['linkvisitor'];
-
+                }
+                if(!empty($forums[$x]['last_writer']))
+                {
  				$MemberArr 							= 	array();
  				$MemberArr['get_from'] 				= 	'db';
  				$MemberArr['where'] 					= 	array('username',$forums[$x]['last_writer']);
 				$rows = $this->Engine->member->GetMemberInfo($MemberArr);
-
 				$cache[$x]['last_writer_id'] 	    = 	$rows['id'];
 				$cache[$x]['avater_path'] 		    = 	$rows['avater_path'];
 				$cache[$x]['username_style_cache']  = 	$rows['username_style_cache'];
 
 				$cache[$x]['last_writer'] 			= 	$forums[$x]['last_writer'];
+				}
+				if(!empty($forums[$x]['last_subject']))
+				{
 				$cache[$x]['last_subject'] 			= 	$forums[$x]['last_subject'];
 				$cache[$x]['last_subjectid'] 		= 	$forums[$x]['last_subjectid'];
 				$cache[$x]['last_date'] 			= 	$forums[$x]['last_date'];
 				$cache[$x]['last_time'] 			= 	$forums[$x]['last_time'];
+				}
 				$cache[$x]['subject_num'] 			= 	$forums[$x]['subject_num'];
 				$cache[$x]['reply_num'] 			= 	$forums[$x]['reply_num'];
-				$cache[$x]['moderators'] 			= 	$forums[$x]['moderators'];
-				$cache[$x]['icon'] 	        		=  	$forums[$x]['icon'];
 
+				if(!empty($forums[$x]['moderators']) or $forums[$x]['moderators'] != '[]')
+				{
+				$cache[$x]['moderators'] 			= 	$forums[$x]['moderators'];
+				}
+				if(!empty($forums[$x]['icon']))
+				{
+				$cache[$x]['icon'] 	        		=  	$forums[$x]['icon'];
+                }
 				$cache[$x]['hide_subject'] 	        =  	$forums[$x]['hide_subject'];
 				$cache[$x]['sec_section'] 	        =  	$forums[$x]['sec_section'];
+				if(!empty($forums[$x]['section_password']))
+                {
 				$cache[$x]['section_password'] 	    =  	$forums[$x]['section_password'];
+				}
+				if(!empty($forums[$x]['last_berpage_nm']))
+				{
 				$cache[$x]['last_berpage_nm'] 	    =  	$forums[$x]['last_berpage_nm'];
+				}
 				$cache[$x]['last_reply'] 	        =  	$forums[$x]['last_reply'];
+				if(!empty($forums[$x]['forums_cache']))
+				{
 				$cache[$x]['forums_cache'] 			= 	$forums[$x]['forums_cache'];
+				}
+				if(!empty($forums[$x]['forum_title_color']))
+				{
 				$cache[$x]['forum_title_color']     = 	$forums[$x]['forum_title_color'];
-
+                }
 				$cache[$x]['review_subject']        = 	$forums[$x]['review_subject'];
 				$cache[$x]['replys_review_num']     = 	$forums[$x]['replys_review_num'];
 				$cache[$x]['subjects_review_num']   = 	$forums[$x]['subjects_review_num'];
@@ -250,8 +289,10 @@ class PowerBBSection
  				$prefixArr['order']['type']			=	'ASC';
  				$prefixArr['where'] 					= 	array('id',$forums[$x]['last_subjectid']);
 				$rows = $this->Engine->subject->GetSubjectInfo($prefixArr);
+				if(!empty($rows['prefix_subject']))
+                {
 				$cache[$x]['prefix_subject']   = 	$rows['prefix_subject'];
-
+                }
 				foreach ($groups as $group)
 				{
 					$cache[$x]['groups'][$group['group_id']] 					=	array();
@@ -281,8 +322,7 @@ class PowerBBSection
  		{
  			$param = array();
  		}
-
-        $maxsize = '300000';
+        $maxsize = '9999999999';
    		$SecArr 			= 	array();
 		$SecArr['where'] 	= 	array('id',$param['id']);
 		$SectionInfo = $this->GetSectionInfo($SecArr);
@@ -310,7 +350,8 @@ class PowerBBSection
 					$ForumCacheArr['field']['forums_cache'] 	= 	$forums_cache;
 					$ForumCacheArr['where'] 		        = 	array('id',$SectionInfo['parent']);
 					$UpdateForumCache = $this->UpdateSection($ForumCacheArr);
-
+                if($this->Engine->_CONF['files_forums_Cache'])
+                {
 	            // get main dir
 				$file_forums_cache = $PowerBB->functions->GetMianDir()."cache/forums_cache/forums_cache_".$SectionInfo['parent'].".php";
                 $file_forums_cache = str_ireplace("index.php/", '', $file_forums_cache);
@@ -327,6 +368,7 @@ class PowerBBSection
  				{
  					$fail = true;
  				}
+ 			  }
            }
            else
            {
@@ -352,24 +394,25 @@ class PowerBBSection
 					$ForumCacheArr['field']['forums_cache'] 	= 	$forums_cache;
 					$ForumCacheArr['where'] 		        = 	array('id',$param['parent']);
 					$UpdateForumCache = $this->UpdateSection($ForumCacheArr);
+                 if($this->Engine->_CONF['files_forums_Cache'])
+                 {
+		            // get main dir
+					$file_forums_cache = $PowerBB->functions->GetMianDir()."cache/forums_cache/forums_cache_".$param['parent'].".php";
+	                $file_forums_cache = str_ireplace("index.php/", '', $file_forums_cache);
+	                $file_forums_cache = str_replace("index.php/", '', $file_forums_cache);
+					$fp = fopen($file_forums_cache,'w');
+					$Ds = '$';
+					$parent = $param['parent'];
+					$forums_cache = "<?php \n".$Ds."forums_cache ='".$cache."';\n ?> ";
 
-	            // get main dir
-				$file_forums_cache = $PowerBB->functions->GetMianDir()."cache/forums_cache/forums_cache_".$param['parent'].".php";
-                $file_forums_cache = str_ireplace("index.php/", '', $file_forums_cache);
-                $file_forums_cache = str_replace("index.php/", '', $file_forums_cache);
-				$fp = fopen($file_forums_cache,'w');
-				$Ds = '$';
-				$parent = $param['parent'];
-				$forums_cache = "<?php \n".$Ds."forums_cache ='".$cache."';\n ?> ";
+					$fw = fwrite($fp,$forums_cache);
+			        fclose($fp);
 
-				$fw = fwrite($fp,$forums_cache);
-		        fclose($fp);
-
- 				if (!$fw)
- 				{
- 					$fail = true;
- 				}
-
+	 				if (!$fw)
+	 				{
+	 					$fail = true;
+	 				}
+                 }
  			  }
            }
 

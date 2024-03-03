@@ -258,17 +258,25 @@ class PowerBBForumMOD
 	function _GetSubSection()
 	{
 		global $PowerBB;
-   		@include("cache/forums_cache/forums_cache_".$this->Section['id'].".php");
+
+		if($PowerBB->_CONF['files_forums_Cache'])
+		{
+		@include("cache/forums_cache/forums_cache_".$this->Section['id'].".php");
+		}
+		else
+		{
+		$forums_cache = $PowerBB->functions->get_forum_cache($this->Section['id'],$this->Section['forums_cache']);
+		}
+
 		if (!empty($forums_cache))
-		{		      @include("cache/sectiongroup_cache/sectiongroup_cache_".$this->Section['id'].".php");
-	          $forums = json_decode(base64_decode($sectiongroup_cache), true);
+		{	          $forums = $PowerBB->functions->decode_forum_cache($forums_cache);
 	          $PowerBB->_CONF['template']['foreach']['forums_list'] = array();
 
 			foreach ($forums as $forum)
 			{
 				if (is_array($forum['groups'][$PowerBB->_CONF['group_info']['id']]))
 				{
-					if ($forum['groups'][$PowerBB->_CONF['group_info']['id']]['view_section'])
+					if ($PowerBB->functions->section_group_permission($forum['id'],$PowerBB->_CONF['group_info']['id'],'view_section') and $forum['sec_section'] == '0' and $forum['hide_subject'] == '0')
 					{
 						$forum_last_time1 = $forum['last_date'];
 						$forum['last_post_date'] = $forum['last_time'];
@@ -284,10 +292,17 @@ class PowerBBForumMOD
 							$forum['is_sub'] 	= 	0;
 							$forum['sub']		=	'';
 
-			               @include("cache/forums_cache/forums_cache_".$forum['id'].".php");
+							if ($PowerBB->_CONF['files_forums_Cache'])
+							{
+							@include("cache/forums_cache/forums_cache_".$forum['id'].".php");
+							}
+							else
+							{
+							$forums_cache = $PowerBB->functions->get_forum_cache($forum['id'],$forum['forums_cache']);
+							}
 							if (!empty($forum['forums_cache']))
 							{
-								$subs = json_decode(base64_decode($forums_cache), true);
+								$subs = $PowerBB->functions->decode_forum_cache($forums_cache);
 
 								if (is_array($subs))
 								{
@@ -301,15 +316,13 @@ class PowerBBForumMOD
 	                                           $sub_last_subjectid = $sub['last_subjectid'];
 	                                           $last_time = $sub['last_time'];
 
-										if (is_array($sub['groups'][$PowerBB->_CONF['group_info']['id']]))
-										{
-											if ($sub['groups'][$PowerBB->_CONF['group_info']['id']]['view_section'])
+											if ($PowerBB->functions->section_group_permission($sub['id'],$PowerBB->_CONF['group_info']['id'],'view_section') and $sub['sec_section'] == '0' and $sub['hide_subject'] == '0')
 											{
                                                         $forum_url = "index.php?page=forum_archive&amp;show=1&amp;id=";
 														$forum['sub'] .= '<a href="'.$PowerBB->functions->rewriterule($forum_url).$sub['id'].'"><img border="0" alt="" src="' . $PowerBB->_CONF['template']['image_path'] . '/address_bar_start.gif" />'.$sub['title'].'</a>';
 
 											}
-										}
+
 									}
 								}
 

@@ -1,15 +1,8 @@
 <?php
-
 (!defined('IN_PowerBB')) ? die() : '';
-
 define('IN_ADMIN',true);
-
 define('JAVASCRIPT_PowerCode',true);
-
-
-
 define('CLASS_NAME','PowerBBPortalMOD');
-
 include('../common.php');
 class PowerBBPortalMOD
 {
@@ -182,18 +175,19 @@ class PowerBBPortalMOD
 		// Loop to read the information of main sections
 		foreach ($cats as $cat)
 		{
-			@include("../cache/sectiongroup_cache/sectiongroup_cache_".$cat['id'].".php");
-
              // foreach main sections
 			$PowerBB->_CONF['template']['foreach']['forums_list'][$cat['id'] . '_m'] = $cat;
-
-			unset($sectiongroup);
-
+			if($PowerBB->_CONF['files_forums_Cache'])
+			{
 			@include("../cache/forums_cache/forums_cache_".$cat['id'].".php");
-
+			}
+			else
+			{
+			$forums_cache = $PowerBB->functions->get_forum_cache($cat['id'],$cat['forums_cache']);
+			}
 			if (!empty($forums_cache))
 			{
-                $forums = json_decode(base64_decode($forums_cache), true);
+                $forums = $PowerBB->functions->decode_forum_cache($forums_cache);
 
 					foreach ($forums as $forum)
 					{
@@ -202,11 +196,17 @@ class PowerBBPortalMOD
 							$forum['is_sub'] 	= 	0;
 							$forum['sub']		=	'';
 
-                              @include("../cache/forums_cache/forums_cache_".$forum['id'].".php");
-                               if (!empty($forums_cache))
+							if ($PowerBB->_CONF['files_forums_Cache'])
+							{
+							@include("../cache/forums_cache/forums_cache_".$forum['id'].".php");
+							}
+							else
+							{
+							$forums_cache = $PowerBB->functions->get_forum_cache($forum['id'],$forum['forums_cache']);
+							}
+							  if (!empty($forums_cache))
 	                           {
-
-									$subs = json_decode(base64_decode($forums_cache), true);
+								   $subs = $PowerBB->functions->decode_forum_cache($forums_cache);
 	                               foreach ($subs as $sub)
 									{
 									   if ($forum['id'] == $sub['parent'])
@@ -226,19 +226,20 @@ class PowerBBPortalMOD
 											}
 										  }
 
+											$forum['is_sub_sub'] 	= 	0;
+											$forum['sub_sub']		=	'';
 
-
-
-					                         ///////////////
-
-													$forum['is_sub_sub'] 	= 	0;
-													$forum['sub_sub']		=	'';
-
-		                                       @include("../cache/forums_cache/forums_cache_".$sub['id'].".php");
-		                                   if (!empty($forums_cache))
+											if ($PowerBB->_CONF['files_forums_Cache'])
+											{
+											@include("../cache/forums_cache/forums_cache_".$sub['id'].".php");
+											}
+											else
+											{
+											$forums_cache = $PowerBB->functions->get_forum_cache($sub['id'],$sub['forums_cache']);
+											}
+											if (!empty($forums_cache))
 				                           {
-
-												$subs_sub = json_decode(base64_decode($forums_cache), true);
+                                              $subs_sub = $PowerBB->functions->decode_forum_cache($forums_cache);
 				                               foreach ($subs_sub as $sub_sub)
 												{
 												   if ($sub['id'] == $sub_sub['parent'])

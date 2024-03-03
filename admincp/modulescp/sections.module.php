@@ -295,7 +295,7 @@ class PowerBBSectionMOD extends _functions
 		//////////
 	}
 
-    function _DelMain()
+	function _DelMain()
 	{
 		global $PowerBB;
 
@@ -303,19 +303,19 @@ class PowerBBSectionMOD extends _functions
 
 		$this->check_by_id($PowerBB->_CONF['template']['Inf']);
 
-		$SecArr 					= 	array();
-		$SecArr['get_from']			=	'db';
-		$SecArr['proc'] 			= 	array();
-		$SecArr['proc']['*'] 		= 	array('method'=>'clean','param'=>'html');
-		$SecArr['order']			=	array();
-		$SecArr['order']['field']	=	'sort';
-		$SecArr['order']['type']	=	'ASC';
+		// Show Jump List to:)
+		$result = $PowerBB->DB->sql_query("SELECT id,title,parent FROM " . $PowerBB->table['section'] . " ORDER BY id ASC");
 
-		$SecArr['where']			=	array();
-		$SecArr['where'][0]			=	array('name'=>'parent','oper'=>'<>','value'=>'0');
-		$SecArr['where'][1]			=	array('con'=>'AND','name'=>'id','oper'=>'<>','value'=>$PowerBB->_CONF['template']['Inf']['id']);
+		$Master = array();
+		$row = $PowerBB->DB->sql_fetch_array($result);
+			extract($row);
+		    $Master = $PowerBB->core->GetList(array ('id'=>$id,'title'=>"".$title."",'parent'=>$parent."",'parent'=>$parent),'section');
+		    $PowerBB->_CONF['template']['foreach']['SecList'] = $PowerBB->core->GetList($Master,'section');
 
-		$PowerBB->_CONF['template']['while']['SecList'] = $PowerBB->core->GetList($SecArr,'section');
+		$MainAndSub = new PowerBBCommon;
+          	$PowerBB->template->assign('DoJumpList',$MainAndSub->DoJumpList($Master,$url,1));
+		unset($Master);
+	   ////////
 
 		$PowerBB->template->display('section_del');
 	}
@@ -330,29 +330,74 @@ class PowerBBSectionMOD extends _functions
 
 		if ($PowerBB->_POST['choose'] == 'move')
 		{
+			$DelArr 			= 	array();
+			$DelArr['where'] 	= 	array('id',$PowerBB->_CONF['template']['Inf']['id']);
 
+			$del = $PowerBB->core->Deleted($DelArr,'section');
 
-	        $InfSectionID = $PowerBB->_CONF['template']['Inf']['id'];
-		    $sql_Section = $PowerBB->DB->sql_query("SELECT  *   FROM " . $PowerBB->table['section'] . " WHERE parent = '$InfSectionID' ");
+			if ($del)
+			{
+				$PowerBB->functions->msg($PowerBB->_CONF['template']['_CONF']['lang']['Forum_has_been_deleted_successfully']);
 
-		       while ($getSection_row = $PowerBB->DB->sql_fetch_array($sql_Section))
-		      {
+				$move = $PowerBB->subject->MassMoveSubject(array('to'=>$PowerBB->_POST['section'],'from'=>$PowerBB->_CONF['template']['Inf']['id']));
 
-	     		    $UpdateArr 					= 	array();
-	   				$UpdateArr['field']			=	array();
+				if ($move)
+				{
+					$PowerBB->functions->msg($PowerBB->_CONF['template']['_CONF']['lang']['Topic_has_been_moved_successfully']);
 
-	   				$UpdateArr['field']['parent'] 	= 	$PowerBB->_POST['to'];
-	   				$UpdateArr['where']					= 	array('parent',$getSection_row['parent']);
+					//////////
 
-	     		$update = $PowerBB->core->Update($UpdateArr,'section');
+					$NumberArr 				= 	array();
+					$NumberArr['get_from']	=	'db';
+					$NumberArr['where'] 	= 	array('section',$PowerBB->_CONF['template']['Inf']['id']);
 
+					$FromSubjectNumber = $PowerBB->core->GetNumber($NumberArr,'subject');
 
-				 $DelArr 			= 	array();
-				 $DelArr['where'] 	= 	array('id',$PowerBB->_CONF['template']['Inf']['id']);
+					unset($NumberArr);
 
-				$del = $PowerBB->core->Deleted($DelArr,'section');
-               }
+					//////////
 
+					$NumberArr 				= 	array();
+					$NumberArr['get_from']	=	'db';
+					$NumberArr['where'] 	= 	array('section',$PowerBB->_POST['section']);
+
+					$ToSubjectNumber = $PowerBB->core->GetNumber($NumberArr,'subject');
+
+					//////////
+
+					$ReplyNumberArr 				= 	array();
+					$ReplyNumberArr['get_from']	=	'db';
+					$ReplyNumberArr['where'] 	= 	array('section',$PowerBB->_CONF['template']['Inf']['id']);
+
+					$FromReplyNumber = $PowerBB->core->GetNumber($ReplyNumberArr,'reply');
+
+					unset($ReplyNumberArr);
+
+					//////////
+
+					$ReplyNumberArrTo 				= 	array();
+					$ReplyNumberArrTo['get_from']	=	'db';
+					$ReplyNumberArrTo['where'] 	= 	array('section',$PowerBB->_POST['section']);
+
+					$ToReplyNumber = $PowerBB->core->GetNumber($ReplyNumberArrTo,'reply');
+
+					//////////
+
+			        $InfSectionID = $PowerBB->_CONF['template']['Inf']['id'];
+				    $sql_Section = $PowerBB->DB->sql_query("SELECT  *   FROM " . $PowerBB->table['section'] . " WHERE parent = '$InfSectionID' ");
+
+				       while ($getSection_row = $PowerBB->DB->sql_fetch_array($sql_Section))
+				      {
+
+			     		    $UpdateArr 					= 	array();
+			   				$UpdateArr['field']			=	array();
+
+			   				$UpdateArr['field']['parent'] 	= 	$PowerBB->_POST['section'];
+			   				$UpdateArr['where']					= 	array('parent',$getSection_row['parent']);
+
+			     		    $update = $PowerBB->core->Update($UpdateArr,'section');
+
+		               }
 
 					$SecArr 					= 	array();
 					$SecArr['get_from']			=	'db';
@@ -414,7 +459,7 @@ class PowerBBSectionMOD extends _functions
 				     		$UpdateSubjectNumber = $PowerBB->core->Update($UpdateArr,'section');
 				            $PowerBB->cache->UpdateSubjectNumber(array('subject_num'	=>	$subject_nm));
 
-				                 		// The number of section's subjects number
+				            // The number of section's subjects number
 				            $section = $SecList[$x]['id'];
 						    $reply_num = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT  *   FROM " . $PowerBB->table['reply'] . " WHERE section = '$section' "));
 
@@ -426,131 +471,89 @@ class PowerBBSectionMOD extends _functions
 
 				     		$UpdateReplyNumber = $PowerBB->core->Update($UpdateArr,'section');
 				     		$PowerBB->cache->UpdateReplyNumber(array('reply_num'	=>	$reply_num));
+				   }
 
 
-						$PowerBB->functions->msg($PowerBB->_CONF['template']['_CONF']['lang']['Forums_have_been_moved_successfully']);
+		     		$UpdateArr 					= 	array();
+     				$UpdateArr['field']			=	array();
 
-						$DelArr 						= 	array();
-						$DelArr['where']				=	array();
-						$DelArr['where'][0]				=	array();
-						$DelArr['where'][0]['name']		=	'section_id';
-						$DelArr['where'][0]['oper']		=	'=';
-						$DelArr['where'][0]['value']	=	$PowerBB->_CONF['template']['Inf']['id'];
+     				$UpdateArr['field']['subject_num'] 	= 	$FromSubjectNumber + $ToSubjectNumber;
+     				$UpdateArr['field']['reply_num'] 	= 	$FromReplyNumber + $ToReplyNumber;
+     				$UpdateArr['where']					= 	array('id',$PowerBB->_POST['section']);
 
-						$del = $PowerBB->core->Deleted($DelArr,'sectiongroup');
+		     		$update = $PowerBB->core->Update($UpdateArr,'section');
 
-						if ($del)
+		     		// update Reply to Section
+		     		$get_last_subject = $PowerBB->DB->sql_query("SELECT id FROM " . $PowerBB->table['subject'] . " WHERE section = '$section' ORDER BY id ASC");
+                      while ($getsubject_row = $PowerBB->DB->sql_fetch_array($get_last_subject));
+                    {
+	     		        $ReplyUpdateArr 					= 	array();
+		   				$ReplyUpdateArr['field']			=	array();
+
+		   				$ReplyUpdateArr['field']['section'] 	= 	$PowerBB->_POST['section'];
+		   				$ReplyUpdateArr['where']					= 	array('subject_id',$getSection_row['id']);
+
+		     		    $updateReply = $PowerBB->core->Update($ReplyUpdateArr,'reply');
+                    }
+
+     				if ($update)
+     				{
+						$cache = $PowerBB->section->UpdateSectionsCache(array('parent'=>$PowerBB->_CONF['template']['Inf']['parent']));
+
+						if ($cache)
 						{
-							$PowerBB->functions->msg($PowerBB->_CONF['template']['_CONF']['lang']['groups_have_been_deleted_successfully']);
-							$PowerBB->functions->redirect('index.php?page=sections&amp;control=1&amp;main=1');
+							$PowerBB->functions->msg($PowerBB->_CONF['template']['_CONF']['lang']['Information_has_been_updated_successfully']);
+
+							$DelArr 						= 	array();
+							$DelArr['where']				=	array();
+							$DelArr['where'][0]				=	array();
+							$DelArr['where'][0]['name']		=	'section_id';
+							$DelArr['where'][0]['oper']		=	'=';
+							$DelArr['where'][0]['value']	=	$PowerBB->_CONF['template']['Inf']['id'];
+
+							$del = $PowerBB->core->Deleted($DelArr,'sectiongroup');
+
+							if ($del)
+							{
+								$PowerBB->functions->msg($PowerBB->_CONF['template']['_CONF']['lang']['groups_have_been_deleted_successfully']);
+								$PowerBB->functions->redirect('index.php?page=forums&amp;control=1&amp;main=1');
+							}
 						}
-
-
-
-                  }
+					}
+				}
+			}
 		}
 		elseif ($PowerBB->_POST['choose'] == 'del')
 		{
 
-    	$CatparentArr 			= 	array();
-		$CatparentArr['where'] 	= 	array('parent',$PowerBB->_CONF['template']['Inf']['id']);
-		$Infparent = $PowerBB->section->GetSectionInfo($CatparentArr);
-		/////
-    	  if ($Infparent)
-		 {
-	     	$parentArr 			= 	array();
-			$parentArr['where'] 	= 	array('parent',$Infparent['id']);
-			$parent = $PowerBB->section->GetSectionInfo($parentArr);
-			////
-
-			 if ($parent)
-			 {
-	         $section_parent1 = $parent['id'];
-	         $get_section_parent1 = $PowerBB->DB->sql_query("SELECT  *   FROM " . $PowerBB->table['section'] . " WHERE parent = " . $section_parent1 . " ");
-
-		       while ($Inf_row1 = $PowerBB->DB->sql_fetch_array($get_section_parent1))
-		      {
-					$DelSubjects1Arr 						= 	array();
-					$DelSubjects1Arr['where']				=	array();
-					$DelSubjects1Arr['where'][0]				=	array();
-					$DelSubjects1Arr['where'][0]['name']		=	'section';
-					$DelSubjects1Arr['where'][0]['oper']		=	'=';
-					$DelSubjects1Arr['where'][0]['value']	=	$Inf_row1['id'];
-
-					$DelSubjects1 = $PowerBB->subject->DeleteSubject($DelSubjects1Arr);
-
-					$DelReplys1Arr 						= 	array();
-					$DelReplys1Arr['where']				=	array();
-					$DelReplys1Arr['where'][0]				=	array();
-					$DelReplys1Arr['where'][0]['name']		=	'section';
-					$DelReplys1Arr['where'][0]['oper']		=	'=';
-					$DelReplys1Arr['where'][0]['value']	=	$Inf_row1['id'];
-
-					$DelReplys = $PowerBB->reply->DeleteReply($DelReplys1Arr);
-
-					$DelSectionsArr 			= 	array();
-					$DelSectionsArr['where'] 	= 	array('id',$Inf_row1['id']);
-
-					$DelSections= $PowerBB->core->Deleted($DelSectionsArr,'section');
-
-					$DelSections2Arr 			= 	array();
-					$DelSections2Arr['where'] 	= 	array('id',$Infparent['id']);
-
-					$DelSections2= $PowerBB->section->DeleteSection($DelSections2Arr);
-		      }
-
-
-					$DelReply1Arr 						= 	array();
-					$DelReply1Arr['where']				=	array();
-					$DelReply1Arr['where'][0]				=	array();
-					$DelReply1Arr['where'][0]['name']		=	'section';
-					$DelReply1Arr['where'][0]['oper']		=	'=';
-					$DelReply1Arr['where'][0]['value']	=	$parent['id'];
-
-					$DelReply1 = $PowerBB->reply->DeleteReply($DelReply1Arr);
-
-					$Del1Arr 						= 	array();
-					$Del1Arr['where']				=	array();
-					$Del1Arr['where'][0]				=	array();
-					$Del1Arr['where'][0]['name']		=	'section';
-					$Del1Arr['where'][0]['oper']		=	'=';
-					$Del1Arr['where'][0]['value']	=	$parent['id'];
-
-					$del1 = $PowerBB->subject->DeleteSubject($Del1Arr);
-	          }
-		  }					///////////
-
          $section_parent = $PowerBB->_CONF['template']['Inf']['id'];
          $get_section_parent = $PowerBB->DB->sql_query("SELECT  *   FROM " . $PowerBB->table['section'] . " WHERE parent = " . $section_parent . " ");
-          if($get_section_parent)
-          {
-		       while ($Inf_row = $PowerBB->DB->sql_fetch_array($get_section_parent))
-		      {
-					$DelSubjectsArr 						= 	array();
-					$DelSubjectsArr['where']				=	array();
-					$DelSubjectsArr['where'][0]				=	array();
-					$DelSubjectsArr['where'][0]['name']		=	'section';
-					$DelSubjectsArr['where'][0]['oper']		=	'=';
-					$DelSubjectsArr['where'][0]['value']	=	$Inf_row['id'];
 
-					$DelSubjects = $PowerBB->core->Deleted($DelSubjectsArr,'subject');
+	       while ($Inf_row = $PowerBB->DB->sql_fetch_array($get_section_parent))
+	      {
+				$DelSubjectsArr 						= 	array();
+				$DelSubjectsArr['where']				=	array();
+				$DelSubjectsArr['where'][0]				=	array();
+				$DelSubjectsArr['where'][0]['name']		=	'section';
+				$DelSubjectsArr['where'][0]['oper']		=	'=';
+				$DelSubjectsArr['where'][0]['value']	=	$Inf_row['id'];
 
-					$DelReplysArr 						= 	array();
-					$DelReplysArr['where']				=	array();
-					$DelReplysArr['where'][0]				=	array();
-					$DelReplysArr['where'][0]['name']		=	'section';
-					$DelReplysArr['where'][0]['oper']		=	'=';
-					$DelReplysArr['where'][0]['value']	=	$Inf_row['id'];
+				$DelSubjects = $PowerBB->core->Deleted($DelSubjectsArr,'subject');
 
-					$DelReplys = $PowerBB->core->Deleted($DelReplysArr,'reply');
+				$DelReplysArr 						= 	array();
+				$DelReplysArr['where']				=	array();
+				$DelReplysArr['where'][0]				=	array();
+				$DelReplysArr['where'][0]['name']		=	'section';
+				$DelReplysArr['where'][0]['oper']		=	'=';
+				$DelReplysArr['where'][0]['value']	=	$Inf_row['id'];
 
-					$DelSectionsArr 			= 	array();
-					$DelSectionsArr['where'] 	= 	array('id',$Inf_row['id']);
+				$DelReplys = $PowerBB->core->Deleted($DelReplysArr,'reply');
 
-					$DelSections= $PowerBB->core->Deleted($DelSectionsArr,'section');
-		      }
+				$DelSectionsArr 			= 	array();
+				$DelSectionsArr['where'] 	= 	array('id',$Inf_row['id']);
 
-
+				$DelSections= $PowerBB->core->Deleted($DelSectionsArr,'section');
+	      }
 
 				$DelReplyArr 						= 	array();
 				$DelReplyArr['where']				=	array();
@@ -570,10 +573,22 @@ class PowerBBSectionMOD extends _functions
 
 				$del = $PowerBB->core->Deleted($DelArr,'subject');
 
-			   $PowerBB->functions->msg($PowerBB->_CONF['template']['_CONF']['lang']['Topic_has_been_deleted_successfully']);
-           }
-			   $cache = $PowerBB->section->UpdateSectionsCache(array('parent'=>$PowerBB->_CONF['template']['Inf']['parent']));
 
+				if ($del)
+				{
+					$PowerBB->functions->msg($PowerBB->_CONF['template']['_CONF']['lang']['Topic_has_been_deleted_successfully']);
+
+							$DelArr 			= 	array();
+							$DelArr['where'] 	= 	array('id',$PowerBB->_CONF['template']['Inf']['id']);
+
+							$del = $PowerBB->core->Deleted($DelArr,'section');
+							$PowerBB->functions->msg($PowerBB->_CONF['template']['_CONF']['lang']['Forum_has_been_deleted_successfully']);
+
+
+					$cache = $PowerBB->section->UpdateSectionsCache(array('parent'=>$PowerBB->_CONF['template']['Inf']['parent']));
+
+					if ($cache)
+					{
 
 					        $SecArr 					= 	array();
 							$SecArr['get_from']			=	'db';
@@ -623,7 +638,7 @@ class PowerBBSectionMOD extends _functions
 
 							if (in_array('false',$s))
 							{
-							$PowerBB->functions->error(did_not_succeed_the_process);
+							$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['did_not_succeed_the_process']);
 							}
 							$PowerBB->functions->msg($PowerBB->_CONF['template']['_CONF']['lang']['Information_has_been_updated_successfully']);
 
@@ -636,6 +651,8 @@ class PowerBBSectionMOD extends _functions
 
 							$del = $PowerBB->core->Deleted($DelArr,'sectiongroup');
 
+							if ($del)
+							{
 							$SecArr 					= 	array();
 							$SecArr['get_from']			=	'db';
 							$SecArr['proc'] 			= 	array();
@@ -687,15 +704,12 @@ class PowerBBSectionMOD extends _functions
 							$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['did_not_succeed_the_process']);
 							}
 
-							$DelArr 			= 	array();
-							$DelArr['where'] 	= 	array('id',$PowerBB->_CONF['template']['Inf']['id']);
-
-							$del = $PowerBB->core->Deleted($DelArr,'section');
-							$PowerBB->functions->msg($PowerBB->_CONF['template']['_CONF']['lang']['Forum_has_been_deleted_successfully']);
 
 							$PowerBB->functions->msg($PowerBB->_CONF['template']['_CONF']['lang']['groups_have_been_deleted_successfully']);
 							$PowerBB->functions->redirect('index.php?page=sections&amp;control=1&amp;main=1');
-
+						}
+					}
+				}
 
 		}
 		else

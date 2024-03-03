@@ -120,7 +120,6 @@ class PowerBBSearchEngineMOD
 	        $PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['no_online']);
 	        }
 	     }
-
 		//////////
        $forum_not = $PowerBB->_CONF['info_row']['last_subject_writer_not_in'];
 
@@ -157,49 +156,52 @@ class PowerBBSearchEngineMOD
 		// Loop to read the information of main sections
 		foreach ($cats as $cat)
 		{
-			@include("cache/sectiongroup_cache/sectiongroup_cache_".$cat['id'].".php");
-	       // Get the groups information to know view this section or not
-	      $sectiongroup = json_decode(base64_decode($sectiongroup_cache), true);
-		  if ($sectiongroup[$PowerBB->_CONF['group_info']['id']]['view_section'])
+         if ($PowerBB->functions->section_group_permission($cat['id'],$PowerBB->_CONF['group_info']['id'],'view_section'))
 	      {
              // foreach main sections
 			$PowerBB->_CONF['template']['foreach']['forums_list'][$cat['id'] . '_m'] = $cat;
 
-			unset($sectiongroup);
-
+			if($PowerBB->_CONF['files_forums_Cache'])
+			{
 			@include("cache/forums_cache/forums_cache_".$cat['id'].".php");
+			}
+			else
+			{
+			$forums_cache = $PowerBB->functions->get_forum_cache($cat['id'],$cat['forums_cache']);
+			}
 			if (!empty($forums_cache))
 			{
-                $forums = json_decode(base64_decode($forums_cache), true);
-
+                $forums = $PowerBB->functions->decode_forum_cache($forums_cache);
 					foreach ($forums as $forum)
 					{
 						//////////////////////////
-					     @include("cache/sectiongroup_cache/sectiongroup_cache_".$forum['id'].".php");
-						$groups = json_decode(base64_decode($sectiongroup_cache), true);
-						if ($groups[$PowerBB->_CONF['group_info']['id']]['view_section'] and $forum['sec_section'] == '0' and $forum['hide_subject'] == '0')
+						if ($PowerBB->functions->section_group_permission($forum['id'],$PowerBB->_CONF['group_info']['id'],'view_section'))
 						{
 						$forum['title'] = "<b>".$forum['title']."</b>";
 							$forum['is_sub'] 	= 	0;
 							$forum['sub']		=	'';
 
-                              @include("cache/forums_cache/forums_cache_".$forum['id'].".php");
+									if ($PowerBB->_CONF['files_forums_Cache'])
+									{
+									@include("cache/forums_cache/forums_cache_".$forum['id'].".php");
+									}
+									else
+									{
+									$forums_cache = $PowerBB->functions->get_forum_cache($forum['id'],$forum['forums_cache']);
+									}
                                if (!empty($forums_cache))
 	                           {
-
-									$subs = json_decode(base64_decode($forums_cache), true);
+                                  $subs = $PowerBB->functions->decode_forum_cache($forums_cache);
 	                               foreach ($subs as $sub)
 									{
 									   if ($forum['id'] == $sub['parent'])
 	                                    {
-								            @include("cache/sectiongroup_cache/sectiongroup_cache_".$sub['id'].".php");
-									        $groups = json_decode(base64_decode($sectiongroup_cache), true);
 
 												if (!$forum['is_sub'])
 												{
 													$forum['is_sub'] = 1;
 												}
-											  if ($groups[$PowerBB->_CONF['group_info']['id']]['view_section'] and $sub['sec_section'] == '0' and $sub['hide_subject'] == '0')
+											  if ($PowerBB->functions->section_group_permission($sub['id'],$PowerBB->_CONF['group_info']['id'],'view_section') and $sub['sec_section'] == '0' and $sub['hide_subject'] == '0')
 											   {
 												 $forum['sub'] .= ('<option value="' .$sub['id'] . '" >--- '  . $sub['title'] . '</option>');
 
@@ -210,19 +212,23 @@ class PowerBBSearchEngineMOD
 													$forum['is_sub_sub'] 	= 	0;
 													$forum['sub_sub']		=	'';
 
-		                                       @include("cache/forums_cache/forums_cache_".$sub['id'].".php");
+											if ($PowerBB->_CONF['files_forums_Cache'])
+											{
+											@include("cache/forums_cache/forums_cache_".$sub['id'].".php");
+											}
+											else
+											{
+											$forums_cache = $PowerBB->functions->get_forum_cache($sub['id'],$sub['forums_cache']);
+											}
 		                                   if (!empty($forums_cache))
 				                           {
-
-												$subs_sub = json_decode(base64_decode($forums_cache), true);
+												$subs_sub = $PowerBB->functions->decode_forum_cache($forums_cache);
 				                               foreach ($subs_sub as $sub_sub)
 												{
 												   if ($sub['id'] == $sub_sub['parent'])
 				                                    {
-											            @include("cache/sectiongroup_cache/sectiongroup_cache_".$sub_sub['id'].".php");
-												        $groups = json_decode(base64_decode($sectiongroup_cache), true);
 
-														  if ($groups[$PowerBB->_CONF['group_info']['id']]['view_section'] and $sub_sub['sec_section'] == '0' and $sub_sub['hide_subject'] == '0')
+														  if ($PowerBB->functions->section_group_permission($sub['id'],$PowerBB->_CONF['group_info']['id'],'view_section'))
 														   {
 																	if (!$forum['is_sub_sub'])
 																	{

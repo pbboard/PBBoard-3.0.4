@@ -398,18 +398,10 @@ class PowerBBPortalMOD
 		// Loop to read the information of main sections
 		foreach ($catsy as $caty)
 		{
-			// Get the groups information to know view this section or not
-			@include("cache/sectiongroup_cache/sectiongroup_cache_".$caty['id'].".php");
-            $groups = json_decode(base64_decode($sectiongroup_cache), true);
-
-			if (is_array($groups[$PowerBB->_CONF['group_info']['id']]))
+			if ($PowerBB->functions->section_group_permission($caty['id'],$PowerBB->_CONF['group_info']['id'],'view_section'))
 			{
-				if ($groups[$PowerBB->_CONF['group_info']['id']]['view_section'])
-				{
-					$PowerBB->_CONF['template']['foreach']['sections_list'][$caty['id'] . '_m'] = $caty;
-				}
+				$PowerBB->_CONF['template']['foreach']['sections_list'][$caty['id'] . '_m'] = $caty;
 			}
-
 
 		} // end foreach ($catsy)
 

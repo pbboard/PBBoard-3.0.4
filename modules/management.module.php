@@ -536,11 +536,10 @@ class PowerBBManagementMOD
 		// Show Jump List to:)
 		$result = $PowerBB->DB->sql_query("SELECT id,title,parent FROM " . $PowerBB->table['section'] . " ORDER BY id DESC");
 		$Master = array();
-		while ($row = $PowerBB->DB->sql_fetch_array($result)) {
+		$row = $PowerBB->DB->sql_fetch_array($result);
 			extract($row);
 		    $Master = $PowerBB->core->GetList(array ('id'=>$id,'title'=>"".$title."",'parent'=>$parent."",'parent'=>$parent),'section');
 		    $PowerBB->_CONF['template']['foreach']['SecList'] = $PowerBB->core->GetList($Master,'section');
-		}
 
         $PowerBB->template->assign('DoJumpList',$PowerBB->functions->DoJumpList($Master,$url,1));
 		unset($Master);
@@ -4340,11 +4339,11 @@ class PowerBBManagementMOD
 				// Show Jump List to:)
 		$result = $PowerBB->DB->sql_query("SELECT id,title,parent FROM " . $PowerBB->table['section'] . " ORDER BY id DESC");
 		$Master = array();
-		while ($row = $PowerBB->DB->sql_fetch_array($result)) {
+		$row = $PowerBB->DB->sql_fetch_array($result);
 			extract($row);
 		    $Master = $PowerBB->core->GetList(array ('id'=>$id,'title'=>"".$title."",'parent'=>$parent."",'parent'=>$parent),'section');
 		    $PowerBB->_CONF['template']['foreach']['SecList'] = $PowerBB->core->GetList($Master,'section');
-		}
+
 
         $PowerBB->template->assign('DoJumpList',$PowerBB->functions->DoJumpList($Master,$url,1));
 		unset($Master);

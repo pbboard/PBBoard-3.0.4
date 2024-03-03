@@ -622,26 +622,14 @@ class PowerBBFunctions
 
 
 			  } // end !empty($forums_cache)
-			  else
-			  {			   $Forum 			= 	array();
-		       $Forum['where'] 	= 	array('parent',$cat['id']);
-		       $Forum_rwo = $PowerBB->core->GetInfo($Forum,'section');
-		       if($Forum_rwo)
-		       {
-			   $UpdateSectionCache = true;
 
-			   }
-			  }
 		   }
 
 		    // end view section
 				unset($SecArr);
 		} // end foreach ($cats)
 		//////////
-	 	if ($UpdateSectionCache)
- 		{
-		  $PowerBB->functions->_AllCacheStart();
- 		}
+
 	}
 
 	function get_forum_cache($forum_id,$section_forum_cache)
@@ -3277,34 +3265,40 @@ function my_strlen($string)
 						$section = $FeedsInfo['forumid'];
 						$FROM_query = $PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['section'] . " WHERE id = '$section' ");
 						$FROM__row  = $PowerBB->DB->sql_fetch_array($FROM_query);
-						$SubjectArr	=	array();
-						$SubjectArr['field']	=	array();
-						$SubjectArr['field']['title']	=	$Item['TITLE'];
-						$SubjectArr['field']['text']	=	$text;
-						$SubjectArr['field']['writer']	=	$MemberInfo['username'];
-						$SubjectArr['field']['write_time'] 			= 	$PowerBB->_CONF['now'];
-						$SubjectArr['field']['native_write_time'] 	= 	$PowerBB->_CONF['now'];
-						if($FROM__row['review_subject'])
+						if($FROM__row)
 						{
-						$SubjectArr['field']['review_subject'] = '1';
-						}
-						if($FROM__row['sec_section']
-						or $FROM__row['hide_subject'])
-						{
-						$SubjectArr['field']['sec_subject'] = '1';
-						}
-						$SubjectArr['field']['icon'] 				= 	'look/images/icons/i1.gif';
-						$SubjectArr['field']['section']	=	$FeedsInfo['forumid'];
-						$Insert = $PowerBB->subject->InsertSubject($SubjectArr);
-						// The overall number of Member posts
-						$posts = $MemberInfo['posts'] + 1;
-						$MemberArr 				= 	array();
-						$MemberArr['field'] 	= 	array();
-						$MemberArr['field']['posts']			=	$posts;
-						$MemberArr['field']['lastpost_time'] 	=	$PowerBB->_CONF['now'];
-						$MemberArr['where']						=	array('id',$MemberInfo['id']);
-						$UpdateMember = $PowerBB->member->UpdateMember($MemberArr);
-                          }
+							$SubjectArr	=	array();
+							$SubjectArr['field']	=	array();
+							$SubjectArr['field']['title']	=	$Item['TITLE'];
+							$SubjectArr['field']['text']	=	$text;
+							$SubjectArr['field']['writer']	=	$MemberInfo['username'];
+							$SubjectArr['field']['write_time'] 			= 	$PowerBB->_CONF['now'];
+							$SubjectArr['field']['native_write_time'] 	= 	$PowerBB->_CONF['now'];
+							if($FROM__row['review_subject'])
+							{
+							$SubjectArr['field']['review_subject'] = '1';
+							}
+							if($FROM__row['sec_section']
+							or $FROM__row['hide_subject'])
+							{
+							$SubjectArr['field']['sec_subject'] = '1';
+							}
+							$SubjectArr['field']['icon'] 				= 	'look/images/icons/i1.gif';
+							$SubjectArr['field']['section']	=	$FeedsInfo['forumid'];
+							$Insert = $PowerBB->subject->InsertSubject($SubjectArr);
+							if($Insert)
+							{
+								// The overall number of Member posts
+								$posts = $MemberInfo['posts'] + 1;
+								$MemberArr 				= 	array();
+								$MemberArr['field'] 	= 	array();
+								$MemberArr['field']['posts']			=	$posts;
+								$MemberArr['field']['lastpost_time'] 	=	$PowerBB->_CONF['now'];
+								$MemberArr['where']						=	array('id',$MemberInfo['id']);
+								$UpdateMember = $PowerBB->member->UpdateMember($MemberArr);
+							}
+						  }
+                        }
 					$x++;
 					if($x==$y) break;
 				  }
@@ -3501,25 +3495,7 @@ function my_strlen($string)
 		$Update_Group_Cache = $PowerBB->group->UpdateGroupCache($CacheGroupArr);
 		}
 	}
-	function get_column_names($table_name)
-	{
-       		global $PowerBB;
-	    $query = "SHOW COLUMNS FROM {$table_name}";
-	    if(($result=$PowerBB->DB->sql_query($query)))
-	     {
-	        /* Store the column names retrieved in an array */
-	        $column_names = array();
-	        while ($row = $PowerBB->DB->sql_fetch_array($result))
-	        {
-	            $column_names[] = $row['Field'];
-	        }
-	        return $column_names;
-	    }
-	    else
-	    {
-	        return false;
-	     }
-	}
+
   	function GetCachedCustom_bbcode()
 	{
 	   global $PowerBB;

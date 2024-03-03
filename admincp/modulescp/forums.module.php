@@ -95,10 +95,16 @@ class PowerBBForumsMOD extends _functions
 	global $PowerBB;
 
 		// Show Jump List to:)
+		$result = $PowerBB->DB->sql_query("SELECT id,title,parent FROM " . $PowerBB->table['section'] . " ORDER BY id ASC");
+
 		$Master = array();
-		$Master = $PowerBB->section->GetSectionsList(array ('id'=>$id,'title'=>"".$title."",'parent'=>$parent));
+		$row = $PowerBB->DB->sql_fetch_array($result);
+			extract($row);
+		    $Master = $PowerBB->core->GetList(array ('id'=>$id,'title'=>"".$title."",'parent'=>$parent."",'parent'=>$parent),'section');
+		    $PowerBB->_CONF['template']['foreach']['SecList'] = $PowerBB->core->GetList($Master,'section');
+
 		$MainAndSub = new PowerBBCommon;
-        $PowerBB->template->assign('DoJumpList',$MainAndSub->DoJumpList($Master,false,1));
+          	$PowerBB->template->assign('DoJumpList',$MainAndSub->DoJumpList($Master,$url,1));
 		unset($Master);
 	   ////////
 
@@ -316,8 +322,6 @@ class PowerBBForumsMOD extends _functions
 
 			$cache = $PowerBB->section->UpdateSectionsCache(array('parent'=>$PowerBB->_POST['section']));
             $cache = $PowerBB->section->UpdateSectionsCache(array('parent'=>$SectionInfo['parent']));
-            $cache = $PowerBB->section->UpdateSectionsCache(array('id'=>$PowerBB->section->id));
-			$cache = $PowerBB->section->UpdateSectionsCache(array('id'=>$PowerBB->_POST['section']));
 
 			//////////
 
@@ -372,7 +376,6 @@ class PowerBBForumsMOD extends _functions
 				{
 					$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['did_not_succeed_the_process']);
 				}
-
 						$PowerBB->functions->msg($PowerBB->_CONF['template']['_CONF']['lang']['Forum_has_been_added_successfully']);
 						$PowerBB->functions->redirect('index.php?page=forums&amp;edit=1&amp;main=1&amp;id=' . $PowerBB->section->id);
 
@@ -441,11 +444,18 @@ class PowerBBForumsMOD extends _functions
 
 							$forum['is_sub'] 	= 	0;
 							$forum['sub']		=	'';
-                              @include("../cache/forums_cache/forums_cache_".$forum['id'].".php");
+								if ($PowerBB->_CONF['files_forums_Cache'])
+								{
+								@include("../cache/forums_cache/forums_cache_".$forum['id'].".php");
+								}
+								else
+								{
+								$forums_cache = $PowerBB->functions->get_forum_cache($forum['id'],$forum['forums_cache']);
+								}
+
                                if (!empty($forums_cache))
 	                           {
-
-									$subs = json_decode(base64_decode($forums_cache), true);
+                                  $subs = $PowerBB->functions->decode_forum_cache($forums_cache);
 	                               foreach ($subs as $sub)
 									{
 									   if ($forum['id'] == $sub['parent'])
@@ -464,12 +474,17 @@ class PowerBBForumsMOD extends _functions
 													$forum['is_sub_sub'] 	= 	0;
 													$forum['sub_sub']		=	'';
 
-				                              @include("../cache/forums_cache/forums_cache_".$sub['id'].".php");
-
+											if ($PowerBB->_CONF['files_forums_Cache'])
+											{
+											@include("../cache/forums_cache/forums_cache_".$sub['id'].".php");
+											}
+											else
+											{
+											$forums_cache = $PowerBB->functions->get_forum_cache($sub['id'],$sub['forums_cache']);
+											}
 		                                   if (!empty($forums_cache))
 				                           {
-
-												$subs_sub = json_decode(base64_decode($forums_cache), true);
+                                             $subs_sub = $PowerBB->functions->decode_forum_cache($forums_cache);
 				                               foreach ($subs_sub as $sub_sub)
 												{
 												   if ($sub['id'] == $sub_sub['parent'])
@@ -508,7 +523,6 @@ class PowerBBForumsMOD extends _functions
 	{
 		global $PowerBB;
 
-		//////////
 		$PowerBB->_CONF['template']['Inf'] = false;
 		$this->check_by_id($PowerBB->_CONF['template']['Inf']);
 		$PowerBB->_GET['id'] = $PowerBB->functions->CleanVariable($PowerBB->_GET['id'],'intval');
@@ -555,10 +569,11 @@ class PowerBBForumsMOD extends _functions
 		if ($PowerBB->_CONF['template']['Inf']['parent'] != $PowerBB->_POST['parent'])
 		{
 			$new_parent		= 	true;
-			$old_parent		=	$PowerBB->_CONF['template']['Inf']['parent'];
+			$old_parent		=	$PowerBB->_CONF['template']['Inf']['id'];
 		}
 
 		//////////
+
 		$SecArr 			= 	array();
 		$SecArr['field']	=	array();
 
@@ -612,19 +627,17 @@ class PowerBBForumsMOD extends _functions
 			 }
 
 			$cache = $PowerBB->section->UpdateSectionsCache(array('parent'=>$PowerBB->_POST['parent']));
-           	$cache = $PowerBB->section->UpdateSectionsCache(array('id'=>$PowerBB->_POST['parent']));
-     		$UpdateArr 				= 	array();
-     		$UpdateArr['parent'] 	= 	$PowerBB->_CONF['template']['Inf']['parent'];
-
-     		$update_cache = $PowerBB->section->UpdateSectionsCache($UpdateArr);
-
-			$cache = $PowerBB->section->UpdateSectionsCache(array('id'=>$PowerBB->_CONF['template']['Inf']['id']));
 
 			// There is a new main section
 			if ($new_parent)
 			{
-			  $PowerBB->functions->_AllCacheStart();
+			  $cache = $PowerBB->section->UpdateSectionsCache(array('parent'=>$old_parent));
 			}
+
+     		$UpdateArr 				= 	array();
+     		$UpdateArr['parent'] 	= 	$PowerBB->_CONF['template']['Inf']['parent'];
+
+     		$update_cache = $PowerBB->section->UpdateSectionsCache($UpdateArr);
 
 
 			$PowerBB->functions->msg($PowerBB->_CONF['template']['_CONF']['lang']['Forum_has_been_updated_successfully']);
@@ -640,82 +653,17 @@ class PowerBBForumsMOD extends _functions
 
 		$this->check_by_id($PowerBB->_CONF['template']['Inf']);
 
-
-		//////////
-
-        $SecArr 						= 	array();
-		$SecArr['get_from']				=	'db';
-
-		$SecArr['proc'] 				= 	array();
-		$SecArr['proc']['*'] 			= 	array('method'=>'clean','param'=>'html');
-
-		$SecArr['order']				=	array();
-		$SecArr['order']['field']		=	'sort';
-		$SecArr['order']['type']		=	'ASC';
-
-		$SecArr['where']				=	array();
-		$SecArr['where'][0]['name']		= 	'parent';
-		$SecArr['where'][0]['oper']		= 	'=';
-		$SecArr['where'][0]['value']	= 	'0';
-
-		// Get main sections
-		$cats = $PowerBB->core->GetList($SecArr,'section');
-
-		// We will use forums_list to store list of forums which will view in main page
-		$PowerBB->_CONF['template']['foreach']['forums_list'] = array();
-
-		// Loop to read the information of main sections
-		foreach ($cats as $cat)
-		{
-			// Get the groups information to know view this section or not
-			$groups = json_decode(base64_decode($cat['sectiongroup_cache']), true);
-
-
-					$PowerBB->_CONF['template']['foreach']['forums_list'][$cat['id'] . '_m'] = $cat;
-
-
-			if (!empty($cat['forums_cache']))
-			{
-				$forums = json_decode(base64_decode($cat['forums_cache']), true);
-
-				foreach ($forums as $forum)
-				{
-
-
-							$forum['is_sub'] 	= 	0;
-							$forum['sub']		=	'';
-
-							if (!empty($forum['forums_cache']))
-							{
-								$subs = json_decode(base64_decode($forum['forums_cache']), true);
-
-								if (is_array($subs))
-								{
-									foreach ($subs as $sub)
-									{
-
-												if (!$forum['is_sub'])
-												{
-													$forum['is_sub'] = 1;
-												}
-
-												$forum['sub'] .= ('<option value="' .$sub['id'] . '">---'  . $sub['title'] . '</option>');
-
-									}
-								}
-							}
-
-
-							$PowerBB->_CONF['template']['foreach']['forums_list'][$forum['id'] . '_f'] = $forum;
-					} // end if is_array
-				} // end foreach ($forums)
-			} // end !empty($forums_cache)
-
 		// Show Jump List to:)
+		$result = $PowerBB->DB->sql_query("SELECT id,title,parent FROM " . $PowerBB->table['section'] . " ORDER BY id ASC");
+
 		$Master = array();
-		$Master = $PowerBB->section->GetSectionsList(array ('id'=>$id,'title'=>"".$title."",'parent'=>$parent));
+		$row = $PowerBB->DB->sql_fetch_array($result);
+			extract($row);
+		    $Master = $PowerBB->core->GetList(array ('id'=>$id,'title'=>"".$title."",'parent'=>$parent."",'parent'=>$parent),'section');
+		    $PowerBB->_CONF['template']['foreach']['SecList'] = $PowerBB->core->GetList($Master,'section');
+
 		$MainAndSub = new PowerBBCommon;
-        $PowerBB->template->assign('DoJumpList',$MainAndSub->DoJumpList($Master,false,1));
+        $PowerBB->template->assign('DoJumpList',$MainAndSub->DoJumpList($Master,$url,1));
 		unset($Master);
 	   ////////
 
@@ -898,11 +846,12 @@ class PowerBBForumsMOD extends _functions
 		     		    $updateReply = $PowerBB->core->Update($ReplyUpdateArr,'reply');
                     }
 
-
+     				if ($update)
+     				{
 						$cache = $PowerBB->section->UpdateSectionsCache(array('parent'=>$PowerBB->_CONF['template']['Inf']['parent']));
-			            $cache = $PowerBB->section->UpdateSectionsCache(array('id'=>$PowerBB->_CONF['template']['Inf']['id']));
-						$cache = $PowerBB->section->UpdateSectionsCache(array('id'=>$PowerBB->_CONF['template']['Inf']['parent']));
 
+						if ($cache)
+						{
 							$PowerBB->functions->msg($PowerBB->_CONF['template']['_CONF']['lang']['Information_has_been_updated_successfully']);
 
 							$DelArr 						= 	array();
@@ -917,9 +866,10 @@ class PowerBBForumsMOD extends _functions
 							if ($del)
 							{
 								$PowerBB->functions->msg($PowerBB->_CONF['template']['_CONF']['lang']['groups_have_been_deleted_successfully']);
-								$PowerBB->functions->redirect('index.php?page=forums&amp;control=1&amp;main=1');
 							}
-
+						}
+					}
+					$PowerBB->functions->redirect('index.php?page=forums&amp;control=1&amp;main=1');
 				}
 			}
 		}
@@ -974,7 +924,8 @@ class PowerBBForumsMOD extends _functions
 				$del = $PowerBB->core->Deleted($DelArr,'subject');
 
 
-
+				if ($del)
+				{
 					$PowerBB->functions->msg($PowerBB->_CONF['template']['_CONF']['lang']['Topic_has_been_deleted_successfully']);
 
 							$DelArr 			= 	array();
@@ -986,9 +937,8 @@ class PowerBBForumsMOD extends _functions
 
 					$cache = $PowerBB->section->UpdateSectionsCache(array('parent'=>$PowerBB->_CONF['template']['Inf']['parent']));
 
-			            $cache = $PowerBB->section->UpdateSectionsCache(array('id'=>$PowerBB->_CONF['template']['Inf']['id']));
-						$cache = $PowerBB->section->UpdateSectionsCache(array('id'=>$PowerBB->_CONF['template']['Inf']['parent']));
-
+					if ($cache)
+					{
 
 					        $SecArr 					= 	array();
 							$SecArr['get_from']			=	'db';
@@ -1051,7 +1001,8 @@ class PowerBBForumsMOD extends _functions
 
 							$del = $PowerBB->core->Deleted($DelArr,'sectiongroup');
 
-
+							if ($del)
+							{
 							$SecArr 					= 	array();
 							$SecArr['get_from']			=	'db';
 							$SecArr['proc'] 			= 	array();
@@ -1087,9 +1038,10 @@ class PowerBBForumsMOD extends _functions
 
 							$update = $PowerBB->core->Update($UpdateArr,'section');
 
-
+							if ($update)
+							{
 							$cache = $PowerBB->section->UpdateSectionsCache(array('parent'=>$SecList[$x]['parent']));
-
+							}
 
 							$s[$SecList[$x]['id']] = ($update) ? 'true' : 'false';
 							}
@@ -1102,15 +1054,14 @@ class PowerBBForumsMOD extends _functions
 							$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['did_not_succeed_the_process']);
 							}
 
-							$cache = $PowerBB->section->UpdateSectionsCache(array('parent'=>$PowerBB->_GET['parent']));
-							$cache = $PowerBB->section->UpdateSectionsCache(array('id'=>$PowerBB->_GET['parent']));
-							$cache = $PowerBB->section->UpdateSectionsCache(array('id'=>$PowerBB->_GET['id']));
 
 							$PowerBB->functions->msg($PowerBB->_CONF['template']['_CONF']['lang']['groups_have_been_deleted_successfully']);
-							$PowerBB->functions->redirect('index.php?page=forums&amp;control=1&amp;main=1');
+						}
+					}
 
+					$PowerBB->functions->redirect('index.php?page=forums&amp;control=1&amp;main=1');
 
-
+				}
 
 		}
 		else
@@ -1376,12 +1327,17 @@ class PowerBBForumsMOD extends _functions
 							$forum['is_sub'] 	= 	0;
 							$forum['sub']		=	'';
 
-							@include("../cache/forums_cache/forums_cache_".$forum['id'].".php");
-
+									if ($PowerBB->_CONF['files_forums_Cache'])
+									{
+									@include("../cache/forums_cache/forums_cache_".$forum['id'].".php");
+									}
+									else
+									{
+									$forums_cache = $PowerBB->functions->get_forum_cache($forum['id'],$forum['forums_cache']);
+									}
                                if (!empty($forums_cache))
 	                           {
-
-									$subs = json_decode(base64_decode($forums_cache), true);
+									$subs = $PowerBB->functions->decode_forum_cache($forums_cache);
 	                               foreach ($subs as $sub)
 									{
 									   if ($forum['id'] == $sub['parent'])
@@ -1400,12 +1356,17 @@ class PowerBBForumsMOD extends _functions
 													$forum['is_sub_sub'] 	= 	0;
 													$forum['sub_sub']		=	'';
 
-										@include("../cache/forums_cache/forums_cache_".$sub['id'].".php");
-
+											if ($PowerBB->_CONF['files_forums_Cache'])
+											{
+											@include("../cache/forums_cache/forums_cache_".$sub['id'].".php");
+											}
+											else
+											{
+											$forums_cache = $PowerBB->functions->get_forum_cache($sub['id'],$sub['forums_cache']);
+											}
 		                                   if (!empty($forums_cache))
 				                           {
-
-												$subs_sub = json_decode(base64_decode($forums_cache), true);
+												$subs_sub = $PowerBB->functions->decode_forum_cache($forums_cache);
 				                               foreach ($subs_sub as $sub_sub)
 												{
 												   if ($sub['id'] == $sub_sub['parent'])

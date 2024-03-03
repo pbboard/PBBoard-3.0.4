@@ -231,7 +231,7 @@ class PowerBBFixMOD
 		$page = $PowerBB->_GET['pag'];
 		}
 		$page = ($page == 0 ? 1 : $page);
-		$perpage = 4;
+		$perpage = 10;
 		$startpoint = ($page * $perpage) - $perpage;
  		$forumArr = $PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['section'] . " WHERE parent > '0' ORDER BY id ASC LIMIT ".$startpoint.",".$perpage." ");
 		$forum_nm = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['section'] . " WHERE parent > 0"));

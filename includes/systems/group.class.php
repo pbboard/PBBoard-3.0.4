@@ -342,7 +342,8 @@ class PowerBBGroup
  				 $CacheArr['where'] 		        = 	array('id',$param['id']);
                	$Update_sectiongroup_cache = $this->Engine->records->Update($this->Engine->table['section'],$CacheArr['field'],$CacheArr['where']);
 
-
+           if($this->Engine->_CONF['files_sectiongroup_cache'])
+           {
 			$file_sectiongroup_cache = $PowerBB->functions->GetMianDir()."cache/sectiongroup_cache/sectiongroup_cache_".$param['id'].".php";
             $file_sectiongroup_cache = str_ireplace("index.php/", '', $file_sectiongroup_cache);
             $file_sectiongroup_cache = str_replace("index.php/", '', $file_sectiongroup_cache);
@@ -364,7 +365,8 @@ class PowerBBGroup
 				$fail = true;
 			}
 
- 		return ($fail) ? true : false;
+ 		   return ($fail) ? true : false;
+ 		  }
  	}
 
 	function InsertSectionGroup($param)

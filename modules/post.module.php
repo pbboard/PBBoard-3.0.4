@@ -68,8 +68,7 @@ class PowerBBTopicMOD
 		$PowerBB->_CONF['template']['SubjectInfo'] = $PowerBB->core->GetInfo($SubjectArr,'subject');
 
 		// There is no subject, so show error message
-		if (!$PowerBB->_CONF['template']['SubjectInfo']
-		or !$PowerBB->_CONF['template']['ReplyInfo'])
+		if (!$PowerBB->_CONF['template']['ReplyInfo'])
 		{
 			$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['Sorry_requested_topic_does_not_exist']);
 		}

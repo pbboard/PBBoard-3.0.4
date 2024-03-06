@@ -584,7 +584,7 @@ class PowerBBStyleMOD extends _functions
 
     	$this->check_by_id($StyleInfo);
 
-    	if (empty($PowerBB->_GET['style_path']))
+    	if (empty($PowerBB->_POST['style_path']))
     	{
     		$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['path_not_true']);
     	}
@@ -592,8 +592,6 @@ class PowerBBStyleMOD extends _functions
     	{
     		$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['Style_requested_does_not_exist']);
     	}
-
-    	$PowerBB->_GET['style_path'] = $PowerBB->functions->CleanVariable($PowerBB->_GET['style_path'],'html');
 
 
 
@@ -608,13 +606,13 @@ class PowerBBStyleMOD extends _functions
 					}
 					else
 					{
-				       $path = $PowerBB->_GET['style_path'];
+				       $path = $PowerBB->_POST['style_path'];
 					}
 
 			}
 			else
 			{
-		       $path = $PowerBB->_GET['style_path'];
+		       $path = $PowerBB->_POST['style_path'];
 			}
 
     	if (!file_exists($path))

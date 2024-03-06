@@ -2286,18 +2286,8 @@ function upgrade_update_section_cache()
 
 				if ($cache)
 				{
-					$file_forums_cache = PBB_ROOT."cache/forums_cache/forums_cache_".$Section['id'].".php";
-					$fp = fopen($file_forums_cache,'w');
-					if (!$fp)
-					{
-					return 'ERROR::CAN_NOT_OPEN_THE_FILE';
-					}
-					$Ds = '$';
-					$Section = $Section['id'];
-					$forums_cache = "<?php \n".$Ds."forums_cache ='".$cache."';\n ?> ";
+				    $update = $db->query("UPDATE " . $config['db']['prefix'] . "section SET forums_cache='".$cache."' WHERE id='".$Section['id']."'");
 
-					$fw = fwrite($fp,$forums_cache);
-					fclose($fp);
 				}
 
  			}

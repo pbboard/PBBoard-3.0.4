@@ -289,7 +289,6 @@ class PowerBBCodeParse
      $string = preg_replace("#(</?(?:html|head|body|div|p|form|table|thead|tbody|tfoot|tr|td|th|ul|ol|li|div|p|blockquote|cite|hr|h1|h2|h3|h4|h5|h6)[^>]*>)\s*<br />#i", "$1", $string);
 	 $string = preg_replace("#(&nbsp;)+(</?(?:html|head|body|div|p|form|table|thead|tbody|tfoot|tr|td|th|ul|ol|li|div|p|blockquote|cite|hr|h1|h2|h3|h4|h5|h6)[^>]*>)#i", "$2", $string);
 
-
 			//replace Custom bbcode
 	        $Custom_bbcodes = $PowerBB->functions->GetCachedCustom_bbcode();
 	        if(!empty($Custom_bbcodes))
@@ -300,8 +299,11 @@ class PowerBBCodeParse
 		      	$bbcode_replace = $getbbcode_row['bbcode_replace'];
                 $bbcode_replace = str_replace("'","&#39;",$bbcode_replace);
 				$bbcode_replace = $this->htmlspecialchars_off($bbcode_replace);
-                while (strstr($string, "[/".$bbcode_tag."]") !== false)
-	             {
+					$bbcode_count = substr_count($string,'[/'.$bbcode_tag.']');
+                    $p = 0;
+                 while ($p < $bbcode_count)
+                 {
+
 					if ($getbbcode_row['bbcode_useoption'] == '1')
 					{
 						if(preg_match("#\[".$bbcode_tag."=(.*)\](.*)\[/".$bbcode_tag."\]#siU", $string, $matches))
@@ -320,7 +322,7 @@ class PowerBBCodeParse
 	                       $string = str_replace("[".$bbcode_tag."]".$matches[1]."[/".$bbcode_tag."]",$stringbcode, $string);
 			            }
 			          }
-
+                  $p += 1;
 				 }
 		      }
 

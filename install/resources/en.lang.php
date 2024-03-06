@@ -364,7 +364,7 @@ $l['finish_upgrade'] = "Finish Upgrade";
 $l['convert_latin1'] = "PBBoard has successfully been Convert tables to UTF8MP4 .";
 $l['req_convert_reqcomplete'] = '<p><strong>Convert characters PBBoard from latin1 to UTF8MP4 ..</strong></p>
 <p>Click Next to continue with update sections cache process..</p>';
-$l['choose_languag'] = "<p>اختيار اللغة - choose language</p>";
+$l['choose_languag'] = "اختيار اللغة - choose language";
 $l['choose_a_language'] = "<div class=\"border_wrapper upgrade_note\" style=\"padding: 4px;\">
 <form method=\"post\" action=\"index.php\">
 <select data-placeholder=\"Choose a Language...\" name=\"selectlang\">

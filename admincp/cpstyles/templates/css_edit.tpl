@@ -7,7 +7,7 @@
 
 <br />
 
-<form action="index.php?page=style&amp;edit_css=1&amp;start=1&amp;id={$Inf['id']}&amp;style_path={$style_path}" method="post">
+<form action="index.php?page=style&amp;edit_css=1&amp;start=1&amp;id={$Inf['id']}" method="post">
 
 	<table cellpadding="3" cellspacing="1" width="60%" class="t_style_b" border="0" align="center">
 		<tr valign="top" align="center">
@@ -19,6 +19,7 @@
 		<tr valign="top">
 			<td class="row1" align="center">
 				<textarea rows="45" cols="90" name="css_context" dir="ltr">{$css_context}</textarea>
+				<input type="hidden" id="style_pathId" name="style_path" value="{$style_path}">
 			</td>
 		</tr>
 	</table>

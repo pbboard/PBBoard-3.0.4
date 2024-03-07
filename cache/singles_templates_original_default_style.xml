@@ -13265,7 +13265,7 @@ itemtype="https://schema.org/ListItem">
 <div class="btn-nav"></div>
 <li itemprop="itemListElement" itemscope
 itemtype="https://schema.org/ListItem">
-<a itemprop="item"href="index.php?page=topic&amp;show=1&amp;id={$subject_id}">
+<a itemprop="item" href="index.php?page=topic&amp;show=1&amp;id={$subject_id}">
 <span itemprop="name">
 {$subject_title}
 </span>

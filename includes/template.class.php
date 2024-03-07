@@ -484,6 +484,12 @@ class PBBTemplate
 			$first_replace = ' class="row2" disabled="disabled">';
 			$string = str_replace($first_search,$first_replace,$string);
 			}
+            elseif ($filename == 'subject_top')
+			{
+			$first_search = 'item"href';
+			$first_replace = 'item" href';
+			$string = str_replace($first_search,$first_replace,$string);
+			}
 			$first_searchss = "function uploadFile() {";
 			$first_replacess = 'function uploadFile() { var x = document.getElementById("files").value;if (!x){return false;}';
 			$string = str_replace($first_searchss,$first_replacess,$string);

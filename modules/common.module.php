@@ -1337,10 +1337,20 @@ class PowerBBCommon
 	      or $PowerBB->_CONF['info_row']['sidebar_list_active']
 	      or $PowerBB->_CONF['info_row']['activate_last_static_list'])
 	      {
-	        // $PowerBB->functions->PBB_Create_last_posts_cache(0);
-	        $cache = $PowerBB->_CONF['info_row']['last_posts_cache'];
-			$pbb_last_posts_cache = json_decode(base64_decode($cache), true);
+	       $cache = $PowerBB->_CONF['info_row']['last_posts_cache'];
+	       if(!strstr($cache,":{")
+	       or empty($cache))
+	        {
+	        if($PowerBB->functions->PBB_Create_last_posts_cache(0))
+	         {
+		     $REPAIR_TABLE_info = $PowerBB->DB->sql_query("REPAIR TABLE " . $PowerBB->table['info'] . "");
+		     }
+	        }
+	        else
+	        {
+			$pbb_last_posts_cache = unserialize($cache);
 			$PowerBB->_CONF['template']['while']['lastPostsList'] = $pbb_last_posts_cache;
+			}
           }
         // main_bar template Change background color to class primary_on
 		$PowerBB->_CONF['template']['latest_reply_page'] = 'primary_oof';

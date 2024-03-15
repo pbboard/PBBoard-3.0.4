@@ -410,33 +410,36 @@ class PowerBBForumsMOD extends _functions
 		// Get main sections
 		$cats = $PowerBB->core->GetList($SecArr,'section');
 
-		// We will use forums_list to store list of forums which will view in main page
-		$PowerBB->_CONF['template']['foreach']['forums_list'] = array();
+ 		////////////
 
 		// Loop to read the information of main sections
-       foreach ($cats as $cat)
+		foreach ($cats as $cat)
 		{
-	               // foreach main sections
-                    unset($sectiongroup);
+             // foreach main sections
+			$PowerBB->_CONF['template']['foreach']['forums_list'][$cat['id'] . '_m'] = $cat;
 
-	                   // Get main Forums
-						$ForumArr 						= 	array();
-						$ForumArr['get_from']				=	'db';
-
-						$ForumArr['proc'] 				= 	array();
-						$ForumArr['proc']['*'] 			= 	array('method'=>'clean','param'=>'html');
-
-						$ForumArr['order']				=	array();
-						$ForumArr['order']['field']		=	'sort';
-						$ForumArr['order']['type']		=	'ASC';
-
-						$ForumArr['where']				=	array();
-						$ForumArr['where'][0]['name']		= 	'parent';
-						$ForumArr['where'][0]['oper']		= 	'=';
-						$ForumArr['where'][0]['value']	= 	$cat['id'];
-
-						// Get parent sections
-						$forums = $PowerBB->core->GetList($ForumArr,'section');
+			if($PowerBB->_CONF['files_forums_Cache'])
+			{
+			@include("../cache/forums_cache/forums_cache_".$cat['id'].".php");
+			}
+			else
+			{
+			$forums_cache = $cat['forums_cache'];
+			}
+			if (!empty($forums_cache))
+			{
+               	$ForumArr 						= 	array();
+				$ForumArr['get_from']				=	'db';
+				$ForumArr['proc'] 				= 	array();
+				$ForumArr['proc']['*'] 			= 	array('method'=>'clean','param'=>'html');
+				$ForumArr['order']				=	array();
+				$ForumArr['order']['field']		=	'sort';
+				$ForumArr['order']['type']		=	'ASC';
+				$ForumArr['where']				=	array();
+				$ForumArr['where'][0]['name']		= 	'parent';
+				$ForumArr['where'][0]['oper']		= 	'=';
+				$ForumArr['where'][0]['value']	= 	$cat['id'];
+				$forums = $PowerBB->core->GetList($ForumArr,'section');
 
 					foreach ($forums as $forum)
 					{
@@ -444,18 +447,29 @@ class PowerBBForumsMOD extends _functions
 
 							$forum['is_sub'] 	= 	0;
 							$forum['sub']		=	'';
-								if ($PowerBB->_CONF['files_forums_Cache'])
-								{
-								@include("../cache/forums_cache/forums_cache_".$forum['id'].".php");
-								}
-								else
-								{
-								$forums_cache = $PowerBB->functions->get_forum_cache($forum['id'],$forum['forums_cache']);
-								}
 
+									if ($PowerBB->_CONF['files_forums_Cache'])
+									{
+									@include("../cache/forums_cache/forums_cache_".$forum['id'].".php");
+									}
+									else
+									{
+									$forums_cache = $forum['forums_cache'];
+									}
                                if (!empty($forums_cache))
 	                           {
-                                  $subs = $PowerBB->functions->decode_forum_cache($forums_cache);
+					               	$SubArr 						= 	array();
+									$SubArr['get_from']				=	'db';
+									$SubArr['proc'] 				= 	array();
+									$SubArr['proc']['*'] 			= 	array('method'=>'clean','param'=>'html');
+									$SubArr['order']				=	array();
+									$SubArr['order']['field']		=	'sort';
+									$SubArr['order']['type']		=	'ASC';
+									$SubArr['where']				=	array();
+									$SubArr['where'][0]['name']		= 	'parent';
+									$SubArr['where'][0]['oper']		= 	'=';
+									$SubArr['where'][0]['value']	= 	$forum['id'];
+									$subs = $PowerBB->core->GetList($SubArr,'section');
 	                               foreach ($subs as $sub)
 									{
 									   if ($forum['id'] == $sub['parent'])
@@ -465,55 +479,32 @@ class PowerBBForumsMOD extends _functions
 												{
 													$forum['is_sub'] = 1;
 												}
-												 $forum['sub'] .= ('<option value="' .$sub['id'] . '">---- '  . $sub['title'] . '</option>');
+                                                        if ($sub['forum_title_color'] !='')
+												         {
+														    $forum_title_color = $sub['forum_title_color'];
+														    $sub['title'] = "<span style=color:".$forum_title_color.">".$sub['title']."</span>";
+														 }
+
+														$forum_url = "index.php?page=forums&amp;forum=1&amp;index=1&amp;id=";
+														$forum['sub'] .= '<span class="smallfont">';
+														$forum['sub'] .= ' <a class="smallfont" style="font-family: Tahoma !important;font-weight: normal !important;font-size: 10px !important;" href="'.$forum_url.$sub['id'].'"> '.$sub['title'].'</a>';
+														$forum['sub'] .= "</span> , ";
 
 										  }
 
-					                         ///////////////
-
-													$forum['is_sub_sub'] 	= 	0;
-													$forum['sub_sub']		=	'';
-
-											if ($PowerBB->_CONF['files_forums_Cache'])
-											{
-											@include("../cache/forums_cache/forums_cache_".$sub['id'].".php");
-											}
-											else
-											{
-											$forums_cache = $PowerBB->functions->get_forum_cache($sub['id'],$sub['forums_cache']);
-											}
-		                                   if (!empty($forums_cache))
-				                           {
-                                             $subs_sub = $PowerBB->functions->decode_forum_cache($forums_cache);
-				                               foreach ($subs_sub as $sub_sub)
-												{
-												   if ($sub['id'] == $sub_sub['parent'])
-				                                    {
-
-																	if (!$forum['is_sub_sub'])
-																	{
-																		$forum['is_sub_sub'] = 1;
-																	}
-
-															 $forum['sub_sub'] .= ('<option value="' .$sub_sub['id'] . '">---- '  . $sub_sub['title'] . '</option>');
-													  }
-												 }
-
-										   }
 									 }
 								}
 
 
 							$PowerBB->_CONF['template']['foreach']['forums_list'][$forum['id'] . '_f'] = $forum;
+							unset($groups);
 
 		             } // end foreach ($forums)
+			  } // end !empty($forums_cache)
 
-						unset($ForumArr);
-			            $ForumArr = $PowerBB->DB->sql_free_result($ForumArr);
-          }
-
-    		 unset($SecArr);
-			 $SecArr = $PowerBB->DB->sql_free_result($SecArr);
+				unset($SecArr);
+				$SecArr = $PowerBB->DB->sql_free_result($SecArr);
+		} // end foreach ($cats)
 
 		//////////
 		$PowerBB->template->display('forums_main');
@@ -1309,15 +1300,12 @@ class PowerBBForumsMOD extends _functions
 		$SecArr['order']['type']		=	'ASC';
 
 		$SecArr['where']				=	array();
-		$SecArr['where'][0]['name']		= 	'parent';
+		$SecArr['where'][0]['name']		= 	'id';
 		$SecArr['where'][0]['oper']		= 	'=';
 		$SecArr['where'][0]['value']	= 	$PowerBB->_CONF['template']['Inf']['id'];
 
 		// Get main sections
 		$forums = $PowerBB->core->GetList($SecArr,'section');
-
-		// We will use forums_list to store list of forums which will view in main page
-		$PowerBB->_CONF['template']['foreach']['forums_list'] = array();
 
 		// Loop to read the information of main sections
 		           foreach ($forums as $forum)
@@ -1333,11 +1321,23 @@ class PowerBBForumsMOD extends _functions
 									}
 									else
 									{
-									$forums_cache = $PowerBB->functions->get_forum_cache($forum['id'],$forum['forums_cache']);
+									$forums_cache = $forum['forums_cache'];
 									}
                                if (!empty($forums_cache))
 	                           {
-									$subs = $PowerBB->functions->decode_forum_cache($forums_cache);
+					               	$SubArr 						= 	array();
+									$SubArr['get_from']				=	'db';
+									$SubArr['proc'] 				= 	array();
+									$SubArr['proc']['*'] 			= 	array('method'=>'clean','param'=>'html');
+									$SubArr['order']				=	array();
+									$SubArr['order']['field']		=	'sort';
+									$SubArr['order']['type']		=	'ASC';
+									$SubArr['where']				=	array();
+									$SubArr['where'][0]['name']		= 	'parent';
+									$SubArr['where'][0]['oper']		= 	'=';
+									$SubArr['where'][0]['value']	= 	$forum['id'];
+									$subs = $PowerBB->core->GetList($SubArr,'section');
+
 	                               foreach ($subs as $sub)
 									{
 									   if ($forum['id'] == $sub['parent'])
@@ -1347,41 +1347,13 @@ class PowerBBForumsMOD extends _functions
 												{
 													$forum['is_sub'] = 1;
 												}
-												 $forum['sub'] .= ('<option value="' .$sub['id'] . '">---- '  . $sub['title'] . '</option>');
+														$forum_url = "index.php?page=forums&amp;forum=1&amp;index=1&amp;id=";
+														$forum['sub'] .= '<span class="smallfont">';
+														$forum['sub'] .= ' <a class="smallfont" style="font-family: Tahoma !important;font-weight: normal !important;font-size: 10px !important;" href="'.$forum_url.$sub['id'].'"> '.$sub['title'].'</a>';
+														$forum['sub'] .= "</span> , ";
 
 										  }
 
-					                         ///////////////
-
-													$forum['is_sub_sub'] 	= 	0;
-													$forum['sub_sub']		=	'';
-
-											if ($PowerBB->_CONF['files_forums_Cache'])
-											{
-											@include("../cache/forums_cache/forums_cache_".$sub['id'].".php");
-											}
-											else
-											{
-											$forums_cache = $PowerBB->functions->get_forum_cache($sub['id'],$sub['forums_cache']);
-											}
-		                                   if (!empty($forums_cache))
-				                           {
-												$subs_sub = $PowerBB->functions->decode_forum_cache($forums_cache);
-				                               foreach ($subs_sub as $sub_sub)
-												{
-												   if ($sub['id'] == $sub_sub['parent'])
-				                                    {
-
-																	if (!$forum['is_sub_sub'])
-																	{
-																		$forum['is_sub_sub'] = 1;
-																	}
-
-															 $forum['sub_sub'] .= ('<option value="' .$sub_sub['id'] . '">---- '  . $sub_sub['title'] . '</option>');
-													  }
-												 }
-
-										   }
 									 }
 								}
 

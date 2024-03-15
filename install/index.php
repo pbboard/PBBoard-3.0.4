@@ -1346,19 +1346,19 @@ function database_info()
 			$db_info[$dbfile] .= "
 				<tr class=\"alt_row\">
 					<td class=\"first\"><label for=\"config_{$dbfile}_dbhost\">{$lang->database_host}</label></td>
-					<td class=\"last alt_col\"><input type=\"text\" class=\"text_input\" name=\"config[{$dbfile}][dbhost]\" id=\"config_{$dbfile}_dbhost\" value=\"".htmlspecialchars_uni($PBBoard->input['config'][$dbfile]['dbhost'])."\" /></td>
+					<td class=\"last alt_col\"><input type=\"text\" class=\"text_input\" name=\"config[{$dbfile}][dbhost]\" id=\"config_{$dbfile}_dbhost\" dir=\"ltr\" value=\"".htmlspecialchars_uni($PBBoard->input['config'][$dbfile]['dbhost'])."\" /></td>
 				</tr>
 				<tr>
 					<td class=\"first\"><label for=\"config_{$dbfile}_dbuser\">{$lang->database_user}</label></td>
-					<td class=\"last alt_col\"><input type=\"text\" class=\"text_input\" name=\"config[{$dbfile}][dbuser]\" id=\"config_{$dbfile}_dbuser\" value=\"".htmlspecialchars_uni($PBBoard->input['config'][$dbfile]['dbuser'])."\" /></td>
+					<td class=\"last alt_col\"><input type=\"text\" class=\"text_input\" name=\"config[{$dbfile}][dbuser]\" id=\"config_{$dbfile}_dbuser\" dir=\"ltr\" value=\"".htmlspecialchars_uni($PBBoard->input['config'][$dbfile]['dbuser'])."\" /></td>
 				</tr>
 				<tr class=\"alt_row\">
 					<td class=\"first\"><label for=\"config_{$dbfile}_dbpass\">{$lang->database_pass}</label></td>
-					<td class=\"last alt_col\"><input type=\"password\" class=\"text_input\" name=\"config[{$dbfile}][dbpass]\" id=\"config_{$dbfile}_dbpass\" value=\"".htmlspecialchars_uni($PBBoard->input['config'][$dbfile]['dbpass'])."\" /></td>
+					<td class=\"last alt_col\"><input type=\"text\" class=\"text_input\" name=\"config[{$dbfile}][dbpass]\" id=\"config_{$dbfile}_dbpass\" dir=\"ltr\" value=\"".htmlspecialchars_uni($PBBoard->input['config'][$dbfile]['dbpass'])."\" /></td>
 				</tr>
 				<tr class=\"last\">
 					<td class=\"first\"><label for=\"config_{$dbfile}_dbname\">{$lang->database_name}</label></td>
-					<td class=\"last alt_col\"><input type=\"text\" class=\"text_input\" name=\"config[{$dbfile}][dbname]\" id=\"config_{$dbfile}_dbname\" value=\"".htmlspecialchars_uni($PBBoard->input['config'][$dbfile]['dbname'])."\" /></td>
+					<td class=\"last alt_col\"><input type=\"text\" class=\"text_input\" name=\"config[{$dbfile}][dbname]\" id=\"config_{$dbfile}_dbname\" dir=\"ltr\" value=\"".htmlspecialchars_uni($PBBoard->input['config'][$dbfile]['dbname'])."\" /></td>
 				</tr>";
 		}
 
@@ -1369,7 +1369,7 @@ function database_info()
 			</tr>
 			<tr class=\"first\">
 				<td class=\"first\"><label for=\"config_{$dbfile}_tableprefix\">{$lang->table_prefix}</label></td>
-				<td class=\"last alt_col\"><input type=\"text\" class=\"text_input\" name=\"config[{$dbfile}][tableprefix]\" id=\"config_{$dbfile}_tableprefix\" value=\"".htmlspecialchars_uni($PBBoard->input['config'][$dbfile]['tableprefix'])."\" /></td>
+				<td class=\"last alt_col\"><input type=\"text\" class=\"text_input\" name=\"config[{$dbfile}][tableprefix]\" id=\"config_{$dbfile}_tableprefix\" dir=\"ltr\" value=\"".htmlspecialchars_uni($PBBoard->input['config'][$dbfile]['tableprefix'])."\" /></td>
 			</tr>
 			";
 
@@ -2175,6 +2175,7 @@ echo $lang->done_step_success;
     $update = $db->query("UPDATE " . $config['db']['prefix'] . "subject SET writer='".$db->escape_string($PBBoard->get_input('adminuser'))."' WHERE id='1'");
     $update = $db->query("UPDATE " . $config['db']['prefix'] . "section SET last_writer='".$db->escape_string($PBBoard->get_input('adminuser'))."' WHERE id='1'");
     $update = $db->query("UPDATE " . $config['db']['prefix'] . "section SET last_writer='".$db->escape_string($PBBoard->get_input('adminuser'))."' WHERE id='2'");
+    $update = $db->query("UPDATE " . $config['db']['prefix'] . "info SET value='".$db->escape_string($PBBoard->get_input('adminuser'))."' WHERE var_name='last_member'");
 
 $forums =  upgrade_update_section_cache();
  if ($forums)
@@ -2597,7 +2598,7 @@ function UpdateSectionCache($SectionCache)
 {
 global $PowerBB;
 
-    $update = $db->query("UPDATE " . $config['db']['prefix'] . "section SET last_writer='".$db->escape_string($PBBoard->get_input('adminuser'))."' WHERE id='2'");
+$update = $db->query("UPDATE " . $config['db']['prefix'] . "section SET last_writer='".$db->escape_string($PBBoard->get_input('adminuser'))."' WHERE id='2'");
 
 // The number of section's replys number
 $reply_num = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT id FROM " . $PowerBB->table['reply'] . " WHERE section = '$SectionCache' "));

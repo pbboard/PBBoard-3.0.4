@@ -260,6 +260,12 @@ class PBBTemplate
               $string = str_replace("a href", 'a rel="nofollow" href', $string);
 			}
 
+            if ($filename == 'jump_forums_list')
+			{
+				$search_attach_array = "<option disabled='disabled'>-------------------------------</option>";
+				$replace_attach_array  = "";
+				$string = str_replace($search_attach_array,$replace_attach_array,$string);
+			}
 			$string = str_replace('<label for="emailed_id">',"\n", $string);
 			$string = str_replace("ForumAdress}look/","ForumAdress}look/", $string);
 

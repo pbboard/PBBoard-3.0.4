@@ -265,17 +265,27 @@ class PowerBBForumMOD
 		}
 		else
 		{
-		$forums_cache = $PowerBB->functions->get_forum_cache($this->Section['id'],$this->Section['forums_cache']);
+		$forums_cache = $this->Section['forums_cache'];
 		}
 
 		if (!empty($forums_cache))
-		{	          $forums = $PowerBB->functions->decode_forum_cache($forums_cache);
-	          $PowerBB->_CONF['template']['foreach']['forums_list'] = array();
+		{               	$ForumArr 						= 	array();
+				$ForumArr['get_from']				=	'db';
+				$ForumArr['proc'] 				= 	array();
+				$ForumArr['proc']['*'] 			= 	array('method'=>'clean','param'=>'html');
+				$ForumArr['order']				=	array();
+				$ForumArr['order']['field']		=	'sort';
+				$ForumArr['order']['type']		=	'ASC';
+				$ForumArr['where']				=	array();
+				$ForumArr['where'][0]['name']		= 	'parent';
+				$ForumArr['where'][0]['oper']		= 	'=';
+				$ForumArr['where'][0]['value']	= 	$this->Section['id'];
+				$forums = $PowerBB->core->GetList($ForumArr,'section');
+
 
 			foreach ($forums as $forum)
 			{
-				if (is_array($forum['groups'][$PowerBB->_CONF['group_info']['id']]))
-				{
+
 					if ($PowerBB->functions->section_group_permission($forum['id'],$PowerBB->_CONF['group_info']['id'],'view_section') and $forum['sec_section'] == '0' and $forum['hide_subject'] == '0')
 					{
 						$forum_last_time1 = $forum['last_date'];
@@ -298,14 +308,23 @@ class PowerBBForumMOD
 							}
 							else
 							{
-							$forums_cache = $PowerBB->functions->get_forum_cache($forum['id'],$forum['forums_cache']);
+							$forums_cache = $forum['forums_cache'];
 							}
-							if (!empty($forum['forums_cache']))
+							if (!empty($forums_cache))
 							{
-								$subs = $PowerBB->functions->decode_forum_cache($forums_cache);
+					               	$SubArr 						= 	array();
+									$SubArr['get_from']				=	'db';
+									$SubArr['proc'] 				= 	array();
+									$SubArr['proc']['*'] 			= 	array('method'=>'clean','param'=>'html');
+									$SubArr['order']				=	array();
+									$SubArr['order']['field']		=	'sort';
+									$SubArr['order']['type']		=	'ASC';
+									$SubArr['where']				=	array();
+									$SubArr['where'][0]['name']		= 	'parent';
+									$SubArr['where'][0]['oper']		= 	'=';
+									$SubArr['where'][0]['value']	= 	$forum['id'];
+									$subs = $PowerBB->core->GetList($SubArr,'section');
 
-								if (is_array($subs))
-								{
 	                                foreach($subs as $sub)
 									{
 	                                        $forum_subject_num = $forum['subject_num']+ $sub['subject_num'];
@@ -324,20 +343,18 @@ class PowerBBForumMOD
 											}
 
 									}
-								}
-
 
 							}
 	                     }
 					   //////////
 
 
+
 						$PowerBB->_CONF['template']['foreach']['forums_list'][$forum['id'] . '_f'] = $forum;
 					}
-				} // end if is_array
-			} // end foreach ($forums)
 
-			$PowerBB->template->assign('SHOW_SUB_SECTIONS',true);
+			} // end foreach ($forums)
+           $PowerBB->template->assign('SHOW_SUB_SECTIONS',true);
 		}
 		else
 		{
@@ -1113,8 +1130,24 @@ class PowerBBForumMOD
 	function _CallTemplate()
 	{
 		global $PowerBB;
+		if($PowerBB->_CONF['files_forums_Cache'])
+		{
+		@include("cache/forums_cache/forums_cache_".$this->Section['id'].".php");
+		}
+		else
+		{
+		$forums_cache = $this->Section['forums_cache'];
+		}
 
+		if (!empty($forums_cache))
+		{
+    	 $PowerBB->template->display('archive_main');
+    	}
+    	else
+    	{
     	 $PowerBB->template->display('archive_forum');
+    	}
+
 		 $PowerBB->template->display('archive_footer');
    			$SecArr = $PowerBB->DB->sql_free_result($SecArr);
 			unset($update_visitor_Section);

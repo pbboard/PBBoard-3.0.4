@@ -109,15 +109,10 @@ class PowerBBFixMOD
 	{
 		global $PowerBB;
 
-		$SubjectArr = array();
-		$SubjectArr['where'] = array('section',$PowerBB->_POST['section']);
+        $PowerBB->DB->sql_query("UPDATE " . $PowerBB->table['section'] . " SET sectiongroup_cache = '' WHERE id=".$PowerBB->_POST['section']."");
 
-		$subject = $PowerBB->core->GetInfo($SubjectArr,'subject');
-
-		$SecArr 			= 	array();
-		$SecArr['where'] 	= 	array('id',$PowerBB->_POST['section']);
-
-		$SectionInfo = $PowerBB->core->GetInfo($SecArr,'section');
+		$REPAIR_TABLE = $PowerBB->DB->sql_query("REPAIR TABLE " . $PowerBB->table['section'] . "");
+		$REPAIR_TABLE_info = $PowerBB->DB->sql_query("REPAIR TABLE " . $PowerBB->table['info'] . "");
 
 			$SecArr 						= 	array();
 			$SecArr['get_from']				=	'db';
@@ -136,8 +131,10 @@ class PowerBBFixMOD
 
 			$cats = $PowerBB->core->GetList($SecArr,'section');
 			foreach ($cats as $cat)
-			{
+			{
 	           $UpdateSectionCache = $PowerBB->functions->UpdateSectionCache($cat['id']);
+               $PowerBB->DB->sql_query("UPDATE " . $PowerBB->table['section'] . " SET sectiongroup_cache = '' WHERE id=".$cat['id']."");
+
 
 					$forumArr 						= 	array();
 					$forumArr['get_from']				=	'db';
@@ -158,9 +155,10 @@ class PowerBBFixMOD
 					$forums = $PowerBB->core->GetList($forumArr,'section');
 
 					foreach ($forums as $forum)
-					{
-
+					{
 	                  $UpdateSectionCache = $PowerBB->functions->UpdateSectionCache($forum['id']);
+		              $PowerBB->DB->sql_query("UPDATE " . $PowerBB->table['section'] . " SET sectiongroup_cache = '' WHERE id=".$forum['id']."");
+
 
 						$subArr 						= 	array();
 						$subArr['get_from']				=	'db';
@@ -182,7 +180,8 @@ class PowerBBFixMOD
 
 					  foreach ($subs as $sub)
 					  {
-	                  $UpdateSectionCache = $PowerBB->functions->UpdateSectionCache($sub['id']);
+	                   $UpdateSectionCache = $PowerBB->functions->UpdateSectionCache($sub['id']);
+		               $PowerBB->DB->sql_query("UPDATE " . $PowerBB->table['section'] . " SET sectiongroup_cache = '' WHERE id=".$sub['id']."");
 
 							$subsubArr 						= 	array();
 							$subsubArr['get_from']				=	'db';
@@ -201,11 +200,11 @@ class PowerBBFixMOD
 
 							// Get main sub sections
 							$subsubs = $PowerBB->core->GetList($subsubArr,'section');
-                        foreach ($subsubs as $subsub)
-                        {
-	                      $UpdateSectionCache = $PowerBB->functions->UpdateSectionCache($subsub['id']);
-
-	                     }
+	                        foreach ($subsubs as $subsub)
+	                        {
+		                      $UpdateSectionCache = $PowerBB->functions->UpdateSectionCache($subsub['id']);
+				              $PowerBB->DB->sql_query("UPDATE " . $PowerBB->table['section'] . " SET sectiongroup_cache = '' WHERE id=".$subsub['id']."");
+		                     }
 
 					  }
 
@@ -231,10 +230,21 @@ class PowerBBFixMOD
 		$page = $PowerBB->_GET['pag'];
 		}
 		$page = ($page == 0 ? 1 : $page);
-		$perpage = 10;
+		$perpage = 8;
 		$startpoint = ($page * $perpage) - $perpage;
- 		$forumArr = $PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['section'] . " WHERE parent > '0' ORDER BY id ASC LIMIT ".$startpoint.",".$perpage." ");
-		$forum_nm = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['section'] . " WHERE parent > 0"));
+		if(!isset($PowerBB->_GET['pag']))
+		{
+		 $Empty_cache = $PowerBB->DB->sql_query("UPDATE " . $PowerBB->table['section'] . " SET forums_cache = '', sectiongroup_cache = ''");
+
+		  if($Empty_cache)
+		  {
+		  $REPAIR_TABLE = $PowerBB->DB->sql_query("REPAIR TABLE " . $PowerBB->table['section'] . "");
+		  $REPAIR_TABLE_info = $PowerBB->DB->sql_query("REPAIR TABLE " . $PowerBB->table['info'] . "");
+		  }
+		}
+
+ 		$forumArr = $PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['section'] . " ORDER BY id DESC LIMIT ".$startpoint.",".$perpage." ");
+		$forum_nm = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['section'] . ""));
 
         $pagesnum = round(ceil($forum_nm / $perpage));
         echo('<br><br><table border="1" width="80%" cellspacing="0" cellpadding="0" bgcolor="#FFFFFF" style="border-collapse: collapse" align="center"><tr><td><font face="Tahoma" size="2">');
@@ -273,8 +283,14 @@ class PowerBBFixMOD
 			}
 			else
 			{
-			$PowerBB->functions->Update_Cache_groups();
 			$PowerBB->functions->msg($PowerBB->_CONF['template']['_CONF']['lang']['updated_successfully']);
+
+			$Update_last_posts_cache = $PowerBB->functions->Update_Cache_groups();
+			if ($Update_last_posts_cache)
+			{
+			$Update_Cache_groups = $PowerBB->functions->Update_Cache_groups();
+			}
+            $REPAIR_TABLE = $PowerBB->DB->sql_query("REPAIR TABLE " . $PowerBB->table['section'] . "");
 			$PowerBB->functions->redirect('index.php?page=fixup&amp;update_meter=1&amp;main=1');
 			}
 

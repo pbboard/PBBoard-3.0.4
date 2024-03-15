@@ -53,7 +53,14 @@ class PowerBBCoreMOD
 	function _GetSections()
 	{
 		global $PowerBB;
-		$PowerBB->functions->_GetSections();
+		if($PowerBB->_CONF['forums_parent_direct'])
+		{
+		 $PowerBB->functions->_GetSections_direct();
+		}
+		else
+		{
+		 $PowerBB->functions->_GetSections();
+		}
 	}
 
 	function _GetOnline()

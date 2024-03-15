@@ -37,22 +37,6 @@
 <input type="text" name="members_send_pm" id="input_members_send_pm" value="{$_CONF['info_row']['members_send_pm']}" size="2" maxlength="2" />
 </td>
 </tr>
-	<tr>
-	<td class="row2">
-{$lang['allowed_powered']}
-	</td>
-	<td class="row2">
-		<select name="allowed_powered">
-		{if {$_CONF['info_row']['allowed_powered']}}
-			<option value="1" selected="selected">{$lang['yes']}</option>
-			<option value="0">{$lang['no']}</option>
-		{else}
-			<option value="1">{$lang['yes']}</option>
-			<option value="0" selected="selected">{$lang['no']}</option>
-		{/if}
-		</select>
-	</td>
-</tr>
 <tr>
 	<td class="row2">
 	{$lang['active_forum_online_number']}
@@ -315,6 +299,22 @@
 {else}
 <input name="active_rss" value="1" id="active_rss" type="radio">{$lang['yes']}
 &nbsp;&nbsp;<input name="active_rss" value="0" id="active_rss" type="radio" checked="checked">{$lang['no']}
+{/if}
+</td>
+</tr>
+<tr valign="top">
+			<td class="row1">
+تفعيل ظهور المنتديات في قائمة الإنتقال السريع في اسفل صفحات المنتدى
+<br />
+{$lang['server_resource_consumption']}
+			</td>
+<td class="row1">
+{if {$_CONF['info_row']['allowed_powered']}}
+<input name="allowed_powered" value="1" id="allowed_powered" type="radio" checked="checked">{$lang['yes']}
+&nbsp;&nbsp;<input name="allowed_powered" value="0" id="allowed_powered" type="radio">{$lang['no']}
+{else}
+<input name="allowed_powered" value="1" id="allowed_powered" type="radio">{$lang['yes']}
+&nbsp;&nbsp;<input name="allowed_powered" value="0" id="allowed_powered" type="radio" checked="checked">{$lang['no']}
 {/if}
 </td>
 </tr>

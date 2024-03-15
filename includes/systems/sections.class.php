@@ -238,19 +238,33 @@ class PowerBBSection
 				$cache[$x]['last_date'] 			= 	$forums[$x]['last_date'];
 				$cache[$x]['last_time'] 			= 	$forums[$x]['last_time'];
 				}
-				$cache[$x]['subject_num'] 			= 	$forums[$x]['subject_num'];
-				$cache[$x]['reply_num'] 			= 	$forums[$x]['reply_num'];
-
-				if(!empty($forums[$x]['moderators']) or $forums[$x]['moderators'] != '[]')
+				if($forums[$x]['subject_num'])
 				{
-				$cache[$x]['moderators'] 			= 	$forums[$x]['moderators'];
+				$cache[$x]['subject_num'] 	        =  	$forums[$x]['subject_num'];
+				}
+				if($forums[$x]['reply_num'])
+				{
+				$cache[$x]['reply_num'] 	        =  	$forums[$x]['reply_num'];
+				}
+				if(!empty($forums[$x]['moderators']))
+				{
+                 if($forums[$x]['moderators'] != "[]")
+                 {
+				 $cache[$x]['moderators'] 			= 	$forums[$x]['moderators'];
+				 }
 				}
 				if(!empty($forums[$x]['icon']))
 				{
 				$cache[$x]['icon'] 	        		=  	$forums[$x]['icon'];
                 }
+				if($forums[$x]['hide_subject'])
+				{
 				$cache[$x]['hide_subject'] 	        =  	$forums[$x]['hide_subject'];
+				}
+				if(!empty($forums[$x]['sec_section']))
+				{
 				$cache[$x]['sec_section'] 	        =  	$forums[$x]['sec_section'];
+				}
 				if(!empty($forums[$x]['section_password']))
                 {
 				$cache[$x]['section_password'] 	    =  	$forums[$x]['section_password'];
@@ -268,19 +282,19 @@ class PowerBBSection
 				{
 				$cache[$x]['forum_title_color']     = 	$forums[$x]['forum_title_color'];
                 }
+                if($forums[$x]['review_subject'])
+                {
 				$cache[$x]['review_subject']        = 	$forums[$x]['review_subject'];
-				$cache[$x]['replys_review_num']     = 	$forums[$x]['replys_review_num'];
-				$cache[$x]['subjects_review_num']   = 	$forums[$x]['subjects_review_num'];
-				$cache[$x]['groups'] 				= 	array();
+				}
+                if($forums[$x]['replys_review_num'])
+                {
+				$cache[$x]['replys_review_num']        = 	$forums[$x]['replys_review_num'];
+				}
+                if($forums[$x]['subjects_review_num'])
+                {
+				$cache[$x]['subjects_review_num']        = 	$forums[$x]['subjects_review_num'];
+				}
 
- 				$GroupArr 							= 	array();
- 				$GroupArr['get_from'] 				= 	'db';
- 				$GroupArr['order']					=	array();
- 				$GroupArr['order']['field']			=	'id';
- 				$GroupArr['order']['type']			=	'ASC';
- 				$GroupArr['where'] 					= 	array('section_id',$forums[$x]['id']);
-
-				$groups = $this->Engine->group->GetSectionGroupList($GroupArr);
 
  				$prefixArr 							= 	array();
  				$prefixArr['get_from'] 				= 	'db';
@@ -293,17 +307,11 @@ class PowerBBSection
                 {
 				$cache[$x]['prefix_subject']   = 	$rows['prefix_subject'];
                 }
-				foreach ($groups as $group)
-				{
-					$cache[$x]['groups'][$group['group_id']] 					=	array();
-					$cache[$x]['groups'][$group['group_id']]['view_section'] 	= 	$group['view_section'];
-					$cache[$x]['groups'][$group['group_id']]['main_section'] 	= 	$group['main_section'];
-				}
 
 				$x += 1;
  			}
 
-		  $cache = base64_encode(json_encode($cache));
+		  $cache = json_encode($cache);
  		}
  		else
  		{
@@ -313,6 +321,71 @@ class PowerBBSection
 		return $cache;
 	}
 
+	function CreateSectionsDirect($param)
+ 	{
+ 		   global $PowerBB;
+
+ 		 if (!isset($param)
+ 			or !is_array($param))
+ 		 {
+ 			$param = array();
+ 		 }
+
+ 		$arr 					= 	array();
+ 		$arr['get_from'] 		= 	'db';
+ 		$arr['type'] 			= 	'forum';
+		$arr['order']			=	array();
+		$arr['order']['field']	=	'sort';
+		$arr['order']['type']	=	'ASC';
+ 		$arr['where'] 			= 	array('parent',$param['parent']);
+
+ 		$forums = $this->GetSectionsList($arr);
+        if ($forums != false)
+ 		{
+ 			$x = 0;
+ 			$size = sizeof($forums);
+
+ 			$cache = array();
+
+ 			while ($x < $size)
+ 			{
+ 				$cache[$x] 							= 	array();
+                if(!empty($forums[$x]['last_writer']))
+                {
+ 				$MemberArr 							= 	array();
+ 				$MemberArr['get_from'] 				= 	'db';
+ 				$MemberArr['where'] 					= 	array('username',$forums[$x]['last_writer']);
+				$rows = $this->Engine->member->GetMemberInfo($MemberArr);
+				$cache[$x]['last_writer_id'] 	    = 	$rows['id'];
+				$cache[$x]['avater_path'] 		    = 	$rows['avater_path'];
+				$cache[$x]['username_style_cache']  = 	$rows['username_style_cache'];
+				}
+                if(!empty($forums[$x]['last_subjectid']))
+                {
+ 				$prefixArr 							= 	array();
+ 				$prefixArr['get_from'] 				= 	'db';
+ 				$prefixArr['order']					=	array();
+ 				$prefixArr['order']['field']			=	'id';
+ 				$prefixArr['order']['type']			=	'ASC';
+ 				$prefixArr['where'] 					= 	array('id',$forums[$x]['last_subjectid']);
+				$rows = $this->Engine->subject->GetSubjectInfo($prefixArr);
+				if(!empty($rows['prefix_subject']))
+                {
+				$cache[$x]['prefix_subject']   = 	$rows['prefix_subject'];
+                }
+                }
+				$x += 1;
+ 			}
+
+		  $cache = json_encode($cache);
+ 		}
+ 		else
+ 		{
+ 			return false;
+ 		}
+        $cache = str_replace("'", '', $cache);
+		return $cache;
+	}
  	function UpdateSectionsCache($param)
  	{
     	global $PowerBB;
@@ -326,18 +399,22 @@ class PowerBBSection
    		$SecArr 			= 	array();
 		$SecArr['where'] 	= 	array('id',$param['id']);
 		$SectionInfo = $this->GetSectionInfo($SecArr);
-
           if ($SectionInfo and !$SectionInfo['parent']== "0")
  	       {
+ 	            if($PowerBB->_CONF['forums_parent_direct'])
+ 	            {
+              	$cache = $this->CreateSectionsDirect($SectionInfo);
+ 	            }
+ 	            else
+ 	            {
               	$cache = $this->CreateSectionsCache($SectionInfo);
+              	}
                 $cache = str_replace("'", '', $cache);
-
 				if ($cache == false)
 				 {
 				  $cache = '';
 				 }
                    $size = strlen($cache);
-
                    if($size > $maxsize)
                    {
                    	$forums_cache = '';
@@ -346,10 +423,6 @@ class PowerBBSection
                    {
                    	$forums_cache = $cache;
                    }
-					$ForumCacheArr 				= 	array();
-					$ForumCacheArr['field']['forums_cache'] 	= 	$forums_cache;
-					$ForumCacheArr['where'] 		        = 	array('id',$SectionInfo['parent']);
-					$UpdateForumCache = $this->UpdateSection($ForumCacheArr);
                 if($this->Engine->_CONF['files_forums_Cache'])
                 {
 	            // get main dir
@@ -368,7 +441,15 @@ class PowerBBSection
  				{
  					$fail = true;
  				}
- 			  }
+ 			   }
+ 			   elseif(!$this->Engine->_CONF['files_forums_Cache']
+ 			   or $this->Engine->_CONF['forums_parent_direct'])
+ 			   {
+					$ForumCacheArr 				= 	array();
+					$ForumCacheArr['field']['forums_cache'] 	= 	$forums_cache;
+					$ForumCacheArr['where'] 		        = 	array('id',$SectionInfo['parent']);
+					$UpdateForumCache = $this->UpdateSection($ForumCacheArr);
+			   }
            }
            else
            {
@@ -390,12 +471,8 @@ class PowerBBSection
                    {
                    	$forums_cache = $cache;
                    }
-					$ForumCacheArr 				= 	array();
-					$ForumCacheArr['field']['forums_cache'] 	= 	$forums_cache;
-					$ForumCacheArr['where'] 		        = 	array('id',$param['parent']);
-					$UpdateForumCache = $this->UpdateSection($ForumCacheArr);
-                 if($this->Engine->_CONF['files_forums_Cache'])
-                 {
+                  if($this->Engine->_CONF['files_forums_Cache'])
+                  {
 		            // get main dir
 					$file_forums_cache = $PowerBB->functions->GetMianDir()."cache/forums_cache/forums_cache_".$param['parent'].".php";
 	                $file_forums_cache = str_ireplace("index.php/", '', $file_forums_cache);
@@ -412,11 +489,18 @@ class PowerBBSection
 	 				{
 	 					$fail = true;
 	 				}
-                 }
- 			  }
+                  }
+	 			  elseif(!$this->Engine->_CONF['files_forums_Cache']
+	 			  or $this->Engine->_CONF['forums_parent_direct'])
+	 			  {
+						$ForumCacheArr 				= 	array();
+						$ForumCacheArr['field']['forums_cache'] 	= 	$forums_cache;
+						$ForumCacheArr['where'] 		        = 	array('id',$param['parent']);
+						$UpdateForumCache = $this->UpdateSection($ForumCacheArr);
+				  }
+
+			 }
            }
-
-
 
  		return ($fail) ? true : false;
  	}

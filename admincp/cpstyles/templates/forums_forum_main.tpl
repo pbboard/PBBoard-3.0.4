@@ -26,11 +26,8 @@
 			<td class="row1">
 {if {$forum['is_sub']}}
 <a href="index.php?page=forums&amp;forum=1&amp;index=1&amp;id={$forum['id']}">{$forum['title']} </a>
-<span>
-<a title="{$lang['Forums_subsidiary_of']} {$forum['title']}" href="index.php?page=forums&amp;forum=1&amp;index=1&amp;id={$forum['id']}">
-     <img border="0" alt="{$lang['Forums_subsidiary_of']} {$forum['title']}"
-      src="{$admincpdir_cssprefs}/menu_open.gif" /></a>
-     </span>
+<br />
+{$forum['sub']}
 {else}
 {$forum['title']}
 {/if}

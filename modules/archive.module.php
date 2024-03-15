@@ -65,12 +65,23 @@ class PowerBBCoreMOD
 			}
 			else
 			{
-			$forums_cache = $PowerBB->functions->get_forum_cache($cat['id'],$cat['forums_cache']);
+			$forums_cache = $cat['forums_cache'];
 			}
 
 			if (!empty($forums_cache))
 			{
-               $forums = $PowerBB->functions->decode_forum_cache($forums_cache);
+               	$ForumArr 						= 	array();
+				$ForumArr['get_from']				=	'db';
+				$ForumArr['proc'] 				= 	array();
+				$ForumArr['proc']['*'] 			= 	array('method'=>'clean','param'=>'html');
+				$ForumArr['order']				=	array();
+				$ForumArr['order']['field']		=	'sort';
+				$ForumArr['order']['type']		=	'ASC';
+				$ForumArr['where']				=	array();
+				$ForumArr['where'][0]['name']		= 	'parent';
+				$ForumArr['where'][0]['oper']		= 	'=';
+				$ForumArr['where'][0]['value']	= 	$cat['id'];
+				$forums = $PowerBB->core->GetList($ForumArr,'section');
 
 					foreach ($forums as $forum)
 					{
@@ -89,11 +100,23 @@ class PowerBBCoreMOD
 									}
 									else
 									{
-									$forums_cache = $PowerBB->functions->get_forum_cache($forum['id'],$forum['forums_cache']);
+									$forums_cache = $forum['forums_cache'];
 									}
 									if (!empty($forums_cache))
 		                           {
-										$subs = $PowerBB->functions->decode_forum_cache($forums_cache);
+					               	$SubArr 						= 	array();
+									$SubArr['get_from']				=	'db';
+									$SubArr['proc'] 				= 	array();
+									$SubArr['proc']['*'] 			= 	array('method'=>'clean','param'=>'html');
+									$SubArr['order']				=	array();
+									$SubArr['order']['field']		=	'sort';
+									$SubArr['order']['type']		=	'ASC';
+									$SubArr['where']				=	array();
+									$SubArr['where'][0]['name']		= 	'parent';
+									$SubArr['where'][0]['oper']		= 	'=';
+									$SubArr['where'][0]['value']	= 	$forum['id'];
+									$subs = $PowerBB->core->GetList($SubArr,'section');
+
 		                               foreach($subs as $sub)
 										{
 										   if ($forum['id'] == $sub['parent'])
@@ -116,11 +139,22 @@ class PowerBBCoreMOD
 														}
 														else
 														{
-														$forums_cache = $PowerBB->functions->get_forum_cache($sub['id'],$sub['forums_cache']);
+														$forums_cache = $sub['forums_cache'];
 														}
 														if (!empty($forums_cache))
 						                                {
-														    $subsforum = $PowerBB->functions->decode_forum_cache($forums_cache);
+											               	$SubsArr 						= 	array();
+															$SubsArr['get_from']				=	'db';
+															$SubsArr['proc'] 				= 	array();
+															$SubsArr['proc']['*'] 			= 	array('method'=>'clean','param'=>'html');
+															$SubsArr['order']				=	array();
+															$SubsArr['order']['field']		=	'sort';
+															$SubsArr['order']['type']		=	'ASC';
+															$SubsArr['where']				=	array();
+															$SubsArr['where'][0]['name']		= 	'parent';
+															$SubsArr['where'][0]['oper']		= 	'=';
+															$SubsArr['where'][0]['value']	= 	$sub['id'];
+															$subsforum = $PowerBB->core->GetList($SubsArr,'section');
 						                                   foreach($subsforum as $subforum)
 														    {
 														      if ($sub['id'] == $subforum['parent'])
@@ -135,12 +169,22 @@ class PowerBBCoreMOD
 																}
 																else
 																{
-																$forums_cache = $PowerBB->functions->get_forum_cache($subforum['id'],$subforum['forums_cache']);
+																$forums_cache = $subforum['forums_cache'];
 																}
 																if (!empty($forums_cache))
 								                                {
-																    $subs4forum = $PowerBB->functions->decode_forum_cache($forums_cache);
-
+													               	$Subs4Arr 						= 	array();
+																	$Subs4Arr['get_from']				=	'db';
+																	$Subs4Arr['proc'] 				= 	array();
+																	$Subs4Arr['proc']['*'] 			= 	array('method'=>'clean','param'=>'html');
+																	$Subs4Arr['order']				=	array();
+																	$Subs4Arr['order']['field']		=	'sort';
+																	$Subs4Arr['order']['type']		=	'ASC';
+																	$Subs4Arr['where']				=	array();
+																	$Subs4Arr['where'][0]['name']		= 	'parent';
+																	$Subs4Arr['where'][0]['oper']		= 	'=';
+																	$Subs4Arr['where'][0]['value']	= 	$subforum['id'];
+																	$subs4forum = $PowerBB->core->GetList($Subs4Arr,'section');
 								                                   foreach($subs4forum  as $sub4forum)
 																    {
 																      if ($subforum['id'] == $sub4forum['parent'])
@@ -155,11 +199,22 @@ class PowerBBCoreMOD
 																				}
 																				else
 																				{
-																				$forums_cache = $PowerBB->functions->get_forum_cache($sub4forum['id'],$sub4forum['forums_cache']);
+																				$forums_cache = $sub4forum['forums_cache'];
 																				}
 																				if (!empty($forums_cache))
 												                                {
-																				    $subs5forum = $PowerBB->functions->decode_forum_cache($forums_cache);
+																	               	$Subs5Arr 						= 	array();
+																					$Subs5Arr['get_from']				=	'db';
+																					$Subs5Arr['proc'] 				= 	array();
+																					$Subs5Arr['proc']['*'] 			= 	array('method'=>'clean','param'=>'html');
+																					$Subs5Arr['order']				=	array();
+																					$Subs5Arr['order']['field']		=	'sort';
+																					$Subs5Arr['order']['type']		=	'ASC';
+																					$Subs5Arr['where']				=	array();
+																					$Subs5Arr['where'][0]['name']		= 	'parent';
+																					$Subs5Arr['where'][0]['oper']		= 	'=';
+																					$Subs5Arr['where'][0]['value']	= 	$sub4forum['id'];
+																					$subs5forum = $PowerBB->core->GetList($Subs5Arr,'section');
 												                                   foreach($subs5forum  as $sub5forum)
 																				    {
 																				      if ($sub4forum['id'] == $sub5forum['parent'])

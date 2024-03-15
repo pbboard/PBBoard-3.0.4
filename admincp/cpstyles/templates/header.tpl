@@ -3,10 +3,7 @@
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <link rel="shortcut icon" href="../favicon.ico" />
-<title>{$lang['Control_Panel']}
-{if {$_CONF['info_row']['allowed_powered']} == 1}
-- {$lang['powered']}
-{/if}</title>
+<title>{$lang['Control_Panel']}</title>
 <!-- action_find_addons_1 -->
 
 <link rel="stylesheet" href="{$style_path}" type="text/css" />

@@ -342,7 +342,7 @@ class PowerBBCore
 
 				$x += 1;
 			}
-			$cache = base64_encode(json_encode($cache));
+			$cache = serialize($cache);
 			$update_cache_time = $this->Engine->info->UpdateInfo(array('var_name'=>'last_time_cache','value'=>$time));
 			$update = $this->Engine->info->UpdateInfo(array('var_name'=>'last_posts_cache','value'=>$cache));
 			return ($update) ? true : false;

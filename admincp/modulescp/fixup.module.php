@@ -285,11 +285,8 @@ class PowerBBFixMOD
 			{
 			$PowerBB->functions->msg($PowerBB->_CONF['template']['_CONF']['lang']['updated_successfully']);
 
-			$Update_last_posts_cache = $PowerBB->functions->Update_Cache_groups();
-			if ($Update_last_posts_cache)
-			{
 			$Update_Cache_groups = $PowerBB->functions->Update_Cache_groups();
-			}
+			$permission = $PowerBB->functions->_MeterGroupsStart();
             $REPAIR_TABLE = $PowerBB->DB->sql_query("REPAIR TABLE " . $PowerBB->table['section'] . "");
 			$PowerBB->functions->redirect('index.php?page=fixup&amp;update_meter=1&amp;main=1');
 			}

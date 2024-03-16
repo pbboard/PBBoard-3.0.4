@@ -319,7 +319,44 @@ class PowerBBGroup
 			$x += 1;
 		}
 
-        $cache = str_replace("'", '', $cache);
+		$cache = serialize($cache);
+
+		return $cache;
+	}
+
+	function CreateSectionGroupCache_direct($param)
+	{
+  		if (!isset($param)
+ 			or !is_array($param))
+ 		{
+ 			$param = array();
+ 		}
+ 		$cache = array();
+
+ 		$GroupArr 						= 	array();
+ 		$GroupArr['get_from'] 			= 	'db';
+
+ 		$GroupArr['order']				=	array();
+ 		$GroupArr['order']['field']		=	'id';
+ 		$GroupArr['order']['type']		=	'ASC';
+
+ 		$GroupArr['where']				=	array('section_id',$param['id']);
+
+		$groups = $this->GetSectionGroupList($GroupArr);
+
+ 		$x	=	0;
+ 		$n	=	sizeof($groups);
+
+		while ($x < $n)
+		{
+			$cache[$groups[$x]['group_id']] 					= 	array();
+			$cache[$groups[$x]['group_id']]['group_id'] 	    = 	$groups[$x]['group_id'];
+			$cache[$groups[$x]['group_id']]['view_section'] 	= 	$groups[$x]['view_section'];
+			$cache[$groups[$x]['group_id']]['view_subject'] 	= 	$groups[$x]['view_subject'];
+
+			$x += 1;
+		}
+
 		$cache = serialize($cache);
 
 		return $cache;
@@ -335,14 +372,6 @@ class PowerBBGroup
  			$param = array();
  		}
 
-
-            /* off
-			$CacheArr 				= 	array();
-			$CacheArr['field']			=	array();
-			$CacheArr['field']['sectiongroup_cache'] 	= 	$cache;
-			$CacheArr['where'] 		        = 	array('id',$param['id']);
-			$Update_sectiongroup_cache = $this->Engine->records->Update($this->Engine->table['section'],$CacheArr['field'],$CacheArr['where']);
-           */
            if($this->Engine->_CONF['files_sectiongroup_cache'])
            {
            $cache = $this->CreateSectionGroupCache($param);
@@ -371,7 +400,14 @@ class PowerBBGroup
  		  }
  		  else
 		  {
-			return;
+
+            $cache = $this->CreateSectionGroupCache_direct($param);
+			$CacheArr 				= 	array();
+			$CacheArr['field']			=	array();
+			$CacheArr['field']['sectiongroup_cache'] 	= 	$cache;
+			$CacheArr['where'] 		        = 	array('id',$param['id']);
+			$Update_sectiongroup_cache = $this->Engine->records->Update($this->Engine->table['section'],$CacheArr['field'],$CacheArr['where']);
+            return ($Update_sectiongroup_cache) ? true : false;
 		  }
  	}
 

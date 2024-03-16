@@ -157,7 +157,7 @@ function _AllCacheStart()
 			$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['Section_does_not_exist']);
 		}
 		// This member can't view this section
-		if ($PowerBB->functions->section_group_permission($this->Section['id'],$PowerBB->_CONF['group_info']['id'],'view_section') != 1)
+		if ($PowerBB->functions->section_group_permission($this->Section['id'],$PowerBB->_CONF['group_info']['id'],'view_section',$this->Section['sectiongroup_cache']) != 1)
 		{
 			$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['can_not_view_section']);
 		}
@@ -441,9 +441,9 @@ function _AllCacheStart()
 						}
 
 						//////////////////////////
-						if ($PowerBB->functions->section_group_permission($forum['id'],$PowerBB->_CONF['group_info']['id'],'view_section'))
+						if ($PowerBB->functions->section_group_permission($forum['id'],$PowerBB->_CONF['group_info']['id'],'view_section',$forum['sectiongroup_cache']))
 						{
-                         if ($PowerBB->functions->section_group_permission($forum['id'],$PowerBB->_CONF['group_info']['id'],'view_subject') == 0)
+                         if (!$PowerBB->functions->section_group_permission($forum['id'],$PowerBB->_CONF['group_info']['id'],'view_subject',$forum['sectiongroup_cache']))
 						 {
 						   $forum['hide_subject']	= '1';
                          }
@@ -532,7 +532,7 @@ function _AllCacheStart()
 										            $forum['num_subjects_awaiting_approval'] += $sub['subjects_review_num'];
 										            $forum['num_replys_awaiting_approval'] += $sub['replys_review_num'];
 
-												  if ($PowerBB->functions->section_group_permission($sub['id'],$PowerBB->_CONF['group_info']['id'],'view_section'))
+												  if ($PowerBB->functions->section_group_permission($sub['id'],$PowerBB->_CONF['group_info']['id'],'view_section',$sub['sectiongroup_cache']))
 												   {
 												        if ($sub['forum_title_color'] !='')
 												         {
@@ -935,9 +935,9 @@ function _AllCacheStart()
 						}
 						//////////////////////////
 
-						if ($PowerBB->functions->section_group_permission($forum['id'],$PowerBB->_CONF['group_info']['id'],'view_section'))
+						if ($PowerBB->functions->section_group_permission($forum['id'],$PowerBB->_CONF['group_info']['id'],'view_section',$forum['sectiongroup_cache']))
 						{
-                         if ($PowerBB->functions->section_group_permission($forum['id'],$PowerBB->_CONF['group_info']['id'],'view_subject') == 0)
+                         if (!$PowerBB->functions->section_group_permission($forum['id'],$PowerBB->_CONF['group_info']['id'],'view_subject',$forum['sectiongroup_cache']))
 						 {
 						   $forum['hide_subject']	= '1';
                          }
@@ -1048,7 +1048,7 @@ function _AllCacheStart()
 								                  }
                                                }
 
-												  if ($PowerBB->functions->section_group_permission($sub['id'],$PowerBB->_CONF['group_info']['id'],'view_section'))
+												  if ($PowerBB->functions->section_group_permission($sub['id'],$PowerBB->_CONF['group_info']['id'],'view_section',$sub['sectiongroup_cache']))
 												   {
 												        if ($sub['forum_title_color'] !='')
 												         {

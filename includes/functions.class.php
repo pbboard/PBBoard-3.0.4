@@ -3,7 +3,7 @@ class PowerBBFunctions
 {
 	var $PowerBB;
 
-	/**
+		/**
 	 * Get sections list from cache and show it.
 	 */
 	function _GetSections()
@@ -26,7 +26,7 @@ class PowerBBFunctions
 		// Loop to read the information of main sections
 		foreach($cats as $cat)
 		{
-		   if ($PowerBB->functions->section_group_permission($cat['id'],$PowerBB->_CONF['group_info']['id'],'view_section'))
+		   if ($PowerBB->functions->section_group_permission($cat['id'],$PowerBB->_CONF['group_info']['id'],'view_section',$cat['sectiongroup_cache']))
 	      	{
              // foreach main sections
 			$PowerBB->_CONF['template']['foreach']['forums_list'][$cat['id'] . '_m'] = $cat;
@@ -57,9 +57,9 @@ class PowerBBFunctions
 							}
 						}
 						//////////////////////////
-						if ($PowerBB->functions->section_group_permission($forum['id'],$PowerBB->_CONF['group_info']['id'],'view_section'))
+						if ($PowerBB->functions->section_group_permission($forum['id'],$PowerBB->_CONF['group_info']['id'],'view_section',$forum['sectiongroup_cache']))
 						{
-                         if ($PowerBB->functions->section_group_permission($forum['id'],$PowerBB->_CONF['group_info']['id'],'view_subject') == 0)
+                         if ($PowerBB->functions->section_group_permission($forum['id'],$PowerBB->_CONF['group_info']['id'],'view_subject',$forum['sectiongroup_cache']) == 0)
 						 {
 						   $forum['hide_subject']	= '1';
                          }
@@ -151,7 +151,7 @@ class PowerBBFunctions
 								                  }
                                                }
 
-												  if ($PowerBB->functions->section_group_permission($sub['id'],$PowerBB->_CONF['group_info']['id'],'view_section'))
+												  if ($PowerBB->functions->section_group_permission($sub['id'],$PowerBB->_CONF['group_info']['id'],'view_section',$sub['forums_cache']))
 												   {
 												        if ($sub['forum_title_color'] !='')
 												         {
@@ -665,11 +665,6 @@ class PowerBBFunctions
 		foreach($cats as $cat)
 		{
 
-		   if ($PowerBB->functions->section_group_permission($cat['id'],$PowerBB->_CONF['group_info']['id'],'view_section'))
-	      	{
-             // foreach main sections
-			$PowerBB->_CONF['template']['foreach']['forums_list'][$cat['id'] . '_m'] = $cat;
-
 			if($PowerBB->_CONF['files_forums_Cache'])
 			{
 			@include("cache/forums_cache/forums_cache_".$cat['id'].".php");
@@ -679,10 +674,15 @@ class PowerBBFunctions
 			$forums_cache = $PowerBB->functions->get_forum_cache($cat['id'],$cat['forums_cache']);
 			}
 
- 			 if (!empty($forums_cache))
-			 {
+		 if (!empty($forums_cache))
+		 {
 			  $cache = $PowerBB->functions->decode_forum_cache($forums_cache);
 			   $x = 0;
+
+		   if ($PowerBB->functions->section_group_permission($cat['id'],$PowerBB->_CONF['group_info']['id'],'view_section',$cat['sectiongroup_cache']))
+	      	{
+               // foreach main sections
+			   $PowerBB->_CONF['template']['foreach']['forums_list'][$cat['id'] . '_m'] = $cat;
 
                	$ForumArr 						= 	array();
 				$ForumArr['get_from']				=	'db';
@@ -714,9 +714,9 @@ class PowerBBFunctions
 							}
 						}
 						//////////////////////////
-						if ($PowerBB->functions->section_group_permission($forum['id'],$PowerBB->_CONF['group_info']['id'],'view_section'))
+		                if ($PowerBB->functions->section_group_permission($forum['id'],$PowerBB->_CONF['group_info']['id'],'view_section',$forum['sectiongroup_cache']))
 						{
-                         if ($PowerBB->functions->section_group_permission($forum['id'],$PowerBB->_CONF['group_info']['id'],'view_subject') == '0')
+                         if ($PowerBB->functions->section_group_permission($forum['id'],$PowerBB->_CONF['group_info']['id'],'view_subject',$forum['sectiongroup_cache'])  == '0')
 						 {
 						   $forum['hide_subject']	= '1';
                          }
@@ -825,7 +825,7 @@ class PowerBBFunctions
 								                  }
                                                }
 
-												  if ($PowerBB->functions->section_group_permission($sub['id'],$PowerBB->_CONF['group_info']['id'],'view_section'))
+												  if ($PowerBB->functions->section_group_permission($sub['id'],$PowerBB->_CONF['group_info']['id'],'view_section',$sub['sectiongroup_cache']))
 												   {
 												        if ($sub['forum_title_color'] !='')
 												         {
@@ -1892,8 +1892,6 @@ class PowerBBFunctions
 			$PowerBB->template->assign('Subject_Info_Row',$SubjectInfo);
 			if ($PowerBB->functions->section_group_permission($SubjectInfo['section'],$PowerBB->_CONF['group_info']['id'],'view_subject'))
 			 {
-
-
                    $thes_page = $PowerBB->functions->CleanVariable($PowerBB->_GET['count'],'intval');
                    if($thes_page>= 2)
                     {
@@ -3351,8 +3349,8 @@ return preg_replace($pattern, $replacement, $email);
 			$UpdateSectionCache = $PowerBB->functions->_MeterStart($SectionCache);
 			}
 
+           $PowerBB->functions->PBB_Create_last_posts_cache(0);
 			unset($UpdateArr);
-
 			return;
  	}
 
@@ -3470,7 +3468,7 @@ return preg_replace($pattern, $replacement, $email);
 		foreach ($catys as $caty)
 		{
 	       // Get the groups information to know view this section or not
-		 if ($PowerBB->functions->section_group_permission($caty['id'],$PowerBB->_CONF['group_info']['id'],'view_section'))
+		 if ($PowerBB->functions->section_group_permission($caty['id'],$PowerBB->_CONF['group_info']['id'],'view_section',$caty['sectiongroup_cache']))
 	      {
              // foreach main sections
 			$PowerBB->_CONF['template']['foreach']['forumsy_list'][$caty['id'] . '_m'] = $caty;
@@ -3503,7 +3501,7 @@ return preg_replace($pattern, $replacement, $email);
 					foreach ($forumsy as $forumy)
 					{
 
-            		 if ($PowerBB->functions->section_group_permission($forumy['id'],$PowerBB->_CONF['group_info']['id'],'view_section'))
+            		 if ($PowerBB->functions->section_group_permission($forumy['id'],$PowerBB->_CONF['group_info']['id'],'view_section',$forumy['sectiongroup_cache']))
 						{
 							$forumy['is_sub'] 	= 	0;
 							$forumy['sub']		=	'';
@@ -3538,7 +3536,7 @@ return preg_replace($pattern, $replacement, $email);
 												{
 													$forumy['is_sub'] = 1;
 												}
-            		                           if ($PowerBB->functions->section_group_permission($sub['id'],$PowerBB->_CONF['group_info']['id'],'view_section'))
+            		                           if ($PowerBB->functions->section_group_permission($sub['id'],$PowerBB->_CONF['group_info']['id'],'view_section',$sub['sectiongroup_cache']))
 											   {
 
                                                   if ($PowerBB->_GET['page'] == 'forum' and intval($PowerBB->_GET['id']) == $sub['id'])
@@ -4296,18 +4294,9 @@ function my_strlen($string)
 		return ($copy) ? true : false;
 	}
 
-  	function section_group_permission($forum_id, $group_id, $permission_name)
+  	function section_group_permission($forum_id, $group_id, $permission_name, $section_group_cache=false)
 	{
 	   global $PowerBB;
-
-		/** Get section's group information and make some checks **/
-		$SecGroupArr 						= 	array();
-		$SecGroupArr['where'] 				= 	array();
-		$SecGroupArr['where'][0]			=	array();
-		$SecGroupArr['where'][0]['name'] 	= 	"section_id = ".$forum_id." AND group_id";
-		$SecGroupArr['where'][0]['value'] 	= 	$group_id;
-		// Finally get the permissions of group
-		$SectionGroup = $PowerBB->group->GetSectionGroupInfo($SecGroupArr);
 
 		if($PowerBB->_CONF['files_sectiongroup_cache'])
 	     {
@@ -4344,7 +4333,7 @@ function my_strlen($string)
 						}
 				       else
 						{
-				          $permission = @$groups[$group_id][$permission_name];
+				          $permission = $groups[$group_id][$permission_name];
 					      return ($permission) ? true : false;
 					    }
 					}
@@ -4365,10 +4354,54 @@ function my_strlen($string)
 	    }
 	   else
 	   {
+		      if(!empty($section_group_cache))
+		      {
+	                 $groups = unserialize($section_group_cache);
+	                  if($PowerBB->_CONF['member_row']['membergroupids'] !='')
+				 		{
+				 		 $groupids = $group_id.",".$PowerBB->_CONF['member_row']['membergroupids'];
+						 $pieces = explode(",", $groupids);
+							 if ($groups[$pieces[0]][$permission_name]
+							 or $groups[$pieces[1]][$permission_name]
+							 or $groups[$pieces[2]][$permission_name]
+							 or $groups[$pieces[3]][$permission_name]
+							 or $groups[$pieces[4]][$permission_name]
+							 or $groups[$pieces[5]][$permission_name]
+							 or $groups[$pieces[6]][$permission_name]
+							 or $groups[$pieces[7]][$permission_name]
+							 or $groups[$pieces[8]][$permission_name]
+							 or $groups[$pieces[9]][$permission_name]
+							 or $groups[$pieces[10]][$permission_name])
+							  {
+								 return true;
+					          }
+					          else
+							  {
+								 return false;
+					          }
+						}
+				       else
+						{
+				          $permission = $groups[$group_id][$permission_name];
+					      return ($permission) ? true : false;
+					    }
 
-			$permission_section = $SectionGroup[$permission_name];
-			return $permission_section;
-		}
+			 }
+			 elseif(empty($section_group_cache))
+			 {
+				/** Get section's group information and make some checks **/
+				$SecGroupArr 						= 	array();
+				$SecGroupArr['where'] 				= 	array();
+				$SecGroupArr['where'][0]			=	array();
+				$SecGroupArr['where'][0]['name'] 	= 	"section_id = ".$forum_id." AND group_id";
+				$SecGroupArr['where'][0]['value'] 	= 	$group_id;
+				// Finally get the permissions of group
+				$SectionGroup = $PowerBB->group->GetSectionGroupInfo($SecGroupArr);
+				$permission_section = $SectionGroup[$permission_name];
+				return $permission_section;
+			 }
+
+	     }
 
 	}
 

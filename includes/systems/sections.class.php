@@ -238,14 +238,9 @@ class PowerBBSection
 				$cache[$x]['last_date'] 			= 	$forums[$x]['last_date'];
 				$cache[$x]['last_time'] 			= 	$forums[$x]['last_time'];
 				}
-				if($forums[$x]['subject_num'])
-				{
 				$cache[$x]['subject_num'] 	        =  	$forums[$x]['subject_num'];
-				}
-				if($forums[$x]['reply_num'])
-				{
 				$cache[$x]['reply_num'] 	        =  	$forums[$x]['reply_num'];
-				}
+
 				if(!empty($forums[$x]['moderators']))
 				{
                  if($forums[$x]['moderators'] != "[]")
@@ -294,7 +289,6 @@ class PowerBBSection
                 {
 				$cache[$x]['subjects_review_num']        = 	$forums[$x]['subjects_review_num'];
 				}
-
 
  				$prefixArr 							= 	array();
  				$prefixArr['get_from'] 				= 	'db';
@@ -374,6 +368,7 @@ class PowerBBSection
 				$cache[$x]['prefix_subject']   = 	$rows['prefix_subject'];
                 }
                 }
+
 				$x += 1;
  			}
 

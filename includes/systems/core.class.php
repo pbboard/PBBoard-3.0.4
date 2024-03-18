@@ -288,7 +288,6 @@ class PowerBBCore
  	 	$Posts = $this->Engine->records->GetList($param);
        if($Posts)
        {
-
 	 		$cache 	= 	array();
 	 		$x		=	0;
 	 		$numb =sizeof($Posts);
@@ -302,6 +301,11 @@ class PowerBBCore
 	 		}
 			while ($x < $n)
 			{
+
+	         $InfSectionID = $Posts[$x]['section'];
+	         $sql_Section = $this->Engine->DB->sql_query("SELECT id FROM " . $PowerBB->table['section'] . " WHERE id = '$InfSectionID' ");
+	         if($sql_Section)
+	          {
 
 				$cache[$x] 					            = 	array();
 				$cache[$x]['id']		 	            = 	$Posts[$x]['id'];
@@ -318,7 +322,6 @@ class PowerBBCore
 				$cache[$x]['prefix_subject'] 		    = 	$Posts[$x]['prefix_subject'];
 				$cache[$x]['native_write_time'] 		= 	$Posts[$x]['native_write_time'];
 				$cache[$x]['special'] 		            = 	$Posts[$x]['special'];
-				$cache[$x]['attach_subject'] 		    = 	$Posts[$x]['attach_subject'];
 
 				if ($Posts[$x]['last_replier']!='')
 				{
@@ -339,7 +342,7 @@ class PowerBBCore
 				$cache[$x]['last_writer_id'] 	    = 	$rows['id'];
 				$cache[$x]['avater_path'] 		    = 	$rows['avater_path'];
 				$cache[$x]['username_style_cache']  = 	$rows['username_style_cache'];
-
+              }
 				$x += 1;
 			}
 			$cache = serialize($cache);
@@ -349,7 +352,10 @@ class PowerBBCore
 		}
 		else
 		{
-		return  false;
+
+			$update_cache_time = $this->Engine->info->UpdateInfo(array('var_name'=>'last_time_cache','value'=>$time));
+			$update = $this->Engine->info->UpdateInfo(array('var_name'=>'last_posts_cache','value'=>''));
+			return ($update) ? true : false;
 		}
  	}
 

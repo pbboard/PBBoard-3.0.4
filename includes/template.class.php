@@ -230,13 +230,17 @@ class PBBTemplate
 			 $string = str_replace("{Des::foreach}","\n {Des::foreach}",$string);
 			 $string = str_replace("{forum}","{forum} \n",$string);
             }
+
 			 $string = str_replace("applications/core/archive.css","applications/core/archive/archive.css",$string);
 
 			if ($filename == 'sections_list')
 			{
 		     $CatArr = $PowerBB->DB->sql_query("SELECT sort FROM " . $PowerBB->table['section'] . " WHERE parent = '0' ORDER BY sort ASC");
 			 $catsort = $PowerBB->DB->sql_fetch_array($CatArr);
-			 $string = str_replace("!= 1}", "!=". $catsort['sort']."}", $string);
+			 if($catsort)
+			 {
+			  $string = str_replace("!= 1}", "!=". $catsort['sort']."}", $string);
+			 }
             }
 
             if ($filename == 'info_bar')

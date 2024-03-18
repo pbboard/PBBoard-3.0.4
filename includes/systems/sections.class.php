@@ -54,7 +54,7 @@ class PowerBBSection
 		$param['table'] = $this->Engine->table['section'];
 
 		$del = $this->Engine->records->Delete($param);
-
+        $this->Engine->functions->PBB_Create_last_posts_cache(0);
 		return ($del) ? true : false;
 	}
 
@@ -384,7 +384,6 @@ class PowerBBSection
  	function UpdateSectionsCache($param)
  	{
     	global $PowerBB;
-
  		if (!isset($param)
  			or !is_array($param))
  		{
@@ -444,6 +443,9 @@ class PowerBBSection
 					$ForumCacheArr['field']['forums_cache'] 	= 	$forums_cache;
 					$ForumCacheArr['where'] 		        = 	array('id',$SectionInfo['parent']);
 					$UpdateForumCache = $this->UpdateSection($ForumCacheArr);
+	                $this->Engine->functions->PBB_Create_last_posts_cache(0);
+
+
 			   }
            }
            else
@@ -492,6 +494,8 @@ class PowerBBSection
 						$ForumCacheArr['field']['forums_cache'] 	= 	$forums_cache;
 						$ForumCacheArr['where'] 		        = 	array('id',$param['parent']);
 						$UpdateForumCache = $this->UpdateSection($ForumCacheArr);
+						$this->Engine->functions->PBB_Create_last_posts_cache(0);
+
 				  }
 
 			 }

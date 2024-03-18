@@ -94,6 +94,13 @@ class PowerBBForumsMOD extends _functions
 	{
 	global $PowerBB;
 
+		$sections_num = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['section'] . " LIMIT 1"));
+		if (!$sections_num)
+		{
+		 $PowerBB->functions->redirect('index.php?page=sections&amp;add=1&amp;main=1');
+		 exit();
+		 }
+
 		// Show Jump List to:)
 		$result = $PowerBB->DB->sql_query("SELECT id,title,parent FROM " . $PowerBB->table['section'] . " ORDER BY id ASC");
 

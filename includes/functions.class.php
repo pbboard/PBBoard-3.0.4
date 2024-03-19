@@ -4292,7 +4292,7 @@ function my_strlen($string)
 		return ($copy) ? true : false;
 	}
 
-  	function section_group_permission($forum_id, $group_id, $permission_name, $section_group_cache=false)
+  	function section_group_permission($forum_id, $group_id, $permission_name, $section_group_cache="")
 	{
 	   global $PowerBB;
 
@@ -4391,8 +4391,14 @@ function my_strlen($string)
 				$SecGroupArr 						= 	array();
 				$SecGroupArr['where'] 				= 	array();
 				$SecGroupArr['where'][0]			=	array();
-				$SecGroupArr['where'][0]['name'] 	= 	"section_id = ".$forum_id." AND group_id";
-				$SecGroupArr['where'][0]['value'] 	= 	$group_id;
+				$SecGroupArr['where'][0]['name'] 	= 	"section_id";
+		        $SecGroupArr['where'][0]['oper'] 	= 	'=';
+				$SecGroupArr['where'][0]['value'] 	= 	$forum_id;
+				$SecGroupArr['where'][1] 			= 	array();
+				$SecGroupArr['where'][1]['con'] 	= 	'AND';
+				$SecGroupArr['where'][1]['name'] 	= 	'group_id';
+				$SecGroupArr['where'][1]['oper'] 	= 	'=';
+				$SecGroupArr['where'][1]['value'] 	= 	$group_id;
 				// Finally get the permissions of group
 				$SectionGroup = $PowerBB->group->GetSectionGroupInfo($SecGroupArr);
 				$permission_section = $SectionGroup[$permission_name];

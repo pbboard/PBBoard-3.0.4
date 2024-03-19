@@ -157,7 +157,7 @@ function _AllCacheStart()
 			$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['Section_does_not_exist']);
 		}
 		// This member can't view this section
-		if ($PowerBB->functions->section_group_permission($this->Section['id'],$PowerBB->_CONF['group_info']['id'],'view_section',$this->Section['sectiongroup_cache']) != 1)
+		if ($PowerBB->functions->section_group_permission($this->Section['id'],$PowerBB->_CONF['group_info']['id'],'view_section',$this->Section['sectiongroup_cache']) != '1')
 		{
 			$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['can_not_view_section']);
 		}
@@ -168,7 +168,7 @@ function _AllCacheStart()
 			$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['thes_main_section']);
 		}
 
-       if ($PowerBB->functions->section_group_permission($this->Section['id'],$PowerBB->_CONF['group_info']['id'],'view_subject') == 0 and $this->Section['parent'])
+       if ($PowerBB->functions->section_group_permission($this->Section['id'],$PowerBB->_CONF['group_info']['id'],'view_subject',$this->Section['sectiongroup_cache']) == '0' and $this->Section['parent'])
 		{
 		$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['You_are_not_allowed_access_to_the_contents_of_this_forum']);
 		}
@@ -262,8 +262,8 @@ function _AllCacheStart()
 			$update = $PowerBB->core->Update($UpdateOnline,'online');
      	}
 
-        $PowerBB->template->assign('write_reply',$PowerBB->functions->section_group_permission($this->Section['id'],$PowerBB->_CONF['group_info']['id'],'write_subject'));
-        $PowerBB->template->assign('write_subject',$PowerBB->functions->section_group_permission($this->Section['id'],$PowerBB->_CONF['group_info']['id'],'write_subject'));
+        $PowerBB->template->assign('write_reply',$PowerBB->functions->section_group_permission($this->Section['id'],$PowerBB->_CONF['group_info']['id'],'write_subject',''));
+        $PowerBB->template->assign('write_subject',$PowerBB->functions->section_group_permission($this->Section['id'],$PowerBB->_CONF['group_info']['id'],'write_subject',''));
 
 	}
 

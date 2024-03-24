@@ -177,17 +177,29 @@ class PowerBBPortalMOD
 		{
              // foreach main sections
 			$PowerBB->_CONF['template']['foreach']['forums_list'][$cat['id'] . '_m'] = $cat;
+
 			if($PowerBB->_CONF['files_forums_Cache'])
 			{
 			@include("../cache/forums_cache/forums_cache_".$cat['id'].".php");
 			}
 			else
 			{
-			$forums_cache = $PowerBB->functions->get_forum_cache($cat['id'],$cat['forums_cache']);
+			$forums_cache = $cat['forums_cache'];
 			}
 			if (!empty($forums_cache))
 			{
-                $forums = $PowerBB->functions->decode_forum_cache($forums_cache);
+               	$ForumArr 						= 	array();
+				$ForumArr['get_from']				=	'db';
+				$ForumArr['proc'] 				= 	array();
+				$ForumArr['proc']['*'] 			= 	array('method'=>'clean','param'=>'html');
+				$ForumArr['order']				=	array();
+				$ForumArr['order']['field']		=	'sort';
+				$ForumArr['order']['type']		=	'ASC';
+				$ForumArr['where']				=	array();
+				$ForumArr['where'][0]['name']		= 	'parent';
+				$ForumArr['where'][0]['oper']		= 	'=';
+				$ForumArr['where'][0]['value']	= 	$cat['id'];
+				$forums = $PowerBB->core->GetList($ForumArr,'section');
 
 					foreach ($forums as $forum)
 					{
@@ -196,17 +208,28 @@ class PowerBBPortalMOD
 							$forum['is_sub'] 	= 	0;
 							$forum['sub']		=	'';
 
-							if ($PowerBB->_CONF['files_forums_Cache'])
-							{
-							@include("../cache/forums_cache/forums_cache_".$forum['id'].".php");
-							}
-							else
-							{
-							$forums_cache = $PowerBB->functions->get_forum_cache($forum['id'],$forum['forums_cache']);
-							}
-							  if (!empty($forums_cache))
+									if ($PowerBB->_CONF['files_forums_Cache'])
+									{
+									@include("../cache/forums_cache/forums_cache_".$forum['id'].".php");
+									}
+									else
+									{
+									$forums_cache = $forum['forums_cache'];
+									}
+                               if (!empty($forums_cache))
 	                           {
-								   $subs = $PowerBB->functions->decode_forum_cache($forums_cache);
+					               	$SubArr 						= 	array();
+									$SubArr['get_from']				=	'db';
+									$SubArr['proc'] 				= 	array();
+									$SubArr['proc']['*'] 			= 	array('method'=>'clean','param'=>'html');
+									$SubArr['order']				=	array();
+									$SubArr['order']['field']		=	'sort';
+									$SubArr['order']['type']		=	'ASC';
+									$SubArr['where']				=	array();
+									$SubArr['where'][0]['name']		= 	'parent';
+									$SubArr['where'][0]['oper']		= 	'=';
+									$SubArr['where'][0]['value']	= 	$forum['id'];
+									$subs = $PowerBB->core->GetList($SubArr,'section');
 	                               foreach ($subs as $sub)
 									{
 									   if ($forum['id'] == $sub['parent'])
@@ -216,18 +239,14 @@ class PowerBBPortalMOD
 												{
 													$forum['is_sub'] = 1;
 												}
-                               		        if (in_array($sub['id'] , $selected_forums))
-                               		        {
-											$forum['sub'] .= ('<option value="' .$sub['id'] . '" selected="selected" >---'  . $sub['title'] . '</option>');
-											}
-											else
-											{
-											$forum['sub'] .= ('<option value="' .$sub['id'] . '" >---'  . $sub['title'] . '</option>');
-											}
+												 $forum['sub'] .= ('<option value="' .$sub['id'] . '">---- '  . $sub['title'] . '</option>');
+
 										  }
 
-											$forum['is_sub_sub'] 	= 	0;
-											$forum['sub_sub']		=	'';
+					                         ///////////////
+
+													$forum['is_sub_sub'] 	= 	0;
+													$forum['sub_sub']		=	'';
 
 											if ($PowerBB->_CONF['files_forums_Cache'])
 											{
@@ -235,11 +254,22 @@ class PowerBBPortalMOD
 											}
 											else
 											{
-											$forums_cache = $PowerBB->functions->get_forum_cache($sub['id'],$sub['forums_cache']);
+											$forums_cache = $sub['forums_cache'];
 											}
-											if (!empty($forums_cache))
+										if (!empty($forums_cache))
 				                           {
-                                              $subs_sub = $PowerBB->functions->decode_forum_cache($forums_cache);
+							               	$SubsArr 						= 	array();
+											$SubsArr['get_from']				=	'db';
+											$SubsArr['proc'] 				= 	array();
+											$SubsArr['proc']['*'] 			= 	array('method'=>'clean','param'=>'html');
+											$SubsArr['order']				=	array();
+											$SubsArr['order']['field']		=	'sort';
+											$SubsArr['order']['type']		=	'ASC';
+											$SubsArr['where']				=	array();
+											$SubsArr['where'][0]['name']		= 	'parent';
+											$SubsArr['where'][0]['oper']		= 	'=';
+											$SubsArr['where'][0]['value']	= 	$sub['id'];
+											$subs_sub = $PowerBB->core->GetList($SubsArr,'section');
 				                               foreach ($subs_sub as $sub_sub)
 												{
 												   if ($sub['id'] == $sub_sub['parent'])
@@ -250,14 +280,7 @@ class PowerBBPortalMOD
 																		$forum['is_sub_sub'] = 1;
 																	}
 
-                               		                            if (in_array($sub_sub['id'] , $selected_forums))
-				                                		        {
-																$forum['sub_sub'] .= ('<option value="' .$sub_sub['id'] . '" selected="selected" >---'  . $sub_sub['title'] . '</option>');
-																}
-																else
-																{
-																$forum['sub_sub'] .= ('<option value="' .$sub_sub['id'] . '" >---'  . $sub_sub['title'] . '</option>');
-																}
+															 $forum['sub_sub'] .= ('<option value="' .$sub_sub['id'] . '">---- '  . $sub_sub['title'] . '</option>');
 													  }
 												 }
 

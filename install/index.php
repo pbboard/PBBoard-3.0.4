@@ -2225,19 +2225,7 @@ function upgrade_update_section_cache()
 				$x = 0;
 	 			while ($forums = $db->fetch_array($arr))
 	 			{
-                       $cache[$x] 							= 	array();
-					$cache[$x]['id'] 					= 	$forums['id'];
-					$cache[$x]['title'] 				= 	$forums['title'];
-					$cache[$x]['section_describe'] 		= 	$forums['section_describe'];
-					$cache[$x]['parent'] 				= 	$forums['parent'];
-					$cache[$x]['sort'] 					= 	$forums['sort'];
-					$cache[$x]['section_picture'] 		= 	$forums['section_picture'];
-					$cache[$x]['sectionpicture_type'] 	= 	$forums['sectionpicture_type'];
-					$cache[$x]['use_section_picture'] 	= 	$forums['use_section_picture'];
-					$cache[$x]['linksection'] 			= 	$forums['linksection'];
-					$cache[$x]['linkvisitor'] 			= 	$forums['linkvisitor'];
-					$cache[$x]['last_writer'] 			= 	$forums['last_writer'];
-
+                    $cache[$x] 							= 	array();
 					$last_writer 			= 	$forums['last_writer'];
 	                $MemberArr = $db->query("SELECT * FROM ".$config['db']['prefix']."member WHERE username = '$last_writer'");
 	                $rows = $db->fetch_array($MemberArr);
@@ -2246,44 +2234,10 @@ function upgrade_update_section_cache()
 					$cache[$x]['avater_path'] 		    = 	$rows['avater_path'];
 					$cache[$x]['username_style_cache']  = 	$rows['username_style_cache'];
 
-					$cache[$x]['last_subject'] 			= 	$forums['last_subject'];
-					$cache[$x]['last_subjectid'] 		= 	$forums['last_subjectid'];
-					$cache[$x]['last_date'] 			= 	$forums['last_date'];
-					$cache[$x]['last_time'] 			= 	$forums['last_time'];
-					$cache[$x]['subject_num'] 			= 	$forums['subject_num'];
-					$cache[$x]['reply_num'] 			= 	$forums['reply_num'];
-					$cache[$x]['moderators'] 			= 	$forums['moderators'];
-					$cache[$x]['icon'] 	        		=  	$forums['icon'];
-					$cache[$x]['hide_subject'] 	        =  	$forums['hide_subject'];
-					$cache[$x]['sec_section'] 	        =  	$forums['sec_section'];
-					$cache[$x]['section_password'] 	    =  	$forums['section_password'];
-					$cache[$x]['last_berpage_nm'] 	    =  	$forums['last_berpage_nm'];
-					$cache[$x]['last_reply'] 	        =  	$forums['last_reply'];
-					$cache[$x]['forums_cache'] 			= 	$forums['forums_cache'];
-					$cache[$x]['forum_title_color']     = 	$forums['forum_title_color'];
-					$cache[$x]['review_subject']        = 	$forums['review_subject'];
-					$cache[$x]['replys_review_num']     = 	$forums['replys_review_num'];
-					$cache[$x]['subjects_review_num']   = 	$forums['subjects_review_num'];
-					$cache[$x]['groups'] 				= 	array();
-
-	 				$section_id 					= 	$forums['id'];
-	                $GroupArr = $db->query("SELECT * FROM ".$config['db']['prefix']."sectiongroup WHERE section_id = '$section_id' ORDER by id ASC");
-
-	 				$last_subjectid 					= 	$forums['last_subjectid'];
-	                $prefixArr = $db->query("SELECT * FROM ".$config['db']['prefix']."subject WHERE id = '$last_subjectid' ORDER by id ASC");
-	                $rows = $db->fetch_array($prefixArr);
-
-					$cache[$x]['prefix_subject']   = 	$rows['prefix_subject'];
-					while ($group = $db->fetch_array($GroupArr))
-					{
-				        $cache[$x]['groups'][$group['group_id']] 					=	array();
-						$cache[$x]['groups'][$group['group_id']]['view_section'] 	= 	$group['view_section'];
-						$cache[$x]['groups'][$group['group_id']]['main_section'] 	= 	$group['main_section'];
-					}
 					$x += 1;
 	 			}
 
-				$cache = base64_encode(json_encode($cache));
+				 $cache = json_encode($cache);
 
 				if ($cache)
 				{

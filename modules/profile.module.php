@@ -307,7 +307,7 @@ class PowerBBProfileMOD
 		$PowerBB->_GET['count'] = (!isset($PowerBB->_GET['count'])) ? 0 : $PowerBB->_GET['count'];
 		$PowerBB->_GET['count'] = $PowerBB->functions->CleanVariable($PowerBB->_GET['count'],'intval');
 
-        $perpage = '300';
+        $perpage_Friends = '300';
         $user_namee  = $PowerBB->_CONF['template']['MemberInfo']['username'];
     	$GetFriendsNum = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT distinct username_friend, userid_friend FROM " . $PowerBB->table['friends'] . " WHERE username = '$user_namee' and approval = '1'"));
 
@@ -324,16 +324,9 @@ class PowerBBProfileMOD
 		$FriendsArr['order']			=	array();
 		$FriendsArr['order']['field']	=	'id';
 		$FriendsArr['order']['type']	=	'DESC';
-        $FriendsArr['limit']             =    "15";
+        $FriendsArr['limit']             =    $perpage_Friends;
 		$FriendsArr['proc'] 			= 	array();
 		$FriendsArr['proc']['*'] 		= 	array('method'=>'clean','param'=>'html');
-	   // Pager setup
-		$FriendsArr['pager'] 				= 	array();
-		$FriendsArr['pager']['total']		= 	$GetFriendsNum;
-		$FriendsArr['pager']['perpage']  	= 	$perpage;
-		$FriendsArr['pager']['count'] 		= 	$PowerBB->_GET['count'];
-		$FriendsArr['pager']['location'] 	= 	'index.php?page=profile&show=1&id='.$PowerBB->_CONF['template']['MemberInfo']['id'];
-		$FriendsArr['pager']['var'] 		    = 	'count';
 
        $PowerBB->_CONF['template']['while']['FriendsList'] = $PowerBB->core->GetList($FriendsArr,'friends');
 
@@ -367,14 +360,6 @@ class PowerBBProfileMOD
        {
           $PowerBB->template->assign('dont_shwo_friend',3);
        }
-
-
-
-
-		if ($GetFriendsNum > $perpage)
-		{
-		$PowerBB->template->assign('FriendsPager',$PowerBB->pager->show());
-		}
 
 
 		$SmlArr 					= 	array();

@@ -46,9 +46,11 @@ class PowerBBTeamMOD
           $PowerBB->template->assign('username',$forum_team['username']);
           $PowerBB->template->assign('user_title',$forum_team['user_title']);
           $PowerBB->template->assign('id',$forum_team['id']);
+          $PowerBB->template->assign('forum_team',$forum_team);
+          $PowerBB->template->assign('send_allow',$forum_team['send_allow']);
           $PowerBB->template->display('teamlist_down');
          }
-                 echo '<br />';
+         echo '<br />';
 
 	}
 }

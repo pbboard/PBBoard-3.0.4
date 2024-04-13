@@ -4409,95 +4409,127 @@ function my_strlen($string)
 
 	}
 
+    //Check internet connection
+	function is_connected()
+	{
+	    $connected = @fsockopen("www.pbboard.info", 80);
+	                                        //website, port  (try 80 or 443)
+	    if ($connected){
+	        $is_conn = true; //action when connected
+	        fclose($connected);
+	    }else{
+	        $is_conn = false; //action in connection failure
+	    }
+	    return $is_conn;
+
+	}
+
    	function PBBoard_Updates()
 	{
 	   global $PowerBB;
-        $last_Update = $PowerBB->_CONF['info_row']['last_time_updates'];
-        $Version = $PowerBB->_CONF['info_row']['MySBB_version'];
-        $pbboard_last_time_updates = 'https://pbboard.info/check_updates/pbboard_last_time_updates_304.txt';
-		 $last_time_updates = $PowerBB->sys_functions->CURL_cloudFlareBypass($pbboard_last_time_updates);
+	   if($this->is_connected())
+	   {
+	        $last_Update = $PowerBB->_CONF['info_row']['last_time_updates'];
+	        $Version = $PowerBB->_CONF['info_row']['MySBB_version'];
+	        $pbboard_last_time_updates = 'https://pbboard.info/check_updates/pbboard_last_time_updates_304.txt';
+			 $last_time_updates = $PowerBB->sys_functions->CURL_cloudFlareBypass($pbboard_last_time_updates);
 
-         if(!$last_time_updates)
-		 {
-      	   $last_time_updates = @file_get_contents($pbboard_last_time_updates);
-		 }
-         if($last_time_updates)
-		 {
-	      	$arr = explode('-',$last_time_updates);
-	        $last_time     = trim($arr[0]);
-			$LatestVersion = trim($arr[1]);
-			if($last_Update<$last_time
-			and $Version == $LatestVersion)
-			{
-			$update = '{template}pbboard_updates{/template}';
+	         if(!$last_time_updates)
+			 {
+	      	   $last_time_updates = @file_get_contents($pbboard_last_time_updates);
+			 }
+	         if($last_time_updates)
+			 {
+		      	$arr = explode('-',$last_time_updates);
+		        $last_time     = trim($arr[0]);
+				$LatestVersion = trim($arr[1]);
+				if($last_Update<$last_time
+				and $Version == $LatestVersion)
+				{
+				$update = '{template}pbboard_updates{/template}';
+				}
+				else
+				{
+				 $update = $PowerBB->_CONF['template']['_CONF']['lang']['pbboard_updated'];
+				}
 			}
 			else
 			{
-			 $update = $PowerBB->_CONF['template']['_CONF']['lang']['pbboard_updated'];
+			  $update = $PowerBB->_CONF['template']['_CONF']['lang']['failed_connect'];
 			}
 		}
 		else
-		{
+	   {
 		  $update = $PowerBB->_CONF['template']['_CONF']['lang']['failed_connect'];
-		}
+	   }
+
 		return $update;
 	}
+
 	function check_version_date()
 	{
 	   global $PowerBB;
-         // Check if this version is up to date
-         $LatestVersionUrl = ("https://pbboard.info/pbboard_latest_version.txt");
+	   if($this->is_connected())
+	   {
+	         // Check if this version is up to date
+	         $LatestVersionUrl = ("https://pbboard.info/pbboard_latest_version.txt");
 
-		 $LatestVersionTxt = $PowerBB->sys_functions->CURL_cloudFlareBypass($LatestVersionUrl);
+			 $LatestVersionTxt = $PowerBB->sys_functions->CURL_cloudFlareBypass($LatestVersionUrl);
 
-         if(!$LatestVersionTxt)
-		 {
-		 $LatestVersionTxt = @file_get_contents($LatestVersionUrl);
-		 }
-		if (!$LatestVersionTxt)
-		{
-         $PowerBB->_CONF['template']['_CONF']['lang']['failed_connect'] = str_replace("PBBoard.info","pbboard.info",$PowerBB->_CONF['template']['_CONF']['lang']['failed_connect']);
-		 $Result = $PowerBB->_CONF['template']['_CONF']['lang']['failed_connect'];
-		}
-		else
-		{
-			$arr = explode('-',$LatestVersionTxt);
-			$LatestVersion     = trim($arr[0]);
-			$LatestVersionLink = trim($arr[1]);
-			if ($LatestVersion == $PowerBB->_CONF['info_row']['MySBB_version'])
+	         if(!$LatestVersionTxt)
+			 {
+			 $LatestVersionTxt = @file_get_contents($LatestVersionUrl);
+			 }
+			if (!$LatestVersionTxt)
 			{
-			$JS_Notification = 0;
-			$Result = $PowerBB->_CONF['template']['_CONF']['lang']['version_identical'];
+	         $PowerBB->_CONF['template']['_CONF']['lang']['failed_connect'] = str_replace("PBBoard.info","pbboard.info",$PowerBB->_CONF['template']['_CONF']['lang']['failed_connect']);
+			 $Result = $PowerBB->_CONF['template']['_CONF']['lang']['failed_connect'];
 			}
 			else
 			{
-			$JS_Notification = 1;
-			$morinfrmosn ="https://pbboard.info";
-			$Result = $PowerBB->_CONF['template']['_CONF']['lang']['there_is_newer_version1'].$LatestVersion.$PowerBB->_CONF['template']['_CONF']['lang']['there_is_newer_version2'].$morinfrmosn.$PowerBB->_CONF['template']['_CONF']['lang']['there_is_newer_version3'];
+				$arr = explode('-',$LatestVersionTxt);
+				$LatestVersion     = trim($arr[0]);
+				$LatestVersionLink = trim($arr[1]);
+				if ($LatestVersion == $PowerBB->_CONF['info_row']['MySBB_version'])
+				{
+				$JS_Notification = 0;
+				$Result = $PowerBB->_CONF['template']['_CONF']['lang']['version_identical'];
+				}
+				else
+				{
+				$JS_Notification = 1;
+				$morinfrmosn ="https://pbboard.info";
+				$Result = $PowerBB->_CONF['template']['_CONF']['lang']['there_is_newer_version1'].$LatestVersion.$PowerBB->_CONF['template']['_CONF']['lang']['there_is_newer_version2'].$morinfrmosn.$PowerBB->_CONF['template']['_CONF']['lang']['there_is_newer_version3'];
+				}
+			}
+	        if ( $JS_Notification )
+			{
+				$Notification = '<script type="text/javascript">
+								function VNTimer()
+								{
+									var BackgroundColor = document.getElementById("Notifyboxr1").bgColor.toLowerCase();
+									if(BackgroundColor == \'#f5f8f7\' )
+									{
+										document.getElementById("Notifyboxr1").bgColor=\'#E0E0E0\';
+										document.getElementById("Notifyboxr2").bgColor=\'#E0E0E0\';
+								    }
+									else
+									{
+										document.getElementById("Notifyboxr1").bgColor=\'#F5F8F7\';
+										document.getElementById("Notifyboxr2").bgColor=\'#F5F8F7\';
+									}
+								}
+								setInterval("VNTimer()",500);
+								</script>';
+				$PowerBB->template->assign('versionnotification',$Notification);
 			}
 		}
-        if ( $JS_Notification )
-		{
-			$Notification = '<script type="text/javascript">
-							function VNTimer()
-							{
-								var BackgroundColor = document.getElementById("Notifyboxr1").bgColor.toLowerCase();
-								if(BackgroundColor == \'#f5f8f7\' )
-								{
-									document.getElementById("Notifyboxr1").bgColor=\'#E0E0E0\';
-									document.getElementById("Notifyboxr2").bgColor=\'#E0E0E0\';
-							    }
-								else
-								{
-									document.getElementById("Notifyboxr1").bgColor=\'#F5F8F7\';
-									document.getElementById("Notifyboxr2").bgColor=\'#F5F8F7\';
-								}
-							}
-							setInterval("VNTimer()",500);
-							</script>';
-			$PowerBB->template->assign('versionnotification',$Notification);
-		}
-		return $Result;
+		else
+	   {
+		  $Result = $PowerBB->_CONF['template']['_CONF']['lang']['failed_connect'];
+	   }
+
+	 return $Result;
 	}
   function convert_hex_color()
   {

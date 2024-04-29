@@ -4412,6 +4412,11 @@ function my_strlen($string)
     //Check internet connection
 	function is_connected()
 	{
+	  if($this->is_pbboard_site())
+	   {		return true;
+	   }
+	   else
+	   {
 	    $connected = @fsockopen("www.pbboard.info", 80);
 	                                        //website, port  (try 80 or 443)
 	    if ($connected){
@@ -4421,8 +4426,22 @@ function my_strlen($string)
 	        $is_conn = false; //action in connection failure
 	    }
 	    return $is_conn;
-
+       }
 	}
+
+   	function is_pbboard_site()
+	{
+	   global $PowerBB;
+	   $thes_site = $PowerBB->functions->GetServerProtocol().$PowerBB->_SERVER['HTTP_HOST'];
+	   if(strstr($thes_site,'pbboard.info'))
+	   {	   	$is_pbboard = true;
+	   }
+	   else
+	   {	   $is_pbboard = false;
+	   }
+
+	   return $is_pbboard;
+	 }
 
    	function PBBoard_Updates()
 	{
@@ -4431,12 +4450,20 @@ function my_strlen($string)
 	   {
 	        $last_Update = $PowerBB->_CONF['info_row']['last_time_updates'];
 	        $Version = $PowerBB->_CONF['info_row']['MySBB_version'];
+	        if($this->is_pbboard_site())
+	        {	        $pbboard_last_time_updates = '../../check_updates/pbboard_last_time_updates_304.txt';
+	        }
+	        else
+	        {
 	        $pbboard_last_time_updates = 'https://pbboard.info/check_updates/pbboard_last_time_updates_304.txt';
-			 $last_time_updates = $PowerBB->sys_functions->CURL_cloudFlareBypass($pbboard_last_time_updates);
+	        }
+
+
+            $last_time_updates = @file_get_contents($pbboard_last_time_updates);
 
 	         if(!$last_time_updates)
 			 {
-	      	   $last_time_updates = @file_get_contents($pbboard_last_time_updates);
+		     	$last_time_updates = $PowerBB->sys_functions->CURL_cloudFlareBypass('https://pbboard.info/check_updates/pbboard_last_time_updates_304.txt');
 			 }
 	         if($last_time_updates)
 			 {
@@ -4471,14 +4498,22 @@ function my_strlen($string)
 	   global $PowerBB;
 	   if($this->is_connected())
 	   {
-	         // Check if this version is up to date
-	         $LatestVersionUrl = ("https://pbboard.info/pbboard_latest_version.txt");
 
-			 $LatestVersionTxt = $PowerBB->sys_functions->CURL_cloudFlareBypass($LatestVersionUrl);
+	         // Check if this version is up to date
+	        if($this->is_pbboard_site())
+	        {
+	         $LatestVersionUrl = "../../pbboard_latest_version.txt";
+	        }
+	        else
+	        {
+	         $LatestVersionUrl = "https://pbboard.info/pbboard_latest_version.txt";
+	        }
+
+            $LatestVersionTxt = @file_get_contents($LatestVersionUrl);
 
 	         if(!$LatestVersionTxt)
 			 {
-			 $LatestVersionTxt = @file_get_contents($LatestVersionUrl);
+		   	  $LatestVersionTxt = $PowerBB->sys_functions->CURL_cloudFlareBypass("https://pbboard.info/pbboard_latest_version.txt");
 			 }
 			if (!$LatestVersionTxt)
 			{

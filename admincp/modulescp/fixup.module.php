@@ -811,38 +811,37 @@ class PowerBBFixMOD
 	function _pbboard_updates_start()
 	{
 		global $PowerBB;
+
             // get main dir
 			$To = $PowerBB->functions->GetMianDir();
 			$To = str_ireplace("index.php/", '', $To);
-        if($PowerBB->_CONF['info_row']['MySBB_version'] == '3.0.4')
-        {
-		$pbboard_last_time_updates = 'https://pbboard.info/check_updates/pbboard_last_time_updates_304.txt';
-		}
-        elseif($PowerBB->_CONF['info_row']['MySBB_version'] == '3.0.3')
-        {
-		$pbboard_last_time_updates = 'https://pbboard.info/check_updates/pbboard_last_time_updates_303.txt';
-		}
-		elseif($PowerBB->_CONF['info_row']['MySBB_version'] == '3.0.2')
-		{
-		$pbboard_last_time_updates = 'https://pbboard.info/check_updates/pbboard_last_time_updates.txt';
-		}
+
+	        if($PowerBB->functions->is_pbboard_site())
+	        {
+	        $pbboard_last_time_updates = '../../check_updates/pbboard_last_time_updates_304.txt';
+	        }
+	        else
+	        {
+	        $pbboard_last_time_updates = 'https://pbboard.info/check_updates/pbboard_last_time_updates_304.txt';
+	        }
+
 
 		$last_time_updates = @file_get_contents($pbboard_last_time_updates);
 
          if(!$last_time_updates)
 		 {
-		 $last_time_updates = $PowerBB->sys_functions->CURL_cloudFlareBypass($pbboard_last_time_updates);
+		   	$last_time_updates = $PowerBB->sys_functions->CURL_cloudFlareBypass("https://pbboard.info/check_updates/pbboard_last_time_updates_304.txt");
 		 }
 
 		$arr = explode('-',$last_time_updates);
 
 		$url     = trim($arr[2]);
         $urls= $PowerBB->sys_functions->CURL_cloudFlareBypass($url);
-
         $file_put = file_put_contents($To."Tmpfile.zip", $urls);
 
            $zip = new ZipArchive;
 			$file = $To.'Tmpfile.zip';
+
 			//$path = pathinfo(realpath($file), PATHINFO_DIRNAME);
 			if ($zip->open($file) === TRUE) {
 			    $zip->extractTo($To);
@@ -850,7 +849,7 @@ class PowerBBFixMOD
 			    $ziped = true;
 			} else {
 			   $ziped = false;
-			   echo 'Failed to open zip file';
+			   echo 'Failed to open zip file <br />';
 			}
 
 	         if($ziped)

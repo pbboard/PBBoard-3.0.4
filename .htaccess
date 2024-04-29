@@ -22,6 +22,8 @@ RewriteRule ^rss_forum_(.*).xml index.php?page=rss&section=1&id=$1 [L]
 RewriteRule ^rss.xml index.php?page=rss&subject=1
 
 RewriteRule ^sitemap.xml index.php?page=sitemap&subject=1
+RewriteRule ^posts.xml index.php?page=sitemap&posts=1
+RewriteRule ^topics.xml index.php?page=sitemap&topics=1
 RewriteRule ^sitemap.htm(.*) index.php?page=sitemap&sitemaps=1&count=$1 [L]
 RewriteRule ^sitemap.html(.*) index.php?page=sitemap&sitemaps=1&count=$1 [L]
 RewriteRule ^sitemap_forum_([0-9]+).xml(.*) index.php?page=sitemap&section=1&id=$1 [L]
@@ -93,6 +95,3 @@ RewriteRule ^today_topics index.php?page=latest&today=1 [L]
 RewriteRule ^forget.html index.php?page=forget&index=1 [L]
 RewriteRule ^active_user.html index.php?page=forget&active_member=1&send_active_code=1 [L]
 RewriteRule ^ads-([0-9]+) index.php?page=ads&goto=1&id=$1 [L]
-
-
-

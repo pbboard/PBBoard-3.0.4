@@ -11,13 +11,41 @@ error_reporting(E_ERROR | E_PARSE);
 	{
 	exit();
 	}
+    // Stop any external post request.
+	if ($_SERVER['REQUEST_METHOD'] == 'POST')
+	{
+	   $Y = explode('/',$_SERVER['HTTP_REFERER']);
+	   $X = explode('/',$_SERVER['HTTP_HOST']);
+
+	   if ($Y[2] != $X[0])
+	   {
+	    exit('No direct script access allowed');
+	   }
+	   elseif ($Y[2] != $_SERVER['HTTP_HOST'])
+	   {
+	    exit('No direct script access allowed');
+	   }
+	}
+	// Exit if no file uploaded
+	if (!isset($_FILES['file'])) {
+	    die('No file uploaded.');
+	}
+
 	$pic = $_FILES['file']['tmp_name'];
 	$size = @getimagesize($pic);
-	if (!$size[0]
-	or !$size[1])
+	if (empty($size[0])
+	or empty($size[1]))
 	{
-	exit();
+	exit("Uploaded file is not an image.");
+	die();
 	}
+
+	if(!is_array($size))
+	{
+	exit("Uploaded file is not an image.");
+	die();
+	}
+
 	$BAD_TYPES = array("image/gif",
 	"image/pjpeg",
 	"image/jpeg",
@@ -27,45 +55,24 @@ error_reporting(E_ERROR | E_PARSE);
 	"image/x-png");
 	if(!in_array($_FILES['file']['type'],$BAD_TYPES))
 	{
-	exit();
+	exit("Uploaded file is not an image.");
+	die();
 	}
 
-	if ( stristr($_FILES['file']['name'],'.php') )
-	{
-	exit();
+	// Exit if is not a valid image file
+	$image_type = exif_imagetype($pic);
+	if (!$image_type) {
+	 exit("Uploaded file is not an image.");
+	 die();
 	}
-	if ( stristr($_FILES['file']['name'],'.php3') )
-	{
-	exit();
-	}
-	if ( stristr($_FILES['file']['name'],'.phtml') )
-	{
-	exit();
-	}
-	if ( stristr($_FILES['file']['name'],'.pl') )
-	{
-	exit();
-	}
-	if ( stristr($_FILES['file']['name'],'.cgi') )
-	{
-	exit();
-	}
-	if ( stristr($_FILES['file']['name'],'.asp') )
-	{
-	exit();
-	}
-	if ( stristr($_FILES['file']['name'],'.3gp') )
-	{
-	exit();
-	}
+
+
 	$_SERVER['REQUEST_URI'] = str_replace( 'includes/upload.php', '', $_SERVER['REQUEST_URI'] );
 	$dir =($_SERVER['DOCUMENT_ROOT'].$_SERVER['REQUEST_URI']);
 	define('DONT_STRIPS_SLIASHES',true);
 	define('STOP_STYLE',true);
 	define('IN_PowerBB',true);
 	include($dir.'common.php');
-
-
 
 	if ($PowerBB->_POST['layout'])
 	{

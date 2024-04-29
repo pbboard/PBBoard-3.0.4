@@ -118,6 +118,14 @@ class PowerBBSitemapMOD
 			$this->_SubjectSitemap();
 			echo '</sitemapindex>';
 		}
+		elseif ($PowerBB->_GET['topics'])
+		{
+			$this->_TopicsSitemap();
+		}
+		elseif ($PowerBB->_GET['posts'])
+		{
+			$this->_PostsSitemap();
+		}
 		elseif ($PowerBB->_GET['section'])
 		{
 			$PowerBB->_GET['id'] = $PowerBB->functions->CleanVariable($PowerBB->_GET['id'],'intval');
@@ -240,7 +248,8 @@ class PowerBBSitemapMOD
 		$forum_sitemap = "index.php?page=sitemap&amp;section=1&amp;id=";
 		$forum_sitemap = $PowerBB->functions->rewriterule($forum_sitemap);
 		while ($getSections_row = $PowerBB->DB->sql_fetch_array($catys))
-		{	       // Get the groups information to know view this section or not
+		{
+	       // Get the groups information to know view this section or not
 		if ($PowerBB->functions->section_group_permission($getSections_row['id'],$PowerBB->_CONF['group_info']['id'],'view_section') and $getSections_row['section_password'] == '')
 	      {
 				echo '<sitemap>';
@@ -250,6 +259,56 @@ class PowerBBSitemapMOD
 
 		  }
 		}
+	}
+
+	function _TopicsSitemap()
+	{
+		global $PowerBB;
+
+       $Topics_query= $PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['subject'] . " WHERE review_subject<>1 AND sec_subject<>1 AND delete_topic<>1 ORDER BY write_time DESC LIMIT 100");
+
+		$subject_sitemap = "index.php?page=topic&amp;show=1&amp;id=";
+		$subject_sitemap = $PowerBB->functions->rewriterule($subject_sitemap);
+		header('Content-Type: text/xml; charset=utf-8');
+	   echo '<?xml version="1.0" encoding="windows-1256" ?>'."\n";
+	   echo '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/09/sitemap.xsd">'."\n";
+		while ($Topics_row = $PowerBB->DB->sql_fetch_array($Topics_query))
+		{
+		if ($PowerBB->functions->section_group_permission($Topics_row['section'],$PowerBB->_CONF['group_info']['id'],'view_section'))
+	      {
+				echo '<url>'."\n";
+				echo '<loc>'. $PowerBB->functions->GetForumAdress() . $subject_sitemap . $Topics_row['id'] . '</loc>'."\n";
+				echo '<changefreq>daily</changefreq>'."\n";
+				echo '<priority>0.8</priority>'."\n";
+				echo '</url>'."\n";
+		  }
+		}
+	  echo '</urlset>';
+	}
+
+	function _PostsSitemap()
+	{
+		global $PowerBB;
+       $forum_not = $PowerBB->_CONF['info_row']['last_subject_writer_not_in'];
+       $Replys_query= $PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['reply'] . " WHERE delete_topic = 0 AND section not in (" .$forum_not. ") AND review_reply = 0 ORDER BY write_time DESC LIMIT 100");
+
+		$subject_sitemap = "index.php?page=post&amp;show=1&amp;id=";
+		$subject_sitemap = $PowerBB->functions->rewriterule($subject_sitemap);
+		header('Content-Type: text/xml; charset=utf-8');
+	   echo '<?xml version="1.0" encoding="windows-1256" ?>'."\n";
+	   echo '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/09/sitemap.xsd">'."\n";
+		while ($Replys_row = $PowerBB->DB->sql_fetch_array($Replys_query))
+		{
+		if ($PowerBB->functions->section_group_permission($Replys_row['section'],$PowerBB->_CONF['group_info']['id'],'view_section'))
+	      {
+				echo '<url>'."\n";
+				echo '<loc>'. $PowerBB->functions->GetForumAdress() . $subject_sitemap . $Replys_row['id'] . '</loc>'."\n";
+				echo '<changefreq>daily</changefreq>'."\n";
+				echo '<priority>0.8</priority>'."\n";
+				echo '</url>'."\n";
+		  }
+		}
+	  echo '</urlset>';
 	}
 
 	function lastmod_date($time)

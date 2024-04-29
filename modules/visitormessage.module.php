@@ -121,7 +121,7 @@ class PowerBBCoreMOD
         $PowerBB->template->assign('visitormessageinfo',$VisitorMessageinfo);
         $VisitorMessageinfo['pagetext'] = str_ireplace('&amp;',"&",$VisitorMessageinfo['pagetext']);
         $VisitorMessageinfo['pagetext'] = str_replace('&quot;','',$VisitorMessageinfo['pagetext']);
-		$VisitorMessageinfo['pagetext'] = $PowerBB->Powerparse->replace_htmlentities($VisitorMessageinfo['pagetext']);
+		$VisitorMessageinfo['pagetext'] = $PowerBB->Powerparse->htmlspecialchars_uni($VisitorMessageinfo['pagetext']);
 
 		$PowerBB->template->assign('pagetext',$VisitorMessageinfo['pagetext']);
 

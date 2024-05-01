@@ -10,13 +10,19 @@ if(function_exists('date_default_timezone_set') && !ini_get('date.timezone'))
 	@date_default_timezone_set('GMT');
 }
 // Security REQUEST METHOD POST
-/*
-if ($_SERVER['REQUEST_METHOD'] == 'POST'
-and !isset($_SESSION['csrf']))
+if ($_SERVER['REQUEST_METHOD'] == 'POST')
 {
-exit;
+// Stop Requests Flood
+if($_SESSION['csrf_2'] > time() - 2)
+{
+header("HTTP/1.1 403 Forbidden");
+exit("PBBoard-Error: Request Timeout error is an HTTP - try again after 2 seconds.");
 }
-*/
+}
+
+//Generate time to request POST:
+$_SESSION['csrf_2'] = time();
+
 //Generate a key, print a form:
 $Generatekey = @sha1(@microtime());
 $_SESSION['csrf'] = $Generatekey;

@@ -1291,6 +1291,21 @@ class PowerBBCoreMOD
      		if (!empty($PowerBB->_FILES['upload']['name']))
      		{
      			//////////
+					$filename = $PowerBB->_FILES['upload']['name'];
+					$temparray = explode(".", $filename);
+					$extension = $temparray[count($temparray) - 1];
+					$extension = strtolower($extension);
+					$BAD_IMAGE = array("gif",
+					"jpeg",
+					"png",
+					"jpg",
+					"bmp",
+					"tiff");
+					if(!in_array($extension,$BAD_IMAGE))
+					{
+					exit("Nice try but this file is not an image.");
+					die();
+					}
 
      			// Get the extension of the file
      			$ext = $PowerBB->functions->GetFileExtension($PowerBB->_FILES['upload']['name']);
@@ -1304,6 +1319,8 @@ class PowerBBCoreMOD
      			{
 	     			// Convert the extension to small case
     	 			$ext = strtolower($ext);
+
+
 
     	 			// The extension is not allowed
     	 			if (!array($ext,$allowed_array))

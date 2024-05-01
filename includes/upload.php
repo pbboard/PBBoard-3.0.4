@@ -1,10 +1,13 @@
 <?php
 error_reporting(E_ERROR | E_PARSE);
 	session_start();
+
 	if(!isset($_SESSION['csrf']))
 	{
 	exit();
 	}
+
+
 
 	// Stop any external post request.
 	if ($_SERVER['REQUEST_METHOD'] != 'POST')
@@ -74,6 +77,27 @@ error_reporting(E_ERROR | E_PARSE);
 	define('IN_PowerBB',true);
 	include($dir.'common.php');
 
+	    // Clean Variable extenstion
+	    // I hate SQL injections
+		// I hate XSS
+		$filename = $PowerBB->_FILES["file"]["name"];
+		$temparray = explode(".", $filename);
+		$extension = $temparray[count($temparray) - 1];
+		$extension = strtolower($extension);
+		$BAD_IMAGE = array("gif",
+		"jpeg",
+		"png",
+		"jpg",
+		"bmp",
+		"tiff");
+		if(!in_array($extension,$BAD_IMAGE))
+		{
+		exit("Nice try but this file is not an image.");
+		die();
+		}
+
+
+
 	if ($PowerBB->_POST['layout'])
 	{
 	$user_id = $PowerBB->_CONF['member_row']['id'];
@@ -134,11 +158,32 @@ error_reporting(E_ERROR | E_PARSE);
 		{
 				if(isset($_SESSION['csrf']))
 				{
+					// Get the extension of the file
+					$ext = $PowerBB->functions->GetFileExtension($PowerBB->_FILES['file']['name']);
+
+					// Bad try!
+					if ($ext == 'MULTIEXTENSION'
+					or !$ext)
+					{
+					echo("Uploaded file is not an image.<br />");
+					}
+					else
+					{
+					// Convert the extension to small case
+					$ext = strtolower($ext);
+
+					// The extension is not allowed
+					if (!array($ext,$allowed_array))
+					{
+					$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['Along_the_image_is_not_permitted']);
+					}
+
 				     move_uploaded_file($PowerBB->_FILES['file']['tmp_name'],$targetDir.$fileName);
 					$user_id = $PowerBB->_CONF['member_row']['id'];
 					$profile_cover_photo = $PowerBB->_CONF['info_row']['download_path']."/upload_cover_photo/".$fileName;
 
 					$UPDATE_user  = $PowerBB->DB->sql_query("UPDATE " . $PowerBB->table['member'] . " SET profile_cover_photo = '$profile_cover_photo' WHERE id = '$user_id'");
+					}
                 }
         }
 	}

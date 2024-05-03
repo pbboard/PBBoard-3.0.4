@@ -78,7 +78,7 @@ class PowerBBTopicAddMOD
 	 		{
 			  $membergroupid__s = $PowerBB->_CONF['member_row']['membergroupids'].",".$PowerBB->_CONF['group_info']['id'];
 			  $PowerBB->_CONF['member_row']['membergroupids'] = str_replace("," , "','",$PowerBB->_CONF['member_row']['membergroupids']);
-		      $SecGroupArr = $PowerBB->DB->sql_query("SELECT * FROM pbb_sectiongroup WHERE group_id in('".$PowerBB->_CONF['member_row']['membergroupids']."','".$PowerBB->_CONF['group_info']['id']."') ");
+		      $SecGroupArr = $PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['section_group'] . " WHERE group_id in('".$PowerBB->_CONF['member_row']['membergroupids']."','".$PowerBB->_CONF['group_info']['id']."') ");
 		    	while ($PermissionSectionGroup = $PowerBB->DB->sql_fetch_array($SecGroupArr))
 				{
 				 if (in_array($PermissionSectionGroup['group_id'], explode(',', $membergroupid__s))

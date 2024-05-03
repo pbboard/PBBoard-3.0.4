@@ -1,8 +1,7 @@
 <?php
 (!defined('IN_PowerBB')) ? die() : '';
-
 define('CLASS_NAME','PowerBBCoreMOD');
-
+define('CLASS_NAME','USERRATING');
 include('common.php');
 class PowerBBCoreMOD
 {
@@ -108,14 +107,10 @@ class PowerBBCoreMOD
 
      	//////////
 
-		// We check if the "date" is saved as Unix stamptime, if true proccess it otherwise do nothing
-		// We wrote these lines to ensure PowerBB 2.x is compatible with PowerBB's 1.x time save method
-		if (is_numeric($PowerBB->_CONF['template']['AnnInfo']['date']))
-		{
-			$PowerBB->_CONF['template']['AnnInfo']['date'] = $PowerBB->functions->_date($PowerBB->_CONF['template']['AnnInfo']['date']);
-		}
-
      $PowerBB->_CONF['template']['ReplierInfo'] = $PowerBB->member->GetMemberInfo($PowerBB->_CONF['template']['AnnInfo']['writer']);
+	 $PowerBB->_CONF['template']['ReplierInfo']['register_date'] = $PowerBB->functions->year_date($PowerBB->_CONF['template']['ReplierInfo']['register_date']);
+	 //admin rating
+	 $PowerBB->_CONF['template']['RatingInfo']['rating'] = "look/images/rating/rating_5.gif";
 
      	//////////
 
@@ -123,6 +118,7 @@ class PowerBBCoreMOD
 
      	//////////
 	}
+
 }
 
 ?>

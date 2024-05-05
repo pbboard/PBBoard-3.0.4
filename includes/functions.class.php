@@ -4446,24 +4446,16 @@ function my_strlen($string)
    	function PBBoard_Updates()
 	{
 	   global $PowerBB;
-	   if($this->is_connected())
-	   {
+
 	        $last_Update = $PowerBB->_CONF['info_row']['last_time_updates'];
 	        $Version = $PowerBB->_CONF['info_row']['MySBB_version'];
-	        if($this->is_pbboard_site())
-	        {	        $pbboard_last_time_updates = '../../check_updates/pbboard_last_time_updates_304.txt';
-	        }
-	        else
-	        {
-	        $pbboard_last_time_updates = 'https://pbboard.info/check_updates/pbboard_last_time_updates_304.txt';
-	        }
-
+	        $pbboard_last_time_updates = 'https://github.com/pbboard/updates/raw/main/check_updates/pbboard_last_time_updates_304.txt';
 
             $last_time_updates = @file_get_contents($pbboard_last_time_updates);
 
 	         if(!$last_time_updates)
 			 {
-		     	$last_time_updates = $PowerBB->sys_functions->CURL_cloudFlareBypass('https://pbboard.info/check_updates/pbboard_last_time_updates_304.txt');
+		     	$last_time_updates = $PowerBB->sys_functions->CURL_URL($pbboard_last_time_updates);
 			 }
 	         if($last_time_updates)
 			 {
@@ -4484,11 +4476,6 @@ function my_strlen($string)
 			{
 			  $update = $PowerBB->_CONF['template']['_CONF']['lang']['failed_connect'];
 			}
-		}
-		else
-	   {
-		  $update = $PowerBB->_CONF['template']['_CONF']['lang']['failed_connect'];
-	   }
 
 		return $update;
 	}
@@ -4506,14 +4493,14 @@ function my_strlen($string)
 	        }
 	        else
 	        {
-	         $LatestVersionUrl = "https://pbboard.info/pbboard_latest_version.txt";
+	         $LatestVersionUrl = "https://github.com/pbboard/updates/raw/main/pbboard_latest_version.txt";
 	        }
 
             $LatestVersionTxt = @file_get_contents($LatestVersionUrl);
 
 	         if(!$LatestVersionTxt)
 			 {
-		   	  $LatestVersionTxt = $PowerBB->sys_functions->CURL_cloudFlareBypass("https://pbboard.info/pbboard_latest_version.txt");
+		   	  $LatestVersionTxt = $PowerBB->sys_functions->CURL_URL("https://github.com/pbboard/updates/raw/main/pbboard_latest_version.txt");
 			 }
 			if (!$LatestVersionTxt)
 			{

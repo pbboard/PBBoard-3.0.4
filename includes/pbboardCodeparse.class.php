@@ -246,8 +246,8 @@ class PowerBBCodeParse
 
             $string = preg_replace('#\[iframe\](.+)\[\/iframe\]#iUs', '<iframe width="560" height="315" src="$1" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>', $string);
 
-            $string = preg_replace("#\[(left|center|right|justify)\](.*?)\[/(left|center|right|justify)\]#si", "<div style=\"text-align: $1;\" class=\"mycode_align\">$2</div>", $string);
-            $string = preg_replace("#\[align=(left|center|right|justify)\](.*?)\[/align\]#si", "<div style=\"text-align: $1;\" class=\"mycode_align\">$2</div>", $string);
+            $string = preg_replace("#\[(left|center|right|justify)\](.*?)\[/(left|center|right|justify)\]#si", "<span style=\"text-align: $1;\" class=\"mycode_align\">$2</span>", $string);
+            $string = preg_replace("#\[align=(left|center|right|justify)\](.*?)\[/align\]#si", "<span style=\"text-align: $1;\" class=\"mycode_align\">$2</span>", $string);
 	        $string = preg_replace("#\[color=([a-zA-Z]*|\#?[\da-fA-F]{3}|\#?[\da-fA-F]{6})](.*?)\[/color\]#si", "<span style=\"color: $1;\" class=\"mycode_color\">$2</span>", $string);
 	        $string = preg_replace('#\[color\=(.+)\](.+)\[\/color\]#iUs', "<span style=\"color: $1;\" class=\"mycode_color\">$2</span>", $string);
 	        $string = preg_replace('#\[style\=(.+)\](.+)\[\/style\]#iUs', "<span style=\"$1\" class=\"mycode_style\">$2</span>", $string);
@@ -409,8 +409,8 @@ class PowerBBCodeParse
             $string = preg_replace('#\[sub\](.+)\[\/sub\]#iUs', '<SUB>$1</SUB>', $string);
             $string = preg_replace('#\[sup\](.+)\[\/sup\]#iUs', '<SUP>$1</SUP>', $string);
             $string = preg_replace('#\[guest_name\](.+)\[\/guest_name\]#iUs', '<br>$1</br>', $string);
-            $string = preg_replace("#\[(left|center|right|justify)\](.*?)\[/(left|center|right|justify)\]#si", "<div style=\"text-align: $1;\" class=\"mycode_align\">$2</div>", $string);
-            $string = preg_replace("#\[align=(left|center|right|justify)\](.*?)\[/align\]#si", "<div style=\"text-align: $1;\" class=\"mycode_align\">$2</div>", $string);
+            $string = preg_replace("#\[(left|center|right|justify)\](.*?)\[/(left|center|right|justify)\]#si", "<span style=\"text-align: $1;\" class=\"mycode_align\">$2</span>", $string);
+            $string = preg_replace("#\[align=(left|center|right|justify)\](.*?)\[/align\]#si", "<span style=\"text-align: $1;\" class=\"mycode_align\">$2</span>", $string);
             $string = preg_replace('#\[highlight\=(.+)\](.+)\[\/highlight\]#iUs', '<span style="background:$1">$2</span>', $string);
        	    $string = preg_replace('#\[size\=(.+)\](.+)\[\/size\]#iUs', "<font size=\"$1\" style=\"font-size: $1;\" class=\"mycode_size\">$2</font>", $string);
             $string = preg_replace('#\[blockquote\](.+)\[\/blockquote\]#iUs', '<blockquote class=\"quotemain\">$1</blockquote>', $string);
@@ -418,7 +418,7 @@ class PowerBBCodeParse
 	        $string = preg_replace('#\[color\=(.+)\](.+)\[\/color\]#iUs', "<span style=\"color: $1;\" class=\"mycode_color\">$2</span>", $string);
             $string = preg_replace('#\[font\=(.+)\](.+)\[\/font\]#iUs', "<font face=\"$1\" style=\"font-family: $1;\" class=\"mycode_font\">$2</font>", $string);
 
-	        $string = str_replace('<div style="text-align: center;" class="mycode_align"></div>', '<br class="clear" />', $string);
+	        $string = str_replace('<span style="text-align: center;" class="mycode_align"></span>', '<br class="clear" />', $string);
 	        $string = str_replace('</div><br />', '</div>', $string);
 	        $string = str_replace('<br class="clear" /><br />', '<br class="clear" />', $string);
 
@@ -910,8 +910,8 @@ class PowerBBCodeParse
 		$html = preg_replace('#\[sub\](.+)\[\/sub\]#iUs', '<SUB>$1</SUB>', $html);
 		$html = preg_replace('#\[sup\](.+)\[\/sup\]#iUs', '<SUP>$1</SUP>', $html);
 		$html = preg_replace('#\[guest_name\](.+)\[\/guest_name\]#iUs', '<br>$1</br>', $html);
-		$html = preg_replace("#\[(left|center|right|justify)\](.*?)\[/(left|center|right|justify)\]#si", "<div style=\"text-align: $1;\" class=\"mycode_align\">$2</div>", $html);
-		$html = preg_replace("#\[align=(left|center|right|justify)\](.*?)\[/align\]#si", "<div style=\"text-align: $1;\" class=\"mycode_align\">$2</div>", $html);
+		$html = preg_replace("#\[(left|center|right|justify)\](.*?)\[/(left|center|right|justify)\]#si", "<span style=\"text-align: $1;\" class=\"mycode_align\">$2</span>", $html);
+		$html = preg_replace("#\[align=(left|center|right|justify)\](.*?)\[/align\]#si", "<span style=\"text-align: $1;\" class=\"mycode_align\">$2</span>", $html);
 		$html = preg_replace('#\[highlight\=(.+)\](.+)\[\/highlight\]#iUs', '<span style="background:$1">$2</span>', $html);
 		$html = preg_replace('#\[size\=(.+)\](.+)\[\/size\]#iUs', "<font size=\"$1\" style=\"font-size: $1;\" class=\"mycode_size\">$2</font>", $html);
 		$html = preg_replace('#\[blockquote\](.+)\[\/blockquote\]#iUs', '<blockquote class=\"quotemain\">$1</blockquote>', $html);

@@ -80,6 +80,9 @@ error_reporting(E_ERROR | E_PARSE);
 	    // Clean Variable extenstion
 	    // I hate SQL injections
 		// I hate XSS
+		$PowerBB->_FILES["file"]["name"]	= 	$PowerBB->functions->CleanVariable($PowerBB->_FILES["file"]["name"],'sql');
+		$PowerBB->_FILES["file"]["name"]	= 	$PowerBB->functions->CleanVariable($PowerBB->_FILES["file"]["name"],'html');
+
 		$filename = $PowerBB->_FILES["file"]["name"];
 		$temparray = explode(".", $filename);
 		$extension = $temparray[count($temparray) - 1];
@@ -97,14 +100,23 @@ error_reporting(E_ERROR | E_PARSE);
 		}
 
 
-
-	if ($PowerBB->_POST['layout'])
+	if ($PowerBB->_POST['layout'] == '1')
 	{
-	$user_id = $PowerBB->_CONF['member_row']['id'];
-	$profile_cover_photo_position =  "left:".$PowerBB->_POST['left']." top:".$PowerBB->_POST['top']." width:".$PowerBB->_POST['width']." height:".$PowerBB->_POST['height'];
-
-	$UPDATE_user  = $PowerBB->DB->sql_query("UPDATE " . $PowerBB->table['member'] . " SET profile_cover_photo_position = '$profile_cover_photo_position' WHERE id = '$user_id'");
-	exit();
+		 // check & Clean variable is a number string
+		 if (is_numeric($PowerBB->_POST['left'])
+		 and is_numeric($PowerBB->_POST['width'])
+		 and is_numeric($PowerBB->_POST['top'])
+		 and is_numeric($PowerBB->_POST['height']))
+		 {
+			$user_id = $PowerBB->functions->CleanVariable($PowerBB->_CONF['member_row']['id'],'intval');
+			$profile_cover_photo_position =  "left:".$PowerBB->_POST['left']." top:".$PowerBB->_POST['top']." width:".$PowerBB->_POST['width']." height:".$PowerBB->_POST['height'];
+			$UPDATE_user  = $PowerBB->DB->sql_query("UPDATE " . $PowerBB->table['member'] . " SET profile_cover_photo_position = '$profile_cover_photo_position' WHERE id = '$user_id'");
+			exit("Updated Successfully");
+		 }
+		else
+		 {
+		  exit("Error:Photo Positions Strings Is Not Numers");
+		 }
 	}
 	// 5 minutes execution time
 	@set_time_limit(5 * 60);

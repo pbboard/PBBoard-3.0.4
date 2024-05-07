@@ -76,7 +76,10 @@ error_reporting(E_ERROR | E_PARSE);
 	define('STOP_STYLE',true);
 	define('IN_PowerBB',true);
 	include($dir.'common.php');
-
+    if ($PowerBB->_CONF['group_info']['profile_photo'] == '0')
+	{
+	 exit("Sorry .. You do not have sufficient powers and privileges to access this page");
+	}
 	    // Clean Variable extenstion
 	    // I hate SQL injections
 		// I hate XSS

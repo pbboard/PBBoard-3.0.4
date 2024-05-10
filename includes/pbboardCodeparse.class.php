@@ -1439,7 +1439,17 @@ class PowerBBCodeParse
 	{
         global $PowerBB;
 
-	 eval($PowerBB->functions->get_fetch_hooks('convert_html_start'));
+	  eval($PowerBB->functions->get_fetch_hooks('convert_html_start'));
+
+		$regexcode_html['[html]'] = '#\[html\](.*)\[/html\]#siU';
+		$string = preg_replace_callback($regexcode_html, function($matcheshtml) {
+		return '[html]'.base64_encode($matcheshtml[1]).'[/html]';
+		}, $string);
+
+		$regexcode_js['[js]'] = '#\[js\](.*)\[/js\]#siU';
+		$string = preg_replace_callback($regexcode_js, function($matchesjs) {
+		return '[js]'.base64_encode($matchesjs[1]).'[/js]';
+		}, $string);
 
 	  $string = str_replace("&quot;", '"', $string);
 	  $string = str_replace("&lt;","<", $string);
@@ -1620,6 +1630,16 @@ class PowerBBCodeParse
          $string = str_replace("</font>", "", $string);
 
          $string = str_replace("<br>", "", $string);
+
+		$regexcode_html['[html]'] = '#\[html\](.*)\[/html\]#siU';
+		$string = preg_replace_callback($regexcode_html, function($matcheshtml) {
+		return '[html]'.base64_decode($matcheshtml[1]).'[/html]';
+		}, $string);
+
+		$regexcode_js['[js]'] = '#\[js\](.*)\[/js\]#siU';
+		$string = preg_replace_callback($regexcode_js, function($matchesjs) {
+		return '[js]'.base64_decode($matchesjs[1]).'[/js]';
+		}, $string);
 
 		// Convert HTML quotes
 		$string = $this->htmlspecialchars_uni($string);

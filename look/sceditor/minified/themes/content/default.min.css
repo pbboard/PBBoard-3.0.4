@@ -1,6 +1,6 @@
 /*! SCEditor | (C) 2011-2013, Sam Clarke | sceditor.com/license */body,code:before,html,p,table
 {
-margin:0;padding:0;font-family:Verdana,Arial,Helvetica,sans-serif;font-size:14px;color:#111;line-height:1.25;overflow:auto
+margin:1px;padding:1px;font-family:arial,verdana,helvetica,sans-serif;font-size:16px;font-weight: bold;color:#111;line-height:1.25;
 }
 html
 {

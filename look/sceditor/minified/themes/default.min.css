@@ -584,6 +584,15 @@ background-image: url(video.png)
 background-image: url(mention.png)
 }
 
+.sceditor-button-undo div
+{
+background-image: url(undo.png)
+}
+.sceditor-button-redo div
+{
+background-image: url(redo.png)
+}
+
 .sceditor-button-codebrush div { background: url("code.gif"); }
 .sceditor-header-option {
 display: block;

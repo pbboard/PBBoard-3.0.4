@@ -7,6 +7,7 @@ var instance = PBBEditor;
 instance.insert('['+bbcode_tag+']' + getSelection() , '[/'+bbcode_tag+']', true, true, true);
 }
 
+
 	// add mention to users
 	$.sceditor.command.set('mention', {
 		_dropDown: function (editor, caller) {
@@ -58,6 +59,21 @@ instance.insert('['+bbcode_tag+']' + getSelection() , '[/'+bbcode_tag+']', true,
 	tooltip: "Mention"
 	});
 
+// Add undo command
+$.sceditor.command.set('undo', {
+	exec: function() {
+	PBBEditor.execCommand("undo", false, null);
+	},
+	tooltip: "Undo"
+});
+
+// Add redo command
+$.sceditor.command.set('redo', {
+	exec: function() {
+	PBBEditor.execCommand("redo", false, null);
+	},
+	tooltip: "Redo"
+});
 
 $.sceditor.command.set("codebrush", {
 	exec: function(caller) {

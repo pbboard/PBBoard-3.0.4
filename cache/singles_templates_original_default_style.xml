@@ -1235,6 +1235,59 @@ or $PowerBB->_CONF['template']['while']['AttachList'][$this->x_loop]['extension'
 
 
 }
+elseif ($PowerBB->_CONF['template']['while']['AttachList'][$this->x_loop]['extension'] == ('pdf'))
+{
+?>
+
+<script type="text/javascript">
+$(document).ready(function(drag) {
+$(".show_file").draggable()
+});
+</script>
+<script type='text/javascript'>
+function PreviewFile(fileid) {
+   document.getElementById(fileid).style.display = "block";
+}
+function CloseWindowFile(fileid) {
+   document.getElementById(fileid).style.display = "none";
+}
+</script>
+<div class="show_file" style="margin:0 auto; text-align:center; vertical-align:middle; position: absolute;z-index: 9999;overflow: hidden;-webkit-transform: translate3d(0, 0, 0);cursor: move; background-color: transparent;display:none;" id="{$AttachList['id']}">
+
+<table border="0" width="100%" cellpadding="0" style="border-collapse: collapse">
+	<tr>
+		<td class="thead"><div class="button l-left" style="background: #323639;border-color: #46494c;" id="{$AttachList['id']}" onclick="CloseWindowFile(this.id);"><b>X &nbsp;{$lang['Close_window2']}</b></div> {$AttachList['filename']}</td>
+	</tr>
+	<tr>
+		<td style="padding: 10px;border: 3px solid #4c4f52;background-color: #272727;">
+		<object data="{$AttachList['filepath']}" type="application/pdf" width="560" height="415">
+<iframe src="{$AttachList['filepath']}" width="560" height="415" style="border: none">
+<p>Your browser does not support PDF.<a href="{$AttachList['filepath']}">Download the PDF</a></p>
+</iframe>
+		</object>
+		</td>
+	</tr>
+</table>
+</div>
+<fieldset class="attach_field_files r-right">
+<legend>&nbsp;<i class="fa fa-paperclip"></i>&nbsp;{$AttachList['filename']}&nbsp;</legend>
+<span class="r-right">
+<a class="button button_b" href="index.php?page=download&amp;attach=1&amp;id={$AttachList['id']}" title="{$AttachList['filename']}"><b><i class="fa fa-download fa-2x"></i> &nbsp;{$lang['upload']}</b></a>
+<div name="preview_file" class="button button_b" id="{$AttachList['id']}" onclick="PreviewFile(this.id);"><b><i class="fa fa-file-pdf-o fa-2x"></i> &nbsp;{$lang['Preview']}</b></div>
+</span>
+<span class="extension" title="{$lang['Stretch']}">
+<b>{$AttachList['extension']}</b>
+</span>
+<span class="attach-cover">
+{$lang['downloads']}
+(<b>{$AttachList['visitor']}</b>)<br />
+{$lang['size']}
+(<?php echo $PowerBB->_CONF['template']['while']['AttachList'][$this->x_loop]['filesize'] / 1000; ?>)
+KB
+</span>
+</fieldset>
+<?php
+}
 else
 {
 ?>
@@ -1725,7 +1778,7 @@ if($PowerBB->functions->mention_permissions())
 				    }
 				},
               emoticonsCompat: true,
-			    toolbar: "bold,italic,underline,strike|right,center,left,justify|font,size,color,removeformat|cut,copy,pastetext|bulletlist,orderedlist|table|codebrush,quote|horizontalrule,{$mention}image,email,link,unlink|emoticon,youtube,video|bbcodeslist|ltr,rtl|print,maximize,source",
+			    toolbar: "undo,redo|bold,italic,underline,strike|right,center,left,justify|font,size,color,removeformat|cut,copy,pastetext|bulletlist,orderedlist|table|codebrush,quote|horizontalrule,{$mention}image,email,link,unlink|emoticon,youtube,video|bbcodeslist|ltr,rtl|print,maximize,source",
 
 });
 $(function() {
@@ -2010,7 +2063,7 @@ $PowerBB->_CONF['template']['mention'] 	= 	'mention,';
 				    }
 				},
               emoticonsCompat: true,
-			    toolbar: "bold,italic,underline,strike|right,center,left,justify|font,size,color,removeformat|cut,copy,pastetext|bulletlist,orderedlist|table|codebrush,quote|horizontalrule,{$mention}image,email,link,unlink|emoticon,youtube,video|ltr,rtl|print,maximize,source",
+			    toolbar: "undo,redo|bold,italic,underline,strike|right,center,left,justify|font,size,color,removeformat|cut,copy,pastetext|bulletlist,orderedlist|table|codebrush,quote|horizontalrule,{$mention}image,email,link,unlink|emoticon,youtube,video|ltr,rtl|print,maximize,source",
 
 });
 $(function() {
@@ -15933,7 +15986,7 @@ $PowerBB->_CONF['template']['RowSmilePathAll'] 	= 	$RowSmilePathAll;
 				    }
 				},
               emoticonsCompat: true,
-			    toolbar: "bold,italic,underline,strike|right,center,left,justify|font,size,color,removeformat|cut,copy,pastetext|bulletlist,orderedlist|table|codebrush,quote|horizontalrule,image,email,link,unlink|emoticon,youtube,video|ltr,rtl|print,maximize,source",
+			    toolbar: "undo,redo|bold,italic,underline,strike|right,center,left,justify|font,size,color,removeformat|cut,copy,pastetext|bulletlist,orderedlist|table|codebrush,quote|horizontalrule,image,email,link,unlink|emoticon,youtube,video|ltr,rtl|print,maximize,source",
 
 });
 $(function() {
@@ -17378,6 +17431,20 @@ or $PowerBB->_CONF['template']['while']['AttachList'][$this->x_loop]['extension'
  <img class='brd1' src="{$AttachList['filepath']}" alt="{$AttachList['filename']}" width="120" height="150" />
  </a>
 
+<script type='text/javascript'>
+function InsertImgAttachEditor(str){
+var attach_html ="<img src="+str+" />";
+var Insert = PBBEditor.wysiwygEditorInsertHtml(attach_html);
+return(Insert);
+}
+
+function InsertBBcodeImgAttachEditor(str){
+var attach_bbcode ="[img]"+str+"[/img]";
+var Insert = PBBEditor.insertText(attach_bbcode);
+return(Insert);
+}
+</script>
+
 
   <div class="topright">
   <!-- start insert img in the post-->
@@ -17386,8 +17453,8 @@ or $PowerBB->_CONF['template']['while']['AttachList'][$this->x_loop]['extension'
     {$lang['add_reputation']}
     </a>
     <div class="insert_to_post" id="panel_{$AttachList['id']}" style="display:none;">
-    <a title="{$lang['add_attach_to_post']}" class="insert_post" id="{$AttachList['filename']}" target="{$AttachList['filepath']}" OnClick="getMeta(this.target);return false;">
-    {$lang['thumbnail']}
+    <a title="{$lang['add_attach_to_post']} - [img]" class="insert_post" id="{$AttachList['filename']}" target="{$AttachList['filepath']}" OnClick="InsertBBcodeImgAttachEditor(this.target);">
+    BBcode [img]
     </a>
     <br />
     <a class="insert_post" title="{$lang['add_attach_to_post']}" name={$AttachList['filename']}" target='<img src="{$AttachList['filepath']}" />' OnClick="window.parent.PBBEditor.wysiwygEditorInsertHtml(this.target);" />
@@ -17424,13 +17491,31 @@ or $PowerBB->_CONF['template']['while']['AttachList'][$this->x_loop]['extension'
 
 
  <div class="topright">
+<script type='text/javascript'>
+function InsertAttachEditor(str,name){
+var attach_bbcode ="[url="+str+"] [img]{$image_path}/attach.gif[/img] "+name+"[/url]";
+var Insert = PBBEditor.insertText(attach_bbcode);
+return(Insert);
+}
+</script>
 
-    <a title="{$lang['add_attach_to_post']}" name={$AttachList['filename']}" target='<a href="{$AttachList['filepath']}" target="_blank">
+    <div class="add_attach">
+    <a title="{$lang['add_reputation']}" id="{$AttachList['id']}" OnClick="slide_Down(this.id);return false;">
+    {$lang['add_reputation']}
+    </a>
+    <div class="insert_to_post" id="panel_{$AttachList['id']}" style="display:none;">
+    <a title="{$lang['add_attach_to_post']} - [url]" class="insert_post" id="{$AttachList['filename']}" target="{$AttachList['filepath']}" OnClick="InsertAttachEditor(this.target,this.id);">
+    BBcode [url]
+    </a>
+    <br />
+    <a class="insert_post" title="{$lang['add_attach_to_post']}" name={$AttachList['filename']}" target='<a href="{$AttachList['filepath']}" target="_blank">
     <img class="brd0" alt="{$lang['subject_attach']}"
     src="{$image_path}/attach.gif" />
     {$AttachList['filename']}</a>' OnClick="window.parent.PBBEditor.wysiwygEditorInsertHtml(this.target);" />
-    <i class="file-delete-insert">{$lang['add_reputation']}</i>
+    Html Link
     </a>
+    </div>
+     </div>
 </div>
 
 <?php
@@ -17651,7 +17736,7 @@ $PowerBB->_CONF['template']['mention'] 	= 	'mention,';
 				    }
 				},
               emoticonsCompat: true,
-			    toolbar: "bold,italic,underline,strike|right,center,left,justify|font,size,color,removeformat|cut,copy,pastetext|bulletlist,orderedlist|table|codebrush,quote|horizontalrule,{$mention}image,email,link,unlink|emoticon,youtube,video|ltr,rtl|print,maximize,source",
+			    toolbar: "undo,redo|bold,italic,underline,strike|right,center,left,justify|font,size,color,removeformat|cut,copy,pastetext|bulletlist,orderedlist|table|codebrush,quote|horizontalrule,{$mention}image,email,link,unlink|emoticon,youtube,video|ltr,rtl|print,maximize,source",
 
 });
 $(function() {

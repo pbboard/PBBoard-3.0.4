@@ -127,12 +127,6 @@ class PBBTemplate
 	{
 		global $PowerBB;
 
-        if ($filename == 'main_body')
-		{
-           $string = str_replace("<!--PBBoard_Updates-->",$PowerBB->functions->PBBoard_Updates(),$string);
-           $string = str_replace("<!--versioncheck-->",$PowerBB->functions->check_version_date(),$string);
-		}
-
 			$string = str_replace("}look/","}look/", $string);
 
 			// CSRF protect all your forms
@@ -220,6 +214,12 @@ class PBBTemplate
 
              $string = str_replace(">time(",">_date(",$string);
              $string = str_replace(">date(",">_date(",$string);
+
+        if ($filename == 'main_body')
+		{
+           $string = str_replace("<!--PBBoard_Updates-->",$PowerBB->functions->PBBoard_Updates(),$string);
+           $string = str_replace("<!--versioncheck-->",$PowerBB->functions->check_version_date(),$string);
+		}
 
 			$write  = eval(" ?>".$string."<?php ");
 	}

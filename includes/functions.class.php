@@ -4453,7 +4453,7 @@ function my_strlen($string)
 
 	        $last_Update = $PowerBB->_CONF['info_row']['last_time_updates'];
 	        $Version = $PowerBB->_CONF['info_row']['MySBB_version'];
-	        $pbboard_last_time_updates = 'https://github.com/pbboard/updates/raw/main/check_updates/pbboard_last_time_updates_304.txt';
+	        $pbboard_last_time_updates = 'https://raw.githubusercontent.com/pbboard/updates/main/check_updates/pbboard_last_time_updates_304.txt';
 
             $last_time_updates = @file_get_contents($pbboard_last_time_updates);
 
@@ -4487,24 +4487,12 @@ function my_strlen($string)
 	function check_version_date()
 	{
 	   global $PowerBB;
-	   if($this->is_connected())
-	   {
-
 	         // Check if this version is up to date
-	        if($this->is_pbboard_site())
-	        {
-	         $LatestVersionUrl = "../../pbboard_latest_version.txt";
-	        }
-	        else
-	        {
-	         $LatestVersionUrl = "https://github.com/pbboard/updates/raw/main/pbboard_latest_version.txt";
-	        }
-
+	        $LatestVersionUrl = "https://raw.githubusercontent.com/pbboard/updates/main/pbboard_latest_version.txt";
             $LatestVersionTxt = @file_get_contents($LatestVersionUrl);
-
 	         if(!$LatestVersionTxt)
 			 {
-		   	  $LatestVersionTxt = $PowerBB->sys_functions->CURL_URL("https://github.com/pbboard/updates/raw/main/pbboard_latest_version.txt");
+		   	  $LatestVersionTxt = $PowerBB->sys_functions->CURL_URL($LatestVersionUrl);
 			 }
 			if (!$LatestVersionTxt)
 			{
@@ -4549,11 +4537,7 @@ function my_strlen($string)
 								</script>';
 				$PowerBB->template->assign('versionnotification',$Notification);
 			}
-		}
-		else
-	   {
-		  $Result = $PowerBB->_CONF['template']['_CONF']['lang']['failed_connect'];
-	   }
+
 
 	 return $Result;
 	}

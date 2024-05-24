@@ -68,7 +68,6 @@ class PowerBBTopicMOD
 			}
 		}
 
-        $PowerBB->_CONF['template']['SubjectInfo']['text'] = $PowerBB->Powerparse->remove_strings($PowerBB->_CONF['template']['SubjectInfo']['text']);
 
 		$PowerBB->template->assign('PostInfo',$PowerBB->_CONF['template']['SubjectInfo']);
 		$PowerBB->template->assign('subject','1');
@@ -77,8 +76,15 @@ class PowerBBTopicMOD
 			$regexcodeww['[code]'] = '#\[code\](.*)\[/code\]#siU';
 			$regexcodeww['[php]'] = '#\[php\](.*)\[/php\]#siU';
 			$PowerBB->_CONF['template']['SubjectInfo']['text'] = preg_replace_callback($regexcodeww, function($matchesww) {
-			return '[code]'.htmlspecialchars(base64_decode($matchesww[1])).'[/code]';
+			return '[code]'.base64_encode($matchesww[1]).'[/code]';
 			}, $PowerBB->_CONF['template']['SubjectInfo']['text']);
+
+			$PowerBB->_CONF['template']['SubjectInfo']['text']    =   $PowerBB->Powerparse->html2bb($PowerBB->_CONF['template']['SubjectInfo']['text']);
+
+		 // Fix up new lines and block level elements
+		$PowerBB->_CONF['template']['SubjectInfo']['text'] = preg_replace("#(</?(?:html|head|body|div|p|form|table|thead|tbody|tfoot|tr|td|th|ul|ol|li|div|p|blockquote|cite|hr)[^>]*>)\s*<br />#i", "$1", $PowerBB->_CONF['template']['SubjectInfo']['text']);
+		$PowerBB->_CONF['template']['SubjectInfo']['text'] = preg_replace("#(&nbsp;)+(</?(?:html|head|body|div|p|form|table|thead|tbody|tfoot|tr|td|th|ul|ol|li|div|p|blockquote|cite|hr)[^>]*>)#i", "$2", $PowerBB->_CONF['template']['SubjectInfo']['text']);
+        $PowerBB->_CONF['template']['SubjectInfo']['text'] = $PowerBB->Powerparse->remove_strings($PowerBB->_CONF['template']['SubjectInfo']['text']);
 
         $PowerBB->template->assign('text',$PowerBB->_CONF['template']['SubjectInfo']['text']);
          $PowerBB->_CONF['template']['while']['SmileRows'] = $PowerBB->icon->GetCachedSmiles();
@@ -103,7 +109,6 @@ class PowerBBTopicMOD
 		return '[code]'.base64_encode($matchesw[1]).'[/code]';
 		}, $PowerBB->_CONF['template']['ReplyInfo']['text']);
 
-
 		if (!$PowerBB->functions->ModeratorCheck($PowerBB->_CONF['template']['ReplyInfo']['section']))
 		{
 		   if ($PowerBB->_CONF['member_row']['username'] != $PowerBB->_CONF['template']['ReplyInfo']['writer'])
@@ -117,7 +122,6 @@ class PowerBBTopicMOD
 			$PowerBB->functions->stop_no_foot($PowerBB->_CONF['template']['_CONF']['lang']['Reply_Editing_time_out']);
 			}
 		}
-        $PowerBB->_CONF['template']['ReplyInfo']['text'] = $PowerBB->Powerparse->remove_strings($PowerBB->_CONF['template']['ReplyInfo']['text']);
 
 		$PowerBB->template->assign('PostInfo',$PowerBB->_CONF['template']['ReplyInfo']);
 
@@ -127,6 +131,13 @@ class PowerBBTopicMOD
 			$PowerBB->_CONF['template']['ReplyInfo']['text'] = preg_replace_callback($regexcodeww, function($matchesww) {
 			return '[code]'.htmlspecialchars(base64_decode($matchesww[1])).'[/code]';
 			}, $PowerBB->_CONF['template']['ReplyInfo']['text']);
+
+		$PowerBB->_CONF['template']['ReplyInfo']['text']    =   $PowerBB->Powerparse->html2bb($PowerBB->_CONF['template']['ReplyInfo']['text']);
+
+		// Fix up new lines and block level elements
+		$PowerBB->_CONF['template']['ReplyInfo']['text'] = preg_replace("#(</?(?:html|head|body|div|p|form|table|thead|tbody|tfoot|tr|td|th|ul|ol|li|div|p|blockquote|cite|hr)[^>]*>)\s*<br />#i", "$1", $PowerBB->_CONF['template']['ReplyInfo']['text']);
+		$PowerBB->_CONF['template']['ReplyInfo']['text'] = preg_replace("#(&nbsp;)+(</?(?:html|head|body|div|p|form|table|thead|tbody|tfoot|tr|td|th|ul|ol|li|div|p|blockquote|cite|hr)[^>]*>)#i", "$2", $PowerBB->_CONF['template']['ReplyInfo']['text']);
+		$PowerBB->_CONF['template']['ReplyInfo']['text'] = $PowerBB->Powerparse->remove_strings($PowerBB->_CONF['template']['ReplyInfo']['text']);
 
         $PowerBB->template->assign('text',$PowerBB->_CONF['template']['ReplyInfo']['text']);
          $PowerBB->_CONF['template']['while']['SmileRows'] = $PowerBB->icon->GetCachedSmiles();

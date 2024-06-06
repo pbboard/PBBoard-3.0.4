@@ -171,6 +171,12 @@ class PowerBBPrivateMassegeShowMOD
 		// feltr away msg
 
         //
+        $Adress = $PowerBB->functions->GetForumAdress();
+        if(strstr($PowerBB->_CONF['template']['MassegeRow']['text'],"<a href='".$Adress."index.php?page=misc&rules=1&show=1'>"))
+        {        $PowerBB->_CONF['template']['MassegeRow']['text']= str_replace("<a href='".$Adress."index.php?page=misc&rules=1&show=1'>","[url=".$Adress."rules.html]".$PowerBB->_CONF['template']['_CONF']['lang']['rules'],$PowerBB->_CONF['template']['MassegeRow']['text']);
+        $PowerBB->_CONF['template']['MassegeRow']['text']= str_replace($PowerBB->_CONF['template']['_CONF']['lang']['rules']."</a>","[/url]",$PowerBB->_CONF['template']['MassegeRow']['text']);
+        }
+
         $PowerBB->_CONF['template']['MassegeRow']['text']= str_replace('../look/','look/',$PowerBB->_CONF['template']['MassegeRow']['text']);
 		$send_text = $PowerBB->_CONF['template']['MassegeRow']['text'];
 

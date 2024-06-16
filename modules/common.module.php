@@ -1142,9 +1142,19 @@ class PowerBBCommon
 				        $num ='100';
 				        $GetMassege['text'] = str_replace('[quote]','',$GetMassege['text']);
 				        $GetMassege['text'] = str_replace('[/quote]','',$GetMassege['text']);
-		                $GetMassege['text'] = $PowerBB->Powerparse->replace($GetMassege['text']);
-		                $PowerBB->Powerparse->replace_smiles($GetMassege['text']);
-		                $GetMassege['text'] = $PowerBB->functions->words_count_replace_strip_tags_html2bb($GetMassege['text'],$num);
+				        $Adress = $PowerBB->functions->GetForumAdress();
+				        if(strstr($GetMassege['text'],"<a href='".$Adress."index.php?page=misc&rules=1&show=1'>"))
+				        {
+				        $GetMassege['text']= str_replace("<a href='".$Adress."index.php?page=misc&rules=1&show=1'>","[u][color=#9A00B2][url=".$Adress."rules.html]".$PowerBB->_CONF['template']['_CONF']['lang']['rules']."",$GetMassege['text']);
+				        $GetMassege['text']= str_replace($PowerBB->_CONF['template']['_CONF']['lang']['rules']."</a>","[/url][/color][/u]",$GetMassege['text']);
+				        $GetMassege['text'] = $PowerBB->Powerparse->replace($GetMassege['text']);
+				        }
+				        else
+				        {
+				        $GetMassege['text'] = $PowerBB->Powerparse->replace($GetMassege['text']);
+				        $GetMassege['text'] = $PowerBB->functions->words_count_replace_strip_tags_html2bb($GetMassege['text'],$num);
+				        }
+
 						$PowerBB->template->assign('Massege_date',$GetMassege['date']);
 				        $PowerBB->template->assign('Massege_text',$GetMassege['text']);
 				        $Massege_id = $GetMassege['id'];

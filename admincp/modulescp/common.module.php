@@ -353,15 +353,28 @@ class PowerBBCommon
 		          }
 				}
 
-			$CheckArr 				= 	array();
-			$CheckArr['username'] 	= 	$username;
-			$CheckArr['password'] 	= 	$password;
 
-			$CheckMember = $PowerBB->member->GetMemberInfo($CheckArr);
+            $MemberArr 							= 	array();
+			$MemberArr['where'] 				= 	array();
+			$MemberArr['where'][0] 				= 	array();
+			$MemberArr['where'][0]['name'] 		= 	'username';
+			$MemberArr['where'][0]['oper'] 		= 	'=';
+			$MemberArr['where'][0]['value'] 	= 	$username;
+
+			$MemberArr['where'][1] 				= 	array();
+			$MemberArr['where'][1]['con'] 		= 	'AND';
+			$MemberArr['where'][1]['name'] 		= 	'password';
+			$MemberArr['where'][1]['oper'] 		= 	'=';
+			$MemberArr['where'][1]['value'] 	= 	$password;
+
+		   $CheckMember = $PowerBB->member->GetMemberInfo($MemberArr);
 
 			if ($CheckMember)
-			{
-				$PowerBB->_CONF['rows']['member_row'] = 	$CheckMember;
+			{				$MemberArr 				= 	array();
+				$MemberArr['where']		=	array('username',$username);
+				$MemberInfo = $PowerBB->core->GetInfo($MemberArr,'member');
+
+				$PowerBB->_CONF['rows']['member_row'] = 	$MemberInfo;
 				$PowerBB->_CONF['member_permission'] 	= 	true;
 			}
 			else

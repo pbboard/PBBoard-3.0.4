@@ -340,12 +340,22 @@ class PowerBBCodeParse
 	             $matches[1] = base64_decode($matches[1]);
 				 $matches[1] = $this->htmlspecialchars_off($matches[1]);
 				}
-				elseif(strstr(base64_decode($matches[1]),"<br />\r\n"))
+				elseif(strstr(base64_decode($matches[1]),"&gt;")
+				or strstr(base64_decode($matches[1]),"&quot;")
+				or strstr(base64_decode($matches[1]),"&lt;")
+				or strstr(base64_decode($matches[1]),"&#39;"))
 				{
 				// thes is 3.0.3 codes [code][/code]
-			    $matches[1] = base64_decode($matches[1]);
-				$matches[1] = str_replace('<br />', '', $matches[1]);
-				$matches[1] = str_replace('&lt;br /&gt;', '', $matches[1]);
+			      $matches[1] = base64_decode($matches[1]);
+				  $matches[1] = str_replace("&quot;", '"', $matches[1]);
+				  $matches[1] = str_replace("&lt;","<", $matches[1]);
+				  $matches[1] = str_replace("&gt;",">", $matches[1]);
+				  $matches[1] = str_replace("&#39;","'", $matches[1]);
+				  $matches[1] = str_replace("&nbsp;"," ", $matches[1]);
+				  $matches[1] = str_replace("&amp;", "&", $matches[1]);
+				  $matches[1] = str_replace("<br />", "", $matches[1]);
+				  $matches[1] = htmlspecialchars($matches[1]);
+				  $matches[1] = $this->htmlspecialchars_uni($matches[1]);
 				}
 				else
 				{

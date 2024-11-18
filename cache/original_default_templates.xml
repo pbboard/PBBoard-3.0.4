@@ -10885,27 +10885,35 @@ $(document).ready(Ready);
 <div class="center_text_align" id="statusmod"></div>
 {/if}
 </form>]]></template>
-<template name="show_subject_information" templatetype="template" date="1677817784" username="PBBoard Solutions" decode="0" version="3.0.4"><script type='text/javascript'>
+<template name="show_subject_information" templatetype="template" date="1677817784" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<script type='text/javascript'>
 function AjaxSubjectRating()
 {
+
     var AjaxState = {ajaxSend : $("#rating_status").html("<div class='info_bar'> <img border='0' alt='' src='{$image_path}/loading.gif'></div>")};
+
     var data = {};
+
     data['by_username']    =    $("#by_username").val();
     data['subject_title']    =    $("#subject_title").val();
     data['subject_id']    =    $("#subject_id").val();
     data['username']    =    $("#username").val();
     data['vote']    =    $("#vote").val();
+
     $.post("index.php?page=misc&rating=1",data,function Success(xml) { $("#rating_status").html(xml); });
 }
+
 function Wait()
 {
     $("#rating_status").html("{$lang['Ongoing_process']}");
 }
+
 function Ready()
 {
     $("#rating_id").click(AjaxSubjectRating);
 }
+
 $(document).ready(Ready);
+
 </script>
 <!-- table -->
 <div style="width:98%; border-spacing:0px;" class="table mrgTable border_radius">

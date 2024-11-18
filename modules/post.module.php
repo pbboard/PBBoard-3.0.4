@@ -236,7 +236,7 @@ class PowerBBTopicMOD
      		$UpdateOnline 			= 	array();
 			$UpdateOnline['field']	=	array();
 
-			$UpdateOnline['field']['user_location'] 	= 	$PowerBB->_CONF['template']['_CONF']['lang']['Seen_the_topic'].' <a href="index.php?page=topic&amp;show=1&amp;id=' . $PowerBB->_GET['id'] . '">' . $PowerBB->_CONF['template']['SubjectInfo']['title'] . '</a>';
+			$UpdateOnline['field']['user_location'] 	= 	$PowerBB->_CONF['template']['_CONF']['lang']['view_single_post'].': <a href="index.php?page=post&amp;show=1&amp;id=' . $PowerBB->_GET['id'] . '">' . $PowerBB->_CONF['template']['SubjectInfo']['title'] . '</a>';
 			$UpdateOnline['field']['section_id'] 	    =  $PowerBB->_CONF['template']['SubjectInfo']['section'];
 			$UpdateOnline['field']['subject_id'] 	    =  $PowerBB->_GET['id'];
 			$UpdateOnline['where']						=	array('username',$PowerBB->_CONF['member_row']['username']);
@@ -250,9 +250,9 @@ class PowerBBTopicMOD
      		$UpdateOnline 			= 	array();
 			$UpdateOnline['field']	=	array();
 
-			$UpdateOnline['field']['user_location'] 	= 	$PowerBB->_CONF['template']['_CONF']['lang']['Seen_the_topic'].' <a href="index.php?page=topic&amp;show=1&amp;id=' . $PowerBB->_CONF['template']['ReplyInfo']['subject_id'] . '">' . $PowerBB->_CONF['template']['SubjectInfo']['title'] . '</a>';
+			$UpdateOnline['field']['user_location'] 	= 	$PowerBB->_CONF['template']['_CONF']['lang']['view_single_post'].': <a href="index.php?page=post&amp;show=1&amp;id=' . $PowerBB->_GET['id'] . '">' . $PowerBB->_CONF['template']['SubjectInfo']['title'] . '</a>';
 			$UpdateOnline['field']['section_id'] 	    =  $PowerBB->_CONF['template']['SubjectInfo']['section'];
-			$UpdateOnline['field']['subject_id'] 	    =  $PowerBB->_CONF['template']['ReplyInfo']['subject_id'];
+			$UpdateOnline['field']['subject_id'] 	    =  $PowerBB->_GET['id'];
 			$UpdateOnline['where']						=	array('user_ip',$PowerBB->_CONF['ip']);
 
 			$update = $PowerBB->core->Update($UpdateOnline,'online');

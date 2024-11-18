@@ -9,7 +9,12 @@ function checkAll(form){
 </script>
 
 <br />
-
+<style>
+.row_smile_path
+{max-width: 50px !important;
+max-height: 50px !important;
+}
+</style>
 <div class="address_bar">{$lang['Control_Panel']} &raquo;
  <a href="index.php?page=icon&amp;control=1&amp;main=1">{$lang['icons']}</a></div>
 
@@ -33,7 +38,7 @@ function checkAll(form){
 	{Des::while}{IcnList}
 	<tr align="center">
 		<td class="row1">
-			<img src="../{$IcnList['smile_path']}" alt="{$IcnList['smile_path']}" />
+			<img class="row_smile_path" src="../{$IcnList['smile_path']}" alt="{$IcnList['smile_path']}" />
 		</td>
 		<td class="row1">
 			<a href="index.php?page=icon&amp;edit=1&amp;main=1&amp;id={$IcnList['id']}">{$lang['edit']}</a>

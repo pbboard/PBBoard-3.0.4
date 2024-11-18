@@ -158,7 +158,6 @@ class PowerBBProfileMOD
 
 			$update = $PowerBB->core->Update($UpdateOnline,'online');
      	}
-
      	// Where is the Visitor now?
 		if (!$PowerBB->_CONF['member_permission'])
      	{
@@ -300,6 +299,7 @@ class PowerBBProfileMOD
 		$OnlineArr 				= 	array();
         $OnlineArr['where'] 	= 	array('username',$PowerBB->_CONF['template']['MemberInfo']['username']);
 		$PowerBB->_CONF['template']['Location'] = $PowerBB->online->GetOnlineInfo($OnlineArr);
+        $PowerBB->_CONF['template']['Location']['path'] = $PowerBB->functions->rewriterule('index.php?'.$PowerBB->_CONF['template']['Location']['path']);
 
 			$PowerBB->_CONF['template']['MemberInfo']['user_sig'] = $PowerBB->Powerparse->replace($PowerBB->_CONF['template']['MemberInfo']['user_sig']);
 			$PowerBB->_CONF['template']['MemberInfo']['user_sig'] = str_replace('&amp;','&',$PowerBB->_CONF['template']['MemberInfo']['user_sig']);

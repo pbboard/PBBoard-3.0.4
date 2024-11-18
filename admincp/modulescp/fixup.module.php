@@ -3,6 +3,14 @@
 (!defined('IN_PowerBB')) ? die() : '';
 
 define('IN_ADMIN',true);
+define('DONT_STRIPS_SLIASHES',true);
+$CALL_SYSTEM			        =	array();
+$CALL_SYSTEM['ADDONS']         =   true;
+$CALL_SYSTEM['HOOKS']         =   true;
+$CALL_SYSTEM['STYLE'] 	= 	true;
+$CALL_SYSTEM['TEMPLATE'] 	= 	true;
+$CALL_SYSTEM['TEMPLATESEDITS'] 	= 	true;
+define('JAVASCRIPT_PowerCode',true);
 
 define('CLASS_NAME','PowerBBFixMOD');
 
@@ -14,7 +22,8 @@ class PowerBBFixMOD
 		global $PowerBB;
 
 		if ($PowerBB->_CONF['member_permission'])
-		{            if (!$PowerBB->_GET['pbboard_updates']){
+		{
+            if (!$PowerBB->_GET['pbboard_updates']){
 			$PowerBB->template->display('header');
              }
 			if ($PowerBB->_CONF['rows']['group_info']['admincp_fixup'] == '0')
@@ -131,7 +140,8 @@ class PowerBBFixMOD
 
 			$cats = $PowerBB->core->GetList($SecArr,'section');
 			foreach ($cats as $cat)
-			{
+			{
+
 	           $UpdateSectionCache = $PowerBB->functions->UpdateSectionCache($cat['id']);
                $PowerBB->DB->sql_query("UPDATE " . $PowerBB->table['section'] . " SET sectiongroup_cache = '' WHERE id=".$cat['id']."");
 
@@ -155,7 +165,8 @@ class PowerBBFixMOD
 					$forums = $PowerBB->core->GetList($forumArr,'section');
 
 					foreach ($forums as $forum)
-					{
+					{
+
 	                  $UpdateSectionCache = $PowerBB->functions->UpdateSectionCache($forum['id']);
 		              $PowerBB->DB->sql_query("UPDATE " . $PowerBB->table['section'] . " SET sectiongroup_cache = '' WHERE id=".$forum['id']."");
 
@@ -223,7 +234,8 @@ class PowerBBFixMOD
 		global $PowerBB;
 
 		if(!isset($PowerBB->_GET['pag']))
-		{		$page = 1;
+		{
+		$page = 1;
 		}
 		else
 		{
@@ -310,11 +322,13 @@ class PowerBBFixMOD
         $query = $PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['section'] . " ");
 
         while ($r = $PowerBB->DB->sql_fetch_array($query))
-	    {
+	    {
+
 	     $query_section_group = $PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['section_group'] . " WHERE section_id=".$r['id']."");
 	     $Info_section_group = $PowerBB->DB->sql_fetch_array($query_section_group);
 	     if($Info_section_group['view_section'] == false)
-	     {                 $truncate_sectiongroup = $PowerBB->DB->sql_query("TRUNCATE " . $PowerBB->table['section_group'] );
+	     {
+                 $truncate_sectiongroup = $PowerBB->DB->sql_query("TRUNCATE " . $PowerBB->table['section_group'] );
 
 		        $query = $PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['section'] . " ");
 
@@ -598,7 +612,8 @@ class PowerBBFixMOD
 				}
               }
               else
-              {              		$DelReplys1Arr 						= 	array();
+              {
+              		$DelReplys1Arr 						= 	array();
 					$DelReplys1Arr['where']				=	array();
 					$DelReplys1Arr['where'][0]				=	array();
 					$DelReplys1Arr['where'][0]['name']		=	'subject_id';
@@ -816,15 +831,15 @@ class PowerBBFixMOD
 			$To = str_ireplace("index.php/", '', $To);
         if($PowerBB->_CONF['info_row']['MySBB_version'] == '3.0.4')
         {
-		$pbboard_last_time_updates = 'https://github.com/pbboard/updates/raw/main/check_updates/pbboard_last_time_updates_304.txt';
+		$pbboard_last_time_updates = 'https://raw.githubusercontent.com/pbboard/updates/main/check_updates/pbboard_last_time_updates_304.txt';
 		}
         elseif($PowerBB->_CONF['info_row']['MySBB_version'] == '3.0.3')
         {
-		$pbboard_last_time_updates = 'https://github.com/pbboard/updates/raw/main/check_updates/pbboard_last_time_updates_303.txt';
+		$pbboard_last_time_updates = 'https://raw.githubusercontent.com/pbboard/updates/main/check_updates/pbboard_last_time_updates_303.txt';
 		}
 		elseif($PowerBB->_CONF['info_row']['MySBB_version'] == '3.0.2')
 		{
-		$pbboard_last_time_updates = 'https://github.com/pbboard/updates/raw/main/check_updates/pbboard_last_time_updates.txt';
+		$pbboard_last_time_updates = 'https://raw.githubusercontent.com/pbboard/updates/main/check_updates/pbboard_last_time_updates.txt';
 		}
 
 		$last_time_updates = @file_get_contents($pbboard_last_time_updates);
@@ -866,15 +881,363 @@ class PowerBBFixMOD
 					}
 	          }
 	         $zip->close();
+
+             // updates chmods sql
+             if(trim($arr[3]) == 'sql')
+             {
+	         $xml_code_sql     = trim($arr[0]);
+	         $updates_sql = $this->_pbboard_updates_sql($xml_code_sql);
+			  echo("\n<br />✅ Query executed successfully \n");
+	         }
+
+             // updates templates
+             if(trim($arr[4]) == 'templates')
+             {
+	         $xml_date     = trim($arr[0]);
+	         $updates_templates = $this->_pbboard_updates_templates($xml_date);
+			  echo("\n<br />✅ Templates eupdated successfully \n<br />");
+	         }
+
 			$PowerBB->info->UpdateInfo(array('value'=>$PowerBB->_CONF['now'],'var_name'=>'last_time_updates'));
 			unlink($file);
 			echo $PowerBB->_CONF['template']['_CONF']['lang']['pbboard_updated'];
+
+			  if(trim($arr[3]) == 'sql'
+			  or trim($arr[4]) == 'templates')
+			  {
+			 	// get main dir
+				$xml_file = $PowerBB->functions->GetMianDir();
+				$xml_file = str_ireplace("index.php/", '', $xml_file);
+				$file_x = $xml_file.'addons/'.$arr[0].'.xml';
+				unlink($file_x);
+			  }
 			}
 			else
 	         {
 			 echo $PowerBB->_CONF['template']['_CONF']['lang']['automatic_update_fails'];
 			}
 	}
+
+
+	function _pbboard_updates_sql($xml_code_sql)
+	{
+	   global $PowerBB;
+        $xml_dir = '../addons/'.$xml_code_sql.'.xml';
+		if (file_exists($xml_dir))
+		{
+			$xml_code = @file_get_contents($xml_dir);
+			$xml_code = $PowerBB->sys_functions->ReplaceMysqlExtension($xml_code);
+			$plugin = $PowerBB->addons->xml_to_array($xml_code);
+			$installcode = $plugin['plugin']['installcode']['value'];
+			$Query_executed = eval($installcode);
+	    }
+    }
+
+  function _pbboard_updates_templates($xml_date)
+	{
+	   global $PowerBB;
+        $xml_dir = '../addons/'.$xml_date.'.xml';
+		if (file_exists($xml_dir))
+		{
+			$xml_code = @file_get_contents($xml_dir);
+			$xml_code = $PowerBB->sys_functions->ReplaceMysqlExtension($xml_code);
+			$plugin = $PowerBB->addons->xml_to_array($xml_code);
+			$StyleList = $PowerBB->style->GetStyleList(array());
+            $Templates = $plugin['plugin']['templates']['template'];
+
+			 if($Templates)
+				 {
+					if(!isset($plugin['plugin']['templates']['template'][1]))
+					{
+
+						$find = $Templates['find']['value'];
+						$action = $Templates['action']['value'];
+			        	$find	=	str_replace("'","{sq}",$find);
+			        	$action	=	str_replace("'","{sq}",$action);
+			            $find = @preg_replace( "/\\\(?!&amp;#|\?#)/", "&#092;", $find );
+			            $action = @preg_replace( "/\\\(?!&amp;#|\?#)/", "&#092;", $action );
+						$Templates['attributes']['name'] = @str_replace(".tpl",'',$Templates['attributes']['name']);
+
+
+						$Templattitle = $Template['attributes']['name'];
+						$Templattitle = @str_replace(".tpl",'',$Templattitle);
+						foreach($StyleList as $Style)
+						 {
+						      $StyleId = $Style['id'];
+							 $_query= $PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['template'] . " WHERE title = '$Templattitle' and styleid = '$StyleId' ");
+							 $row = $PowerBB->DB->sql_fetch_array($_query);
+
+						    if($Template['attributes']['type'] == 'new')
+							{
+					                $Template['text']['value'] = str_replace("'", "&#39;", $Template['text']['value']);
+
+									$TemplateArr 			= 	array();
+									$TemplateArr['field']	=	array();
+
+									$TemplateArr['field']['title'] 		    = 	$Templattitle;
+									$TemplateArr['field']['template'] 	    = 	$Template['text']['value'];
+									$TemplateArr['field']['template_un'] 	    	= 	$Template['text']['value'];
+									$TemplateArr['field']['templatetype'] 		        = 	"template";
+									$TemplateArr['field']['dateline'] 		            = 	$PowerBB->_CONF['now'];
+									$TemplateArr['field']['version'] 	    = 	$PowerBB->_CONF['info_row']['MySBB_version'];
+									$TemplateArr['field']['username'] 	    = 	$PowerBB->_CONF['rows']['member_row']['username'];
+									$TemplateArr['field']['product'] 		    = 	"Addons";
+									$TemplateArr['field']['styleid'] 		    = 	$StyleId;
+
+									$insert = $PowerBB->core->Insert($TemplateArr,'template');
+
+							}
+			         		if($Template['attributes']['type'] == 'replace')
+							{
+
+								$contents = $row['template'];
+								$contents = str_replace("&#39;", "'", $contents);
+								$contents	=	str_replace($Template['action']['value'],"", $contents);
+					            $new_contents	=	str_replace($Template['find']['value'],$Template['action']['value'], $contents);
+					            $new_contents = str_replace("'", "&#39;", $new_contents);
+
+								$TemplateArr 			= 	array();
+								$TemplateArr['field']	=	array();
+
+								$TemplateArr['field']['template'] 		= 	$new_contents;
+								$TemplateArr['field']['dateline'] 		    = $PowerBB->_CONF['now'];
+								$TemplateArr['where'] 				= 	array('templateid',$row['templateid']);
+
+								$update = $PowerBB->core->Update($TemplateArr,'template');
+			                     if ($update)
+			                     {
+									$TemplateEditArr				=	array();
+									$TemplateEditArr['where'] 	= 	array('templateid',$row['templateid']);
+
+									$TemplateEdit = $PowerBB->core->GetInfo($TemplateEditArr,'template');
+
+									$templates_dir = ("../cache/templates_cache/".$TemplateEdit['title']."_".$TemplateEdit['styleid'].".php");
+
+									if (file_exists($templates_dir))
+									{
+								 	 $cache_del = @unlink($templates_dir);
+									}
+								}
+							 }
+			         		if($Template['attributes']['type'] == 'before')
+							{
+
+								$contents = $row['template'];
+								$contents = str_replace("&#39;", "'", $contents);
+								$contents	=	str_replace(PHP_EOL.$Template['action']['value'],"", $contents);
+					             $new_contents	=	str_replace($Template['find']['value'],$Template['action']['value']."\n".$Template['find']['value'], $contents);
+					            $new_contents = str_replace("'", "&#39;", $new_contents);
+
+								$TemplateArr 			= 	array();
+								$TemplateArr['field']	=	array();
+
+								$TemplateArr['field']['template'] 		= 	$new_contents;
+								$TemplateArr['field']['dateline'] 		    = $PowerBB->_CONF['now'];
+								$TemplateArr['where'] 				= 	array('templateid',$row['templateid']);
+
+								$update = $PowerBB->core->Update($TemplateArr,'template');
+			                     if ($update)
+			                     {
+									$TemplateEditArr				=	array();
+									$TemplateEditArr['where'] 	= 	array('templateid',$row['templateid']);
+
+									$TemplateEdit = $PowerBB->core->GetInfo($TemplateEditArr,'template');
+
+									$templates_dir = ("../cache/templates_cache/".$TemplateEdit['title']."_".$TemplateEdit['styleid'].".php");
+
+									if (file_exists($templates_dir))
+									{
+								 	 $cache_del = @unlink($templates_dir);
+									}
+								}
+
+							 }
+			         		if($Template['attributes']['type'] == 'after')
+							{
+
+								$contents = $row['template'];
+								$contents = str_replace("&#39;", "'", $contents);
+								$contents	=	str_replace($Template['action']['value'].PHP_EOL,"", $contents);
+					             $new_contents	=	str_replace($Template['find']['value'],$Template['find']['value']."\n".$Template['action']['value'], $contents);
+
+					            $new_contents = str_replace("'", "&#39;", $new_contents);
+
+								$TemplateArr 			= 	array();
+								$TemplateArr['field']	=	array();
+
+								$TemplateArr['field']['template'] 		= 	$new_contents;
+								$TemplateArr['field']['dateline'] 		    = $PowerBB->_CONF['now'];
+								$TemplateArr['where'] 				= 	array('templateid',$row['templateid']);
+
+								$update = $PowerBB->core->Update($TemplateArr,'template');
+			                     if ($update)
+			                     {
+									$TemplateEditArr				=	array();
+									$TemplateEditArr['where'] 	= 	array('templateid',$row['templateid']);
+
+									$TemplateEdit = $PowerBB->core->GetInfo($TemplateEditArr,'template');
+
+									$templates_dir = ("../cache/templates_cache/".$TemplateEdit['title']."_".$TemplateEdit['styleid'].".php");
+
+									if (file_exists($templates_dir))
+									{
+								 	 $cache_del = @unlink($templates_dir);
+									}
+								}
+
+							 }
+			              }
+
+					}
+					else
+					{
+
+					foreach($Templates as $Template)
+					 {
+						$find = $Template['find']['value'];
+						$action = $Template['action']['value'];
+
+						$Template['attributes']['name'] = @str_replace(".tpl",'',$Template['attributes']['name']);
+
+						foreach($StyleList as $Style)
+						{
+
+							$Templattitle = $Template['attributes']['name'];
+							$Templattitle = @str_replace(".tpl",'',$Templattitle);
+							$StyleId = $Style['id'];
+							$_query= $PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['template'] . " WHERE title = '$Templattitle' and styleid = '$StyleId' ");
+							$row = $PowerBB->DB->sql_fetch_array($_query);
+
+						    if($Template['attributes']['type'] == 'new')
+							{
+					                $Template['text']['value'] = str_replace("'", "&#39;", $Template['text']['value']);
+
+									$TemplateArr 			= 	array();
+									$TemplateArr['field']	=	array();
+
+									$TemplateArr['field']['title'] 		    = 	$Templattitle;
+									$TemplateArr['field']['template'] 	    = 	$Template['text']['value'];
+									$TemplateArr['field']['template_un'] 	    	= 	$Template['text']['value'];
+									$TemplateArr['field']['templatetype'] 		        = 	"template";
+									$TemplateArr['field']['dateline'] 		            = 	$PowerBB->_CONF['now'];
+									$TemplateArr['field']['version'] 	    = 	$PowerBB->_CONF['info_row']['MySBB_version'];
+									$TemplateArr['field']['username'] 	    = 	$PowerBB->_CONF['rows']['member_row']['username'];
+									$TemplateArr['field']['product'] 		    = 	"Addons";
+									$TemplateArr['field']['styleid'] 		    = 	$StyleId;
+
+									$insert = $PowerBB->core->Insert($TemplateArr,'template');
+
+							}
+			         		if($Template['attributes']['type'] == 'replace')
+							{
+
+								$contents = $row['template'];
+								$contents = str_replace("&#39;", "'", $contents);
+					            $contents	=	str_replace($Template['action']['value'],"", $contents);
+					            $new_contents	=	str_replace($Template['find']['value'],$Template['action']['value'], $contents);
+					            $new_contents = str_replace("'", "&#39;", $new_contents);
+
+								$TemplateArr 			= 	array();
+								$TemplateArr['field']	=	array();
+
+								$TemplateArr['field']['template'] 		= 	$new_contents;
+								$TemplateArr['field']['dateline'] 		    = $PowerBB->_CONF['now'];
+								$TemplateArr['where'] 				= 	array('templateid',$row['templateid']);
+
+								$update = $PowerBB->core->Update($TemplateArr,'template');
+			                     if ($update)
+			                     {
+									$TemplateEditArr				=	array();
+									$TemplateEditArr['where'] 	= 	array('templateid',$row['templateid']);
+
+									$TemplateEdit = $PowerBB->core->GetInfo($TemplateEditArr,'template');
+
+									$templates_dir = ("../cache/templates_cache/".$TemplateEdit['title']."_".$TemplateEdit['styleid'].".php");
+
+									if (file_exists($templates_dir))
+									{
+								 	 $cache_del = @unlink($templates_dir);
+									}
+								}
+
+							 }
+			         		if($Template['attributes']['type'] == 'before')
+							{
+
+								$contents = $row['template'];
+								$contents = str_replace("&#39;", "'", $contents);
+					            $contents	=	str_replace(PHP_EOL.$Template['action']['value'],"", $contents);
+					            $new_contents	=	str_replace($Template['find']['value'],$Template['action']['value']."\n".$Template['find']['value'], $contents);
+					            $new_contents = str_replace("'", "&#39;", $new_contents);
+
+								$TemplateArr 			= 	array();
+								$TemplateArr['field']	=	array();
+
+								$TemplateArr['field']['template'] 		= 	$new_contents;
+								$TemplateArr['field']['dateline'] 		    = $PowerBB->_CONF['now'];
+								$TemplateArr['where'] 				= 	array('templateid',$row['templateid']);
+
+								$update = $PowerBB->core->Update($TemplateArr,'template');
+			                     if ($update)
+			                     {
+									$TemplateEditArr				=	array();
+									$TemplateEditArr['where'] 	= 	array('templateid',$row['templateid']);
+
+									$TemplateEdit = $PowerBB->core->GetInfo($TemplateEditArr,'template');
+
+									$templates_dir = ("../cache/templates_cache/".$TemplateEdit['title']."_".$TemplateEdit['styleid'].".php");
+
+									if (file_exists($templates_dir))
+									{
+								 	 $cache_del = @unlink($templates_dir);
+									}
+								}
+
+							 }
+			         		if($Template['attributes']['type'] == 'after')
+							{
+
+								$contents = $row['template'];
+								$contents = str_replace("&#39;", "'", $contents);
+								$contents	=	str_replace($Template['action']['value'].PHP_EOL,"", $contents);
+					            $new_contents	=	str_replace($Template['find']['value'],$Template['find']['value']."\n".$Template['action']['value'], $contents);
+
+					            $new_contents = str_replace("'", "&#39;", $new_contents);
+
+								$TemplateArr 			= 	array();
+								$TemplateArr['field']	=	array();
+
+								$TemplateArr['field']['template'] 		= 	$new_contents;
+								$TemplateArr['field']['dateline'] 		    = $PowerBB->_CONF['now'];
+								$TemplateArr['where'] 				= 	array('templateid',$row['templateid']);
+
+								$update = $PowerBB->core->Update($TemplateArr,'template');
+			                     if ($update)
+			                     {
+									$TemplateEditArr				=	array();
+									$TemplateEditArr['where'] 	= 	array('templateid',$row['templateid']);
+
+									$TemplateEdit = $PowerBB->core->GetInfo($TemplateEditArr,'template');
+
+									$templates_dir = ("../cache/templates_cache/".$TemplateEdit['title']."_".$TemplateEdit['styleid'].".php");
+
+									if (file_exists($templates_dir))
+									{
+								 	 $cache_del = @unlink($templates_dir);
+									}
+								}
+
+							 }
+						}
+
+
+					}
+			       }
+
+				 }
+
+	    }
+    }
 
 }
 

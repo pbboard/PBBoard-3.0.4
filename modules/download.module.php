@@ -56,6 +56,11 @@ class PowerBBDownloadMOD
 		}
 
 		//////////
+		if (!$PowerBB->_CONF['info_row']['download_subject'])
+		{
+			$PowerBB->functions->ShowHeader();
+			$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['Sorry_You_do_not_have_powers_to_access_this_page']);
+		}
 
 		$SubjectArr = array();
 

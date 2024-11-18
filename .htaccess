@@ -19,13 +19,20 @@ RewriteRule ^calendar.html index.php?page=calendar&show=1 [L]
 RewriteRule ^special_subject.html index.php?page=special_subject&index=1 [L]
 
 RewriteRule ^rss_forum_(.*).xml index.php?page=rss&section=1&id=$1 [L]
-RewriteRule ^rss.xml index.php?page=rss&subject=1
+RewriteRule ^rss.xml index.php?page=rss&subject=1 [L]
 
-RewriteRule ^sitemap.xml index.php?page=sitemap&subject=1
-RewriteRule ^posts.xml index.php?page=sitemap&posts=1
-RewriteRule ^topics.xml index.php?page=sitemap&topics=1
-RewriteRule ^sitemap.htm(.*) index.php?page=sitemap&sitemaps=1&count=$1 [L]
-RewriteRule ^sitemap.html(.*) index.php?page=sitemap&sitemaps=1&count=$1 [L]
+RewriteRule ^sitemap.xml index.php?page=sitemap&subject=1 [L]
+RewriteRule ^posts.xml index.php?page=sitemap&posts=1 [L]
+RewriteRule ^topics.xml index.php?page=sitemap&topics=1 [L]
+
+
+RewriteRule ^sitemap.htm&count=([0-9]+) index.php?page=sitemap&sitemaps=1&count=$1 [L]
+RewriteRule ^sitemap.html&count=([0-9]+) index.php?page=sitemap&sitemaps=1&count=$1 [L]
+RewriteRule ^sitemap.htm&count=-([0-9]+) [R=301,L]
+RewriteRule ^sitemap.html&count=-([0-9]+) [R=301,L]
+RewriteRule ^sitemap.htm index.php?page=sitemap&sitemaps=1&count=0 [L]
+RewriteRule ^sitemap.html index.php?page=sitemap&sitemaps=1&count=0 [L]
+
 RewriteRule ^sitemap_forum_([0-9]+).xml(.*) index.php?page=sitemap&section=1&id=$1 [L]
 
 RewriteRule ^t([0-9]+).html index.php?page=topic&show=1&id=$1 [L]

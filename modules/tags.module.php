@@ -51,6 +51,18 @@ class PowerBBCoreMOD
 		$PowerBB->_GET['count'] = (!isset($PowerBB->_GET['count'])) ? 0 : $PowerBB->_GET['count'];
 		$PowerBB->_GET['count'] = $PowerBB->functions->CleanVariable($PowerBB->_GET['count'],'intval');
 
+		// Where is the Visitor and user now?
+		$UpdateOnline 			= 	array();
+		$UpdateOnline['field']	=	array();
+		$UpdateOnline['field']['user_location'] 	= $PowerBB->_CONF['template']['_CONF']['lang']['Search_results_for_tag'] .	' <a href="index.php?page=tags&show=1&tag=' . $PowerBB->_GET['tag'] . '">' . $PowerBB->_GET['tag'] . '</a>';
+		if ($PowerBB->_CONF['member_permission'])
+     	{
+		$UpdateOnline['where']						=	array('username',$PowerBB->_CONF['member_row']['username']);
+        }
+        else
+        {		$UpdateOnline['where']						=	array('user_ip',$PowerBB->_CONF['ip']);
+        }
+		$update = $PowerBB->core->Update($UpdateOnline,'online');
 
 
 		$TotalArr 			= 	array();

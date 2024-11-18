@@ -25,6 +25,9 @@ class PowerBBSearchEngineMOD
 		$option = (isset($PowerBB->_GET['option'])) ? $PowerBB->_GET['option'] : $PowerBB->_POST['option'];
 		$search_only	= 	(isset($PowerBB->_GET['search_only'])) ? $PowerBB->_GET['search_only'] : $PowerBB->_POST['search_only'];
 
+		$tag 	= 	(isset($PowerBB->_GET['tag'])) ? $PowerBB->_GET['tag'] : $PowerBB->_POST['tag'];
+		$tag=$PowerBB->functions->CleanVariable($tag,'trim');
+
         $count         = $PowerBB->functions->CleanVariable($PowerBB->_GET['count'],'intval');
 		$search_only	= 	$PowerBB->functions->CleanVariable($search_only,'intval');
 		$option	= 	$PowerBB->functions->CleanVariable($option,'intval');
@@ -95,6 +98,61 @@ class PowerBBSearchEngineMOD
 			 $PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['path_not_true']);
 			}
 
+			 ////////
+			// Where is the Visitor and user now?
+			$path = addslashes($PowerBB->_SERVER['QUERY_STRING']);
+			$path = $PowerBB->functions->CleanVariable($path,'sql');
+			$option = (isset($PowerBB->_GET['option'])) ? $PowerBB->_GET['option'] : $PowerBB->_POST['option'];
+			$keyword 	= 	(isset($PowerBB->_GET['keyword'])) ? $PowerBB->_GET['keyword'] : $PowerBB->_POST['keyword'];
+			$keyword=$PowerBB->functions->CleanVariable($keyword,'trim');
+			$keyword	= 	$PowerBB->functions->CleanVariable($keyword,'sql');
+			$username 	= 	(isset($PowerBB->_GET['username'])) ? $PowerBB->_GET['username'] : $PowerBB->_POST['username'];
+			$username	= 	$PowerBB->functions->CleanVariable($username,'sql');
+			$tag 	= 	(isset($PowerBB->_GET['tag'])) ? $PowerBB->_GET['tag'] : $PowerBB->_POST['tag'];
+			$tag=$PowerBB->functions->CleanVariable($tag,'trim');
+			$tag	= 	$PowerBB->functions->CleanVariable($tag,'sql');
+
+			if ($PowerBB->_GET['index'])
+			{
+            $user_location = '<a href="index.php?'.$path.'">' .$PowerBB->_CONF['template']['_CONF']['lang']['Search_Engine'].'</a>';
+			}
+	        elseif($option == '1')
+		    {
+            $user_location = $PowerBB->_CONF['template']['_CONF']['lang']['Search_results_for'].' <a href="index.php?'.$path.'">' .$keyword.'</a>';
+			}
+			elseif($option == '2')
+		    {
+            $user_location = $PowerBB->_CONF['template']['_CONF']['lang']['Search_results_for'].' <a href="index.php?'.$path.'">' .$keyword.'</a>';
+			}
+			elseif($option == '3')
+		    {
+            $user_location = $PowerBB->_CONF['template']['_CONF']['lang']['Search_results_for_all_subject_user'].' <a href="index.php?'.$path.'">' .$username.'</a>';
+			}
+			elseif($option == '4')
+		    {
+            $user_location = $PowerBB->_CONF['template']['_CONF']['lang']['Search_results_for_all_reply_user'].' <a href="index.php?'.$path.'">' .$username.'</a>';
+			}
+			elseif($option == '5')
+			{
+            $user_location = $PowerBB->_CONF['template']['_CONF']['lang']['Search_results_for_tag'].' <a href="index.php?'.$path.'">' .$tag.'</a>';
+			}
+			else
+			{
+            $user_location = '<a href="index.php?'.$path.'">' .$PowerBB->_CONF['template']['_CONF']['lang']['Search_Engine'].'</a>';
+			}
+
+     		$UpdateOnline 			= 	array();
+			$UpdateOnline['field']	=	array();
+			$UpdateOnline['field']['user_location'] 	= $user_location;
+			if ($PowerBB->_CONF['member_permission'])
+	     	{
+			$UpdateOnline['where']						=	array('username',$PowerBB->_CONF['member_row']['username']);
+	        }
+	        else
+	        {
+			$UpdateOnline['where']						=	array('user_ip',$PowerBB->_CONF['ip']);
+	        }
+			$update = $PowerBB->core->Update($UpdateOnline,'online');
 
          $PowerBB->functions->GetFooter();
 	}
@@ -295,19 +353,6 @@ class PowerBBSearchEngineMOD
 		//////////
 
 		$PowerBB->template->display('search');
-
-			 ////////
-			// Where is the member now?
-		if ($PowerBB->_CONF['member_permission'])
-     	{
-     		$UpdateOnline 			= 	array();
-			$UpdateOnline['field']	=	array();
-
-			$UpdateOnline['field']['user_location'] 	= (	$PowerBB->_CONF['template']['_CONF']['lang']['search_in_Forum'].'<a href="index.php?page=search&amp;index=1">' .$PowerBB->_CONF['template']['_CONF']['lang']['Search_Engine'].'</a>');
-			$UpdateOnline['where']						=	array('username',$PowerBB->_CONF['member_row']['username']);
-
-			$update = $PowerBB->core->Update($UpdateOnline,'online');
-     	}
 
 	}
 
@@ -1353,7 +1398,6 @@ class PowerBBSearchEngineMOD
 	          }
 	         else
 	          {
-
 	               	// Pager setup
 					$MemSubjectArr['pager'] 				= 	array();
 					$MemSubjectArr['pager']['total']		= 	$username_subject_nm;

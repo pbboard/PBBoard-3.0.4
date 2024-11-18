@@ -64,7 +64,7 @@ class PowerBBPortalMOD
      		$UpdateOnline 			= 	array();
 			$UpdateOnline['field']	=	array();
 
-			$UpdateOnline['field']['user_location'] 	= 	$PowerBB->_CONF['template']['_CONF']['lang']['Seen_the'].' <a href="index.php?page=portal">المجلة</a>';
+			$UpdateOnline['field']['user_location'] 	= 	$PowerBB->_CONF['template']['_CONF']['lang']['Seen_the'].' <a href="index.php?page=portal">'.$PowerBB->_CONF['info_row']['title_portal'].'</a>';
 			$UpdateOnline['where']						=	array('username',$PowerBB->_CONF['member_row']['username']);
 
 			$update = $PowerBB->core->Update($UpdateOnline,'online');
@@ -76,7 +76,7 @@ class PowerBBPortalMOD
      		$UpdateOnline 			= 	array();
 			$UpdateOnline['field']	=	array();
 
-			$UpdateOnline['field']['user_location'] 	= 	$PowerBB->_CONF['template']['_CONF']['lang']['Seen_the'].' <a href="index.php?page=portal">المجلة</a>';
+			$UpdateOnline['field']['user_location'] 	= 	$PowerBB->_CONF['template']['_CONF']['lang']['Seen_the'].' <a href="index.php?page=portal">'.$PowerBB->_CONF['info_row']['title_portal'].'</a>';
 			$UpdateOnline['where']						=	array('user_ip',$PowerBB->_CONF['ip']);
 			$update = $PowerBB->core->Update($UpdateOnline,'online');
      	}

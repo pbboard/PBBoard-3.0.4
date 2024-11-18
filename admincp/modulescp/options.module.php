@@ -236,6 +236,10 @@ class PowerBBOptionsMOD
 				{
 					$this->_PbbSeoUpdate();
 				}
+				elseif ($PowerBB->_GET['update_rewrite'])
+				{
+					$this->_PbbRewrite();
+				}
 				elseif ($PowerBB->_GET['update_sitemap'])
 				{
 					$this->_PbbSitemap();
@@ -663,6 +667,9 @@ class PowerBBOptionsMOD
 		$update[19] = $PowerBB->info->UpdateInfo(array('value'=>$PowerBB->_POST['active_like_facebook'],'var_name'=>'active_like_facebook'));
 		$update[20] = $PowerBB->info->UpdateInfo(array('value'=>$PowerBB->_POST['active_add_this'],'var_name'=>'active_add_this'));
 		$update[21] = $PowerBB->info->UpdateInfo(array('value'=>$PowerBB->_POST['use_list'],'var_name'=>'use_list'));
+		$update[22] = $PowerBB->info->UpdateInfo(array('value'=>$PowerBB->_POST['download_subject'],'var_name'=>'download_subject'));
+		$update[23] = $PowerBB->info->UpdateInfo(array('value'=>$PowerBB->_POST['print_subject'],'var_name'=>'print_subject'));
+		$update[24] = $PowerBB->info->UpdateInfo(array('value'=>$PowerBB->_POST['send_subject_to_friend'],'var_name'=>'send_subject_to_friend'));
 
 		if ($update[0]
 			and $update[1]
@@ -685,7 +692,10 @@ class PowerBBOptionsMOD
 			and $update[18]
 			and $update[19]
 			and $update[20]
-			and $update[21])
+			and $update[21]
+			and $update[22]
+			and $update[23]
+			and $update[24])
 		{
 			$PowerBB->functions->msg($PowerBB->_CONF['template']['_CONF']['lang']['updated_successfully_Please_wait']);
 			$PowerBB->functions->redirect('index.php?page=options&amp;topics=1&amp;main=1');
@@ -1037,6 +1047,33 @@ class PowerBBOptionsMOD
          $PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['Please_write_the_number_of_posts_that_appear_Ribbon']);
 		}
 
+		if (!is_numeric($PowerBB->_POST['last_static_num']))
+		{
+         $PowerBB->_POST['last_static_num'] = $PowerBB->_CONF['info_row']['last_static_num'];
+		}
+		if (!is_numeric($PowerBB->_POST['last_posts_static_num']))
+		{
+         $PowerBB->_POST['last_posts_static_num'] = $PowerBB->_CONF['info_row']['last_posts_static_num'];
+		}
+		if (!is_numeric($PowerBB->_POST['lasts_posts_bar_num']))
+		{
+         $PowerBB->_POST['lasts_posts_bar_num'] = $PowerBB->_CONF['info_row']['lasts_posts_bar_num'];
+		}
+
+		if (!is_numeric($PowerBB->_POST['mor_hours_online_today']))
+		{
+         $PowerBB->_POST['mor_hours_online_today'] = $PowerBB->_CONF['info_row']['mor_hours_online_today'];
+		}
+		if (!is_numeric($PowerBB->_POST['mor_seconds_online']))
+		{
+         $PowerBB->_POST['mor_seconds_online'] = $PowerBB->_CONF['info_row']['mor_seconds_online'];
+		}
+		if (!is_numeric($PowerBB->_POST['last_subject_writer_nm']))
+		{
+         $PowerBB->_POST['last_subject_writer_nm'] = $PowerBB->_CONF['info_row']['last_subject_writer_nm'];
+		}
+
+
 		$update = array();
 
 		$update[1] = $PowerBB->info->UpdateInfo(array('value'=>$PowerBB->_POST['activate_last_static_list'],'var_name'=>'activate_last_static_list'));
@@ -1122,29 +1159,7 @@ class PowerBBOptionsMOD
 	{
 		global $PowerBB;
 
-	   // if ($PowerBB->_POST['rewriterule'] == '1')
-	   // {
-	        $context = ($PowerBB->_POST['context']);
-
-		     $context = $PowerBB->functions->CleanVariable($context,'unhtml');
-		     $context = stripslashes($context);
-	         $filename = '../.htaccess';
-		     $fp = fopen($filename,'w');
-		     $fw = fwrite($fp,$context);
-
-		     fclose($fp);
-
-
-  	    // }
-        //  else
-       //  {
-
-          // $filename = '.htaccess';
-		  // $del = unlink($filename);
-
-	   // }
-
-       $update = array();
+        $update = array();
       	$update[0] = $PowerBB->info->UpdateInfo(array('value'=>$PowerBB->_POST['rewriterule'],'var_name'=>'rewriterule'));
 
 		if ($update[0])
@@ -1152,6 +1167,24 @@ class PowerBBOptionsMOD
 			$PowerBB->functions->msg($PowerBB->_CONF['template']['_CONF']['lang']['updated_successfully_Please_wait']);
 			$PowerBB->functions->redirect('index.php?page=options&amp;pbb_seo=1&amp;main=1');
 		}
+	}
+
+	function _PbbRewrite()
+	{
+		global $PowerBB;
+
+		$context = $PowerBB->_POST['context'];
+		$context = $PowerBB->functions->CleanVariable($context,'unhtml');
+		$context = stripslashes($context);
+		$filename = '../.htaccess';
+		$fp = fopen($filename,'w');
+		$fw = fwrite($fp,$context);
+		fclose($fp);
+
+			$PowerBB->functions->msg($PowerBB->_CONF['template']['_CONF']['lang']['updated_successfully_Please_wait']);
+			$PowerBB->functions->redirect('index.php?page=options&amp;pbb_seo=1&amp;main=1');
+
+
 	}
 
 	function _PbbSitemap()
@@ -1192,6 +1225,33 @@ class PowerBBOptionsMOD
 			$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['Please_write_the_name_of_the_Forum']);
 		}
        */
+
+		if (!is_numeric($PowerBB->_POST['last_static_num']))
+		{
+         $PowerBB->_POST['last_static_num'] = $PowerBB->_CONF['info_row']['last_static_num'];
+		}
+		if (!is_numeric($PowerBB->_POST['last_posts_static_num']))
+		{
+         $PowerBB->_POST['last_posts_static_num'] = $PowerBB->_CONF['info_row']['last_posts_static_num'];
+		}
+		if (!is_numeric($PowerBB->_POST['lasts_posts_bar_num']))
+		{
+         $PowerBB->_POST['lasts_posts_bar_num'] = $PowerBB->_CONF['info_row']['lasts_posts_bar_num'];
+		}
+
+		if (!is_numeric($PowerBB->_POST['mor_hours_online_today']))
+		{
+         $PowerBB->_POST['mor_hours_online_today'] = $PowerBB->_CONF['info_row']['mor_hours_online_today'];
+		}
+		if (!is_numeric($PowerBB->_POST['mor_seconds_online']))
+		{
+         $PowerBB->_POST['mor_seconds_online'] = $PowerBB->_CONF['info_row']['mor_seconds_online'];
+		}
+		if (!is_numeric($PowerBB->_POST['last_subject_writer_nm']))
+		{
+         $PowerBB->_POST['last_subject_writer_nm'] = $PowerBB->_CONF['info_row']['last_subject_writer_nm'];
+		}
+
 		$update = array();
 		$update[0] = $PowerBB->info->UpdateInfo(array('value'=>$PowerBB->_POST['title'],'var_name'=>'title'));
 		$update[1] = $PowerBB->info->UpdateInfo(array('value'=>$PowerBB->_POST['pm_feature'],'var_name'=>'pm_feature'));
@@ -1350,6 +1410,9 @@ class PowerBBOptionsMOD
 		$update[19] = $PowerBB->info->UpdateInfo(array('value'=>$PowerBB->_POST['active_like_facebook'],'var_name'=>'active_like_facebook'));
 		$update[20] = $PowerBB->info->UpdateInfo(array('value'=>$PowerBB->_POST['active_add_this'],'var_name'=>'active_add_this'));
 		$update[21] = $PowerBB->info->UpdateInfo(array('value'=>$PowerBB->_POST['use_list'],'var_name'=>'use_list'));
+		$update[22] = $PowerBB->info->UpdateInfo(array('value'=>$PowerBB->_POST['download_subject'],'var_name'=>'download_subject'));
+		$update[23] = $PowerBB->info->UpdateInfo(array('value'=>$PowerBB->_POST['print_subject'],'var_name'=>'print_subject'));
+		$update[24] = $PowerBB->info->UpdateInfo(array('value'=>$PowerBB->_POST['send_subject_to_friend'],'var_name'=>'send_subject_to_friend'));
 
 
 		$update = array();

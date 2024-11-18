@@ -587,6 +587,12 @@ class PowerBBMiscMOD
 		{
 			$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['path_not_true']);
 		}
+
+		if (!$PowerBB->_CONF['info_row']['send_subject_to_friend'])
+		{
+			$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['Sorry_You_do_not_have_powers_to_access_this_page']);
+		}
+
 		$SubjectArr = array();
 		$SubjectArr['where'] = array('id',$PowerBB->_GET['id']);
 
@@ -665,6 +671,12 @@ class PowerBBMiscMOD
 		global $PowerBB;
 
 		$PowerBB->functions->ShowHeader();
+
+		if (!$PowerBB->_CONF['info_row']['send_subject_to_friend'])
+		{
+			$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['Sorry_You_do_not_have_powers_to_access_this_page']);
+		}
+
   		$PowerBB->_POST['text']   = 	$PowerBB->functions->CleanVariable($PowerBB->_POST['text'],'sql');
 		$PowerBB->_POST['username']   = 	$PowerBB->functions->CleanVariable($PowerBB->_POST['username'],'sql');
 		$PowerBB->_POST['sendername']   = 	$PowerBB->functions->CleanVariable($PowerBB->_POST['sendername'],'sql');
@@ -786,54 +798,61 @@ class PowerBBMiscMOD
 			$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['path_not_true']);
 		}
 
-
-		if ($PowerBB->_CONF['info_row']['allowed_emailed'] == '1')
+		if (!$PowerBB->_CONF['member_permission'])
 		{
+		$PowerBB->template->display('login');
+		$PowerBB->functions->error_stop();
+		}
+
+		if (!$PowerBB->_CONF['info_row']['allowed_emailed'])
+		{
+		 $PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['Sorry_You_do_not_have_powers_to_access_this_page']);
+		}
 
 		$SubjectArr = array();
 		$SubjectArr['where'] = array('id',$PowerBB->_GET['id']);
 
 		$this->Subject = $PowerBB->core->GetInfo($SubjectArr,'subject');
 
-	    $SecArr 			= 	array();
+		$SecArr 			= 	array();
 		$SecArr['where'] 	= 	array('id',$this->Subject['section']);
 
 		$SectionInfo = $PowerBB->core->GetInfo($SecArr,'section');
 
 
-         if ($PowerBB->functions->section_group_permission($SectionInfo['id'],$PowerBB->_CONF['group_info']['id'],'view_section') == 0
-         or $PowerBB->functions->section_group_permission($SectionInfo['id'],$PowerBB->_CONF['group_info']['id'],'view_subject') == 0)
+		if ($PowerBB->functions->section_group_permission($SectionInfo['id'],$PowerBB->_CONF['group_info']['id'],'view_section') == 0
+		or $PowerBB->functions->section_group_permission($SectionInfo['id'],$PowerBB->_CONF['group_info']['id'],'view_subject') == 0)
 		{
-			$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['Sorry_You_do_not_have_powers_to_access_this_page']);
+		$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['Sorry_You_do_not_have_powers_to_access_this_page']);
 		}
 
-       		// if section Allw hide subject can't show this subject  , so stop the page
-   		if ($SectionInfo['hide_subject']
-   		and !$PowerBB->functions->ModeratorCheck($SectionInfo['moderators']))
-   		{
+		// if section Allw hide subject can't show this subject  , so stop the page
+		if ($SectionInfo['hide_subject']
+		and !$PowerBB->functions->ModeratorCheck($SectionInfo['moderators']))
+		{
 
-	   		if ($PowerBB->_CONF['member_row']['username'] != $this->Subject['writer'])
-	   		{
-	        $PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['Sorry_You_do_not_have_powers_to_access_this_page']);
-	        }
-        }
+		if ($PowerBB->_CONF['member_row']['username'] != $this->Subject['writer'])
+		{
+		$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['Sorry_You_do_not_have_powers_to_access_this_page']);
+		}
+		}
 
-        if ($this->Subject['review_subject']
-   		and !$PowerBB->functions->ModeratorCheck($SectionInfo['moderators']))
-   		{
+		if ($this->Subject['review_subject']
+		and !$PowerBB->functions->ModeratorCheck($SectionInfo['moderators']))
+		{
 
-	   		if ($PowerBB->_CONF['member_row']['username'] != $this->Subject['writer']
-	   		and 'Guest' != $this->Subject['writer'])
-	   		{
-	        $PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['Sorry_You_do_not_have_powers_to_access_this_page']);
-	        }
-        }
+		if ($PowerBB->_CONF['member_row']['username'] != $this->Subject['writer']
+		and 'Guest' != $this->Subject['writer'])
+		{
+		$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['Sorry_You_do_not_have_powers_to_access_this_page']);
+		}
+		}
 
 		// hmmmmmmm , this subject deleted , so the members and visitor can't show it
 		if ($this->Subject['delete_topic']
-			and !$PowerBB->_CONF['group_info']['admincp_allow'])
+		and !$PowerBB->_CONF['group_info']['admincp_allow'])
 		{
-			$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['Subject_Was_Trasht']);
+		$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['Subject_Was_Trasht']);
 		}
 
 		$SectionInfoid = $this->Subject['section'];
@@ -842,31 +861,29 @@ class PowerBBMiscMOD
 
 		$subject_user_emailed_nm = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['emailed'] . " WHERE subject_id='$SubjectInfoid' and user_id ='$member_row_id'"));
 
-
-
 		$EmailedArr 			= 	array();
 		$EmailedArr['where'] 	= 	array('subject_id',$PowerBB->_GET['id']);
 
 		$this->EmailedInfo = $PowerBB->emailed->GetEmailedInfo($EmailedArr);
 
 
-			if ($subject_user_emailed_nm < 1)
-			{
-			$EmailedArr 								= 	array();
-			$EmailedArr['get_id']						=	true;
-			$EmailedArr['field']						=	array();
-			$EmailedArr['field']['user_id'] 			= 	$PowerBB->_CONF['member_row']['id'];
-			$EmailedArr['field']['subject_id'] 			= 	$PowerBB->_GET['id'];
-			$EmailedArr['field']['subject_title'] 		= 	$this->Subject['title'];
+		if ($subject_user_emailed_nm < 1)
+		{
+		$EmailedArr 								= 	array();
+		$EmailedArr['get_id']						=	true;
+		$EmailedArr['field']						=	array();
+		$EmailedArr['field']['user_id'] 			= 	$PowerBB->_CONF['member_row']['id'];
+		$EmailedArr['field']['subject_id'] 			= 	$PowerBB->_GET['id'];
+		$EmailedArr['field']['subject_title'] 		= 	$this->Subject['title'];
 
-			$Insert = $PowerBB->emailed->InsertEmailed($EmailedArr);
-			}
+		$Insert = $PowerBB->emailed->InsertEmailed($EmailedArr);
+		}
 
 		///////////
-	$PowerBB->functions->msg($PowerBB->_CONF['template']['_CONF']['lang']['addsubscription_successfully']);
- 	 $PowerBB->functions->redirect($PowerBB->functions->rewriterule("index.php?page=topic&amp;show=1&amp;id=".$PowerBB->_GET['id']));
-      $PowerBB->functions->GetFooter();
-		}
+		$PowerBB->functions->msg($PowerBB->_CONF['template']['_CONF']['lang']['addsubscription_successfully']);
+		$PowerBB->functions->redirect($PowerBB->functions->rewriterule("index.php?page=topic&amp;show=1&amp;id=".$PowerBB->_GET['id']));
+		$PowerBB->functions->GetFooter();
+
 
     }
 
@@ -880,6 +897,11 @@ class PowerBBMiscMOD
 		if (empty($PowerBB->_GET['id']))
 		{
 			$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['path_not_true']);
+		}
+
+		if (!$PowerBB->_CONF['info_row']['allowed_emailed'])
+		{
+		 $PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['Sorry_You_do_not_have_powers_to_access_this_page']);
 		}
 
 		// Delete Subscriptionsment from database

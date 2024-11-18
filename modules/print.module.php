@@ -60,6 +60,11 @@ class PowerBBPrintMOD
 			$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['path_not_true']);
 		}
 
+		if (!$PowerBB->_CONF['info_row']['print_subject'])
+		{
+			$PowerBB->functions->ShowHeader();
+			$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['Sorry_You_do_not_have_powers_to_access_this_page']);
+		}
 
       eval($PowerBB->functions->get_fetch_hooks('print_topic'));
 
@@ -81,7 +86,6 @@ class PowerBBPrintMOD
 		$SecArr['where'] 	= 	array('id',$PowerBB->_CONF['template']['SubjectInfo']['section']);
 
 		$this->SectionInfo = $PowerBB->core->GetInfo($SecArr,'section');
-
 
  			if (!empty($this->SectionInfo['section_password'])
 				and !$PowerBB->_CONF['group_info']['admincp_allow']
@@ -244,6 +248,22 @@ class PowerBBPrintMOD
 
 		// feltr sig Text
         $this->Info['text'] = $PowerBB->Powerparse->censor_words($this->Info['text']);
+
+		// Where is the Visitor and user now?
+		$UpdateOnline 			= 	array();
+		$UpdateOnline['field']	=	array();
+		$UpdateOnline['field']['user_location'] 	= $PowerBB->_CONF['template']['_CONF']['lang']['Print_topic'] .	' <a href="index.php?page=print&show=1&id=' . $PowerBB->_GET['id'] . '">' . $PowerBB->functions->CleanVariable($this->Info['title'],'sql') . '</a>';
+		if ($PowerBB->_CONF['member_permission'])
+     	{
+		$UpdateOnline['where']						=	array('username',$PowerBB->_CONF['member_row']['username']);
+        }
+        else
+        {
+		$UpdateOnline['where']						=	array('user_ip',$PowerBB->_CONF['ip']);
+        }
+		$update = $PowerBB->core->Update($UpdateOnline,'online');
+
+
 		// Send subject id to template engine
 		$PowerBB->template->assign('subject_id',$PowerBB->_GET['id']);
 		$PowerBB->template->assign('section_id',$this->Info['section']);

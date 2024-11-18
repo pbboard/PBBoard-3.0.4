@@ -368,7 +368,7 @@ src="index.php?page=download&amp;attach=1&amp;id={$SubjectAttachList['id']}" tit
 <div id="smiles-trigger"><img role="button" alt="{$lang['smiles']}" class="fl nosel emobox" style="padding:5px;width:34px;height: 34px;" src="look/images/emoii.gif"></div>
 <div id="smile_menu">
 {Des::while}{SmlList}
-<img src="{$SmlList['smile_path']}" OnClick="AddSmileyIcon(' {$SmlList['smile_short']} ');" alt="{$SmlList['smile_path']}" class="brd0" alt="" />
+<img src="{$SmlList['smile_path']}" OnClick="AddSmileyIcon(' {$SmlList['smile_short']} ');" alt="{$SmlList['smile_path']}" style="max-width: 25px !important;max-height: 25px !important;" class="brd0" alt="" />
 {/Des::while}
 </div>
 <form id="form-chat-id">
@@ -1334,7 +1334,7 @@ $t=0;
 echo "</dl><dl><dt></dt>";
 }?>
 <dd class="row1 center_text_align avatar-list">
-<label for="avatar{$AvatarList['id']}"><img class="brd0" alt="{$lang['personal_photo']} #{$AvatarList['id']}" src="{$AvatarList['avatar_path']}" /></label>
+<label for="avatar{$AvatarList['id']}"><img class="brd0" alt="{$lang['personal_photo']} #{$AvatarList['id']}" src="{$AvatarList['avatar_path']}" style="max-width: 100px !important;max-height: 100px !important;" /></label>
 <br />
 <input name="avatar_list" type="radio" value="{$AvatarList['avatar_path']}" id="avatar{$AvatarList['id']}" />
 </dd>
@@ -3840,7 +3840,7 @@ echo "</tr><tr>";
 <input type="radio" value="{$IconRows['smile_path']}" name="icon" />
 {/if}
 <label for="fp{$IconRows['id']}">
-<img src="{$IconRows['smile_path']}" alt="{$IconRows['smile_path']}" class="brd0" />
+<img src="{$IconRows['smile_path']}" alt="{$IconRows['smile_path']}" style="max-width: 25px !important;max-height: 25px !important;" class="brd0" />
 </label>
 </td>
 <?php $t=$t+1;?>
@@ -6927,8 +6927,8 @@ width: 200px;
 }
 </style>
 
-<title>{$_CONF['info_row']['title']} - {$Info['title']} -
-{$lang['Print_topic']}
+<title>{$lang['Print']} -
+{$Info['title']}
 </title>
 </head>
 <body>
@@ -8328,7 +8328,7 @@ itemtype="https://schema.org/ListItem">
 <option selected="selected" value="all">{$lang['All_Forums']}</option>
 {Des::foreach}{forums_list}{forum}
 {if {$forum['parent']} == 0}
-<option value="{$forum['id']}">- {$forum['title']}</option>
+<option value="{$forum['id']}" class="row2" disabled="disabled">{$forum['title']}</option>
 {else}
 <option value="{$forum['id']}">-- {$forum['title']}</option>
 {/if}
@@ -9250,7 +9250,7 @@ imgChange.className = "collapsed";
 <li class="sub_forums">
 <div class="forum-icon">
 {if {$forum['use_section_picture']} and {$forum['sectionpicture_type']}== 1}
-<span class="section_picture" title="{$lang['section_picture']}"><img src="{$forum['section_picture']}" alt="{$lang['section_picture']}" /></span>
+<span class="section_picture" title="{$lang['section_picture']}"><img src="{$forum['section_picture']}" alt="{$lang['section_picture']}" style="max-width: 50px !important;max-height: 50px !important;" /></span>
 {else}
 {if {$forum['forum_icon']} == 'f_redirect'}
 <span class="dot f_redirect fa fa-link" title="{$forum['forum_icon_alt']}"></span>
@@ -9466,7 +9466,7 @@ itemtype="https://schema.org/ListItem">
 <tr>
 <td class="row1 center_text_align">
 <table class="wd98 brd0 clpc0 a-center">
-{if !{$_CONF['member_permission']}}
+{if !{$_CONF['captcha']}}
 {if {$_CONF['info_row']['captcha_type']} == 'captcha_IMG'}
 <tr>
 <td class="row1 wd30">
@@ -10887,32 +10887,24 @@ $(document).ready(Ready);
 <show_subject_information><![CDATA[<script type='text/javascript'>
 function AjaxSubjectRating()
 {
-
     var AjaxState = {ajaxSend : $("#rating_status").html("<div class='info_bar'> <img border='0' alt='' src='{$image_path}/loading.gif'></div>")};
-
     var data = {};
-
     data['by_username']    =    $("#by_username").val();
     data['subject_title']    =    $("#subject_title").val();
     data['subject_id']    =    $("#subject_id").val();
     data['username']    =    $("#username").val();
     data['vote']    =    $("#vote").val();
-
     $.post("index.php?page=misc&rating=1",data,function Success(xml) { $("#rating_status").html(xml); });
 }
-
 function Wait()
 {
     $("#rating_status").html("{$lang['Ongoing_process']}");
 }
-
 function Ready()
 {
     $("#rating_id").click(AjaxSubjectRating);
 }
-
 $(document).ready(Ready);
-
 </script>
 <!-- table -->
 <div style="width:98%; border-spacing:0px;" class="table mrgTable border_radius">
@@ -10986,45 +10978,35 @@ $(document).ready(Ready);
 <dt></dt>
 <dd class="menu_popup right_text_align">
 <div>
-<img title="{$lang['Excellent']}" class="brd0"
-src="{$image_path}/rating/rating_5.gif"
-alt="{$lang['Excellent']}" />
+<i class="fa fa-star fa-lg"></i><i class="fa fa-star fa-lg"></i><i class="fa fa-star fa-lg"></i><i class="fa fa-star fa-lg"></i><i class="fa fa-star fa-lg"></i>
 <label for="vote5">
 <input name="vote" id="vote" value="5" type="radio" />
 {$lang['Excellent']}
 </label>
 </div>
 <div>
-<img title="{$lang['Good']}" class="brd0"
-src="{$image_path}/rating/rating_4.gif"
-alt="{$lang['Good']}" />
+<i class="fa fa-star fa-lg"></i><i class="fa fa-star fa-lg"></i><i class="fa fa-star fa-lg"></i><i class="fa fa-star fa-lg"></i><i class="fa fa-star-o fa-lg"></i>
 <label for="vote4">
 <input name="vote" id="vote" value="4" type="radio" />
 {$lang['Good']}
 </label>
 </div>
 <div>
-<img title="{$lang['Average']}" class="brd0"
-src="{$image_path}/rating/rating_3.gif"
-alt="{$lang['Average']}" />
+<i class="fa fa-star fa-lg"></i><i class="fa fa-star fa-lg"></i><i class="fa fa-star fa-lg"></i><i class="fa fa-star-o fa-lg"></i><i class="fa fa-star-o fa-lg"></i>
 <label for="vote3">
 <input name="vote" id="vote" value="3" type="radio" />
 {$lang['Average']}
 </label>
 </div>
 <div>
-<img title="{$lang['Bad']}" class="brd0"
-src="{$image_path}/rating/rating_2.gif"
-alt="{$lang['Bad']}" />
+<i class="fa fa-star fa-lg"></i><i class="fa fa-star fa-lg"></i><i class="fa fa-star-o fa-lg"></i><i class="fa fa-star-o fa-lg"></i><i class="fa fa-star-o fa-lg"></i>
 <label for="vote2">
 <input name="vote" id="vote" value="2" type="radio" />
 {$lang['Bad']}
 </label>
 </div>
 <div>
-<img title="{$lang['Terrible']}" class="brd0"
-src="{$image_path}/rating/rating1.gif"
-alt="{$lang['Terrible']}" />
+<i class="fa fa-star fa-lg"></i><i class="fa fa-star-o fa-lg"></i><i class="fa fa-star-o fa-lg"></i><i class="fa fa-star-o fa-lg"></i><i class="fa fa-star-o fa-lg"></i>
 <label for="vote1">
 <input name="vote" id="vote" value="1" type="radio" />
 {$lang['Terrible']}
@@ -11050,7 +11032,7 @@ alt="{$lang['Terrible']}" />
 {/if}
 {/if}
 {/if}
-{if {$_CONF['member_permission']}}
+<!--sub_tools_s-->
 <li class="l-left sub_tools">
 <a href="javascript:switchMenuNone('subject_tools')" class="popmenubutton button_b" onclick="switchBlock('subject_rating');">
 {$lang['Thread_Tools']}
@@ -11060,36 +11042,44 @@ alt="{$lang['Terrible']}" />
 <!-- table --><div style="width:200px; border-spacing:1px;" class="table border">
 <dl class="center_text_align">
 <dt></dt>
+<style>
+.menu_popup img {
+    position: relative;
+    top: 4px !important;
+    left: 2px;
+}
+</style>
 <dd class="thead">
 {$lang['Thread_Tools']}
 </dd>
 </dl>
+{if {$_CONF['info_row']['download_subject']} == '1'}
 <dl>
 <dt></dt>
 <dd class="menu_popup">
 <a href="index.php?page=download&amp;subject=1&amp;id={$subject_id}">
-<img src="{$image_path}/icon1.gif"
-title="{$lang['Download_Subject']}" class="brd0" alt="" />
+<i class="fa fa-download fa-lg"></i>
 {$lang['Download_Subject']}
 </a>
 </dd>
 </dl>
+{/if}
+{if {$_CONF['info_row']['print_subject']} == '1'}
 <dl>
 <dt></dt>
 <dd class="menu_popup">
 <a href="index.php?page=print&amp;show=1&amp;id={$subject_id}">
-<img alt="" class="brd0" src="{$image_path}/printer.gif"
-title="{$lang['print_Subject']}" />
+<i class="fa fa-print fa-lg"></i>
 {$lang['print_Subject']}
 </a>
 </dd>
 </dl>
+{/if}
 <dl>
 <dt></dt>
 <dd class="menu_popup">
 <a href="index.php?page=misc&amp;sendtofriend=1&amp;id={$subject_id}">
-<img src="{$image_path}/sendtofriend.gif"
-title="{$lang['sendsubjecttofriend']}" class="brd0" alt="" />
+<i class="fa fa-share fa-lg"></i>
 {$lang['sendsubjecttofriend']}
 </a>
 </dd>
@@ -11109,8 +11099,7 @@ title="{$lang['Cancel']}
 </a>
 {else}
 <a href="index.php?page=misc&amp;addsubscription=1&amp;id={$subject_id}">
-<img src="{$image_path}/subscribe.gif"
-title="{$lang['addsubscription']}" class="brd0" alt="" />
+<i class="fa fa-bell-o fa-lg"></i>
 {$lang['addsubscription']}
 </a>
 {/if}
@@ -11122,13 +11111,11 @@ title="{$lang['addsubscription']}" class="brd0" alt="" />
 </div>
 <!-- Code subject_tools Menu End -->
 </li>
-{/if}
+<!--sub_tools-->
 </ul>
 </dd>
 </dl>
-</div><!-- /table -->
-
-]]></show_subject_information>
+</div><!-- /table -->]]></show_subject_information>
 <show_tags_topic><![CDATA[<table class="border wd98 brd1 clpc0 a-center">
 <tr>
 <td class="thead1 right_text_align wd98">
@@ -11288,7 +11275,7 @@ $t=0;
 echo "</tr><tr>";
 }?>
 <td class="row1">
-<img src="{$SmlList['smile_path']}" OnClick="AddSmileyIcon('{$SmlList['smile_path']}');" alt="{$SmlList['smile_path']}" class="brd0" />
+<img src="{$SmlList['smile_path']}" OnClick="AddSmileyIcon('{$SmlList['smile_path']}');" alt="{$SmlList['smile_path']}" style="max-width: 25px !important;max-height: 25px !important;" class="brd0" />
 </td>
 <?php $t=$t+1;?>
 {/Des::while}
@@ -11338,7 +11325,7 @@ echo "</tr><tr>";
 }?>
 <td class="row1">
 <a href="javascript:void(0)">
-<img src="{$SmlList['smile_path']}" OnClick="window.opener.PBBEditor.insertText('{$SmlList['smile_short']}');" alt="{$SmlList['smile_short']}" class="brd0" />
+<img src="{$SmlList['smile_path']}" OnClick="window.opener.PBBEditor.insertText('{$SmlList['smile_short']}');" alt="{$SmlList['smile_short']}" style="max-width: 25px !important;max-height: 25px !important;" class="brd0" />
 </a>
 <br />
 </td>
@@ -11806,37 +11793,37 @@ echo $PowerBB->Powerparse->_wordwrap($text,$num);
 <td class="thead1 right_text_align">
 &nbsp;&nbsp;{$lang['date']}</td>
 </tr>
-{Des::while}{lastPostsList}
-{if {$lastPostsList['title']} !=''}
+{Des::while}{lastStaticPostsList}
+{if {$lastStaticPostsList['title']} !=''}
 <tr class="va-t">
-<td class="row2 right_text_align" title="{$lastPostsList['title']}">
+<td class="row2 right_text_align" title="{$lastStaticPostsList['title']}">
 <i class="fa fa-sticky-note"></i>&nbsp;
-<a href="index.php?page=topic&amp;show=1&amp;id={$lastPostsList['id']}" title="{$lastPostsList['title']}">
+<a href="index.php?page=topic&amp;show=1&amp;id={$lastStaticPostsList['id']}" title="{$lastStaticPostsList['title']}">
 <span class="smallfont">
 <?php
 $num ='35';
-$text = $PowerBB->_CONF['template']['while']['lastPostsList'][$this->x_loop]['title'];
+$text = $PowerBB->_CONF['template']['while']['lastStaticPostsList'][$this->x_loop]['title'];
 echo $PowerBB->Powerparse->_wordwrap($text,$num);
 ?>
 </span>
 </a>
 </td>
-<td class="row2 lastP_user right_text_align" title="{$lastPostsList['last_replier']}">
+<td class="row2 lastP_user right_text_align" title="{$lastStaticPostsList['last_replier']}">
 <span class="smallfont">
-{if {$lastPostsList['last_replier']} !=''}
-<a href="index.php?page=profile&amp;show=1&amp;username={$lastPostsList['last_replier']}">
-{$lastPostsList['last_replier']}
+{if {$lastStaticPostsList['last_replier']} !=''}
+<a href="index.php?page=profile&amp;show=1&amp;username={$lastStaticPostsList['last_replier']}">
+{$lastStaticPostsList['last_replier']}
 </a>
 {else}
-<a href="index.php?page=profile&amp;show=1&amp;username={$lastPostsList['writer']}">
-{$lastPostsList['writer']}
+<a href="index.php?page=profile&amp;show=1&amp;username={$lastStaticPostsList['writer']}">
+{$lastStaticPostsList['writer']}
 </a>
 {/if}
 </span>
 </td>
-<td class="row2 lastP_date right_text_align" title="{$lastPostsList['reply_date']}">
+<td class="row2 lastP_date right_text_align" title="{$lastStaticPostsList['reply_date']}">
 &nbsp;<span class="smallfont">
-<?php echo $PowerBB->functions->time_ago($PowerBB->_CONF['template']['while']['lastPostsList'][$this->x_loop]['write_time']); ?>
+<?php echo $PowerBB->functions->time_ago($PowerBB->_CONF['template']['while']['lastStaticPostsList'][$this->x_loop]['write_time']); ?>
 </span>
 </td>
 </tr>
@@ -12376,7 +12363,7 @@ if($MemberIDInfo['user_gender'] == 'm'){?>
 <td class="row1 right_text_align wd100">
 <b class="user_s">
 {$lang['user_location_']}
-<a target="_blank" href="index.php?{$Location['path']}"><b>{$Location['user_location']}</b></a>
+<a target="_blank" href="{$Location['path']}"><b>{$Location['user_location']}</b></a>
 </b>
 </td>
 </tr>
@@ -15305,7 +15292,7 @@ eval("form.elements[" + i + "].checked = form.elements[0].checked");
 <dl>
 <dt></dt>
 <dd class="center_text_align usercp_left">
-<form action="index.php?page=usercp&amp;attach=1&amp;del=1&amp;options=1" name="form1" method="post">
+<form action="index.php?page=usercp&amp;attach=1&amp;main=1&amp;options=1" name="form1" method="post">
 <div class="center_text_align">
 <table class="border wd100 brd1 clpc0">
 <tr class="center_text_align">
@@ -15371,7 +15358,7 @@ KB
 <table class="border wd100 brd1 clpc0">
 <tr class="center_text_align va-t">
 <td class="row1" colspan="5">
-<input class="button button_b" name="delet" type="submit" value="{$lang['del_Attachments']}" /></td>
+<input class="buttons_no_link" name="delet" type="button" value="{$lang['del_Attachments']}" /></td>
 </tr>
 </table>
 </div>

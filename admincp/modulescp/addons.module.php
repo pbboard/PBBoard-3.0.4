@@ -960,6 +960,7 @@ class PowerBBAddonsMOD
 
 					$contents = $row['template'];
 					$contents = str_replace("&#39;", "'", $contents);
+					$contents	=	str_replace(PHP_EOL.$Template['action']['value'],"", $contents);
 		             $new_contents	=	str_replace($Template['find']['value'],$Template['action']['value']."\n".$Template['find']['value'], $contents);
 		            $new_contents = str_replace("'", "&#39;", $new_contents);
 
@@ -992,6 +993,7 @@ class PowerBBAddonsMOD
 
 					$contents = $row['template'];
 					$contents = str_replace("&#39;", "'", $contents);
+					$contents	=	str_replace($Template['action']['value'].PHP_EOL,"", $contents);
 		             $new_contents	=	str_replace($Template['find']['value'],$Template['find']['value']."\n".$Template['action']['value'], $contents);
 
 		            $new_contents = str_replace("'", "&#39;", $new_contents);
@@ -1117,6 +1119,7 @@ class PowerBBAddonsMOD
 
 					$contents = $row['template'];
 					$contents = str_replace("&#39;", "'", $contents);
+					$contents	=	str_replace(PHP_EOL.$Template['action']['value'],"", $contents);
 		             $new_contents	=	str_replace($Template['find']['value'],$Template['action']['value']."\n".$Template['find']['value'], $contents);
 		            $new_contents = str_replace("'", "&#39;", $new_contents);
 
@@ -1149,6 +1152,7 @@ class PowerBBAddonsMOD
 
 					$contents = $row['template'];
 					$contents = str_replace("&#39;", "'", $contents);
+					$contents	=	str_replace($Template['action']['value'].PHP_EOL,"", $contents);
 		             $new_contents	=	str_replace($Template['find']['value'],$Template['find']['value']."\n".$Template['action']['value'], $contents);
 
 		            $new_contents = str_replace("'", "&#39;", $new_contents);
@@ -1245,6 +1249,7 @@ class PowerBBAddonsMOD
 
 					$contents = @file_get_contents($Path);
 					$contents = $PowerBB->sys_functions->ReplaceMysqlExtension($contents);
+					$contents	=	str_replace(PHP_EOL.$Template['action']['value'],"", $contents);
 		            $new	=	str_replace($Templates['find']['value'],$Templates['action']['value']."\n".$Templates['find']['value'], $contents);
 
 					$put = @file_put_contents($Path,$new);
@@ -1256,6 +1261,7 @@ class PowerBBAddonsMOD
 
 					$contents = @file_get_contents($Path);
 					$contents = $PowerBB->sys_functions->ReplaceMysqlExtension($contents);
+					$contents	=	str_replace($Template['action']['value'].PHP_EOL,"", $contents);
 		            $new	=	str_replace($Templates['find']['value'],$Templates['find']['value']."\n".$Templates['action']['value'], $contents);
 
 					$put = @file_put_contents($Path,$new);
@@ -1312,6 +1318,7 @@ class PowerBBAddonsMOD
 
 					$contents = @file_get_contents($Path);
 					$contents = $PowerBB->sys_functions->ReplaceMysqlExtension($contents);
+					$contents	=	str_replace(PHP_EOL.$Template['action']['value'],"", $contents);
 		            $new	=	str_replace($Template['find']['value'],$Template['action']['value']."\n".$Template['find']['value'], $contents);
 
 					$put = @file_put_contents($Path,$new);
@@ -1323,6 +1330,7 @@ class PowerBBAddonsMOD
 
 					$contents = @file_get_contents($Path);
 					$contents = $PowerBB->sys_functions->ReplaceMysqlExtension($contents);
+					$contents	=	str_replace($Template['action']['value'].PHP_EOL,"", $contents);
 		            $new	=	str_replace($Template['find']['value'],$Template['find']['value']."\n".$Template['action']['value'], $contents);
 
 					$put = @file_put_contents($Path,$new);

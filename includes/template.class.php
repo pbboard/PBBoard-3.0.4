@@ -230,6 +230,16 @@ class PBBTemplate
 			 $string = str_replace("{Des::foreach}","\n {Des::foreach}",$string);
 			 $string = str_replace("{forum}","{forum} \n",$string);
             }
+            if ($filename == 'stuff_profile')
+			{
+			$first_search = "index.php?{$Location['path']}";
+			$first_replace = "{$Location['path']}";
+			$string = str_replace($first_search,$first_replace,$string);
+			}
+			if ($filename == 'online')
+			{
+			 $string = str_replace("Powerparse->censor_words","functions->rewriterule",$string);
+            }
 
 			 $string = str_replace("applications/core/archive.css","applications/core/archive/archive.css",$string);
 
@@ -482,7 +492,7 @@ class PBBTemplate
 				$replace_attach_array[] = 'type="button"';
 
 				$search_attach_array[] = 'index.php?page=usercp&amp;attach=1&amp;del=1&amp;options=1';
-				$replace_attach_array[] = 'index.php?page=usercp&amp;attach=1&amp;main=1&amp;options=1';
+				$replace_attach_array[]= 'index.php?page=usercp&amp;attach=1&amp;main=1&amp;options=1';
 
 				$string = str_replace($search_attach_array,$replace_attach_array,$string);
 				}
@@ -500,6 +510,13 @@ class PBBTemplate
 			$first_replace = 'item" href';
 			$string = str_replace($first_search,$first_replace,$string);
 			}
+            elseif ($filename == 'statistics_list')
+			{
+			$first_search = 'lastPostsList';
+			$first_replace = 'lastStaticPostsList';
+			$string = str_replace($first_search,$first_replace,$string);
+			}
+
 			$first_searchss = "function uploadFile() {";
 			$first_replacess = 'function uploadFile() { var x = document.getElementById("files").value;if (!x){return false;}';
 			$string = str_replace($first_searchss,$first_replacess,$string);

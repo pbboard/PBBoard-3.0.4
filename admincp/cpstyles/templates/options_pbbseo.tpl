@@ -35,6 +35,8 @@
 		</tr>
 	</table>
 	<br />
+	</form>
+<form action="index.php?page=options&amp;pbb_seo=1&amp;update_rewrite=1" method="post">
 <table cellpadding="3" cellspacing="1" width="90%" class="t_style_b" border="0" align="center">
 		<tr align="center">
 			<td class="main1">
@@ -57,8 +59,9 @@ Rewrite Engine
 <input type="submit" value="{$lang['acceptable']}" name="submit" /></td>
 		</tr>
 	</table>
-	<br />
-	</form>
+</form>
+<br />
+
 <form action="index.php?page=options&amp;pbb_seo=1&amp;update_sitemap=1" method="post">
 <table cellpadding="3" cellspacing="1" width="90%" class="t_style_b" border="0" align="center">
 		<tr align="center">

@@ -21,7 +21,7 @@ class PowerBBSitemapMOD
 		global $PowerBB;
 		$PowerBB->_GET['count'] = (!isset($PowerBB->_GET['count'])) ? 0 : $PowerBB->_GET['count'];
 		$PowerBB->_GET['count'] = $PowerBB->functions->CleanVariable($PowerBB->_GET['count'],'intval');
-	    $perpage_num = "150";
+	    $perpage_num = "300";
 		$GetSubjectNumber = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['subject'] . " WHERE review_subject<>1 AND sec_subject<>1 AND delete_topic<>1 LIMIT 1"));
 		$SubjectArr = array();
 		$SubjectArr['where'] 				= 	array();
@@ -30,7 +30,7 @@ class PowerBBSitemapMOD
 		$SubjectArr['where'][0]['oper'] 	= 	'<>';
 		$SubjectArr['where'][0]['value'] 	= 	'1';
 		$SubjectArr['order'] 			= 	array();
-		$SubjectArr['order']['field'] 	= 	'write_time';
+		$SubjectArr['order']['field'] 	= 	'native_write_time';
 		$SubjectArr['order']['type'] 	= 	'DESC';
 		// Ok Mr.XSS go to hell !
 		// Pager setup
@@ -43,15 +43,15 @@ class PowerBBSitemapMOD
 		$SubjectList = $PowerBB->core->GetList($SubjectArr,'subject');
 		$size 	= 	sizeof($SubjectList);
 		$x		=	0;
-        if($PowerBB->_GET['count']== 0)
+        if($PowerBB->_GET['count'] == '0')
         {
 		$SecArr 						= 	array();
 		$SecArr['get_from']				=	'db';
 		$SecArr['proc'] 				= 	array();
 		$SecArr['proc']['*'] 			= 	array('method'=>'clean','param'=>'html');
 		$SecArr['order']				=	array();
-		$SecArr['order']['field']		=	'sort';
-		$SecArr['order']['type']		=	'DESC';
+		$SecArr['order']['field']		=	'id';
+		$SecArr['order']['type']		=	'ASC';
 		$SecArr['where']				=	array();
 		$SecArr['where'][0]['name']		= 	'sec_section<>1 AND hide_subject<>1 AND parent';
 		$SecArr['where'][0]['oper']		= 	'>';
@@ -69,26 +69,46 @@ class PowerBBSitemapMOD
 		$url = $PowerBB->functions->rewriterule($url);
 		$forumurl = "index.php?page=forum&amp;show=1&amp;id=";
 		$forumurl = $PowerBB->functions->rewriterule($forumurl);
+
+        // if multi pages get page number
+		$page_num = $PowerBB->functions->CleanVariable($PowerBB->_GET['count'],'intval');
+		if($page_num > 1)
+		{
+		 $page_num = str_replace("&count=","", $page_num);
+		 $page_num_count = " | ".$PowerBB->_CONF['template']['_CONF']['lang']['Pagenum']."".$page_num;
+		 $page_num_count = str_replace(" %no% من %pnu%", '', $page_num_count);
+		 $page_num_count = str_replace(" %no% of %pnu%", '', $page_num_count);
+		}
+
+
 		echo '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-		<html xmlns="http://www.w3.org/1999/xhtml" dir="'.$PowerBB->_CONF['info_row']['content_dir'].'" xml:lang="en" lang="en">
+		<html xmlns="http://www.w3.org/1999/xhtml" dir="'.$PowerBB->_CONF['info_row']['content_dir'].'" xml:lang="'.$PowerBB->_CONF['info_row']['content_language'].'" lang="'.$PowerBB->_CONF['info_row']['content_language'].'">
 		<head>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-		<meta http-equiv="Content-Language" content="en" />
+		<link rel="canonical" href="'.$PowerBB->functions->GetPageUrl().'" />
+		<meta http-equiv="Content-Language" content="'.$PowerBB->_CONF['info_row']['content_language'].'" />
 		<meta name="description" content="" />
 		<link rel="shortcut icon" href="favicon.ico" />
-		<title>' .$PowerBB->_CONF['template']['_CONF']['lang']['Sitemap_title'] . ' - ' .$PowerBB->_CONF['info_row']['title'] . ' Sitemape</title>
+		<title>'.$PowerBB->_CONF['template']['_CONF']['lang']['Sitemap_title']." HTML". $page_num_count .'</title>
 		</head>
-		<body><ol>
-		<li><a title="'.$PowerBB->_CONF['info_row']['title'].'" target="_blank" href="'.$PowerBB->functions->GetForumAdress().'">'.$PowerBB->_CONF['info_row']['title'].'</a><br />'.$PowerBB->_CONF['info_row']['description'].'<hr></hr></li>';
-        if($PowerBB->_GET['count']== 0)
+		<body>
+		<br /><h1>'.$PowerBB->_CONF['template']['_CONF']['lang']['view_full_version'].'<a title="'.$PowerBB->_CONF['info_row']['title'].'" target="_blank" href="'.$PowerBB->functions->GetForumAdress().'">'.$PowerBB->_CONF['info_row']['title'].'</a></h1><br />';
+
+		if ($GetSubjectNumber > $perpage_num)
+		{
+		  print($PowerBB->pager->show());
+		}
+
+        if($PowerBB->_GET['count'] == '0')
         {
 			while ($catys_x < $catys_size)
 			{
 		       // Get the groups information to know view this section or not
 		    if ($PowerBB->functions->section_group_permission($catys[$catys_x]['id'],$PowerBB->_CONF['group_info']['id'],'view_section'))
 		      {
-	            echo  '<li><a title="'.$catys[$catys_x]['title'].'" target="_blank" href="'.$PowerBB->functions->GetForumAdress() . $forumurl . $catys[$catys_x]['id'].$extention.'">'.$catys[$catys_x]['title'].'</a><br /><font color="#008000" size="-1">'.$PowerBB->functions->GetForumAdress() . $forumurl . $catys[$catys_x]['id'].$extention.'</font><br /><hr></hr></li>';
+	            echo  '<br />&raquo; <a title="'.$catys[$catys_x]['title'].'" target="_blank" href="'.$PowerBB->functions->GetForumAdress() . $forumurl . $catys[$catys_x]['id'].$extention.'">'.$catys[$catys_x]['title'].'</a>
+	            ';
 			  }
 
 			 $catys_x += 1;
@@ -96,14 +116,11 @@ class PowerBBSitemapMOD
 		}
 		while ($x < $size)
 		{
-            echo '<li><a title="'.$SubjectList[$x]['title'].'" target="_blank" href="'.$PowerBB->functions->GetForumAdress() . $url . $SubjectList[$x]['id'].$extention.'">'.$SubjectList[$x]['title'].'</a><br /><font color="#008000" size="-1">'.$PowerBB->functions->GetForumAdress() . $url . $SubjectList[$x]['id'].$extention.'</font><br /><hr></hr></li>';
+            echo '<br />&raquo; <a title="'.$SubjectList[$x]['title'].'" target="_blank" href="'.$PowerBB->functions->GetForumAdress() . $url . $SubjectList[$x]['id'].$extention.'">'.$SubjectList[$x]['title'].'</a>
+            ';
 			$x += 1;
 		}
-		echo '</ol>';
-		if ($GetSubjectNumber > $perpage_num)
-		{
-		  print($PowerBB->pager->show());
-		}
+
 		echo '</body></html>';
 	  }
       // End Html sitemap

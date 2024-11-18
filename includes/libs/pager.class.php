@@ -210,6 +210,11 @@ class PowerBBPager
 		$PowerBB->_CONF['template']['_CONF']['lang']['last_page'] = str_replace(' »','',$PowerBB->_CONF['template']['_CONF']['lang']['last_page']);
         $PowerBB->_CONF['template']['_CONF']['lang']['Pagenum'] = str_replace('%no%',@ceil($n_page),$PowerBB->_CONF['template']['_CONF']['lang']['Pagenum']);
         $PowerBB->_CONF['template']['_CONF']['lang']['Pagenum'] = str_replace('%pnu%',$this->pages_number,$PowerBB->_CONF['template']['_CONF']['lang']['Pagenum']);
+         if ($PowerBB->_GET['page'] == 'sitemap'
+         and $PowerBB->_GET['sitemaps'])
+         {
+           $PowerBB->_CONF['template']['_CONF']['lang']['Pagenum'] ="";
+         }
         $string = str_replace('[align]',$align,$string);
         $string = str_replace('[Pages]',$PowerBB->_CONF['template']['_CONF']['lang']['Pagenum'],$string);
         $string = str_replace('[last_page]',$PowerBB->_CONF['template']['_CONF']['lang']['last_page'],$string);
@@ -269,6 +274,12 @@ class PowerBBPager
              $string = str_replace('&amp;count=','-',$string);
              $string = str_replace('&count=','-',$string);
            }
+         }
+         elseif ($PowerBB->_GET['page'] == 'sitemap'
+         and $PowerBB->_GET['sitemaps'])
+         {
+          $this->limit = $this->pages_number;
+          $PowerBB->_CONF['template']['_CONF']['lang']['last_page'] = '';
          }
          elseif ($PowerBB->_GET['page'] == 'latest')
          {

@@ -2310,6 +2310,19 @@ class PowerBBFunctions
 		// Get server port
 		$Protocol = $PowerBB->functions->GetServerProtocol();
         $actual_link = $Protocol.$PowerBB->_SERVER['HTTP_HOST'].$PowerBB->_SERVER['REQUEST_URI'];
+        $page = empty($PowerBB->_GET['page']) ? 'index' : $PowerBB->_GET['page'];
+        if ($page == 'index')
+		{
+        $actual_link = str_replace("/index.php","", $actual_link);
+		}
+		elseif($page == 'topic')
+		{
+        $actual_link = str_replace(".html","", $actual_link);
+		}
+		elseif($page == 'sitemap')
+		{
+        $actual_link = str_replace("&count=-","count=", $actual_link);
+		}
         if(strstr($actual_link,'count='))
         {
         $actual_link = str_replace("&count=0","", $actual_link);
@@ -3581,8 +3594,10 @@ return preg_replace($pattern, $replacement, $email);
         {
 	   		$type = str_replace("index.php?page=forum&show=1&id=","f",$type);
 	   		$type = str_replace("index.php?page=forum&amp;show=1&amp;id=","f",$type);
+	   		$type = str_replace("index.php?page=forum&show=1&amp;id=","f",$type);
 	   		$type = str_replace("index.php?page=topic&show=1&id=","t",$type);
 	   		$type = str_replace("index.php?page=topic&amp;show=1&amp;id=","t",$type);
+	   		$type = str_replace("index.php?page=topic&show=1&amp;id=","t",$type);
 	   		$type = str_replace("index.php?page=profile&show=1&id=","u",$type);
 	   		$type = str_replace("index.php?page=profile&amp;show=1&amp;id=","u",$type);
 	   		//$type = str_replace("index.php?page=profile&show=1&username=","name-",$type);
@@ -3654,6 +3669,7 @@ return preg_replace($pattern, $replacement, $email);
 
 
             $type = str_replace("index.php?page=tags&amp;show=1&amp;tag=","tag-",$type);
+            $type = str_replace("index.php?page=tags&show=1&tag=","tag-",$type);
 
             $type = str_replace('index.php?page=latest_reply&amp;today=1', 'whats_new', $type);
             $type = str_replace('index.php?page=latest_reply&today=1', 'whats_new', $type);
@@ -4212,6 +4228,7 @@ function my_strlen($string)
 		global $PowerBB;
 		$cache_time = $PowerBB->_CONF['info_row']['last_time_cache'];
 		$cache = $PowerBB->_CONF['info_row']['last_posts_cache'];
+		$max_limit = '20';
 		$Now= $PowerBB->_CONF['now'];
 		$cache_end = $cache_time+($cache_long*60);
 		if(!$cache || ($cache_end < $Now))
@@ -4227,7 +4244,7 @@ function my_strlen($string)
 		$last_posts_cache['where'][1]['name'] 	= 	'review_subject<>1 AND sec_subject<>1 AND delete_topic';
 		$last_posts_cache['where'][1]['oper'] 	= 	'<>';
 		$last_posts_cache['where'][1]['value'] 	= 	'1';
-		$Createcache = $PowerBB->core->Create_last_posts_cache($last_posts_cache,$Now,$PowerBB->_CONF['info_row']['lasts_posts_bar_num']);
+		$Createcache = $PowerBB->core->Create_last_posts_cache($last_posts_cache,$Now,$max_limit);
 		}
        return ($Createcache) ? true : false;
     }

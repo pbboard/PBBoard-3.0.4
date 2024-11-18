@@ -429,6 +429,9 @@ class PowerBBCommon
 		$locations['tags'] 			= 	$PowerBB->_CONF['template']['_CONF']['lang']['Seen_the_tags'];
 		$locations['online'] 		= 	$PowerBB->_CONF['template']['_CONF']['lang']['Seen_the_online'];
 		$locations['chat_message'] 	= 	$PowerBB->_CONF['template']['_CONF']['lang']['chat_message'];
+		$locations['post']      	= 	$PowerBB->_CONF['template']['_CONF']['lang']['view_single_post'];
+		$locations['portal']      	= 	$PowerBB->_CONF['template']['_CONF']['lang']['view_single_post'].$PowerBB->_CONF['info_row']['title_portal'];
+		$locations['print']      	= 	$PowerBB->_CONF['template']['_CONF']['lang']['Print_topic'];
 
 		if (array_key_exists($page,$locations))
 		{
@@ -442,8 +445,9 @@ class PowerBBCommon
 
 		// Get username with group style
 		$username_style = $PowerBB->_CONF['member_row']['username_style_cache'];
-
-
+        // Get QUERY STRING path
+		$path = addslashes($PowerBB->_SERVER['QUERY_STRING']);
+		$path = $PowerBB->functions->CleanVariable($path,'sql');
 		////////////
 		// Member don't exists in online table , so we insert member info
 		if (!$IsOnline)
@@ -454,7 +458,7 @@ class PowerBBCommon
 			$InsertOnline['field']['username'] 			= 	$PowerBB->_CONF['member_row']['username'];
 			$InsertOnline['field']['username_style'] 	= 	$username_style;
 			$InsertOnline['field']['logged'] 			= 	$PowerBB->_CONF['now'];
-			$InsertOnline['field']['path'] 				= 	addslashes($PowerBB->_SERVER['QUERY_STRING']);
+			$InsertOnline['field']['path'] 				= 	$path;
 			$InsertOnline['field']['user_ip'] 			= 	$PowerBB->_CONF['ip'];
 			$InsertOnline['field']['hide_browse'] 		= 	$PowerBB->_CONF['member_row']['hide_online'];
 			$InsertOnline['field']['user_location'] 	= 	$MemberLocation;
@@ -477,7 +481,7 @@ class PowerBBCommon
 				$UpdateOnline['field']['username'] 			= 	$PowerBB->_CONF['member_row']['username'];
 				$UpdateOnline['field']['username_style'] 	= 	$username_style;
 				$UpdateOnline['field']['logged']			=	$PowerBB->_CONF['now'];
-				$UpdateOnline['field']['path']				=	addslashes($PowerBB->_SERVER['QUERY_STRING']);
+				$UpdateOnline['field']['path']				=	$path;
 				$UpdateOnline['field']['user_ip']			=	$PowerBB->_CONF['ip'];
 				$UpdateOnline['field']['hide_browse']		=	$PowerBB->_CONF['member_row']['hide_online'];
 				$UpdateOnline['field']['user_location']		=	$MemberLocation;
@@ -717,6 +721,10 @@ class PowerBBCommon
 		$locations['tags'] 			= 	$PowerBB->_CONF['template']['_CONF']['lang']['Seen_the_tags'];
 		$locations['online'] 		= 	$PowerBB->_CONF['template']['_CONF']['lang']['Seen_the_online'];
 		$locations['chat_message'] 	= 	$PowerBB->_CONF['template']['_CONF']['lang']['chat_message'];
+		$locations['post']      	= 	$PowerBB->_CONF['template']['_CONF']['lang']['view_single_post'];
+		$locations['portal']      	= 	$PowerBB->_CONF['template']['_CONF']['lang']['view_single_post'].$PowerBB->_CONF['info_row']['title_portal'];
+		$locations['print']      	= 	$PowerBB->_CONF['template']['_CONF']['lang']['Print_topic'];
+
 
 		if (array_key_exists($page,$locations))
 		{
@@ -909,14 +917,13 @@ class PowerBBCommon
        if ($PowerBB->_CONF['info_row']['board_close'])
     	{
 
-    	     $PowerBB->_CONF['info_row']['sidebar_list_active'] = 0;
-    	     $PowerBB->_CONF['template']['_CONF']['info_row']['sidebar_list_active']= 0;
   			if ($PowerBB->_CONF['group_info']['admincp_allow'] != 1
   				and !defined('LOGIN'))
-        	{
-
+        	{
+                 $PowerBB->_CONF['info_row']['sidebar_list_active'] = 0;
+    	          $PowerBB->_CONF['template']['_CONF']['info_row']['sidebar_list_active']= 0;
         		// If the PowerCode is allow , use it
-      	       $PowerBB->_CONF['info_row']['board_msg']= str_replace('../look/','look/',$PowerBB->_CONF['info_row']['board_msg']);
+      	        $PowerBB->_CONF['info_row']['board_msg']= str_replace('../look/','look/',$PowerBB->_CONF['info_row']['board_msg']);
 				$PowerBB->_CONF['info_row']['board_msg'] = $PowerBB->Powerparse->replace($PowerBB->_CONF['info_row']['board_msg']);
 
 				// Convert the smiles to image
@@ -927,6 +934,10 @@ class PowerBBCommon
 
         		$PowerBB->functions->ShowHeader();
     			$PowerBB->functions->error($PowerBB->_CONF['info_row']['board_msg']);
+  			}
+  			else
+  			{  			 $PowerBB->_CONF['info_row']['sidebar_list_active'] = 1;
+    	     $PowerBB->_CONF['template']['_CONF']['info_row']['sidebar_list_active']= 1;
   			}
 
  		}
@@ -1358,8 +1369,12 @@ class PowerBBCommon
 	        }
 	        else
 	        {
-			$pbb_last_posts_cache = unserialize($cache);
-			$PowerBB->_CONF['template']['while']['lastPostsList'] = $pbb_last_posts_cache;
+	    	 $pbb_last_posts_cache = unserialize($cache);
+			 $lastPostsList = array_slice($pbb_last_posts_cache, 0, $PowerBB->_CONF['info_row']['lasts_posts_bar_num']);
+			 $PowerBB->_CONF['template']['while']['lastPostsList'] = $lastPostsList;
+			 // cache last posts static num
+			 $lastStaticPostsList = array_slice($pbb_last_posts_cache, 0, $PowerBB->_CONF['info_row']['last_posts_static_num']);
+			 $PowerBB->_CONF['template']['while']['lastStaticPostsList'] = $lastStaticPostsList;
 			}
           }
         // main_bar template Change background color to class primary_on

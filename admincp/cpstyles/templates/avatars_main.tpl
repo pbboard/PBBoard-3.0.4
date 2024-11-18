@@ -9,7 +9,13 @@ function checkAll(form){
 </script>
 </head>
 <body>
-
+<style>
+.row_avatar_path
+{
+max-width: 100px !important;
+max-height: 100px !important;
+}
+</style>
 <br />
 
 <div class="address_bar">{$lang['Control_Panel']} &raquo;
@@ -35,7 +41,7 @@ function checkAll(form){
 	{Des::while}{AvrList}
 	<tr align="center">
 		<td class="row1">
-			<img src="../{$AvrList['avatar_path']}" alt="{$AvrList['avatar_path']}" />
+			<img src="../{$AvrList['avatar_path']}" alt="{$AvrList['avatar_path']}" class="row_avatar_path" />
 		</td>
 		<td class="row1">
 			<a href="index.php?page=avatar&amp;edit=1&amp;main=1&amp;id={$AvrList['id']}">{$lang['edit']}</a>

@@ -971,6 +971,53 @@
 <input type="text" name="use_list" id="icon_columns_number" value="{$_CONF['info_row']['use_list']}" size="35" />
 			</td>
 </tr>
+<tr valign="top">
+		<td class="row1">{$lang['active']}
+		{$lang['Download_Subject']}؟</td>
+		<td class="row1">
+<select name="download_subject" id="select_rating_show">
+	{if {$_CONF['info_row']['download_subject']}}
+	<option value="1" selected="selected">{$lang['yes']}</option>
+	<option value="0">{$lang['no']}</option>
+	{else}
+	<option value="1">{$lang['yes']}</option>
+	<option value="0" selected="selected">{$lang['no']}</option>
+	{/if}
+</select>
+</td>
+</tr>
+
+<tr valign="top">
+		<td class="row1">{$lang['active']}
+		{$lang['print_Subject']}؟</td>
+		<td class="row1">
+<select name="print_subject" id="select_rating_show">
+	{if {$_CONF['info_row']['print_subject']}}
+	<option value="1" selected="selected">{$lang['yes']}</option>
+	<option value="0">{$lang['no']}</option>
+	{else}
+	<option value="1">{$lang['yes']}</option>
+	<option value="0" selected="selected">{$lang['no']}</option>
+	{/if}
+</select>
+</td>
+</tr>
+
+<tr valign="top">
+		<td class="row1">{$lang['active']}
+		{$lang['sendsubjecttofriend']}؟</td>
+		<td class="row1">
+<select name="send_subject_to_friend" id="select_rating_show">
+	{if {$_CONF['info_row']['send_subject_to_friend']}}
+	<option value="1" selected="selected">{$lang['yes']}</option>
+	<option value="0">{$lang['no']}</option>
+	{else}
+	<option value="1">{$lang['yes']}</option>
+	<option value="0" selected="selected">{$lang['no']}</option>
+	{/if}
+</select>
+</td>
+</tr>
 <tr valign="top" align="center">
 	<td class="main2" colspan="2">{$lang['Settings_fastreply']}</td>
 </tr>

@@ -230,12 +230,6 @@ class PBBTemplate
 			 $string = str_replace("{Des::foreach}","\n {Des::foreach}",$string);
 			 $string = str_replace("{forum}","{forum} \n",$string);
             }
-            if ($filename == 'stuff_profile')
-			{
-			$first_search = "index.php?{$Location['path']}";
-			$first_replace = "{$Location['path']}";
-			$string = str_replace($first_search,$first_replace,$string);
-			}
 			if ($filename == 'online')
 			{
 			 $string = str_replace("Powerparse->censor_words","functions->rewriterule",$string);

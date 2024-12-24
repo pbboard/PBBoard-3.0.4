@@ -1444,7 +1444,7 @@ class PowerBBCoreMOD extends _functions
       }
 
 		$xmlup = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<templategroup>\r\n";
-		$xmldun = "</templategroup>\r\n";
+		$xmldun = "</templategroup>";
 		header("Content-Disposition: attachment; filename=\"" . basename($filename) . "\"");
 		header("Content-type: application/octet-stream");
 		header("Content-Length: ".strlen($xmlup.$xml.$xmldun));

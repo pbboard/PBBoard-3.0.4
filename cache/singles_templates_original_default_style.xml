@@ -1460,7 +1460,6 @@ showButtonPanel: true
 </table></div><br />
 <br />]]></board_close>
 <chat><![CDATA[{if {$chatout}}
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" dir="{$_CONF['info_row']['content_dir']}" lang="{$_CONF['info_row']['content_language']}">
 <head>
@@ -1470,8 +1469,8 @@ showButtonPanel: true
 <?php
 $PowerBB->_CONF['template']['keywords'] = $PowerBB->_CONF['template']['_CONF']['lang']['chat_message'];
 $PowerBB->_CONF['template']['description'] = $PowerBB->_CONF['template']['_CONF']['lang']['chat_message']." الدردشة";
-$PowerBB->_CONF['template']['ForumAdress'] = $PowerBB->functions-> GetForumAdress();
-$PowerBB->_CONF['template']['GetPageUrl'] = $PowerBB->functions-> GetPageUrl();
+$PowerBB->_CONF['template']['ForumAdress'] = $PowerBB->functions->GetForumAdress();
+$PowerBB->_CONF['template']['GetPageUrl'] = $PowerBB->functions->GetPageUrl();
 $PowerBB->_CONF['template']['title'] = $PowerBB->_CONF['template']['_CONF']['lang']['chat_message'];
 ?>
 <meta name="keywords" content="{$keywords}" />
@@ -1517,10 +1516,9 @@ $PowerBB->_CONF['template']['title'] = $PowerBB->_CONF['template']['_CONF']['lan
 <body>
 <style>
 .chat_ee{
-max-height:500px;
+max-height:463px;
 }
 #content_online{
-height:563px;
 background-color: #FFF;
 overflow: auto;
 word-wrap: break-word;
@@ -1528,7 +1526,18 @@ overflow-x: hidden;
 overflow-wrap: break-word;
 }
 .chat{
-margin-bottom: 100px;
+height: 494px;
+background-color: #fff;
+}
+#chat-content {
+    width: 98.8%;
+    margin-right: 5px;
+}
+.row_sidebar.user {
+margin-right: 5px;
+}
+.row_sidebar a {
+margin-right: 7px;
 }
 </style>
 
@@ -1539,34 +1548,18 @@ margin-bottom: 100px;
 
 
 <?php
- $PowerBB->_CONF['template']['GetPageUrl'] = $PowerBB->functions-> GetPageUrl();
+ $PowerBB->_CONF['template']['GetPageUrl'] = $PowerBB->functions->GetPageUrl();
 
 ?>
 <style>
 #litargetood{display:none}
 </style>
-
 <div class="border chat chat-users">
 <ul class="rUlRow">
 <li class="thead1">
-<i class="fa fa-users" aria-hidden="true"></i> {$online_chat_number}
+<i id="chat_users" class="fa fa-users" aria-hidden="true"></i> {$lang['online_naw']}
 </li>
-<div id="content_online">
-{Des::while}{ListonlineChat}
-<li class="row_sidebar row1">
-
-{if {$ListonlineChat['user_id']} == '-1'}
-{if {$ListonlineChat['is_bot']} == '1'}
-{$ListonlineChat['bot_name']}
-{else}
-<?php echo $PowerBB->_CONF['template']['while']['ListonlineChat'][$this->x_loop]['username_style'] = str_ireplace('Guest',$PowerBB->_CONF['template']['lang']['Guest_'],$PowerBB->_CONF['template']['while']['ListonlineChat'][$this->x_loop]['username_style']).$x; $x += 1;?>
-{/if}
-{else}
-<a target="_blank" href="index.php?page=profile&amp;show=1&amp;id={$ListonlineChat['user_id']}">{$ListonlineChat['username_style']}</a></td>
-{/if}
-</li>
-{/Des::while}
-</div>
+<div id="content_online"></div>
 </ul>
 </div>
 
@@ -1586,53 +1579,60 @@ margin-bottom: 100px;
 </div>
 </li>
 <li class="row_sidebar">
-{template}add_chat_message{/template}
+
 </li>
 </ul>
+</div>
+<div id="message"></div>
+<div class="add_chat_message">
+{template}add_chat_message{/template}
 </div>
 <br />
 <br />
 <br />
 
 <script type="text/javascript">
-var waittime = 100; /* time between chat refreshes (ms) */
+var waittime = 5000; /* time between chat refreshes (ms) */
 var myTimeout = window.setTimeout("read_cont();", waittime);
+var myTimeout = window.setTimeout("read_users();", waittime);
 
 //$("#form-chat-id").click(function(){var myTimeout = utoUpdate();})
 
   function AjaxInsertChat()
   {
-    clearTimeout(myTimeout);
-	var source = document.getElementById('box_text');
-	if ($.trim(source.value)){
-	$( document ).ajaxSend(function() {
-  	});
-	var data = {};
-    data['textc']     =    source.value;
-	data['ajax']    =    1;
-	$.post("index.php?page=chat_message&start=1",data,
-	function Success(xml) {
-	source.value = "";
-	$("div.chat_ee" ).scrollTop( 10000 );
-    });
-	} else {
-	alert("{$lang['Please_write_the_message']}");
-	}
- 	var myTimeout = window.setTimeout("read_cont();", waittime);
+  clearTimeout(myTimeout);
+  var txt = document.getElementById('box_text');
+  $.post("index.php?page=chat_message&start=1", {textc: txt.value, ajax: 1}, function(result){
+    txt.value = "";
+    $("#message").html(result);
+  });  
+  var waittimed = 1000; 
+  var myTimeout = window.setTimeout("read_cont();", waittimed);
   }
 
 function utoUpdate(url) {
   $.get(url, function(utodata) {
     $("#content_div_id").html(utodata);
-    $("#content_online").html();
     var myTimeout = window.setTimeout("read_cont();", waittime);
   });
 
 }
 
+function utoUpdateusers(url) {
+  $.get(url, function(utodata) {
+    $("#content_online").html(utodata);
+    var myTimeout = window.setTimeout("read_users();", waittime);
+  });
+
+}
+function read_users() {
+	zeit = new Date();
+	ms = (zeit.getHours() * 24 * 60 * 1000) + (zeit.getMinutes() * 60 * 1000) + (zeit.getSeconds() * 5000) + zeit.getMilliseconds();
+	utoUpdateusers("index.php?page=chat_message&chat_users=1&x=" + ms);
+}
 function read_cont() {
 	zeit = new Date();
-	ms = (zeit.getHours() * 24 * 60 * 1000) + (zeit.getMinutes() * 60 * 1000) + (zeit.getSeconds() * 1000) + zeit.getMilliseconds();
+	ms = (zeit.getHours() * 24 * 240 * 1000) + (zeit.getMinutes() * 60 * 1000) + (zeit.getSeconds() * 5000) + zeit.getMilliseconds();
 	utoUpdate("index.php?page=chat_message&chat_w=1&x=" + ms);
 }
 
@@ -6762,7 +6762,7 @@ index.php?page=topic&amp;show=1&amp;id={$LastsPostsInfo['id']}">
 <img class="brd0" src="look/portal/images/news_icon.gif" alt="" />
 <a href="index.php?page=member_list&amp;index=1&amp;show=1">{$lang['memberlist']}</a><br />
 {/if}       <img class="brd0" src="look/portal/images/news_icon.gif" alt="" />
-<a href="javascript:logout('index.php?page=logout&amp;index=1')">{$lang['logout']}</a><br />
+<a href="index.php?page=logout&amp;index=1">{$lang['logout']}</a><br />
 {/if}
 {if {$_CONF['info_row']['active_send_admin_message']} == '1'}
 <img class="brd0" src="look/portal/images/news_icon.gif" alt="" />
@@ -17892,8 +17892,31 @@ $PowerBB->_CONF['template']['while']['Messages'][$this->x_loop]['avater_path'] =
 {$Messages['message']}
 </div>
 </div>
-{/Des::while}
+{/Des::while}]]></chat_window>
+<chat_online><![CDATA[<li class="row_sidebar row1">
+<i class="fa fa-users" aria-hidden="true"></i> {$lang['Number_Members']}: {$online_chat_number}
+<hr id="null">
+</li>
+ <?php
+$x = 1;
+?>
+{Des::while}{ListonlineChat}
+<li class="row_sidebar row1 user">
+{if {$ListonlineChat['user_id']} == '-1'}
+{if {$ListonlineChat['is_bot']} == '1'}
+{$ListonlineChat['bot_name']}
+{else}
+<span class="fa fa-user"></span> 
+<?php 
+$PowerBB->_CONF['template']['while']['ListonlineChat'][$this->x_loop]['username_style'] = str_ireplace('Guest',$PowerBB->_CONF['template']['lang']['Guest_'],$PowerBB->_CONF['template']['while']['ListonlineChat'][$this->x_loop]['username_style']);
 
-
-]]></chat_window>
+echo $PowerBB->_CONF['template']['while']['ListonlineChat'][$this->x_loop]['username_style'].$x;
+$x += 1;
+?>
+{/if}
+{else}
+<span class="fa fa-user"></span><a target="_blank" href="index.php?page=profile&amp;show=1&amp;id={$ListonlineChat['user_id']}">{$ListonlineChat['username_style']}</a></td>
+{/if}
+</li>
+{/Des::while}]]></chat_online>
 </templategroup>

@@ -188,7 +188,9 @@ class PBBTemplate
 							</style>';
 							if ($PowerBB->_CONF['rows']['member_row']['usergroup'] == '1')
 							{
-							 echo("<br /><div class='direct'><div class='message'><u>ERROR</u>: Template Name: <b>".$template_name."</b> not found.<br /> <hr /> </div></div><div class='clear'></div><br />");
+							 //echo("<br /><div class='direct'><div class='message'><u>ERROR</u>: Template Name: <b>".$template_name."</b> not found.<br /> <hr /> </div></div><div class='clear'></div><br />");
+							 // for old style IF not found template Get original from original default templates and Insert. 2025
+							 $this->_retrieved_template_original_Start($template_name,$style_id);
 							}
                          }
 
@@ -216,8 +218,11 @@ class PBBTemplate
 	function _CompileTemplate($string, $filename)
 	{
 		global $PowerBB;
+        $write_b = ob_start();
 
-           		$page = empty($PowerBB->_GET['page']) ? 'index' : $PowerBB->_GET['page'];
+        @eval($PowerBB->functions->get_fetch_hooks('template_class_start'));
+
+        $page = empty($PowerBB->_GET['page']) ? 'index' : $PowerBB->_GET['page'];
 
          	$Template_name_dont_show = array("add_this", "add_reply_link", "add_subject_link", "signature_show" , "add_tags_table", "awards", "chat", "chat_edit", "chat_main", "editor_simple", "editor_js", "fast_reply_js", "imgs_resize", "jump_forums_list", "lasts_posts_bar", "last_subject_writer", "profile_cover_photo_upload", "statistics_list", "tags_edit_subject", "topic_end_fast_reply", "visitor_messag", "info_bar", "main_static_table", "visitor_message_js", "whatis_new");
 			$string = str_replace("&#39;", "'", $string);
@@ -234,7 +239,10 @@ class PBBTemplate
 			{
 			 $string = str_replace("Powerparse->censor_words","functions->rewriterule",$string);
             }
-
+			if ($filename == 'portal_main_menu')
+			{
+			 $string = str_replace("javascript:logout('index.php?page=logout&amp;index=1')","index.php?page=logout&amp;index=1",$string);
+            }
 			 $string = str_replace("applications/core/archive.css","applications/core/archive/archive.css",$string);
 
 			if ($filename == 'sections_list')
@@ -301,9 +309,6 @@ class PBBTemplate
 
              }
 
-			// CSRF protect all your forms
-			//$string = str_ireplace("</form>",'<input type="hidden" name="csrf" value="{$csrf_key}" />'."\n</form>",$string);
-			@eval($PowerBB->functions->get_fetch_hooks('template_class_start'));
 
 			// We have loop
 			if (preg_match('~\{Des::while}{([^[<].*?)}~',$string)
@@ -566,8 +571,51 @@ class PBBTemplate
 				{
 				$string = str_replace('<div class="btn-nav"></div>','<li><b class="btn-nav"></b></li>',$string);
 				}
-			$write  = @eval(" ?>".$string."<?php ");
 
+            $write  = eval(" ?> $string <?php ");
+            $write_b = ob_get_clean();
+            if ($filename == 'sections_list')
+			{
+            	$regex_last_Reply = '#page=topic&amp;show=1&amp;id=(.*?)"#is';
+				$write_b = preg_replace_callback($regex_last_Reply, function($match) {
+					global $PowerBB;
+		            $subjectArr = $PowerBB->DB->sql_query("SELECT id,reply_number FROM " . $PowerBB->table['subject'] . " WHERE id = '".intval($match[1])."'");
+			        $Info = $PowerBB->DB->sql_fetch_array($subjectArr);
+			        if($Info['reply_number'])
+			        {
+		              	$subject_id = intval($match[1]);
+						$ss_r = $PowerBB->_CONF['info_row']['perpage']/2+1;
+						$roun_ss_r = round($ss_r, 0);
+						$reply_number_r = $Info['reply_number']-$roun_ss_r;
+						$pagenum_r = $reply_number_r/$PowerBB->_CONF['info_row']['perpage'];
+						$round0_r = round($pagenum_r, 0);
+						$countpage = $round0_r+1;
+						$countpage = str_replace("-", '', $countpage);
+
+						$last_replyNumArr = $PowerBB->DB->sql_query("SELECT id,subject_id FROM " . $PowerBB->table['reply'] . " WHERE subject_id='".intval($match[1])."' AND delete_topic<>1 AND review_reply<>1 ORDER BY id DESC LIMIT 0,1");
+						$last_reply = $PowerBB->DB->sql_fetch_array($last_replyNumArr);
+					   if ($Info['reply_number'] > $PowerBB->_CONF['info_row']['perpage'])
+				        {
+						$match_replace = 'page=topic&amp;show=1&amp;id='.$match[1].'&count='.$countpage.'#'.$last_reply['id'].'"';
+						}
+                        else
+                        {
+					    $match_replace = 'page=topic&amp;show=1&amp;id='.$match[1].'#'.$last_reply['id'].'"';
+					    }
+
+					}
+					else
+					{
+					$match_replace = 'page=topic&amp;show=1&amp;id='.$match[1].'"';
+					}
+				    return $match_replace;
+				}, $write_b);
+
+			}
+
+			@eval($PowerBB->functions->get_fetch_hooks('template_ob_get_clean'));
+
+         echo $write_b;
 	}
 
 
@@ -876,6 +924,110 @@ class PBBTemplate
 
 		die($msg);
 
+	}
+
+	function _retrieved_template_original_Start($template_name, $style_id)
+    {
+    	global $PowerBB;
+
+	 if (empty($template_name))
+	  {
+		return;
+	  }
+	  else
+	  {
+
+         $originalfile ="./cache/original_default_templates.xml";
+
+			if (file_exists($originalfile))
+			{
+
+			   $xml_code = @file_get_contents($originalfile);
+
+			}
+			if (strstr($xml_code,'decode="0"'))
+			{
+				$xml_code = str_replace('decode="0"','decode="1"',$xml_code);
+				preg_match_all('/<!\[CDATA\[(.*?)\]\]>/is', $xml_code, $match);
+				foreach($match[0] as $val)
+				{
+				$xml_code = str_replace($val,base64_encode($val),$xml_code);
+				}
+
+			}
+        		$import = $PowerBB->functions->xml_array($xml_code);
+				$Templates = $import['styles']['templategroup'];
+				$Templates_number = sizeof($import['styles']['templategroup']['template']);
+
+			            $x = 0;
+     			while ($x < $Templates_number)
+     			{
+						$templatetitle = $Templates['template'][$x.'_attr']['name'];
+						$version = $Templates['template'][$x.'_attr']['version'];
+						$template_version = $Templates['template'][$x.'_attr']['version'];
+						$template_version = str_replace(".", "", $template_version);
+						if ($Templates['template'][$x.'_attr']['decode'] == '1'
+						or $template_version <= '301')
+						{
+						$template = @base64_decode($Templates['template'][$x]);
+     				    }
+     				    else
+						{
+						$template = $Templates['template'][$x];
+     				    }
+     				    $template = str_replace("//<![CDATA[", "", $template);
+						$template = str_replace("//]]>", "", $template);
+     				    $template = str_replace("<![CDATA[","", $template);
+						$template = str_replace("]]>","", $template);
+
+	                if($template_name == $templatetitle)
+				    {
+				      $row['template_un'] = $template;
+				      $x = 0;
+				      break;
+				    }
+                     $x += 1;
+                 }
+
+
+
+        $row['template_un'] = str_replace("'", "&#39;", $row['template_un']);
+
+
+		$TemplateArr 			= 	array();
+		$TemplateArr['field']	=	array();
+
+		$TemplateArr['field']['styleid'] 		    = 	$style_id;
+		$TemplateArr['field']['title'] 		    = 	$template_name;
+		$TemplateArr['field']['template'] 	    = 	$row['template_un'];
+		$TemplateArr['field']['template_un'] 	    	= 	$row['template_un'];
+		$TemplateArr['field']['templatetype'] 		        = 	"template";
+		$TemplateArr['field']['dateline'] 		            = 	$PowerBB->_CONF['now'];
+		$TemplateArr['field']['version'] 	    = 	$PowerBB->_CONF['info_row']['MySBB_version'];
+		$TemplateArr['field']['username'] 	    = 	"AUTO";
+		$TemplateArr['field']['product'] 		    = 	"PBBoard";
+
+		$insert = $PowerBB->core->Insert($TemplateArr,'template');
+
+		if ($insert)
+		{
+
+		 $_query1= $PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['template'] . " WHERE title = '$template_name'");
+		 while ($row1 = $PowerBB->DB->sql_fetch_array($_query1))
+		 {
+			$TemplateEditArr				=	array();
+			$TemplateEditArr['where'] 				    = 	array('templateid',$row1['templateid']);
+
+			$TemplateEdit = $PowerBB->core->GetInfo($TemplateEditArr,'template');
+
+            $templates_dir = ("./cache/templates_cache/".$TemplateEdit['title']."_".$TemplateEdit['styleid'].".php");
+			 if (file_exists($templates_dir))
+			 {
+			  $cache_del = @unlink($templates_dir);
+			 }
+    	 }
+		}
+	  }
 	}
 
 }

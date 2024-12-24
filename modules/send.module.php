@@ -2,17 +2,20 @@
 session_start();
 (!defined('IN_PowerBB')) ? die() : '';
 // anti flood protection
-$uri = md5($_SERVER['REQUEST_URI']);
-$exp = 3; // 3 seconds
-$hash = $uri .'|'. time();
-if (!isset($_SESSION['ddos'])) {
-    $_SESSION['ddos'] = $hash;
-}
-list($_uri, $_exp) = explode('|', $_SESSION['ddos']);
-if ($_uri == $uri && time() - $_exp < $exp) {
-    header('HTTP/1.1 503 Service Unavailable');
-    die;
-}
+	$uri = md5($_SERVER['REQUEST_URI']);
+	$exp = 3; // 3 seconds
+	$hash = $uri .'|'. time();
+	if (!isset($_SESSION['ddos'])) {
+	    $_SESSION['ddos'] = $hash;
+	}
+	else
+	{
+		list($_uri, $_exp) = explode('|', $_SESSION['ddos']);
+		if ($_uri == $uri && time() - $_exp < $exp) {
+		    header('HTTP/1.1 503 Service Unavailable');
+		    die;
+		}
+	}
 // Save last request
 $_SESSION['ddos'] = $hash;
 define('CLASS_NAME','PowerBBCoreMOD');

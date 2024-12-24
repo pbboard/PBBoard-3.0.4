@@ -43,6 +43,11 @@ class PowerBBCOREMOD
 		   $this->_ChatWindow();
 		   $PowerBB->_POST['ajax'] = 1;
  		}
+		elseif ($PowerBB->_GET['chat_users'])
+		{
+		   $this->_onlineChat();
+		   $PowerBB->_POST['ajax'] = 1;
+ 		}
 		elseif ($PowerBB->_GET['start'])
 		{
 			$this->_StartchatMessage();
@@ -143,6 +148,33 @@ class PowerBBCOREMOD
 		$chatTotle_message_num = $PowerBB->core->GetNumber($TotleCahtArr,'chat');
 		if($chatTotle_message_num){
     	$PowerBB->template->display('chat_window');
+    	}
+	}
+
+	function _onlineChat()
+	{
+		global $PowerBB;
+	        /**
+		 * Know who is in Chat ?
+		 */
+		$ChatWhoArr 						= 	array();
+		$ChatWhoArr['get_from']				=	'db';
+		$ChatWhoArr['proc'] 				= 	array();
+		$ChatWhoArr['proc']['*'] 			= 	array('method'=>'clean','param'=>'html');
+		$ChatWhoArr['order']				=	array();
+		$ChatWhoArr['order']['field']		=	'last_move';
+		$ChatWhoArr['order']['type']		=	'ASC';
+		$ChatWhoArr['where']				=	array();
+		$ChatWhoArr['where'][0]['name']		= 	'user_location';
+		$ChatWhoArr['where'][0]['oper']		= 	'=';
+		$ChatWhoArr['where'][0]['value']	= 	$PowerBB->_CONF['template']['_CONF']['lang']['chat_message'];
+
+		$PowerBB->_CONF['template']['while']['ListonlineChat'] = $PowerBB->core->GetList($ChatWhoArr,'online');
+
+		$online_number = @sizeof($PowerBB->_CONF['template']['while']['ListonlineChat']);
+		$PowerBB->template->assign('online_chat_number',$online_number);
+		if($online_number){
+    	$PowerBB->template->display('chat_online');
     	}
 	}
 

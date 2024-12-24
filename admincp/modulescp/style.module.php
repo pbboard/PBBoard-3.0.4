@@ -730,10 +730,9 @@ class PowerBBStyleMOD extends _functions
 
      foreach ($querytemplate as $getTemplate_row)
       {
-       $add_template = '1';
+        $add_template = '1';
         $username = $getTemplate_row['username'];
         $dateline = $PowerBB->_CONF['now'];
-        $product .= $getTemplate_row['product'];
         $title = $getTemplate_row['title'];
         $context = $getTemplate_row['template'];
 		$context = str_replace("//<![CDATA[", "", $context);
@@ -767,7 +766,8 @@ class PowerBBStyleMOD extends _functions
 
           ///
 
-         }
+         }
+
        }
 
        // $template_un = str_replace("&#39;", "'", $template_un);
@@ -776,12 +776,10 @@ class PowerBBStyleMOD extends _functions
         $xml .= "<template name=\"$title\" templatetype=\"template\" date=\"$dateline\" username=\"$username\" decode=\"0\" version=\"$version\"><![CDATA[$context]]></template>\r\n";
        }
       }
-        if (empty($product))
-        {
-         $product = "PBBoard";
-        }
+
+        $product = "PBBoard";
         $xmlup = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<styles name=\"$style_title\" pbbversion=\"$version\" product=\"$product\" image_path =\"$image_path\" style_path=\"$style_path\" type=\"custom\">\r\n<templategroup>\r\n";
-        $xmldun = "</templategroup>\r\n</styles>\r\n";
+        $xmldun = "</templategroup>\r\n</styles>";
 		header("Content-disposition: attachment; filename=".$filename."");
 		header("Content-type: application/octet-stream");
 		header("Content-Length: ".strlen($xmlup.$xml.$xmldun));

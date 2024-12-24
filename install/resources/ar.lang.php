@@ -222,8 +222,8 @@ $l['config_step_table'] = '<p>لقد حان الوقت الآن لتهيئة ا�
 					<td class="last alt_col"><input type="text" class="text_input" name="bbname" id="bbname" value="{1}" /></td>
 				</tr>
 				<tr class="alt_row last">
-					<td class="first"><label for="bburl">عنوان URL للمنتدى (بدون شرطة مائلة):</label></td>
-					<td class="last alt_col"><input type="text" class="text_input" name="bburl" id="bburl" value="{2}" onkeyup="warnUser(هذه, \'تم ضبط هذا الخيار تلقائيًا. لا تغيره إذا لم تكن متأكدًا من القيمة الصحيحة ، وإلا فقد تكون الروابط الموجودة في منتداك معطلة.\')" onchange="warnUser(هذه, \'تم ضبط هذا الخيار تلقائيًا. لا تغيره إذا لم تكن متأكدًا من القيمة الصحيحة ، وإلا فقد تكون الروابط الموجودة في منتداك معطلة.\')" /></td>
+					<td class="first"><label for="bburl">عنوان URL للمنتدى:</label></td>
+					<td class="last alt_col"><input type="text" class="text_input" name="bburl" id="bburl" dir="ltr" value="{2}" onkeyup="warnUser(هذه, \'تم ضبط هذا الخيار تلقائيًا. لا تغيره إذا لم تكن متأكدًا من القيمة الصحيحة ، وإلا فقد تكون الروابط الموجودة في منتداك معطلة.\')" onchange="warnUser(هذه, \'تم ضبط هذا الخيار تلقائيًا. لا تغيره إذا لم تكن متأكدًا من القيمة الصحيحة ، وإلا فقد تكون الروابط الموجودة في منتداك معطلة.\')" /></td>
 				</tr>
 				<tr>
 					<th colspan="2" class="first last">تفاصيل الموقع</th>
@@ -234,14 +234,14 @@ $l['config_step_table'] = '<p>لقد حان الوقت الآن لتهيئة ا�
 				</tr>
 				<tr class="alt_row last">
 					<td class="first"><label for="websiteurl">رابط الموقع:</label></td>
-					<td class="last alt_col"><input type="text" class="text_input" name="websiteurl" id="websiteurl" value="{4}" /></td>
+					<td class="last alt_col"><input type="text" class="text_input" dir="ltr" name="websiteurl" id="websiteurl" value="{4}" /></td>
 				</tr>
 				<tr>
 					<th colspan="2" class="first last">بريد المنتدى</th>
 				</tr>
 				<tr class="last">
 					<td class="first"><label for="contactemail">بريد التواصل الالكتروني:</label></td>
-					<td class="last alt_col"><input type="text" class="text_input" name="contactemail" id="contactemail" value="{7}" /></td>
+					<td class="last alt_col"><input type="text" class="text_input" name="contactemail" id="contactemail" dir="ltr" value="{7}" /></td>
 				</tr>
 				</tbody>
 			</table>
@@ -292,7 +292,7 @@ $l['admin_step_admintable'] = '<div class="border_wrapper">
 		</tr>
 		<tr class="first last">
 			<td class="first"><label for="adminemail">عنوان البريد الإلكتروني:</label></td>
-			<td class="alt_col last"><input type="text" class="text_input" name="adminemail" id="adminemail" value="{2}" /></td>
+			<td class="alt_col last"><input type="text" class="text_input" name="adminemail" id="adminemail" dir="ltr" value="{2}" /></td>
 		</tr>
 	</table>
 	</div>

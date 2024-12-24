@@ -5,6 +5,7 @@ error_reporting(E_ERROR | E_PARSE);
 @ini_set('memory_limit', -1);
 @ini_set('default_socket_timeout', -1);
 @session_start();
+$page = empty($_GET['page']) ? 'index' : $_GET['page'];
 if(function_exists('date_default_timezone_set') && !ini_get('date.timezone'))
 {
 	@date_default_timezone_set('GMT');
@@ -12,16 +13,23 @@ if(function_exists('date_default_timezone_set') && !ini_get('date.timezone'))
 // Security REQUEST METHOD POST
 if ($_SERVER['REQUEST_METHOD'] == 'POST')
 {
-// Stop Requests Flood
-if($_SESSION['csrf_2'] > time() - 2)
-{
-header("HTTP/1.1 403 Forbidden");
-exit("PBBoard-Error: Request Timeout error is an HTTP - try again after 2 seconds.");
-}
+
+	if ($page != 'chat_message'
+	OR !defined('IN_ADMIN'))
+	{
+	   // Stop Requests Flood
+		if($_SESSION['csrf_2'] > time() - 3)
+		{
+		header("HTTP/1.1 403 Forbidden");
+		exit("PBBoard-Error: Request Timeout error is an HTTP - try again after 3 seconds.");
+		}
+
+	//Generate time to request POST:
+	$_SESSION['csrf_2'] = time();
+    }
 }
 
-//Generate time to request POST:
-$_SESSION['csrf_2'] = time();
+
 
 //Generate a key, print a form:
 $Generatekey = @sha1(@microtime());
@@ -38,7 +46,7 @@ if(!empty($_SESSION['PowerBB_username']))
 	{
 	  //sessionانهاء ال
 	    session_destroy();
-	    echo "you are not authenticated.";
+	    header("Location: index.php", 0, 303);
 	    exit();
 	}
 }
@@ -77,7 +85,6 @@ define('JAVASCRIPT_PowerCode',false);
 				}
              }
          }
-$page = empty($_GET['page']) ? 'index' : $_GET['page'];
 //////////
 if (!is_array($CALL_SYSTEM))
 {

@@ -300,7 +300,10 @@ $inserts[] = "INSERT INTO pbb_info (id, var_name, value) VALUES
 (226, 'mention_active', '1'),
 (227, 'mention_exusergroups', '6,5'),
 (228, 'mention_exusers', '0'),
-(229, 'mention_exforum', '99');";
+(229, 'mention_exforum', '99'),
+(230, 'download_subject', '0'),
+(231, 'print_subject', '1'),
+(232, 'send_subject_to_friend', '1');";
 
 
 $inserts[] = "INSERT INTO pbb_lang (id, lang_title, lang_order, lang_on, lang_path) VALUES

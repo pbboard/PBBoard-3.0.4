@@ -142,7 +142,7 @@
 {$lang['PostsNum']}
 </td>
 <td class="row2">
-<input type="text" name="posts" value="{$Inf['posts']}" size="7"/>
+<input type="text" name="posts" value="{$Inf['posts']}" size="5" min="1" max="5" v-model="form.availability" oninput="this.value = this.value.replace(/[^\d.-]+/g, '');">
 </td>
 </tr>
 <tr>
@@ -203,7 +203,7 @@
 {$lang['warningsNum']}
 </td>
 <td class="row1">
-<input type="text" name="warnings" value="{$Inf['warnings']}" size="7"/>
+<input type="text" name="warnings" value="{$Inf['warnings']}" size="5" min="1" max="5" v-model="form.availability" oninput="this.value = this.value.replace(/[^\d.-]+/g, '');">
 </td>
 </tr>
 <tr>
@@ -211,7 +211,7 @@
 {$lang['user_reputation']}
 </td>
 <td class="row1">
-<input type="text" name="reputation" value="{$Inf['reputation']}" size="7"/>
+<input type="text" name="reputation" value="{$Inf['reputation']}" size="5" min="1" max="5" v-model="form.availability" oninput="this.value = this.value.replace(/[^\d.-]+/g, '');">
 </td>
 </tr>
 <tr>

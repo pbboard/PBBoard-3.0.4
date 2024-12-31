@@ -246,7 +246,7 @@ class PowerBBReplyAddMOD
          if (!empty($PowerBB->_GET['id']))
          {
 
-            $SubjectArr = $PowerBB->DB->sql_query("SELECT  *   FROM " . $PowerBB->table['subject'] . " WHERE id = " . $PowerBB->_GET['id'] . "  ");
+            $SubjectArr = $PowerBB->DB->sql_query("SELECT id,title,writer,text FROM " . $PowerBB->table['subject'] . " WHERE id = " . $PowerBB->_GET['id'] . "  ");
             $GeSubjectInfo = array();
             while ($GeSubjectInfo = $PowerBB->DB->sql_fetch_array($SubjectArr))
             {
@@ -404,7 +404,7 @@ class PowerBBReplyAddMOD
          if (!empty($PowerBB->_GET['id']))
          {
 
-            $SubjectArr = $PowerBB->DB->sql_query("SELECT  *   FROM " . $PowerBB->table['subject'] . " WHERE id = " . $PowerBB->_GET['id'] . "  ");
+            $SubjectArr = $PowerBB->DB->sql_query("SELECT id,title,writer,text FROM " . $PowerBB->table['subject'] . " WHERE id = " . $PowerBB->_GET['id'] . "  ");
             $GeSubjectInfo = array();
             while ($GeSubjectInfo = $PowerBB->DB->sql_fetch_array($SubjectArr))
             {
@@ -488,7 +488,7 @@ class PowerBBReplyAddMOD
         // View 10 replys Inverse in template new_reply
           if (!empty($PowerBB->_GET['id']))
          {
-         $ReplyArr = $PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['reply'] . " WHERE subject_id = " . $PowerBB->_GET['id'] . " and delete_topic <>1 and review_reply <>1 ORDER by ID DESC limit 10 ");
+         $ReplyArr = $PowerBB->DB->sql_query("SELECT id,title,writer,text FROM " . $PowerBB->table['reply'] . " WHERE subject_id = " . $PowerBB->_GET['id'] . " and delete_topic <>1 and review_reply <>1 ORDER by ID DESC limit 10 ");
          while ($GeReplyInfo = $PowerBB->DB->sql_fetch_array($ReplyArr))
          {
             $GeReplyInfo['text'] = $PowerBB->Powerparse->replace($GeReplyInfo['text']);
@@ -512,7 +512,8 @@ class PowerBBReplyAddMOD
         $PowerBB->_GET['reply_id'] = $PowerBB->functions->CleanVariable($PowerBB->_GET['reply_id'],'intval');
         $PowerBB->_GET['subject_id'] = $PowerBB->functions->CleanVariable($PowerBB->_GET['subject_id'],'intval');
   		$Subjectid = $PowerBB->_GET['id'];
-        $PagerReplyNumArr = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['reply'] . " WHERE subject_id='$Subjectid' and delete_topic <>1 LIMIT 1"));
+  		//$PagerReplyNumArr = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['reply'] . " WHERE subject_id='$Subjectid' and delete_topic <>1 LIMIT 1"));
+        $PagerReplyNumArr = $this->SubjectInfo['reply_number'];
 
 		$PowerBB->_POST['title'] = $PowerBB->functions->CleanVariable($PowerBB->_POST['title'],'trim');
 
@@ -743,11 +744,13 @@ class PowerBBReplyAddMOD
                 //
 
 			// mention users tag replace
-			if($PowerBB->functions->mention_permissions())
+			if (preg_match('#\[mention\](.*)\[/mention\]#siU', $PowerBB->_POST['text']))
 			{
-			 $PowerBB->_POST['text'] = preg_replace_callback('#\[mention\](.+)\[\/mention\]#iUs', array($this, 'mention_reply_callback'), $PowerBB->_POST['text']);
-			}
-
+				if($PowerBB->functions->mention_permissions())
+				{
+				 $PowerBB->_POST['text'] = preg_replace_callback('#\[mention\](.+)\[\/mention\]#iUs', array($this, 'mention_reply_callback'), $PowerBB->_POST['text']);
+				}
+            }
 		     	$ReplyArr 			                = 	array();
 		     	$ReplyArr['get_id']					=	true;
 		     	$ReplyArr['field']               	= 	array();
@@ -847,8 +850,8 @@ class PowerBBReplyAddMOD
 		     		$UpdateReplyNumber = $PowerBB->subject->UpdateReplyNumber($RepArr);
 
                     // The overall number of replys
-					$reply_number = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query('SELECT COUNT(1),id FROM '.$PowerBB->table['reply'].' WHERE delete_topic <> 1 LIMIT 1'));
-					$update_reply_number = $PowerBB->info->UpdateInfo(array('value'=>$reply_number,'var_name'=>'reply_number'));
+					//$reply_number = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query('SELECT COUNT(1),id FROM '.$PowerBB->table['reply'].' WHERE delete_topic <> 1 LIMIT 1'));
+					$update_reply_number = $PowerBB->info->UpdateInfo(array('value'=>$PowerBB->_CONF['info_row']['reply_number']+1,'var_name'=>'reply_number'));
 
 		     		//////////
 		     		if (!$PowerBB->_CONF['member_permission'])
@@ -1034,14 +1037,11 @@ class PowerBBReplyAddMOD
 				     		$LastParentArr['field']['icon'] 	        = 	$PowerBB->_POST['icon'];
                            	$LastParentArr['field']['last_reply'] 		= 	$PowerBB->reply->id;
 				     		$LastParentArr['field']['last_berpage_nm'] 		= 	$PowerBB->_POST['count'];
+
 				     		$LastParentArr['where']					= 	array('id',$this->SectionInfo['parent']);
 
 		                    $UpdateLast = $PowerBB->section->UpdateSection($LastParentArr);
 
-				        	// Update section's cache
-				        	$UpdateSectionCache1 = $PowerBB->functions->UpdateSectionCache($this->SectionInfo['id']);
-						    $cache = $PowerBB->section->UpdateSectionsCache(array('parent'=>$this->SectionInfo['parent']));
-				     		$PowerBB->functions->PBB_Create_last_posts_cache(0);
 	                 }
 	                 else
 					 {
@@ -1062,6 +1062,7 @@ class PowerBBReplyAddMOD
 				     		$LastArr['field']['icon'] 	        = 	$PowerBB->_POST['icon'];
                            	$LastArr['field']['last_reply'] 		= 	$PowerBB->reply->id;
 				     		$LastArr['field']['last_berpage_nm'] 		= 	$PowerBB->_POST['count'];
+
 				     		$LastArr['where']					= 	array('id',$this->SectionInfo['id']);
 
 		                    $UpdateLast = $PowerBB->section->UpdateSection($LastArr);
@@ -1078,22 +1079,23 @@ class PowerBBReplyAddMOD
 				     		$LastParentArr['field']['icon'] 	        = 	$PowerBB->_POST['icon'];
                            	$LastParentArr['field']['last_reply'] 		= 	$PowerBB->reply->id;
 				     		$LastParentArr['field']['last_berpage_nm'] 		= 	$PowerBB->_POST['count'];
+
 				     		$LastParentArr['where']					= 	array('id',$this->SectionInfo['parent']);
 
 		                    $UpdateLast = $PowerBB->section->UpdateSection($LastParentArr);
 
-				        	// Update section's cache
-				        	$UpdateSectionCache1 = $PowerBB->functions->UpdateSectionCache($this->SectionInfo['id']);
-						    $cache = $PowerBB->section->UpdateSectionsCache(array('parent'=>$this->SectionInfo['parent']));
-				     		$PowerBB->functions->PBB_Create_last_posts_cache(0);
 					 }
-					 // Update parent's cache
-                     $UpdateSectionCache = $PowerBB->functions->UpdateSectionCache($this->SectionInfo['parent']);
 
-                   eval($PowerBB->functions->get_fetch_hooks('insert_reply'));
+                     eval($PowerBB->functions->get_fetch_hooks('insert_reply'));
+
+				    // Update section's cache
+				    $UpdateSectionCache = $PowerBB->functions->UpdateSectionCache($this->SectionInfo['id']);
+
 
 					// get url to last reply
-					$Reply_NumArr = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['reply'] . " WHERE subject_id='$Subjectid' and delete_topic <>1 LIMIT 1"));
+					//$Reply_NumArr = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['reply'] . " WHERE subject_id='$Subjectid' and delete_topic <>1 LIMIT 1"));
+					$Reply_NumArr = $this->SubjectInfo['reply_number'];
+
 					$ss_r = $PowerBB->_CONF['info_row']['perpage']/2+1;
 					$roun_ss_r = round($ss_r, 0);
 					$reply_number_r = $Reply_NumArr-$roun_ss_r+1;

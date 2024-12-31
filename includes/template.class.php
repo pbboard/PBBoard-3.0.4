@@ -536,8 +536,6 @@ class PBBTemplate
              $url = $PowerBB->functions->GetForumAdress();
              $string = str_replace('href="index.php','href="'.$url.'index.php',$string);
 
-			$string = $PowerBB->functions->rewriterule($string);
-
                $string = str_replace("php if","phpif",$string);
                $string = str_replace("if($.","T54T",$string);
 
@@ -612,6 +610,29 @@ class PBBTemplate
 				}, $write_b);
 
 			}
+
+				$write_b = str_replace('src="look/','src="'.$PowerBB->functions->GetForumAdress().'look/', $write_b);
+				$write_b = str_replace("src='look/","src='".$PowerBB->functions->GetForumAdress()."look/", $write_b);
+				$write_b = str_replace('src="includes/','src="'.$PowerBB->functions->GetForumAdress().'includes/', $write_b);
+				$write_b = str_replace("src='includes/","src='".$PowerBB->functions->GetForumAdress()."includes/", $write_b);
+				$write_b = str_replace('src="styles/','src="'.$PowerBB->functions->GetForumAdress().'styles/', $write_b);
+				$write_b = str_replace("src='styles/","src='".$PowerBB->functions->GetForumAdress()."styles/", $write_b);
+				$write_b = str_replace('src="download/','src="'.$PowerBB->functions->GetForumAdress().'download/', $write_b);
+				$write_b = str_replace("src='download/","src='".$PowerBB->functions->GetForumAdress()."download/", $write_b);
+				$write_b = str_replace('href="download/','href="'.$PowerBB->functions->GetForumAdress().'download/', $write_b);
+				$write_b = str_replace('"index.php','"'.$PowerBB->functions->GetForumAdress().'index.php', $write_b);
+				$write_b = str_replace("'index.php","'".$PowerBB->functions->GetForumAdress().'index.php', $write_b);
+				$write_b = str_replace('"'.$PowerBB->_CONF['template']['admincpdir'].'?page=','"'.$PowerBB->functions->GetForumAdress().$PowerBB->_CONF['template']['admincpdir'].'?page=', $write_b);
+				$write_b = str_replace('href="'.$PowerBB->_CONF['template']['admincpdir'].'"','href="'.$PowerBB->functions->GetForumAdress().$PowerBB->_CONF['template']['admincpdir'].'"', $write_b);
+				$write_b = str_replace('("index.php?page=','("'.$PowerBB->functions->GetForumAdress().'index.php?page=', $write_b);
+				$write_b = str_replace('(look/','('.$PowerBB->functions->GetForumAdress().'look/', $write_b);
+				$write_b = str_replace('(styles/','('.$PowerBB->functions->GetForumAdress().'styles/', $write_b);
+				$write_b = str_replace('"./applications','"'.$PowerBB->functions->GetForumAdress().'applications', $write_b);
+				$write_b = str_replace('src="applications/','src="'.$PowerBB->functions->GetForumAdress().'applications/', $write_b);
+				$write_b = str_replace('url(download/','url('.$PowerBB->functions->GetForumAdress().'download/', $write_b);
+				$write_b = str_replace($PowerBB->functions->GetForumAdress().'http','http', $write_b);
+
+               $write_b = $PowerBB->functions->rewriterule($write_b);
 
 			@eval($PowerBB->functions->get_fetch_hooks('template_ob_get_clean'));
 

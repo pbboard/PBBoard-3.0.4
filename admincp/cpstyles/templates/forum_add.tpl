@@ -1,6 +1,5 @@
 <script src="includes/js/jquery.js"></script>
 <script language="javascript">
-
 function OrderChange()
 {
 	value = $("#order_type_id").val();
@@ -70,7 +69,7 @@ $(document).ready(Ready);
 					<option value="auto" selected="selected">{$lang['auto_order']}</option>
 					<option value="manual">{$lang['manual_order']}</option>
 				</select>
-				<input type="text" name="sort" id="sort_id" value="" size="5" />
+				<input type="text" name="sort" id="sort_id" size="5" min="1" max="5" v-model="form.availability" oninput="this.value = this.value.replace(/[^1-9]/g, '');">
 			</td>
 		</tr>
 		<tr>

@@ -46,8 +46,8 @@
 {$lang['mention_not_useforum']}
 </div>
 </td>
-<td class="row1">
-<input type="text" class="bginput" name="mention_exforum" id="mention_exforum" value="{$_CONF['info_row']['mention_exforum']}" size="40" tabindex="1" />
+<td class="row1" width="30%">
+<input type="text" class="bginput" name="mention_exforum" id="mention_exforum" value="{$_CONF['info_row']['mention_exforum']}" dir="ltr" size="2" min="1" max="5"">
 </td>
 </tr>
 
@@ -65,7 +65,7 @@
 </div>
 </td>
 <td class="row1">
-<input type="text" class="bginput" name="mention_exusergroups" id="mention_exusergroups" value="{$_CONF['info_row']['mention_exusergroups']}" size="40" tabindex="1" />
+<input type="text" class="bginput" name="mention_exusergroups" id="mention_exusergroups" value="{$_CONF['info_row']['mention_exusergroups']}" dir="ltr" size="2" min="1" max="5"">
 </td>
 </tr>
 <tr valign="top">
@@ -80,7 +80,7 @@
 {$lang['mention_user_useing']}
 </div></td>
 <td class="row1">
-<input type="text" class="bginput" name="mention_exusers" id="mention_exusers" value="{$_CONF['info_row']['mention_exusers']}" size="40" tabindex="1" />
+<input type="text" class="bginput" name="mention_exusers" id="mention_exusers" value="{$_CONF['info_row']['mention_exusers']}" dir="ltr" size="2" min="1" max="5"">
 </td>
 </tr>
 <tr>

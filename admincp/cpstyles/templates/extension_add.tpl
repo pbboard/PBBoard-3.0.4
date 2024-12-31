@@ -16,25 +16,31 @@
 		<tr valign="top">
 			<td class="row1">
 			{$lang['EXtension']}
+		   <br />
+		<small>{$lang['Example']}:</small> <b dir="ltr">.zip</b>
 			</td>
 			<td class="row1">
-				<input type="text" name="extension" />
+				<input type="text" name="extension" dir="ltr" />
 			</td>
 		</tr>
 		<tr valign="top">
 			<td class="row2">
 			{$lang['Maximum_Size_in_KB']}
+		   <br />
+		<small>{$lang['Example']}:</small> <b>1000</b>
 			</td>
 			<td class="row2">
-				<input type="text" name="max_size" />
+<input type="text" name="max_size" id="input_max_size" dir="ltr" size="5" min="1" max="5" v-model="form.availability" oninput="this.value = this.value.replace(/[^\d.-]+/g, '');">
 			</td>
 		</tr>
 		<tr>
 			<td class="row2">
 			{$lang['MIME']}
+			<br />
+			<small>{$lang['optional']}</small>
 			</td>
 			<td class="row2">
-				<input type="text" name="mime_type" />
+				<input type="text" name="mime_type" dir="ltr" />
 			</td>
 		</tr>
 	</table>

@@ -14,13 +14,13 @@
 <tr valign="top">
 		<td class="row2">{$lang['send_email']}</td>
 		<td class="row2">
-<input type="text" name="send_email" id="input_send_email" value="{$_CONF['info_row']['send_email']}" size="30" />
+<input type="text" name="send_email" id="input_send_email" value="{$_CONF['info_row']['send_email']}" dir="ltr" size="30" />
 </td>
 </tr>
 <tr valign="top">
 		<td class="row1">{$lang['admin_email']}</td>
 		<td class="row1">
-<input type="text" name="admin_email" id="input_admin_email" value="{$_CONF['info_row']['admin_email']}" size="30" />
+<input type="text" name="admin_email" id="input_admin_email" value="{$_CONF['info_row']['admin_email']}" dir="ltr" size="30" />
 </td>
 </tr>
 <tr valign="top">
@@ -49,28 +49,29 @@
 		<td class="row2">{$lang['smtp_Server']}</td>
 		<td class="row2">
 
-<input type="text" name="smtp_server" id="input_smtp_server" value="{$_CONF['info_row']['smtp_server']}" size="30" />&nbsp;
+<input type="text" name="smtp_server" id="input_smtp_server" value="{$_CONF['info_row']['smtp_server']}" dir="ltr" size="30" />&nbsp;
 </td>
 </tr>
 <tr valign="top">
 		<td class="row2">{$lang['smtp_port']}</td>
 		<td class="row2">
 
-<input type="text" name="smtp_port" id="input_smtp_port" value="{$_CONF['info_row']['smtp_port']}" size="10" />&nbsp;
+<input type="text" name="smtp_port" id="input_smtp_port" value="{$_CONF['info_row']['smtp_port']}" dir="ltr" size="1" min="1" max="5" v-model="form.availability" oninput="this.value = this.value.replace(/[^\d.-]+/g, '');">
+
 </td>
 </tr>
 <tr valign="top">
 		<td class="row2">{$lang['smtp_username']}</td>
 		<td class="row2">
 
-<input type="text" name="smtp_username" id="input_smtp_username" value="{$_CONF['info_row']['smtp_username']}" size="30" />&nbsp;
+<input type="text" name="smtp_username" id="input_smtp_username" value="{$_CONF['info_row']['smtp_username']}" dir="ltr" size="30" />&nbsp;
 </td>
 </tr>
 <tr valign="top">
 		<td class="row2">{$lang['smtp_password']}</td>
 		<td class="row2">
 
-<input type="password" name="smtp_password" id="input_smtp_password" value="{$_CONF['info_row']['smtp_password']}" size="30" /></td>
+<input type="text" name="smtp_password" id="input_smtp_password" value="{$_CONF['info_row']['smtp_password']}" dir="ltr" size="30" /></td>
 </tr>
 <tr valign="top">
 		<td class="row2">{$lang['smtp_secure']}</td>

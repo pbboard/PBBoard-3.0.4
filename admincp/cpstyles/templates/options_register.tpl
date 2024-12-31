@@ -75,24 +75,26 @@
 <tr valign="top">
 		<td class="row1">{$lang['reg_less_num']}</td>
 		<td class="row1">
-<input type="text" name="reg_less_num" id="input_reg_less_num" value="{$_CONF['info_row']['reg_less_num']}" size="30" />&nbsp;
+<input type="text" name="reg_less_num" id="input_reg_less_num" value="{$_CONF['info_row']['reg_less_num']}" size="1" min="1" max="5" v-model="form.availability" oninput="this.value = this.value.replace(/[^\d.-]+/g, '');">
+
 </td>
 </tr>
 <tr valign="top">
 		<td class="row2">{$lang['reg_max_num']}</td>
 		<td class="row2">
-<input type="text" name="reg_max_num" id="input_reg_max_num" value="{$_CONF['info_row']['reg_max_num']}" size="30" />&nbsp;
+<input type="text" name="reg_max_num" id="input_reg_max_num" value="{$_CONF['info_row']['reg_max_num']}" size="1" min="1" max="5" v-model="form.availability" oninput="this.value = this.value.replace(/[^\d.-]+/g, '');">
+
 </td></tr>
 <tr valign="top">
 		<td class="row1">{$lang['reg_pass_min_num']}</td>
 		<td class="row1">
-<input type="text" name="reg_pass_min_num" id="input_reg_pass_min_num" value="{$_CONF['info_row']['reg_pass_min_num']}" size="30" />&nbsp;
+<input type="text" name="reg_pass_min_num" id="input_reg_pass_min_num" value="{$_CONF['info_row']['reg_pass_min_num']}" size="1" min="1" max="5" v-model="form.availability" oninput="this.value = this.value.replace(/[^\d.-]+/g, '');">
 </td>
 </tr>
 <tr valign="top">
 		<td class="row2">{$lang['reg_pass_max_num']}</td>
 		<td class="row2">
-<input type="text" name="reg_pass_max_num" id="input_reg_pass_max_num" value="{$_CONF['info_row']['reg_pass_max_num']}" size="30" />&nbsp;</td>
+<input type="text" name="reg_pass_max_num" id="input_reg_pass_max_num" value="{$_CONF['info_row']['reg_pass_max_num']}" size="1" min="1" max="5" v-model="form.availability" oninput="this.value = this.value.replace(/[^\d.-]+/g, '');">
 </tr>
 </table><table cellpadding="3" cellspacing="1" width="90%" class="t_style_b" border="0" align="center">
 <tr valign="top" align="center">

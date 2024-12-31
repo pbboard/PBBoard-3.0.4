@@ -14,24 +14,27 @@
 <tr valign="top">
 		<td class="row1">{$lang['page_max']}</td>
 		<td class="row1">
-<input type="text" name="page_max" id="input_page_max" value="{$_CONF['info_row']['page_max']}" size="30" />&nbsp;
+<input type="text" name="page_max" id="input_page_max" value="{$_CONF['info_row']['page_max']}" size="5" min="1" max="5" v-model="form.availability" oninput="this.value = this.value.replace(/[^\d.-]+/g, '');">
+
 </td>
 </tr>
 <tr valign="top">
 <td class="row2">{$lang['subject_perpage']}</td>
 		<td class="row2">
-<input type="text" name="subject_perpage" id="input_subject_perpage" value="{$_CONF['info_row']['subject_perpage']}" size="30" />&nbsp;
+<input type="text" name="subject_perpage" id="input_subject_perpage" value="{$_CONF['info_row']['subject_perpage']}" size="5" min="1" max="5" v-model="form.availability" oninput="this.value = this.value.replace(/[^\d.-]+/g, '');">
+
 </td>
 </tr>
 <tr valign="top">
 <td class="row1">{$lang['reply_perpage']}</td>
 		<td class="row1">
-<input type="text" name="reply_perpage" id="input_reply_perpage" value="{$_CONF['info_row']['perpage']}" size="30" />&nbsp;
+<input type="text" name="reply_perpage" id="input_reply_perpage" value="{$_CONF['info_row']['perpage']}" size="5" min="1" max="5" v-model="form.availability" oninput="this.value = this.value.replace(/[^\d.-]+/g, '');">
+
 </td>
 </tr><tr valign="top">
 		<td class="row1">{$lang['avatar_perpage']}</td>
 		<td class="row1">
-<input type="text" name="avatar_perpage" id="input_avatar_perpage" value="{$_CONF['info_row']['avatar_perpage']}" size="30" />&nbsp;
+<input type="text" name="avatar_perpage" id="input_avatar_perpage" value="{$_CONF['info_row']['avatar_perpage']}" size="5" min="1" max="5" v-model="form.availability" oninput="this.value = this.value.replace(/[^\d.-]+/g, '');">
 </td>
 </tr>
 <tr valign="top">

@@ -81,6 +81,13 @@ class PowerBBGroupsMOD extends _functions
 					$this->_ShwoMemberGroup();
 				}
 			}
+			elseif ($PowerBB->_GET['update_group_meter'])
+			{
+				if ($PowerBB->_GET['group_cache'])
+				{
+					$this->_AllCacheGroupStart();
+				}
+			}
 
 			$PowerBB->template->display('footer');
 		}
@@ -159,12 +166,17 @@ class PowerBBGroupsMOD extends _functions
 				} // end foreach ($forums)
 			} // end !empty($forums_cache)
 
-		$GroupArr 						= 	array();
-		$GroupArr['order'] 				= 	array();
-		$GroupArr['order']['field'] 	= 	'id';
-		$GroupArr['order']['type'] 		= 	'ASC';
+		// Get groups list
+		$GroupArr 							= 	array();
+		$GroupArr['order']					=	array();
+		$GroupArr['order']['field']			=	'id';
+		$GroupArr['order']['type']			=	'ASC';
 
-		$PowerBB->_CONF['template']['while']['groups'] = $PowerBB->core->GetList($GroupArr,'group');
+		$GroupArr['proc'] 					= 	array();
+		$GroupArr['proc']['*'] 				= 	array('method'=>'clean','param'=>'html');
+
+		// Store information in "GroupList"
+		$PowerBB->_CONF['template']['while']['GroupList'] = $PowerBB->core->GetList($GroupArr,'group');
 
 		//////////
 
@@ -175,11 +187,52 @@ class PowerBBGroupsMOD extends _functions
 	{
 		global $PowerBB;
 
-		if (empty($PowerBB->_POST['name'])
-			or empty($PowerBB->_POST['group_order'])
-			or empty($PowerBB->_POST['style']))
+		if (empty($PowerBB->_POST['name']))
 		{
-			$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['Please_fill_in_all_the_information']);
+			$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['please_enter_the_text']." (<b>".$PowerBB->_CONF['template']['_CONF']['lang']['Group_name']."</b>)");
+		}
+
+		if (empty($PowerBB->_POST['style']))
+		{
+			$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['please_enter_the_text']." (<b>".$PowerBB->_CONF['template']['_CONF']['lang']['username_color']."</b>)");
+		}
+
+		if (empty($PowerBB->_POST['usertitle']))
+		{
+			$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['please_enter_the_text']." (<b>".$PowerBB->_CONF['template']['_CONF']['lang']['usertitle']."</b>)");
+		}
+
+ 		if ($PowerBB->_POST['order_type'] == 'manual' and empty($PowerBB->_POST['group_order']))
+		{
+			$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['please_enter_the_text']." (<b>".$PowerBB->_CONF['template']['_CONF']['lang']['group_order']."</b>)");
+		}
+
+
+      $group_order = 0;
+
+		if ($PowerBB->_POST['order_type'] == 'auto')
+		{
+			$GroupArr = array();
+			$GroupArr['order'] = array();
+			$GroupArr['order']['field'] = 'group_order';
+			$GroupArr['order']['type'] = 'DESC';
+
+			$OrderGroup = $PowerBB->core->GetInfo($GroupArr,'group');
+
+			// No section
+			if (!$OrderGroup)
+			{
+				$group_order = 1;
+			}
+			// There is a section
+			else
+			{
+				$group_order = $OrderGroup['group_order'] + 1;
+			}
+		}
+		else
+		{
+			$group_order = $PowerBB->_POST['group_order'];
 		}
 
 		// Enable HTML and (only) HTML
@@ -266,7 +319,7 @@ class PowerBBGroupsMOD extends _functions
 		$GroupArr['field']['admincp_warn'] 			    = 	$PowerBB->_POST['admincp_warn'];
 		$GroupArr['field']['admincp_award'] 			= 	$PowerBB->_POST['admincp_award'];
 		$GroupArr['field']['admincp_multi_moderation']  = 	$PowerBB->_POST['admincp_multi_moderation'];
-		$GroupArr['field']['group_order'] 				= 	$PowerBB->_POST['group_order'];
+		$GroupArr['field']['group_order'] 				= 	$group_order;
 		$GroupArr['field']['send_warning'] 		        = 	$PowerBB->_POST['send_warning'];
 		$GroupArr['field']['can_warned'] 		        = 	$PowerBB->_POST['can_warned'];
 		$GroupArr['field']['visitormessage'] 		    = 	$PowerBB->_POST['visitormessage'];
@@ -285,6 +338,8 @@ class PowerBBGroupsMOD extends _functions
 		{
 			//////////
 
+			$GroupId = $PowerBB->_POST['usergroup'];
+
 			$SecArr 						= 	array();
 			$SecArr['order'] 				= 	array();
 			$SecArr['order']['field'] 		= 	'id';
@@ -299,35 +354,32 @@ class PowerBBGroupsMOD extends _functions
 
 			while ($x < $n)
 			{
-				$GrpArr 					= 	array();
-				$GrpArr['field']			=	array();
 
-				$GrpArr['field']['section_id'] 			= 	$sections[$x]['id'];
-				$GrpArr['field']['group_id'] 			= 	$PowerBB->group->id;
-				$GrpArr['field']['view_section'] 		= 	$PowerBB->_POST['view_section'];
-		        $GrpArr['field']['view_subject'] 		= 	$PowerBB->_POST['view_subject'];
-				$GrpArr['field']['download_attach'] 	= 	$PowerBB->_POST['download_attach'];
-				$GrpArr['field']['write_subject'] 		= 	$PowerBB->_POST['write_subject'];
-				$GrpArr['field']['write_reply'] 		= 	$PowerBB->_POST['write_reply'];
-				$GrpArr['field']['upload_attach'] 		= 	$PowerBB->_POST['upload_attach'];
-				$GrpArr['field']['edit_own_subject'] 	= 	$PowerBB->_POST['edit_own_subject'];
-				$GrpArr['field']['edit_own_reply'] 		= 	$PowerBB->_POST['edit_own_reply'];
-				$GrpArr['field']['del_own_subject'] 	= 	$PowerBB->_POST['del_own_subject'];
-				$GrpArr['field']['del_own_reply'] 		= 	$PowerBB->_POST['del_own_reply'];
-				$GrpArr['field']['write_poll'] 			= 	$PowerBB->_POST['write_poll'];
-				$GrpArr['field']['no_posts'] 			= 	'1';
-				$GrpArr['field']['vote_poll'] 			= 	$PowerBB->_POST['vote_poll'];
-				$GrpArr['field']['main_section'] 		= 	($sections[$x]['parent'] == 0) ? 1 : 0;
-				$GrpArr['field']['group_name'] 			= 	$PowerBB->_POST['name'];
+				  $query_section_group = $PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['section_group'] . " WHERE group_id=".$GroupId." and section_id =".$sections[$x]['id']."");
+				  $InfoGroup = $PowerBB->DB->sql_fetch_array($query_section_group);
 
-				$insert = $PowerBB->group->InsertSectionGroup($GrpArr);
+                   	$UpdateGrpArr 					               = 	array();
+					$UpdateGrpArr['field']			                =	array();
+				    $UpdateGrpArr['field']['section_id'] 			= 	$sections[$x]['id'];
+					$UpdateGrpArr['field']['group_id'] 			    = 	$PowerBB->group->id;
+					$UpdateGrpArr['field']['view_section'] 		    = 	$InfoGroup['view_section'];
+			        $UpdateGrpArr['field']['view_subject'] 		    = 	$InfoGroup['view_subject'];
+					$UpdateGrpArr['field']['download_attach'] 	    = 	$InfoGroup['download_attach'];
+					$UpdateGrpArr['field']['write_subject'] 		= 	$InfoGroup['write_subject'];
+					$UpdateGrpArr['field']['write_reply'] 		    = 	$InfoGroup['write_reply'];
+					$UpdateGrpArr['field']['upload_attach'] 		= 	$InfoGroup['upload_attach'];
+					$UpdateGrpArr['field']['edit_own_subject'] 	    = 	$InfoGroup['edit_own_subject'];
+					$UpdateGrpArr['field']['edit_own_reply'] 		= 	$InfoGroup['edit_own_reply'];
+					$UpdateGrpArr['field']['del_own_subject'] 	    = 	$InfoGroup['del_own_subject'];
+					$UpdateGrpArr['field']['del_own_reply'] 		= 	$InfoGroup['del_own_reply'];
+					$UpdateGrpArr['field']['write_poll'] 			= 	$InfoGroup['write_poll'];
+				    $UpdateGrpArr['field']['no_posts'] 		    	= 	$InfoGroup['no_posts'];
+					$UpdateGrpArr['field']['vote_poll'] 		 	= 	$InfoGroup['vote_poll'];
+				    $UpdateGrpArr['field']['main_section'] 		    = 	($sections[$x]['parent'] == 0) ? 1 : 0;
+				    $UpdateGrpArr['field']['group_name']  			= 	$PowerBB->_POST['name'];
 
-			$UpdateArr 			= 	array();
-			$UpdateArr['id'] 	= 	$sections[$x]['id'];
+					$Update = $PowerBB->group->InsertSectionGroup($UpdateGrpArr);
 
-			$cache = $PowerBB->group->UpdateSectionGroupCache($UpdateArr);
-
-			$cache = $PowerBB->section->UpdateSectionsCache(array('parent'=>$sections[$x]['parent']));
 
 				$x += 1;
 			}
@@ -338,8 +390,8 @@ class PowerBBGroupsMOD extends _functions
 
 			$cache = $PowerBB->group->UpdateGroupCache($CacheArr);
 
-				$PowerBB->functions->msg($PowerBB->_CONF['template']['_CONF']['lang']['group_has_been_added_successfully']);
-				$PowerBB->functions->redirect('index.php?page=groups&amp;control=1&amp;main=1');
+				$PowerBB->functions->msg("يرجى الإنتظار سيتم ادخال صلاحية المجموعة ".$PowerBB->_POST['name']." لجميع الأقسام والمنتديات");
+				$PowerBB->functions->redirect('index.php?page=groups&amp;update_group_meter=1&amp;group_cache=1');
 		}
 	}
 
@@ -433,6 +485,18 @@ class PowerBBGroupsMOD extends _functions
 
 		$PowerBB->_CONF['template']['group_inf'] = $PowerBB->group->GetGroupInfo($GroupArr);
 
+		// Get groups list
+		$GroupArr 							= 	array();
+		$GroupArr['order']					=	array();
+		$GroupArr['order']['field']			=	'id';
+		$GroupArr['order']['type']			=	'ASC';
+
+		$GroupArr['proc'] 					= 	array();
+		$GroupArr['proc']['*'] 				= 	array('method'=>'clean','param'=>'html');
+
+		// Store information in "GroupList"
+		$PowerBB->_CONF['template']['while']['GroupList'] = $PowerBB->core->GetList($GroupArr,'group');
+
 		$PowerBB->template->display('group_edit');
 	}
 
@@ -441,17 +505,27 @@ class PowerBBGroupsMOD extends _functions
 		global $PowerBB;
 
 
-			$GrpArr 			= 	array();
-			$GrpArr['where'] 	= 	array('id',$PowerBB->_GET['id']);
+		$GrpArr 			= 	array();
+		$GrpArr['where'] 	= 	array('id',$PowerBB->_GET['id']);
 
-			$GroupInfo = $PowerBB->core->GetInfo($GrpArr,'group');
+		$GroupInfo = $PowerBB->core->GetInfo($GrpArr,'group');
 
-		if (empty($PowerBB->_POST['name'])
-			or empty($PowerBB->_POST['group_order'])
-			or empty($PowerBB->_POST['style']))
+
+		if (empty($PowerBB->_POST['name']))
 		{
-			$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['Please_fill_in_all_the_information']);
+			$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['please_enter_the_text']." (<b>".$PowerBB->_CONF['template']['_CONF']['lang']['Group_name']."</b>)");
 		}
+
+		if (empty($PowerBB->_POST['style']))
+		{
+			$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['please_enter_the_text']." (<b>".$PowerBB->_CONF['template']['_CONF']['lang']['username_color']."</b>)");
+		}
+
+		if (empty($PowerBB->_POST['usertitle']))
+		{
+			$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['please_enter_the_text']." (<b>".$PowerBB->_CONF['template']['_CONF']['lang']['usertitle']."</b>)");
+		}
+
 
 		// Enable HTML and (only) HTML
 		$PowerBB->_POST['style'] = $PowerBB->functions->CleanVariable($PowerBB->_POST['style'],'unhtml');
@@ -560,20 +634,39 @@ class PowerBBGroupsMOD extends _functions
 			$SecArr['order']['type'] 		= 	'ASC';
 
 			$sections = $PowerBB->core->GetList($SecArr,'section');
+            $GroupId = $PowerBB->_POST['usergroup'];
+			$del = $PowerBB->group->DeleteSectionGroup(array('where'=>array('group_id',$PowerBB->_GET['id'])));
+
 
          	$x = 0;
 			$n = sizeof($sections);
-
 			while ($x < $n)
 			{
 
+				  $query_section_group = $PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['section_group'] . " WHERE group_id=".$GroupId." and section_id =".$sections[$x]['id']."");
+				  $InfoGroup = $PowerBB->DB->sql_fetch_array($query_section_group);
 
-			$UpdateArr 			= 	array();
-			$UpdateArr['id'] 	= 	$sections[$x]['id'];
+                   	$UpdateGrpArr 					               = 	array();
+					$UpdateGrpArr['field']			                =	array();
+				    $UpdateGrpArr['field']['section_id'] 			= 	$sections[$x]['id'];
+					$UpdateGrpArr['field']['group_id'] 			    = 	$PowerBB->_GET['id'];
+					$UpdateGrpArr['field']['view_section'] 		    = 	$InfoGroup['view_section'];
+			        $UpdateGrpArr['field']['view_subject'] 		    = 	$InfoGroup['view_subject'];
+					$UpdateGrpArr['field']['download_attach'] 	    = 	$InfoGroup['download_attach'];
+					$UpdateGrpArr['field']['write_subject'] 		= 	$InfoGroup['write_subject'];
+					$UpdateGrpArr['field']['write_reply'] 		    = 	$InfoGroup['write_reply'];
+					$UpdateGrpArr['field']['upload_attach'] 		= 	$InfoGroup['upload_attach'];
+					$UpdateGrpArr['field']['edit_own_subject'] 	    = 	$InfoGroup['edit_own_subject'];
+					$UpdateGrpArr['field']['edit_own_reply'] 		= 	$InfoGroup['edit_own_reply'];
+					$UpdateGrpArr['field']['del_own_subject'] 	    = 	$InfoGroup['del_own_subject'];
+					$UpdateGrpArr['field']['del_own_reply'] 		= 	$InfoGroup['del_own_reply'];
+					$UpdateGrpArr['field']['write_poll'] 			= 	$InfoGroup['write_poll'];
+				    $UpdateGrpArr['field']['no_posts'] 		    	= 	$InfoGroup['no_posts'];
+					$UpdateGrpArr['field']['vote_poll'] 		 	= 	$InfoGroup['vote_poll'];
+				    $UpdateGrpArr['field']['main_section'] 		    = 	($sections[$x]['parent'] == 0) ? 1 : 0;
+				    $UpdateGrpArr['field']['group_name']  			= 	$PowerBB->_POST['name'];
 
-			$cache = $PowerBB->group->UpdateSectionGroupCache($UpdateArr);
-
-			$cache = $PowerBB->section->UpdateSectionsCache(array('parent'=>$sections[$x]['parent']));
+					$Update = $PowerBB->group->InsertSectionGroup($UpdateGrpArr);
 
 				$x += 1;
 			}
@@ -615,8 +708,8 @@ class PowerBBGroupsMOD extends _functions
 
 			$cache = $PowerBB->group->UpdateGroupCache($CacheArr);
 
-			$PowerBB->functions->msg($PowerBB->_CONF['template']['_CONF']['lang']['group_has_been_updated_successfully']);
-			$PowerBB->functions->redirect('index.php?page=groups&amp;control=1&amp;main=1');
+				$PowerBB->functions->msg("يرجى الإنتظار سيتم ادخال صلاحية المجموعة ".$PowerBB->_POST['name']." لجميع الأقسام والمنتديات");
+				$PowerBB->functions->redirect('index.php?page=groups&amp;update_group_meter=1&amp;group_cache=1');
 
 	}
 
@@ -654,7 +747,7 @@ class PowerBBGroupsMOD extends _functions
 		 $PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['error_permission']);
 		}
          $id_group = $PowerBB->_GET['id'];
-        $member_Group_nm = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['member'] . " WHERE usergroup='$id_group'"));
+        $member_Group_nm = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(id) FROM " . $PowerBB->table['member'] . " WHERE usergroup='$id_group'"));
 
  		if ($member_Group_nm > 0)
 		{
@@ -688,10 +781,7 @@ class PowerBBGroupsMOD extends _functions
 					$del = $PowerBB->group->DeleteSectionGroup(array('where'=>array('group_id',$PowerBB->_GET['id'])));
 
 
-					$cache = $PowerBB->section->UpdateAllSectionsCache();
-
-					if ($cache)
-					{
+					//$cache = $PowerBB->section->UpdateAllSectionsCache();
 
 					$CacheArr 			= 	array();
 					$CacheArr['id'] 	= 	$GroupInfo['id'];
@@ -700,7 +790,7 @@ class PowerBBGroupsMOD extends _functions
 
 					$PowerBB->functions->msg($PowerBB->_CONF['template']['_CONF']['lang']['group_has_been_deleted_successfully']);
 					$PowerBB->functions->redirect('index.php?page=groups&amp;control=1&amp;main=1');
-					}
+
 				}
 
 	    	}
@@ -718,13 +808,9 @@ class PowerBBGroupsMOD extends _functions
 
 					$cache = $PowerBB->section->UpdateAllSectionsCache();
 
-					if ($cache)
-					{
-
-					$PowerBB->functions->create_cache_groups();
 					$PowerBB->functions->msg($PowerBB->_CONF['template']['_CONF']['lang']['group_has_been_deleted_successfully']);
 					$PowerBB->functions->redirect('index.php?page=groups&amp;control=1&amp;main=1');
-					}
+
 				}
 
 		}
@@ -819,6 +905,99 @@ class PowerBBGroupsMOD extends _functions
 
 
     	}
+
+
+	}
+
+
+	function _AllCacheGroupStart()
+	{
+		global $PowerBB;
+
+		if(!isset($PowerBB->_GET['pag']))
+		{
+		$page = 1;
+		}
+		else
+		{
+		$page = $PowerBB->_GET['pag'];
+		}
+		$page = ($page == 0 ? 1 : $page);
+		$perpage = 8;
+		$startpoint = ($page * $perpage) - $perpage;
+		if(!isset($PowerBB->_GET['pag']))
+		{
+		 $Empty_cache = $PowerBB->DB->sql_query("UPDATE " . $PowerBB->table['section'] . " SET forums_cache = '', sectiongroup_cache = ''");
+
+		  if($Empty_cache)
+		  {
+		  $REPAIR_TABLE = $PowerBB->DB->sql_query("REPAIR TABLE " . $PowerBB->table['section'] . "");
+		  $REPAIR_TABLE_info = $PowerBB->DB->sql_query("REPAIR TABLE " . $PowerBB->table['info'] . "");
+		  }
+		}
+
+ 		$forumArr = $PowerBB->DB->sql_query("SELECT id,title,parent FROM " . $PowerBB->table['section'] . " ORDER BY id DESC LIMIT ".$startpoint.",".$perpage." ");
+		$forum_nm = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(id) FROM " . $PowerBB->table['section'] . ""));
+
+        $pagesnum = round(ceil($forum_nm / $perpage));
+        echo('<br><br><table border="1" width="80%" cellspacing="0" cellpadding="0" bgcolor="#FFFFFF" style="border-collapse: collapse" align="center"><tr><td><font face="Tahoma" size="2">');
+
+		while ($forum_row = $PowerBB->DB->sql_fetch_array($forumArr))
+		{
+         $UpdateSectionCache = $PowerBB->section->UpdateSectionsCache(array('parent'=>$forum_row['parent']));
+
+          if($forum_row['id'])
+          {
+           $Updated = '1';
+          }
+		 if ($Updated)
+		  {
+		  echo($PowerBB->_CONF['template']['_CONF']['lang']['updated']  .  $forum_row['title']  .  $PowerBB->_CONF['template']['_CONF']['lang']['Successfully'] .' .. <br />');
+		  }
+
+		}
+		echo('</font></td></tr></table>');
+		$current_page = $page;
+
+		if ($Updated)
+		{
+			if($pagesnum != $current_page or $pagesnum > $current_page)
+			{
+			$n_page = $current_page+1;
+			$seconds= 1;
+			$n_page = intval($n_page);
+			echo('<br><table border="1" width="80%" cellspacing="0" cellpadding="0" bgcolor="#E5EBF0" style="border-collapse: collapse" align="center"><tr><td><font face="Tahoma" size="2">');
+			$transition_click = $PowerBB->_CONF['template']['_CONF']['lang']['If_your_browser_does_not_support_automatic_transition_click_here'];
+			echo('<a href="index.php?page=groups&amp;update_group_meter=1&amp;group_cache=1&amp;pag='.$n_page.'">'.$transition_click.'</a>');
+			echo($PowerBB->_CONF['template']['_CONF']['lang']['Waiting_Time'].$seconds.$PowerBB->_CONF['template']['_CONF']['lang']['seconds']);
+			echo('</font></td></tr></table>');
+
+			$PowerBB->functions->redirect('index.php?page=groups&amp;update_group_meter=1&amp;group_cache=1&pag='.$n_page,$seconds);
+			}
+			else
+			{
+			$PowerBB->functions->msg($PowerBB->_CONF['template']['_CONF']['lang']['updated_successfully']);
+
+			$Update_Cache_groups = $PowerBB->functions->Update_Cache_groups();
+			$permission = $PowerBB->functions->_MeterGroupsStart();
+            $REPAIR_TABLE = $PowerBB->DB->sql_query("REPAIR TABLE " . $PowerBB->table['section'] . "");
+
+            $CacheArr 			= 	array();
+			$CacheArr['id'] 	= 	$PowerBB->group->id;
+
+			$cache = $PowerBB->group->UpdateGroupCache($CacheArr);
+
+			$PowerBB->functions->redirect('index.php?page=groups&amp;control=1&amp;main=1');
+			}
+
+		}
+		else
+		{
+		echo('<br><table border="1" width="80%" cellspacing="0" cellpadding="0" bgcolor="#E5EBF0" style="border-collapse: collapse" align="center"><tr><td><font face="Tahoma" size="2">');
+		echo($PowerBB->_CONF['template']['_CONF']['lang']['not_the_update']);
+		echo('</font></td></tr></table>');
+		}
+
 
 
 	}

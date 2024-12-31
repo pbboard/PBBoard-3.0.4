@@ -50,16 +50,21 @@
 </td>
 </tr>
 <tr valign="top">
-		<td class="row2">{$lang['Forum_timeformat']}</td>
+		<td class="row2">{$lang['Forum_timeformat']}
+				<br />
+{$lang['Example']}: <b>h:i A</b>
+		</td>
 		<td class="row2">
 <input type="text" name="time_system" id="select_time_system" value="{$_CONF['info_row']['timesystem']}" size="10" />
 </td>
 </tr>
 <tr valign="top">
-		<td class="row2">{$lang['Forum_dateformat']}</td>
+		<td class="row2">{$lang['Forum_dateformat']}
+<br />
+{$lang['Example']}: <b>d-m-Y</b>
+		</td>
 		<td class="row2">
-<input type="text" name="date_system" id="select_date_system" value="{$_CONF['info_row']['datesystem']}" size="10" />
-</td>
+<input type="text" name="date_system" id="select_date_system" value="{$_CONF['info_row']['datesystem']}" size="10" /></td>
 </tr>
 
 <tr valign="top">

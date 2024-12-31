@@ -30,7 +30,7 @@
 			{$lang['Forum_Order']}
 			</td>
 			<td class="row2">
-				<input type="text" name="sort" value="{$Inf['sort']}" size="5" />
+				<input type="text" name="sort" id="sort_id" value="{$Inf['sort']}" size="5" min="1" max="5" v-model="form.availability" oninput="this.value = this.value.replace(/[^1-9]/g, '');">
 			</td>
 		</tr>
 		<tr>

@@ -18,8 +18,7 @@
 {$lang['warning_number_to_ban']}
 			</td>
 			<td class="row1">
-			<input type="text" name="warning_number_to_ban" id="input_warning_number_to_ban" value="{$_CONF['info_row']['warning_number_to_ban']}" size="30" />&nbsp;
-
+			<input type="text" name="warning_number_to_ban" id="input_warning_number_to_ban" value="{$_CONF['info_row']['warning_number_to_ban']}" size="1" min="1" max="5" v-model="form.availability" oninput="this.value = this.value.replace(/[^\d.-]+/g, '');">
 			</td>
 		</tr>
 

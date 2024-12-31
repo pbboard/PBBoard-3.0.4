@@ -37,7 +37,7 @@
 {$lang['last_static_num']}
 			</td>
 			<td class="row2">
-<input type="text" name="last_static_num" id="input_last_static_num" value="{$_CONF['info_row']['last_static_num']}" size="30" />
+<input type="text" name="last_static_num" id="input_last_static_num" value="{$_CONF['info_row']['last_static_num']}" size="2" min="1" max="5" v-model="form.availability" dir="ltr" oninput="this.value = this.value.replace(/[^\d.-]+/g, '');">
 			</td>
 		</tr>
 		<tr>
@@ -45,7 +45,7 @@
 {$lang['last_posts_static_num']}
 			</td>
 			<td class="row1">
-<input type="text" name="last_posts_static_num" id="input_last_posts_static_num" value="{$_CONF['info_row']['last_posts_static_num']}" size="30" />
+<input type="text" name="last_posts_static_num" id="input_last_posts_static_num" value="{$_CONF['info_row']['last_posts_static_num']}" dir="ltr" size="2" min="1" max="5" v-model="form.availability" oninput="this.value = this.value.replace(/[^\d.-]+/g, '');">
 			</td>
 		</tr>
 		<tr align="center">
@@ -74,7 +74,7 @@
 {$lang['lasts_posts_num_bar']}
 			</td>
 			<td class="row2">
-<input type="text" name="lasts_posts_bar_num" id="input_lasts_posts_bar_num" value="{$_CONF['info_row']['lasts_posts_bar_num']}" size="30" />
+<input type="text" name="lasts_posts_bar_num" id="input_lasts_posts_bar_num" value="{$_CONF['info_row']['lasts_posts_bar_num']}" dir="ltr" size="2" min="1" max="5" v-model="form.availability" oninput="this.value = this.value.replace(/[^\d.-]+/g, '');">
 			</td>
 		</tr>
 		<tr>
@@ -193,7 +193,7 @@
 {$lang['mor_hours_online_today']}
 			</td>
 			<td class="row1">
-<input type="text" name="mor_hours_online_today" id="input_mor_hours_online_today" value="{$_CONF['info_row']['mor_hours_online_today']}" size="5" />
+<input type="text" name="mor_hours_online_today" id="input_mor_hours_online_today" value="{$_CONF['info_row']['mor_hours_online_today']}" dir="ltr" size="2" min="1" max="5" v-model="form.availability" oninput="this.value = this.value.replace(/[^\d.-]+/g, '');">
 			</td>
 		</tr>
 		<tr align="center">
@@ -220,7 +220,7 @@
 {$lang['mor_seconds_online']}
 			</td>
 			<td class="row1">
-<input type="text" name="mor_seconds_online" id="input_mor_seconds_online" value="{$_CONF['info_row']['mor_seconds_online']}" size="5" />
+<input type="text" name="mor_seconds_online" id="input_mor_seconds_online" value="{$_CONF['info_row']['mor_seconds_online']}" dir="ltr" size="2" min="1" max="5" v-model="form.availability" oninput="this.value = this.value.replace(/[^\d.-]+/g, '');">
 			</td>
 		</tr>
 <tr valign="top">
@@ -258,7 +258,7 @@
 {$lang['last_subject_writer_nm']}
 			</td>
 			<td class="row2">
-<input type="text" name="last_subject_writer_nm" id="input_last_subject_writer_nm" value="{$_CONF['info_row']['last_subject_writer_nm']}" size="5" />
+<input type="text" name="last_subject_writer_nm" id="input_last_subject_writer_nm" value="{$_CONF['info_row']['last_subject_writer_nm']}" dir="ltr" size="2" min="1" max="5" v-model="form.availability" oninput="this.value = this.value.replace(/[^\d.-]+/g, '');">
 			</td>
 		</tr>
 		<tr align="center">
@@ -287,7 +287,7 @@
 {$lang['chat_message_num']}
 			</td>
 			<td class="row2">
-<input type="text" name="chat_message_num" id="input_chat_message_num" value="{$_CONF['info_row']['chat_message_num']}" size="5" />
+<input type="text" name="chat_message_num" id="input_chat_message_num" value="{$_CONF['info_row']['chat_message_num']}" dir="ltr" size="2" min="1" max="5" v-model="form.availability" oninput="this.value = this.value.replace(/[^\d.-]+/g, '');">
 			</td>
 		</tr>
 		<tr>
@@ -296,7 +296,8 @@
 {$lang['chat_num_mem_posts']}
 			</td>
 			<td class="row1">
-<input type="text" name="chat_num_mem_posts" id="input_chat_num_mem_posts" value="{$_CONF['info_row']['chat_num_mem_posts']}" size="5" />
+<input type="text" name="chat_num_mem_posts" id="input_chat_num_mem_posts" value="{$_CONF['info_row']['chat_num_mem_posts']}" dir="ltr" size="2" min="1" max="5" v-model="form.availability" oninput="this.value = this.value.replace(/[^\d.-]+/g, '');">
+
 			</td>
 		</tr>
 			<tr>
@@ -304,7 +305,7 @@
 {$lang['chat_num_characters']}
 			</td>
 			<td class="row1">
-<input type="text" name="chat_num_characters" id="input_chat_num_characters" value="{$_CONF['info_row']['chat_num_characters']}" size="5" />
+<input type="text" name="chat_num_characters" id="input_chat_num_characters" value="{$_CONF['info_row']['chat_num_characters']}" dir="ltr" size="2" min="1" max="5" v-model="form.availability" oninput="this.value = this.value.replace(/[^\d.-]+/g, '');">
 			</td>
 		</tr>
 				<tr>
@@ -428,7 +429,7 @@
 {$lang['how_many_entries_error_num']}
 			</td>
 			<td class="row1">
-<input type="text" name="num_entries_error" id="input_num_entries_error" value="{$_CONF['info_row']['num_entries_error']}" size="5" />
+<input type="text" name="num_entries_error" id="input_num_entries_error" value="{$_CONF['info_row']['num_entries_error']}" dir="ltr" size="2" min="1" max="5" v-model="form.availability" oninput="this.value = this.value.replace(/[^\d.-]+/g, '');">
 			</td>
 		</tr>
 <!-- action_find_addons_3 -->

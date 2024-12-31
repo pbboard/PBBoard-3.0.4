@@ -1,3 +1,4 @@
+
 <br />
 
 <div class="address_bar">{$lang['Control_Panel']} &raquo;
@@ -15,30 +16,53 @@
  {$Inf['title']}</td>
       </tr>
       <tr>
-        <td class="row1" width="50%" valign="top">{$lang['Group_name']}</td>
-        <td class="row1" width="50%" valign="top"><input type="text" name="name" value="{$Inf['title']}" size="30"></td>
+        <td class="row1" width="50%" valign="top">{$lang['Group_name']} *</td>
+        <td class="row1" width="50%" valign="top"><input type="text" name="name" value="{$Inf['title']}" size="40"></td>
       </tr>
 
       <tr>
-        <td class="row2" width="50%" valign="top">{$lang['username_color']}<br><br>
+        <td class="row2" width="50%" valign="top">{$lang['username_color']} *<br><br>
         <a target="_blank" href="index.php?page=options&mods=1&main=1#25">
 <b><u>{$lang['view_group_username_style']}</u></b></a>
         </td>
         <td class="row2" width="50%" valign="top">
-       <textarea name="style" dir="ltr" class="inputbox" tabindex="3" rows="5" cols="40" >{$group_inf['username_style']}</textarea>
+        الحد الأقصى 			100 حرف
+<br />
+       <textarea name="style" dir="ltr" class="inputbox" tabindex="3" rows="3" cols="40" >{$group_inf['username_style']}</textarea>
         </td>
       </tr>
       <tr>
-        <td class="row1" width="50%" valign="top">{$lang['usertitle']}</td>
+        <td class="row1" width="50%" valign="top">{$lang['usertitle']} *</td>
         <td class="row1" width="50%" valign="top">
-         <textarea name="usertitle" class="inputbox" tabindex="3" rows="5" cols="40" >{$Inf['user_title']}</textarea>
+الحد الأقصى 			100 حرف
+<br />
+         <textarea name="usertitle" class="inputbox" tabindex="3" rows="3" cols="40" >{$Inf['user_title']}</textarea>
         </td>
       </tr>
-
-      <tr>
-        <td class="row2" width="50%" valign="top">{$lang['group_order']}</td>
-        <td class="row2" width="50%" valign="top"><input name="group_order" type="text" size="9" value="{$Inf['group_order']}"></td>
-      </tr>
+		<tr>
+			<td class="row2">
+			{$lang['group_order']} *
+			</td>
+			<td class="row2">
+				<input type="text" name="group_order" id="group_order_id" value="{$Inf['group_order']}" size="1" min="1" max="1" v-model="form.availability" oninput="this.value = this.value.replace(/[^\d.-]+/g, '');">
+			</td>
+		</tr>
+<tr>
+<td class="row1">
+تغيير صلاحيات جميع المنتديات لجعلها مطابقة لمجموعة:
+</td>
+<td class="row1">
+<select name="usergroup" id="select_usergroup">
+{Des::while}{GroupList}
+{if {$GroupList['id']} == {$group_inf['id']}}
+<option value="{$GroupList['id']}" selected="selected">{$GroupList['title']}</option>
+{else}
+<option value="{$GroupList['id']}">{$GroupList['title']}</option>
+{/if}
+{/Des::while}
+</select>
+</td>
+</tr>
       <tr>
         <td class="row1" width="50%" valign="top">{$lang['forum_team']}</td>
         <td class="row1" width="50%" valign="top">
@@ -117,7 +141,7 @@
       <tr>
         <td class="row1" width="50%" valign="top">{$lang['user_download_attach_number']}</td>
 
-        <td class="row1" width="50%" valign="top"><input name="download_attach_number" type="text" value="{$Inf['download_attach_number']}" size="5"></td>
+        <td class="row1" width="50%" valign="top"><input name="download_attach_number" type="text" value="{$Inf['download_attach_number']}" size="1" min="1" max="1" v-model="form.availability" oninput="this.value = this.value.replace(/[^\d.-]+/g, '');"></td>
       </tr>
       <tr>
         <td class="row2" width="50%" valign="top">{$lang['upload_attach']}</td>
@@ -136,7 +160,7 @@
       </tr>
       <tr>
         <td class="row1" width="50%" valign="top">{$lang['upload_attach_num']}</td>
-        <td class="row1" width="50%" valign="top"><input name="upload_attach_num" type="text" value="{$Inf['upload_attach_num']}" size="2"></td>
+        <td class="row1" width="50%" valign="top"><input name="upload_attach_num" type="text" value="{$Inf['upload_attach_num']}" size="1" min="1" max="1" v-model="form.availability" oninput="this.value = this.value.replace(/[^\d.-]+/g, '');"></td>
       </tr>
       <tr>
         <td class="row2" width="50%" valign="top">{$lang['Write_subjects']}</td>
@@ -271,7 +295,7 @@
      </tr>
       <tr>
         <td class="row1" width="50%" valign="top">{$lang['user_topic_day_number']}</td>
-        <td class="row1" width="50%" valign="top"><input name="topic_day_number" type="text" value="{$Inf['topic_day_number']}" size="5"></td>
+        <td class="row1" width="50%" valign="top"><input name="topic_day_number" type="text" value="{$Inf['topic_day_number']}" size="1" min="1" max="1" v-model="form.availability" oninput="this.value = this.value.replace(/[^\d.-]+/g, '');"></td>
       </tr>
       <tr>
         <td class="main1" colspan="2">{$lang['Properties_Private_Messages']}</td>
@@ -296,12 +320,12 @@
         <br />
 {$lang['Set_0_for_an_unlimited_number_of_messages']}
         </td>
-        <td class="row2" width="50%" valign="top"><input type="text" name="max_pm" size="6" value="{$Inf['max_pm']}"></td>
+        <td class="row2" width="50%" valign="top"><input type="text" name="max_pm" value="{$Inf['max_pm']}" size="1" min="1" max="1" v-model="form.availability" oninput="this.value = this.value.replace(/[^\d.-]+/g, '');"></td>
       </tr>
 
       <tr>
         <td class="row1" width="50%" valign="top">{$lang['min_send_pm']}</td>
-        <td class="row1" width="50%" valign="top"><input type="text" name="min_send_pm" size="6" value="{$Inf['min_send_pm']}"></td>
+        <td class="row1" width="50%" valign="top"><input type="text" name="min_send_pm" value="{$Inf['min_send_pm']}" size="1" min="1" max="1" v-model="form.availability" oninput="this.value = this.value.replace(/[^\d.-]+/g, '');"></td>
       </tr>
       <tr>
         <td class="main1" colspan="2">{$lang['Properties_sig']}</td>
@@ -324,7 +348,7 @@
       </tr>
       <tr>
         <td class="row2" width="50%" valign="top">{$lang['sig_len']}</td>
-        <td class="row2" width="50%" valign="top"><input type="text" name="sig_len" size="6" value="{$Inf['sig_len']}"></td>
+        <td class="row2" width="50%" valign="top"><input type="text" name="sig_len" value="{$Inf['sig_len']}" size="1" min="1" max="1" v-model="form.availability" oninput="this.value = this.value.replace(/[^\d.-]+/g, '');"></td>
       </tr>
 
       <tr>
@@ -1118,7 +1142,7 @@
       </tr>
 <tr>
         <td class="row2" width="50%" valign="top">{$lang['reputation_number']}</td>
-        <td class="row2" width="50%" valign="top"><input type="text" name="reputation_number" size="6" value="{$Inf['reputation_number']}"></td>
+        <td class="row2" width="50%" valign="top"><input type="text" name="reputation_number" value="{$Inf['reputation_number']}" size="1" min="1" max="1" v-model="form.availability" oninput="this.value = this.value.replace(/[^\d.-]+/g, '');"></td>
       </tr>
 	<tr>
 		<td class="row1">

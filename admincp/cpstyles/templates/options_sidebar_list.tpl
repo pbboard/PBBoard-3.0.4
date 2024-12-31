@@ -42,7 +42,7 @@
 <tr valign="top">
 		<td class="row1">{$lang['sidebar_list_width']}</td>
 		<td class="row1">
-<input type="text" name="sidebar_list_width" id="sidebar_list_width" dir="ltr" value="{$_CONF['info_row']['sidebar_list_width']}" size="2" />
+<input type="text" name="sidebar_list_width" id="sidebar_list_width" value="{$_CONF['info_row']['sidebar_list_width']}" dir="ltr" size="2" min="1" max="5" v-model="form.availability" oninput="this.value = this.value.replace(/[^\d.-]+/g, '');">
 </td>
 </tr>
  <tr valign="top">

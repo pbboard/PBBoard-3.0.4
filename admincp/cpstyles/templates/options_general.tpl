@@ -35,7 +35,7 @@
 </tr>
 <td class="row2">{$lang['members_send_pm']}</td>
 		<td class="row2">
-<input type="text" name="members_send_pm" id="input_members_send_pm" value="{$_CONF['info_row']['members_send_pm']}" size="2" maxlength="3" />
+<input type="text" name="members_send_pm" id="input_members_send_pm" value="{$_CONF['info_row']['members_send_pm']}" size="1" min="1" max="5" v-model="form.availability" oninput="this.value = this.value.replace(/[^\d.-]+/g, '');">
 </td>
 </tr>
 <tr>
@@ -107,7 +107,7 @@
 	{$lang['sub_columns_number']}
 	</td>
 	<td class="row2">
-<input type="text" name="sub_columns_number" id="inputsub_columns_number" value="{$_CONF['info_row']['sub_columns_number']}" size="3" maxlength="3" />
+<input type="text" name="sub_columns_number" id="inputsub_columns_number" value="{$_CONF['info_row']['sub_columns_number']}" size="3" min="1" max="5" v-model="form.availability" oninput="this.value = this.value.replace(/[^\d.-]+/g, '');">
 	</td>
 </tr>
 	<tr>
@@ -144,7 +144,8 @@
 {$lang['flood_search']}
 	</td>
 	<td class="row2">
-<input type="text" name="flood_search" id="input_flood_search" value="{$_CONF['info_row']['flood_search']}" size="3" maxlength="3" />
+<input type="text" name="flood_search" id="input_flood_search" value="{$_CONF['info_row']['flood_search']}" size="3" min="1" max="5" v-model="form.availability" oninput="this.value = this.value.replace(/[^\d.-]+/g, '');">
+
 	</td>
 </tr>
 	<tr>
@@ -152,7 +153,8 @@
 {$lang['characters_keyword_search']}
 	</td>
 	<td class="row2">
-<input type="text" name="characters_keyword_search" id="characters_keyword_search" value="{$_CONF['info_row']['characters_keyword_search']}" size="3" maxlength="2" />
+<input type="text" name="characters_keyword_search" id="characters_keyword_search" value="{$_CONF['info_row']['characters_keyword_search']}" size="3" min="1" max="5" v-model="form.availability" oninput="this.value = this.value.replace(/[^\d.-]+/g, '');">
+
 	</td>
 </tr>
 	<tr>
@@ -160,7 +162,7 @@
 {$lang['visitor_message_chars']}
 	</td>
 	<td class="row2">
-<input type="text" name="visitor_message_chars" id="visitor_message_chars" value="{$_CONF['info_row']['visitor_message_chars']}" size="3" maxlength="4" />
+<input type="text" name="visitor_message_chars" id="visitor_message_chars" value="{$_CONF['info_row']['visitor_message_chars']}" size="3" min="1" max="5" v-model="form.availability" oninput="this.value = this.value.replace(/[^\d.-]+/g, '');">
 	</td>
 </tr>
 <tr valign="top">

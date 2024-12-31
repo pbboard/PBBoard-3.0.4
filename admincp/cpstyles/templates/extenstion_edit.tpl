@@ -20,7 +20,7 @@
 			{$lang['EXtension']}
 			</td>
 			<td class="row1">
-				<input type="text" name="extension" value="{$Inf['Ex']}" />
+				<input type="text" name="extension" dir="ltr" value="{$Inf['Ex']}" />
 			</td>
 		</tr>
 		<tr>
@@ -28,15 +28,17 @@
 			{$lang['Maximum_Size_in_KB']}
 			</td>
 			<td class="row2">
-				<input type="text" name="max_size" value="{$Inf['max_size']}" />
+				<input type="text" name="max_size" value="{$Inf['max_size']}" dir="ltr" size="5" min="1" max="5" v-model="form.availability" oninput="this.value = this.value.replace(/[^\d.-]+/g, '');">
 			</td>
 		</tr>
 		<tr>
 			<td class="row2">
 			{$lang['MIME']}
+			<br />
+			<small>{$lang['optional']}</small>
 			</td>
 			<td class="row2">
-				<input type="text" name="mime_type" value="{$Inf['mime_type']}" />
+				<input type="text" name="mime_type" dir="ltr" value="{$Inf['mime_type']}" />
 			</td>
 		</tr>
 	</table>

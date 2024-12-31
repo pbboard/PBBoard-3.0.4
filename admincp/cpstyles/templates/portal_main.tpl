@@ -69,13 +69,13 @@
 <tr valign="top">
 		<td class="row1">{$lang['portal_news_num']}</td>
 		<td class="row1">
-<input type="text" name="portal_news_num" id="input_portal_news_num" value="{$_CONF['info_row']['portal_news_num']}" size="2" maxlength="2" />
+<input type="text" name="portal_news_num" id="input_portal_news_num" value="{$_CONF['info_row']['portal_news_num']}" size="2" maxlength="2" min="1" max="5" v-model="form.availability" oninput="this.value = this.value.replace(/[^\d.-]+/g, '');">
 </td>
 </tr>
 <tr valign="top">
 		<td class="row1">{$lang['portal_news_along']}</td>
 		<td class="row1">
-<input type="text" name="portal_news_along" id="input_portal_news_along" value="{$_CONF['info_row']['portal_news_along']}" size="2" maxlength="3" />
+<input type="text" name="portal_news_along" id="input_portal_news_along" value="{$_CONF['info_row']['portal_news_along']}" size="2" maxlength="3" min="1" max="5" v-model="form.availability" oninput="this.value = this.value.replace(/[^\d.-]+/g, '');">
 </td>
 </tr>
 <tr>

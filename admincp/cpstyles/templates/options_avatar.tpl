@@ -57,14 +57,16 @@
 <tr valign="top">
 		<td class="row1">{$lang['max_avatar_width']}</td>
 		<td class="row1">
-<input type="text" name="max_avatar_width" id="input_max_avatar_width" value="{$_CONF['info_row']['max_avatar_width']}" size="30" />&nbsp;
+<input type="text" name="max_avatar_width" id="input_max_avatar_width" value="{$_CONF['info_row']['max_avatar_width']}" size="3" min="1" max="5" v-model="form.availability" oninput="this.value = this.value.replace(/[^\d.-]+/g, '');">
+
 </td>
 </tr>
 <tr valign="top">
 		<td class="row2">{$lang['max_avatar_height']}</td>
 		<td class="row2">
 
-<input type="text" name="max_avatar_height" id="input_max_avatar_height" value="{$_CONF['info_row']['max_avatar_height']}" size="30" />&nbsp;
+<input type="text" name="max_avatar_height" id="input_max_avatar_height" value="{$_CONF['info_row']['max_avatar_height']}" size="3" min="1" max="5" v-model="form.availability" oninput="this.value = this.value.replace(/[^\d.-]+/g, '');">
+
 </td>
 </tr>
 <tr valign="top">
@@ -72,7 +74,8 @@
 {$lang['avatar_columns_number']}
 			</td>
 			<td class="row1">
-<input type="text" name="avatar_columns_number" id="avatar_columns_number" value="{$_CONF['info_row']['avatar_columns_number']}" size="5" />
+<input type="text" name="avatar_columns_number" id="avatar_columns_number" value="{$_CONF['info_row']['avatar_columns_number']}" size="1" min="1" max="5" v-model="form.availability" oninput="this.value = this.value.replace(/[^\d.-]+/g, '');">
+
 			</td>
 		</tr>
 </table><br />
@@ -83,12 +86,14 @@
 				<span lang="ar-sa">{$lang['default_avatar']}</span>
 			</td>
 		</tr>
-		<tr align="center">
-			<td width="60%" class="row1">
+		<tr>
+			<td width="30%" class="row1">
 				{$lang['input_default_avatar']}
 			</td>
 			<td width="60%" class="row1">
-				<input name="default_avatar" id="input_default_avatar" value="{$_CONF['info_row']['default_avatar']}" />
+				<input name="default_avatar" id="input_default_avatar" dir="ltr" value="{$_CONF['info_row']['default_avatar']}" />
+				<br />
+				{$lang['default_avatar']} : <b><font color="#800000">default_avatar.gif</font></b>
 			</td>
 		</tr>
 	</table>

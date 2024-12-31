@@ -161,6 +161,8 @@ class PowerBBFooterMOD
         unset($forums_cache);
         unset($sectiongroup_cache);
         unset($CALL_SYSTEM);
+        unset($PowerBB);
+
         /*
 		if (phpversion() < '5.0.5')
 		{

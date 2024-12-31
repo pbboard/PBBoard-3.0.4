@@ -1107,32 +1107,11 @@ class PowerBBTopicAddMOD
 
                     $UpdateLast = $PowerBB->section->UpdateSection($LastParentArr);
 
-		        	// Update section's cache
-		        	$UpdateSectionCache1 = $PowerBB->functions->UpdateSectionCache($this->SectionInfo['id']);
-			        $cache = $PowerBB->section->UpdateSectionsCache(array('parent'=>$this->SectionInfo['parent']));
-
-					 // Update parent's cache
-                     $UpdateSectionCache = $PowerBB->functions->UpdateSectionCache($this->SectionInfo['parent']);
-
-                  $PowerBB->functions->PBB_Create_last_posts_cache(0);
-
-                   /*
-			     	if (($PowerBB->_CONF['member_row']['review_subject'] or $PowerBB->_CONF['group_info']['review_subject'] or $this->SectionInfo['review_subject'])
-						and !$PowerBB->_CONF['group_info']['admincp_allow'])
-					{
-		     			$PowerBB->functions->msg($PowerBB->_CONF['template']['_CONF']['lang']['Waiting_approved_by_management']);
-		     			$PowerBB->functions->redirect('index.php?page=forum&amp;show=1&amp;id=' . $this->SectionInfo['id'] . $PowerBB->_CONF['template']['password'],'8');
-
-					}
-		     		else
-		     		{
-			     			$PowerBB->functions->msg($PowerBB->_CONF['template']['_CONF']['lang']['subjects_Add_successfully1'].' ' . $PowerBB->Powerparse->censor_words($subjecttitle) . ' '.$PowerBB->_CONF['template']['_CONF']['lang']['subjects_Add_successfully2']);
-			     			$PowerBB->functions->redirect('index.php?page=topic&amp;show=1&amp;id=' . $PowerBB->subject->id . $PowerBB->_CONF['template']['password']);
-		     		}
-                     */
                     $PowerBB->functions->get_hooks('insert_subject');
+		        	// Update section's cache
+		        	$UpdateSectionCache = $PowerBB->functions->UpdateSectionCache($this->SectionInfo['id']);
 
-                 $PowerBB->functions->header_redirect('index.php?page=topic&amp;show=1&amp;id=' . $PowerBB->subject->id . $PowerBB->_CONF['template']['password']);
+                   $PowerBB->functions->header_redirect('index.php?page=topic&amp;show=1&amp;id=' . $PowerBB->subject->id . $PowerBB->_CONF['template']['password']);
 
 		     		//////////
 		     	}

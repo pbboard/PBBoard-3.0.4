@@ -23,7 +23,8 @@ class PowerBBFixMOD
 
 		if ($PowerBB->_CONF['member_permission'])
 		{
-            if (!$PowerBB->_GET['pbboard_updates']){
+            if (!$PowerBB->_GET['pbboard_updates']
+            or !$PowerBB->_GET['all_cache']){
 			$PowerBB->template->display('header');
              }
 			if ($PowerBB->_CONF['rows']['group_info']['admincp_fixup'] == '0')
@@ -255,8 +256,8 @@ class PowerBBFixMOD
 		  }
 		}
 
- 		$forumArr = $PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['section'] . " ORDER BY id DESC LIMIT ".$startpoint.",".$perpage." ");
-		$forum_nm = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['section'] . ""));
+ 		$forumArr = $PowerBB->DB->sql_query("SELECT id,title FROM " . $PowerBB->table['section'] . " ORDER BY id DESC LIMIT ".$startpoint.",".$perpage." ");
+		$forum_nm = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(id) FROM " . $PowerBB->table['section'] . ""));
 
         $pagesnum = round(ceil($forum_nm / $perpage));
         echo('<br><br><table border="1" width="80%" cellspacing="0" cellpadding="0" bgcolor="#FFFFFF" style="border-collapse: collapse" align="center"><tr><td><font face="Tahoma" size="2">');

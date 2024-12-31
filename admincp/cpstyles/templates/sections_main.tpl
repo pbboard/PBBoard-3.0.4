@@ -26,7 +26,7 @@
 	<td class="row1"><a href="index.php?page=sections&amp;groups=1&amp;control_group=1&amp;index=1&amp;id={$SecList['id']}">{$lang['Powers']}</a></td>
 	<td class="row1"><a href="index.php?page=sections&amp;edit=1&amp;main=1&amp;id={$SecList['id']}">{$lang['edit']}</a></td>
 	<td class="row1"><a href="index.php?page=sections&amp;del=1&amp;main=1&amp;id={$SecList['id']}">{$lang['Delet']}</a></td>
-	<td class="row1"><input type="text" name="order-{$SecList['id']}" id="input_order-{$SecList['id']}" value="{$SecList['sort']}" size="5" /></td>
+	<td class="row1"><input type="text" name="order-{$SecList['id']}" id="input_order-{$SecList['id']}" value="{$SecList['sort']}" size="5" min="1" max="5" v-model="form.availability" oninput="this.value = this.value.replace(/[^1-9]/g, '');"></td>
 </tr>
 {/if}
 {/Des::while}

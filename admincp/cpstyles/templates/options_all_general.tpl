@@ -34,7 +34,7 @@
 <tr>
 <td class="row2">{$lang['members_send_pm']}</td>
 		<td class="row2">
-<input type="text" name="members_send_pm" id="input_members_send_pm" value="{$_CONF['info_row']['members_send_pm']}" size="2" maxlength="2" />
+<input type="text" name="members_send_pm" id="input_members_send_pm" value="{$_CONF['info_row']['members_send_pm']}" size="1" dir="ltr" size="1" min="1" max="5" v-model="form.availability" oninput="this.value = this.value.replace(/[^\d.-]+/g, '');" maxlength="2" />
 </td>
 </tr>
 <tr>
@@ -106,7 +106,7 @@
 	{$lang['sub_columns_number']}
 	</td>
 	<td class="row2">
-<input type="text" name="sub_columns_number" id="input_sub_columns_number" value="{$_CONF['info_row']['sub_columns_number']}" size="3" maxlength="3" />
+<input type="text" name="sub_columns_number" id="input_sub_columns_number" value="{$_CONF['info_row']['sub_columns_number']}" size="1" dir="ltr" size="1" min="1" max="5" v-model="form.availability" oninput="this.value = this.value.replace(/[^\d.-]+/g, '');" maxlength="3" />
 	</td>
 </tr>
 	<tr>
@@ -135,7 +135,7 @@
 {$lang['content_language']}
 	</td>
 	<td class="row2">
-<input type="text" name="content_language" id="input_content_language" value="{$_CONF['info_row']['content_language']}" size="3" maxlength="9" />
+<input type="text" name="content_language" id="input_content_language" value="{$_CONF['info_row']['content_language']}" size="1" dir="ltr" size="1" min="1" max="5" v-model="form.availability" oninput="this.value = this.value.replace(/[^\d.-]+/g, '');" maxlength="9" />
 	</td>
 </tr>
 <tr>
@@ -143,7 +143,7 @@
 {$lang['flood_search']}
 	</td>
 	<td class="row2">
-<input type="text" name="flood_search" id="input_flood_search" value="{$_CONF['info_row']['flood_search']}" size="3" maxlength="3" />
+<input type="text" name="flood_search" id="input_flood_search" value="{$_CONF['info_row']['flood_search']}" size="1" dir="ltr" size="1" min="1" max="5" v-model="form.availability" oninput="this.value = this.value.replace(/[^\d.-]+/g, '');" maxlength="3" />
 	</td>
 </tr>
 	<tr>
@@ -151,7 +151,7 @@
 {$lang['characters_keyword_search']}
 	</td>
 	<td class="row2">
-<input type="text" name="characters_keyword_search" id="characters_keyword_search" value="{$_CONF['info_row']['characters_keyword_search']}" size="3" maxlength="2" />
+<input type="text" name="characters_keyword_search" id="characters_keyword_search" value="{$_CONF['info_row']['characters_keyword_search']}" size="1" dir="ltr" size="1" min="1" max="5" v-model="form.availability" oninput="this.value = this.value.replace(/[^\d.-]+/g, '');" maxlength="2" />
 	</td>
 </tr>
 	<tr>
@@ -159,7 +159,7 @@
 {$lang['visitor_message_chars']}
 	</td>
 	<td class="row2">
-<input type="text" name="visitor_message_chars" id="visitor_message_chars" value="{$_CONF['info_row']['visitor_message_chars']}" size="7" size="3" maxlength="4" />
+<input type="text" name="visitor_message_chars" id="visitor_message_chars" value="{$_CONF['info_row']['visitor_message_chars']}" size="7" size="1" dir="ltr" size="1" min="1" max="5" v-model="form.availability" oninput="this.value = this.value.replace(/[^\d.-]+/g, '');" maxlength="4" />
 	</td>
 </tr>
 <tr valign="top">
@@ -477,24 +477,24 @@
 <tr valign="top">
 		<td class="row1">{$lang['page_max']}</td>
 		<td class="row1">
-<input type="text" name="page_max" id="input_page_max" value="{$_CONF['info_row']['page_max']}" size="2" maxlength="2" />&nbsp;
+<input type="text" name="page_max" id="input_page_max" value="{$_CONF['info_row']['page_max']}" size="1" dir="ltr" size="1" min="1" max="5" v-model="form.availability" oninput="this.value = this.value.replace(/[^\d.-]+/g, '');" maxlength="2" />&nbsp;
 </td>
 </tr>
 <tr valign="top">
 <td class="row2">{$lang['subject_perpage']}</td>
 		<td class="row2">
-<input type="text" name="subject_perpage" id="input_subject_perpage" value="{$_CONF['info_row']['subject_perpage']}" size="2" maxlength="2" />&nbsp;
+<input type="text" name="subject_perpage" id="input_subject_perpage" value="{$_CONF['info_row']['subject_perpage']}" size="1" dir="ltr" size="1" min="1" max="5" v-model="form.availability" oninput="this.value = this.value.replace(/[^\d.-]+/g, '');" maxlength="2" />&nbsp;
 </td>
 </tr>
 <tr valign="top">
 <td class="row1">{$lang['reply_perpage']}</td>
 		<td class="row1">
-<input type="text" name="reply_perpage" id="input_reply_perpage" value="{$_CONF['info_row']['perpage']}" size="2" maxlength="2" />&nbsp;
+<input type="text" name="reply_perpage" id="input_reply_perpage" value="{$_CONF['info_row']['perpage']}" size="1" dir="ltr" size="1" min="1" max="5" v-model="form.availability" oninput="this.value = this.value.replace(/[^\d.-]+/g, '');" maxlength="2" />&nbsp;
 </td>
 </tr><tr valign="top">
 		<td class="row1">{$lang['avatar_perpage']}</td>
 		<td class="row1">
-<input type="text" name="avatar_perpage" id="input_avatar_perpage" value="{$_CONF['info_row']['avatar_perpage']}" size="3" maxlength="3" />&nbsp;
+<input type="text" name="avatar_perpage" id="input_avatar_perpage" value="{$_CONF['info_row']['avatar_perpage']}" size="1" dir="ltr" size="1" min="1" max="5" v-model="form.availability" oninput="this.value = this.value.replace(/[^\d.-]+/g, '');" maxlength="3" />&nbsp;
 </td>
 </tr>
 <tr valign="top" align="center">
@@ -564,24 +564,24 @@
 <tr valign="top">
 		<td class="row1">{$lang['reg_less_num']}</td>
 		<td class="row1">
-<input type="text" name="reg_less_num" id="input_reg_less_num" value="{$_CONF['info_row']['reg_less_num']}" size="30" />&nbsp;
+<input type="text" name="reg_less_num" id="input_reg_less_num" value="{$_CONF['info_row']['reg_less_num']}" dir="ltr" size="1" min="1" max="5" v-model="form.availability" oninput="this.value = this.value.replace(/[^\d.-]+/g, '');" />&nbsp;
 </td>
 </tr>
 <tr valign="top">
 		<td class="row2">{$lang['reg_max_num']}</td>
 		<td class="row2">
-<input type="text" name="reg_max_num" id="input_reg_max_num" value="{$_CONF['info_row']['reg_max_num']}" size="30" />&nbsp;
+<input type="text" name="reg_max_num" id="input_reg_max_num" value="{$_CONF['info_row']['reg_max_num']}" dir="ltr" size="1" min="1" max="5" v-model="form.availability" oninput="this.value = this.value.replace(/[^\d.-]+/g, '');" />&nbsp;
 </td></tr>
 <tr valign="top">
 		<td class="row1">{$lang['reg_pass_min_num']}</td>
 		<td class="row1">
-<input type="text" name="reg_pass_min_num" id="input_reg_pass_min_num" value="{$_CONF['info_row']['reg_pass_min_num']}" size="30" />&nbsp;
+<input type="text" name="reg_pass_min_num" id="input_reg_pass_min_num" value="{$_CONF['info_row']['reg_pass_min_num']}" dir="ltr" size="1" min="1" max="5" v-model="form.availability" oninput="this.value = this.value.replace(/[^\d.-]+/g, '');" />&nbsp;
 </td>
 </tr>
 <tr valign="top">
 		<td class="row2">{$lang['reg_pass_max_num']}</td>
 		<td class="row2">
-<input type="text" name="reg_pass_max_num" id="input_reg_pass_max_num" value="{$_CONF['info_row']['reg_pass_max_num']}" size="30" />&nbsp;</td>
+<input type="text" name="reg_pass_max_num" id="input_reg_pass_max_num" value="{$_CONF['info_row']['reg_pass_max_num']}" dir="ltr" size="1" min="1" max="5" v-model="form.availability" oninput="this.value = this.value.replace(/[^\d.-]+/g, '');" />&nbsp;</td>
 </tr>
 <tr valign="top" align="center">
 	<td class="main2" colspan="2">{$lang['Days_allowed_for_visitors_to_register_on']}</td>
@@ -765,40 +765,40 @@
 <tr valign="top">
 		<td class="row1">{$lang['post_text_min']}</td>
 		<td class="row1">
-<input type="text" name="post_text_min" id="input_post_text_min" value="{$_CONF['info_row']['post_text_min']}" size="2" maxlength="3" />&nbsp;
+<input type="text" name="post_text_min" id="input_post_text_min" value="{$_CONF['info_row']['post_text_min']}" size="1" dir="ltr" size="1" min="1" max="5" v-model="form.availability" oninput="this.value = this.value.replace(/[^\d.-]+/g, '');" maxlength="3" />&nbsp;
 </td>
 </tr>
 <tr valign="top">
 
 		<td class="row2">{$lang['post_text_max']}</td>
 		<td class="row2">
-<input type="text" name="post_text_max" id="input_post_text_max" value="{$_CONF['info_row']['post_text_max']}" size="4" maxlength="5" />&nbsp;
+<input type="text" name="post_text_max" id="input_post_text_max" value="{$_CONF['info_row']['post_text_max']}" size="4" dir="ltr" size="1" min="1" max="5" v-model="form.availability" oninput="this.value = this.value.replace(/[^\d.-]+/g, '');" maxlength="5" />&nbsp;
 </td>
 </tr>
 <tr valign="top">
 		<td class="row1">{$lang['post_title_min']}</td>
 		<td class="row1">
-<input type="text" name="post_title_min" id="input_post_title_min" value="{$_CONF['info_row']['post_title_min']}" size="2" maxlength="1" />&nbsp;
+<input type="text" name="post_title_min" id="input_post_title_min" value="{$_CONF['info_row']['post_title_min']}" size="1" dir="ltr" size="1" min="1" max="5" v-model="form.availability" oninput="this.value = this.value.replace(/[^\d.-]+/g, '');" maxlength="1" />&nbsp;
 </td>
 </tr>
 
 <tr valign="top">
 		<td class="row2">{$lang['post_title_max']}</td>
 		<td class="row2">
-<input type="text" name="post_title_max" id="input_post_title_max" value="{$_CONF['info_row']['post_title_max']}" size="2" maxlength="2" />&nbsp;
+<input type="text" name="post_title_max" id="input_post_title_max" value="{$_CONF['info_row']['post_title_max']}" size="1" dir="ltr" size="1" min="1" max="5" v-model="form.availability" oninput="this.value = this.value.replace(/[^\d.-]+/g, '');" maxlength="2" />&nbsp;
 </td>
 </tr>
 <tr valign="top">
 		<td class="row1">{$lang['time_out']}</td>
 		<td class="row1">
-<input type="text" name="time_out" id="input_time_out" value="{$_CONF['info_row']['time_out']}" size="4" maxlength="6" />&nbsp;
+<input type="text" name="time_out" id="input_time_out" value="{$_CONF['info_row']['time_out']}" size="4" dir="ltr" size="1" min="1" max="5" v-model="form.availability" oninput="this.value = this.value.replace(/[^\d.-]+/g, '');" maxlength="6" />&nbsp;
 </td>
 
 </tr>
 <tr valign="top">
 		<td class="row2">{$lang['floodctrl']}</td>
 		<td class="row2">
-<input type="text" name="floodctrl" id="input_floodctrl" value="{$_CONF['info_row']['floodctrl']}" size="4" maxlength="6" />&nbsp;
+<input type="text" name="floodctrl" id="input_floodctrl" value="{$_CONF['info_row']['floodctrl']}" size="4" dir="ltr" size="1" min="1" max="5" v-model="form.availability" oninput="this.value = this.value.replace(/[^\d.-]+/g, '');" maxlength="6" />&nbsp;
 </td>
 </tr>
 <tr valign="top">
@@ -862,20 +862,20 @@
 <tr valign="top">
 		<td class="row2">{$lang['default_imagesW']}</td>
 		<td class="row2">
-<input type="text" name="default_imagesW" id="input_default_imagesW" value="{$_CONF['info_row']['default_imagesW']}" size="5" />&nbsp;
+<input type="text" name="default_imagesW" id="input_default_imagesW" value="{$_CONF['info_row']['default_imagesW']}" dir="ltr" size="1" min="1" max="5" v-model="form.availability" oninput="this.value = this.value.replace(/[^\d.-]+/g, '');" />&nbsp;
 </td>
 </tr>
 <tr valign="top">
 		<td class="row1">{$lang['default_imagesH']}</td>
 		<td class="row1">
 
-<input type="text" name="default_imagesH" id="input_default_imagesH" value="{$_CONF['info_row']['default_imagesH']}" size="5" />&nbsp;
+<input type="text" name="default_imagesH" id="input_default_imagesH" value="{$_CONF['info_row']['default_imagesH']}" dir="ltr" size="1" min="1" max="5" v-model="form.availability" oninput="this.value = this.value.replace(/[^\d.-]+/g, '');" />&nbsp;
 </td>
 </tr>
 <tr valign="top">
 		<td class="row2">{$lang['wordwrap']}</td>
 		<td class="row2">
-<input type="text" name="wordwrap" id="input_wordwrap" value="{$_CONF['info_row']['wordwrap']}" size="5" />&nbsp;
+<input type="text" name="wordwrap" id="input_wordwrap" value="{$_CONF['info_row']['wordwrap']}" dir="ltr" size="1" min="1" max="5" v-model="form.availability" oninput="this.value = this.value.replace(/[^\d.-]+/g, '');" />&nbsp;
 </td>
 </tr>
 
@@ -897,7 +897,7 @@
 		<td class="row2">{$lang['show_rating_num_max1']}</td>
 		<td class="row2">
 {$lang['show_rating_num_max2']}
-<input type="text" name="show_rating_num_max" id="input_show_rating_num_max" value="{$_CONF['info_row']['show_rating_num_max']}" size="2" maxlength="2" />
+<input type="text" name="show_rating_num_max" id="input_show_rating_num_max" value="{$_CONF['info_row']['show_rating_num_max']}" size="1" dir="ltr" size="1" min="1" max="5" v-model="form.availability" oninput="this.value = this.value.replace(/[^\d.-]+/g, '');" maxlength="2" />
 {$lang['show_rating_num_max3']}
 </td>
 </tr>
@@ -906,7 +906,7 @@
 {$lang['input_smiles_nm']}
 			</td>
 			<td class="row1">
-<input type="text" name="smiles_nm" id="input_smiles_nm" value="{$_CONF['info_row']['smiles_nm']}" size="2" maxlength="3" />
+<input type="text" name="smiles_nm" id="input_smiles_nm" value="{$_CONF['info_row']['smiles_nm']}" size="1" dir="ltr" size="1" min="1" max="5" v-model="form.availability" oninput="this.value = this.value.replace(/[^\d.-]+/g, '');" maxlength="3" />
 
 			</td>
 		</tr>
@@ -915,7 +915,7 @@
 {$lang['input_icons_nm']}
 			</td>
 			<td class="row1">
-<input type="text" name="icons_numbers" id="icons_numbers" value="{$_CONF['info_row']['icons_numbers']}" size="2" maxlength="3" />
+<input type="text" name="icons_numbers" id="icons_numbers" value="{$_CONF['info_row']['icons_numbers']}" size="1" dir="ltr" size="1" min="1" max="5" v-model="form.availability" oninput="this.value = this.value.replace(/[^\d.-]+/g, '');" maxlength="3" />
 			</td>
 		</tr>
 <tr valign="top">
@@ -923,7 +923,7 @@
 {$lang['smil_columns_number']}
 			</td>
 			<td class="row1">
-<input type="text" name="smil_columns_number" id="smil_columns_number" value="{$_CONF['info_row']['smil_columns_number']}" size="2" maxlength="2" />
+<input type="text" name="smil_columns_number" id="smil_columns_number" value="{$_CONF['info_row']['smil_columns_number']}" size="1" dir="ltr" size="1" min="1" max="5" v-model="form.availability" oninput="this.value = this.value.replace(/[^\d.-]+/g, '');" maxlength="2" />
 			</td>
 		</tr>
 <tr valign="top">
@@ -931,7 +931,7 @@
 {$lang['icon_columns_number']}
 			</td>
 			<td class="row1">
-<input type="text" name="icon_columns_number" id="icon_columns_number" value="{$_CONF['info_row']['icon_columns_number']}"  size="2" maxlength="2" />
+<input type="text" name="icon_columns_number" id="icon_columns_number" value="{$_CONF['info_row']['icon_columns_number']}"  size="1" dir="ltr" size="1" min="1" max="5" v-model="form.availability" oninput="this.value = this.value.replace(/[^\d.-]+/g, '');" maxlength="2" />
 			</td>
 		</tr>
 <tr valign="top">
@@ -1207,12 +1207,12 @@
 <tr valign="top">
 		<td class="row1">{$lang['max_avatar_width']}</td>
 		<td class="row1">
-<input type="text" name="max_avatar_width" id="input_max_avatar_width" value="{$_CONF['info_row']['max_avatar_width']}" size="30" />&nbsp;
+<input type="text" name="max_avatar_width" id="input_max_avatar_width" value="{$_CONF['info_row']['max_avatar_width']}" dir="ltr" size="1" min="1" max="5" v-model="form.availability" oninput="this.value = this.value.replace(/[^\d.-]+/g, '');" />&nbsp;
 </td>
 </tr>
 <tr valign="top">
 		<td class="row2">{$lang['max_avatar_height']}</td>
-		<td class="row2"><input type="text" name="max_avatar_height" id="input_max_avatar_height" value="{$_CONF['info_row']['max_avatar_height']}" size="30" />&nbsp;
+		<td class="row2"><input type="text" name="max_avatar_height" id="input_max_avatar_height" value="{$_CONF['info_row']['max_avatar_height']}" dir="ltr" size="1" min="1" max="5" v-model="form.availability" oninput="this.value = this.value.replace(/[^\d.-]+/g, '');" />&nbsp;
 </td>
 </tr>
 		<tr align="center">
@@ -1233,7 +1233,7 @@
 {$lang['avatar_columns_number']}
 			</td>
 			<td class="row1">
-<input type="text" name="avatar_columns_number" id="avatar_columns_number" value="{$_CONF['info_row']['avatar_columns_number']}" size="5" />
+<input type="text" name="avatar_columns_number" id="avatar_columns_number" value="{$_CONF['info_row']['avatar_columns_number']}" dir="ltr" size="1" min="1" max="5" v-model="form.availability" oninput="this.value = this.value.replace(/[^\d.-]+/g, '');" />
 			</td>
 		</tr>
 <tr valign="top" align="center">
@@ -1416,13 +1416,13 @@
 <tr valign="top">
 		<td class="row2">{$lang['send_email']}</td>
 		<td class="row2">
-<input type="text" name="send_email" id="input_send_email" value="{$_CONF['info_row']['send_email']}" size="30" />
+<input type="text" name="send_email" id="input_send_email" value="{$_CONF['info_row']['send_email']}" dir="ltr" size="30" />
 </td>
 </tr>
 <tr valign="top">
 		<td class="row1">{$lang['admin_email']}</td>
 		<td class="row1">
-<input type="text" name="admin_email" id="input_admin_email" value="{$_CONF['info_row']['admin_email']}" size="30" />
+<input type="text" name="admin_email" id="input_admin_email" value="{$_CONF['info_row']['admin_email']}" dir="ltr" size="30" />
 </td>
 </tr>
 <tr valign="top">
@@ -1439,8 +1439,8 @@
 </select>
 </td>
 </tr>
-<tr valign="top">
-			<td class="main2" colspan="2">
+		<tr align="center">
+			<td width="60%" class="main1" colspan="2">
 				{$lang['settings_smtp']}
 			</td>
 		</tr>
@@ -1448,28 +1448,29 @@
 		<td class="row2">{$lang['smtp_Server']}</td>
 		<td class="row2">
 
-<input type="text" name="smtp_server" id="input_smtp_server" value="{$_CONF['info_row']['smtp_server']}" size="30" />&nbsp;
+<input type="text" name="smtp_server" id="input_smtp_server" value="{$_CONF['info_row']['smtp_server']}" dir="ltr" size="30" />&nbsp;
 </td>
 </tr>
 <tr valign="top">
 		<td class="row2">{$lang['smtp_port']}</td>
 		<td class="row2">
 
-<input type="text" name="smtp_port" id="input_smtp_port" value="{$_CONF['info_row']['smtp_port']}" size="10" />&nbsp;
+<input type="text" name="smtp_port" id="input_smtp_port" value="{$_CONF['info_row']['smtp_port']}" dir="ltr" size="1" min="1" max="5" v-model="form.availability" oninput="this.value = this.value.replace(/[^\d.-]+/g, '');">
+
 </td>
 </tr>
 <tr valign="top">
 		<td class="row2">{$lang['smtp_username']}</td>
 		<td class="row2">
 
-<input type="text" name="smtp_username" id="input_smtp_username" value="{$_CONF['info_row']['smtp_username']}" size="30" />&nbsp;
+<input type="text" name="smtp_username" id="input_smtp_username" value="{$_CONF['info_row']['smtp_username']}" dir="ltr" size="30" />&nbsp;
 </td>
 </tr>
 <tr valign="top">
 		<td class="row2">{$lang['smtp_password']}</td>
 		<td class="row2">
 
-<input type="password" name="smtp_password" id="input_smtp_password" value="{$_CONF['info_row']['smtp_password']}" size="30" /></td>
+<input type="text" name="smtp_password" id="input_smtp_password" value="{$_CONF['info_row']['smtp_password']}" dir="ltr" size="30" /></td>
 </tr>
 <tr valign="top">
 		<td class="row2">{$lang['smtp_secure']}</td>
@@ -1501,7 +1502,7 @@
 {$lang['warning_number_to_ban']}
 			</td>
 			<td class="row1">
-			<input type="text" name="warning_number_to_ban" id="input_warning_number_to_ban" value="{$_CONF['info_row']['warning_number_to_ban']}" size="30" />&nbsp;
+			<input type="text" name="warning_number_to_ban" id="input_warning_number_to_ban" value="{$_CONF['info_row']['warning_number_to_ban']}"dir="ltr" size="1" min="1" max="5" v-model="form.availability" oninput="this.value = this.value.replace(/[^\d.-]+/g, '');" />&nbsp;
 			</td>
 		</tr>
 		<tr align="center">
@@ -1533,7 +1534,7 @@
 {$lang['last_static_num']}
 			</td>
 			<td class="row2">
-<input type="text" name="last_static_num" id="input_last_static_num" value="{$_CONF['info_row']['last_static_num']}" size="30" />
+<input type="text" name="last_static_num" id="input_last_static_num" value="{$_CONF['info_row']['last_static_num']}"dir="ltr" size="1" min="1" max="5" v-model="form.availability" oninput="this.value = this.value.replace(/[^\d.-]+/g, '');" />
 			</td>
 		</tr>
 		<tr>
@@ -1541,7 +1542,7 @@
 {$lang['last_posts_static_num']}
 			</td>
 			<td class="row1">
-<input type="text" name="last_posts_static_num" id="input_last_posts_static_num" value="{$_CONF['info_row']['last_posts_static_num']}" size="30" />
+<input type="text" name="last_posts_static_num" id="input_last_posts_static_num" value="{$_CONF['info_row']['last_posts_static_num']}" dir="ltr" size="1" min="1" max="5" v-model="form.availability" oninput="this.value = this.value.replace(/[^\d.-]+/g, '');" />
 
 			</td>
 		</tr>
@@ -1571,7 +1572,7 @@
 {$lang['lasts_posts_num_bar']}
 			</td>
 			<td class="row2">
-<input type="text" name="lasts_posts_bar_num" id="input_lasts_posts_bar_num" value="{$_CONF['info_row']['lasts_posts_bar_num']}" size="30" />
+<input type="text" name="lasts_posts_bar_num" id="input_lasts_posts_bar_num" value="{$_CONF['info_row']['lasts_posts_bar_num']}" dir="ltr" size="1" min="1" max="5" v-model="form.availability" oninput="this.value = this.value.replace(/[^\d.-]+/g, '');" />
 			</td>
 		</tr>
 		<tr>
@@ -1672,7 +1673,7 @@
 {$lang['mor_hours_online_today']}
 			</td>
 			<td class="row1">
-<input type="text" name="mor_hours_online_today" id="input_mor_hours_online_today" value="{$_CONF['info_row']['mor_hours_online_today']}" size="5" />
+<input type="text" name="mor_hours_online_today" id="input_mor_hours_online_today" value="{$_CONF['info_row']['mor_hours_online_today']}" dir="ltr" size="1" min="1" max="5" v-model="form.availability" oninput="this.value = this.value.replace(/[^\d.-]+/g, '');" />
 			</td>
 		</tr>
 		<tr align="center">
@@ -1699,7 +1700,7 @@
 {$lang['mor_seconds_online']}
 			</td>
 			<td class="row1">
-<input type="text" name="mor_seconds_online" id="input_mor_seconds_online" value="{$_CONF['info_row']['mor_seconds_online']}" size="5" />
+<input type="text" name="mor_seconds_online" id="input_mor_seconds_online" value="{$_CONF['info_row']['mor_seconds_online']}" dir="ltr" size="1" min="1" max="5" v-model="form.availability" oninput="this.value = this.value.replace(/[^\d.-]+/g, '');" />
 			</td>
 		</tr>
 <tr valign="top">
@@ -1737,7 +1738,7 @@
 {$lang['last_subject_writer_nm']}
 			</td>
 			<td class="row2">
-<input type="text" name="last_subject_writer_nm" id="input_last_subject_writer_nm" value="{$_CONF['info_row']['last_subject_writer_nm']}" size="5" />
+<input type="text" name="last_subject_writer_nm" id="input_last_subject_writer_nm" value="{$_CONF['info_row']['last_subject_writer_nm']}" dir="ltr" size="1" min="1" max="5" v-model="form.availability" oninput="this.value = this.value.replace(/[^\d.-]+/g, '');" />
 			</td>
 		</tr>
 		<tr align="center">
@@ -1767,7 +1768,7 @@
 {$lang['show_reputation_number']}
 			</td>
 			<td class="row1">
-			<input type="text" name="show_reputation_number" id="input_show_reputation_number" value="{$_CONF['info_row']['show_reputation_number']}" size="30" />&nbsp;
+			<input type="text" name="show_reputation_number" id="input_show_reputation_number" value="{$_CONF['info_row']['show_reputation_number']}" dir="ltr" size="1" min="1" max="5" v-model="form.availability" oninput="this.value = this.value.replace(/[^\d.-]+/g, '');" />&nbsp;
 
 			</td>
 		</tr>
@@ -1797,7 +1798,7 @@
 {$lang['chat_message_num']}
 			</td>
 			<td class="row2">
-<input type="text" name="chat_message_num" id="input_chat_message_num" value="{$_CONF['info_row']['chat_message_num']}" size="5" />
+<input type="text" name="chat_message_num" id="input_chat_message_num" value="{$_CONF['info_row']['chat_message_num']}" dir="ltr" size="1" min="1" max="5" v-model="form.availability" oninput="this.value = this.value.replace(/[^\d.-]+/g, '');" />
 			</td>
 		</tr>
 		<tr>
@@ -1805,7 +1806,7 @@
 {$lang['chat_num_mem_posts']}
 			</td>
 			<td class="row1">
-<input type="text" name="chat_num_mem_posts" id="input_chat_num_mem_posts" value="{$_CONF['info_row']['chat_num_mem_posts']}" size="5" />
+<input type="text" name="chat_num_mem_posts" id="input_chat_num_mem_posts" value="{$_CONF['info_row']['chat_num_mem_posts']}" dir="ltr" size="1" min="1" max="5" v-model="form.availability" oninput="this.value = this.value.replace(/[^\d.-]+/g, '');" />
 			</td>
 		</tr>
 			<tr>
@@ -1813,7 +1814,7 @@
 {$lang['chat_num_characters']}
 			</td>
 			<td class="row1">
-<input type="text" name="chat_num_characters" id="input_chat_num_characters" value="{$_CONF['info_row']['chat_num_characters']}" size="5" />
+<input type="text" name="chat_num_characters" id="input_chat_num_characters" value="{$_CONF['info_row']['chat_num_characters']}" dir="ltr" size="1" min="1" max="5" v-model="form.availability" oninput="this.value = this.value.replace(/[^\d.-]+/g, '');" />
 			</td>
 		</tr>
 				<tr>
@@ -1916,7 +1917,7 @@
 {$lang['how_many_entries_error_num']}
 			</td>
 			<td class="row1">
-<input type="text" name="num_entries_error" id="input_num_entries_error" value="{$_CONF['info_row']['num_entries_error']}" size="5" />
+<input type="text" name="num_entries_error" id="input_num_entries_error" value="{$_CONF['info_row']['num_entries_error']}" dir="ltr" size="1" min="1" max="5" v-model="form.availability" oninput="this.value = this.value.replace(/[^\d.-]+/g, '');" />
 			</td>
 		</tr>
 <!-- action_find_addons_54 -->

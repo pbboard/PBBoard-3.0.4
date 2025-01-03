@@ -1605,8 +1605,8 @@ var myTimeout = window.setTimeout("read_users();", waittime);
   $.post("index.php?page=chat_message&start=1", {textc: txt.value, ajax: 1}, function(result){
     txt.value = "";
     $("#message").html(result);
-  });  
-  var waittimed = 1000; 
+  });
+  var waittimed = 1000;
   var myTimeout = window.setTimeout("read_cont();", waittimed);
   }
 
@@ -16422,8 +16422,8 @@ itemtype="https://schema.org/ListItem">
 <div class="btn-nav"></div>
 <li itemprop="itemListElement" itemscope
 itemtype="https://schema.org/ListItem">
-<a itemprop="item" title="{$lang['post']}
-({$Info['reply_number']})" name="{$Info['reply_id']}" href="#{$Info['reply_id']}">
+<a itemprop="item" title="{$title}"
+rel="canonical" name="{$Info['reply_id']}" href="index.php?page=post&amp;show=1&amp;id={$Info['reply_id']}">
 <span itemprop="name">
 {$title}
 </span>
@@ -17906,8 +17906,8 @@ $x = 1;
 {if {$ListonlineChat['is_bot']} == '1'}
 {$ListonlineChat['bot_name']}
 {else}
-<span class="fa fa-user"></span> 
-<?php 
+<span class="fa fa-user"></span>
+<?php
 $PowerBB->_CONF['template']['while']['ListonlineChat'][$this->x_loop]['username_style'] = str_ireplace('Guest',$PowerBB->_CONF['template']['lang']['Guest_'],$PowerBB->_CONF['template']['while']['ListonlineChat'][$this->x_loop]['username_style']);
 
 echo $PowerBB->_CONF['template']['while']['ListonlineChat'][$this->x_loop]['username_style'].$x;

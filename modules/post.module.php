@@ -409,9 +409,13 @@ class PowerBBTopicMOD
 		// Kill SQL Injection
 		$PowerBB->functions->CleanVariable($PowerBB->_CONF['template']['ReplyInfo']['text'],'sql');
 
-			$last_page1 = $PowerBB->_GET['num']/$PowerBB->_CONF['info_row']['perpage'];
-			$last_pagef = round($last_page1, 0);
-			$perpage_r = $last_pagef;
+
+			 $replies = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(id) FROM " . $PowerBB->table['reply'] . " WHERE subject_id = '".$PowerBB->_CONF['template']['ReplyInfo']['subject_id']."' and write_time < ".$PowerBB->_CONF['template']['ReplyInfo']['write_time'].""));
+
+			$last_page1 = $replies/$PowerBB->_CONF['info_row']['perpage'];
+			$last_page1 = preg_replace("#([0-9]+).([0-9]+)#si", '$1', $last_page1);
+			$countpage = $last_page1+1;
+			$perpage_r = $countpage;
 
 		// assigns
 		$PowerBB->template->assign('section_info',$this->SectionInfo);

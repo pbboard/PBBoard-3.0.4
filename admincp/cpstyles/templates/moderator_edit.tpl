@@ -51,6 +51,12 @@
 		<tr>
 			<td class="row2">
 			{$lang['moderator_Group']}
+			<br />
+<small>هنا ستظهر لك جميع المجموعات التي لديها صلاحية <b>مجموعة مشرفين</b> </small>
+ <br />
+<small><i>يمكنك إنشاء او تحرير اي مجموعة واعطائها صلاحية مجموعة مشرفين لجعلها تظهر في هذه القائمة
+<br /> من بند <b>خصائص الاشراف</b> الخاص بالمجموعة</i>
+</small>
 			</td>
 			<td class="row2">
 				<select size="1" name="group" id="group_id">
@@ -64,7 +70,7 @@
 
 	<br />
 
-	
+
 		<tr>
 			<td colspan="2" align="center">
 				<input type="submit" value="{$lang['acceptable']}" name="submit" />

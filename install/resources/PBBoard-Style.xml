@@ -16423,8 +16423,8 @@ itemtype="https://schema.org/ListItem">
 <div class="btn-nav"></div>
 <li itemprop="itemListElement" itemscope
 itemtype="https://schema.org/ListItem">
-<a itemprop="item" title="{$lang['post']}
-({$Info['reply_number']})" name="{$Info['reply_id']}" href="#{$Info['reply_id']}">
+<a itemprop="item" title="{$title}"
+rel="canonical" name="{$Info['reply_id']}" href="index.php?page=post&amp;show=1&amp;id={$Info['reply_id']}">
 <span itemprop="name">
 {$title}
 </span>

@@ -57,14 +57,14 @@ $inserts[] = "INSERT INTO pbb_ex (id, Ex, max_size, mime_type) VALUES
 
 
 $inserts[] = "INSERT INTO pbb_group (id, title, username_style, user_title, forum_team, banned, view_section, download_attach, download_attach_number, write_subject, write_reply, upload_attach, upload_attach_num, edit_own_subject, edit_own_reply, del_own_subject, del_own_reply, write_poll, vote_poll, no_posts, use_pm, send_pm, resive_pm, max_pm, min_send_pm, sig_allow, sig_len, group_mod, del_subject, del_reply, edit_subject, edit_reply, stick_subject, unstick_subject, move_subject, close_subject, usercp_allow, admincp_allow, search_allow, memberlist_allow, vice, show_hidden, view_usernamestyle, usertitle_change, onlinepage_allow, allow_see_offstyles, admincp_section, admincp_option, admincp_member, admincp_membergroup, admincp_membertitle, admincp_admin, admincp_adminstep, admincp_subject, admincp_database, admincp_fixup, admincp_ads, admincp_template, admincp_adminads, admincp_attach, admincp_page, admincp_block, admincp_style, admincp_toolbox, admincp_smile, admincp_icon, admincp_avater, group_order, admincp_contactus, send_warning, can_warned, hide_allow, visitormessage, see_who_on_topic, reputation_number, admincp_chat, admincp_extrafield, admincp_lang, admincp_emailed, admincp_warn, admincp_award, admincp_multi_moderation, view_subject, review_subject, review_reply, view_action_edit, topic_day_number, groups_security, profile_photo) VALUES
-(1, 'Administrator', '<strong><em><span style=\"color: #800000;\">[username]</span></em></strong>', 'Administrator', 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 2000, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 100, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 0, 1, 1),
-(2, 'Deputy Administrator', '<strong><span style=\"color: #FF0000;\">[username]</span></strong>', 'Deputy Administrator', 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 2000, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 1, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 1, 0, 1, 1, 1, 50, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 1, 1),
-(3, 'Moderators', '<strong><span style=\"color: #0000FF;\">[username]</span></strong>', 'Moderator', 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 1, 2000, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 0, 1, 1, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 1, 1, 1, 30, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 1, 1),
+(1, 'Administrator', '<strong><em><span style=\"color: #840000;\">[username]</span></em></strong>', 'Administrator', 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 2000, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 100, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 0, 1, 1),
+(2, 'General Moderator', '<strong><span style=\"color: #FF0000;\">[username]</span></strong>', 'General Moderator', 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 2000, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 1, 0, 1, 1, 1, 50, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 1, 1),
+(3, 'Moderators', '<strong><span style=\"color: #0000FF;\">[username]</span></strong>', 'Moderator', 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 1, 2000, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 0, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 0, 1, 0, 1, 1, 1, 30, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 1, 1),
 (4, 'Members', '<span style=\"color: #000000;\">[username]</span>', 'Member', 0, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 1, 2000, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 0, 0, 1, 1, 1, 1, 10, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 1, 1),
-(5, 'Validating', '<span style=\"color: #008080;\">[username]</span>', 'Validat', 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 0, 0, 1, 0, 1, 1, 10, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0),
+(5, 'Unconfirmed', '<span style=\"color: #008080;\">[username]</span>', 'Unconfirmed', 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 0, 0, 1, 0, 1, 1, 10, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0),
 (6, 'Banneds', '<span style=\"color: #FF0000;\">[username]</span>', 'Banned', 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0),
 (7, 'Guests', '[username]', 'Guest', 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 8, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0),
-(8, 'General Supervisor', '<strong><span style=\"color: #800000;\">[username]</span></strong>', 'General Supervisor', 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 3000, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 1, 1, 0, 1, 0, 1, 1, 1, 0, 1, 0, 1, 1, 0, 1, 1, 0, 1, 0, 1, 0, 0, 1, 1, 1, 1, 2, 0, 1, 0, 1, 1, 1, 50, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 1, 1);";
+(8, 'Observers', '<strong><span style=\"color: #800000;\">[username]</span></strong>', 'Obser', 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 3000, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 1, 0, 1, 1, 1, 50, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 1, 1);";
 
 $smiles_cache = 'W3siaWQiOiIxIiwic21pbGVfc2hvcnQiOiI6KSIsInNtaWxlX3BhdGgiOiJsb29rXC9pbWFnZXNcL3NtaWxlc1wvc21pbGUuZ2lmIn0seyJpZCI6IjIiLCJzbWlsZV9zaG9ydCI6IjspIiwic21pbGVfcGF0aCI6Imxvb2tcL2ltYWdlc1wvc21pbGVzXC93aW5rXzMuZ2lmIn0seyJpZCI6IjMiLCJzbWlsZV9zaG9ydCI6Ijpyb2xsOiIsInNtaWxlX3BhdGgiOiJsb29rXC9pbWFnZXNcL3NtaWxlc1wvcm9sbGV5ZXMuZ2lmIn0seyJpZCI6IjQiLCJzbWlsZV9zaG9ydCI6IjpEIiwic21pbGVfcGF0aCI6Imxvb2tcL2ltYWdlc1wvc21pbGVzXC9iaWdncmluMi5naWYifSx7ImlkIjoiNSIsInNtaWxlX3Nob3J0IjoiOmNvb2w6Iiwic21pbGVfcGF0aCI6Imxvb2tcL2ltYWdlc1wvc21pbGVzXC9jb29sLmdpZiJ9LHsiaWQiOiI2Iiwic21pbGVfc2hvcnQiOiI6bG9sOiIsInNtaWxlX3BhdGgiOiJsb29rXC9pbWFnZXNcL3NtaWxlc1wvbGF1Z2guZ2lmIn0seyJpZCI6IjciLCJzbWlsZV9zaG9ydCI6IjooIiwic21pbGVfcGF0aCI6Imxvb2tcL2ltYWdlc1wvc21pbGVzXC9zYWQuZ2lmIn0seyJpZCI6IjgiLCJzbWlsZV9zaG9ydCI6IjptYWQ6Iiwic21pbGVfcGF0aCI6Imxvb2tcL2ltYWdlc1wvc21pbGVzXC9tYWRfMS5naWYifSx7ImlkIjoiOSIsInNtaWxlX3Nob3J0IjoiOiMiLCJzbWlsZV9wYXRoIjoibG9va1wvaW1hZ2VzXC9zbWlsZXNcL2JsdXNoaW5nLmdpZiJ9LHsiaWQiOiIxMCIsInNtaWxlX3Nob3J0IjoiOkBAOiIsInNtaWxlX3BhdGgiOiJsb29rXC9pbWFnZXNcL3NtaWxlc1wvYmxpbmsuZ2lmIn0seyJpZCI6IjExIiwic21pbGVfc2hvcnQiOiI6eWVzOiIsInNtaWxlX3BhdGgiOiJsb29rXC9pbWFnZXNcL3NtaWxlc1wveWVzLmdpZiJ9LHsiaWQiOiIxMiIsInNtaWxlX3Nob3J0IjoiOm5vOiIsInNtaWxlX3BhdGgiOiJsb29rXC9pbWFnZXNcL3NtaWxlc1wvbm9fMS5naWYifSx7ImlkIjoiMTMiLCJzbWlsZV9zaG9ydCI6IjpobW06Iiwic21pbGVfcGF0aCI6Imxvb2tcL2ltYWdlc1wvc21pbGVzXC9nLmdpZiJ9XQ==';
 $users_ratings_cache = 'W3siaWQiOiIxIiwicmF0aW5nIjoibG9va1wvaW1hZ2VzXC9yYXRpbmdcL3JhdGluZ18wLmdpZiIsInBvc3RzIjoiMTAifSx7ImlkIjoiMiIsInJhdGluZyI6Imxvb2tcL2ltYWdlc1wvcmF0aW5nXC9yYXRpbmdfMS5naWYiLCJwb3N0cyI6IjEwMCJ9LHsiaWQiOiIzIiwicmF0aW5nIjoibG9va1wvaW1hZ2VzXC9yYXRpbmdcL3JhdGluZ18yLmdpZiIsInBvc3RzIjoiMjAwIn0seyJpZCI6IjQiLCJyYXRpbmciOiJsb29rXC9pbWFnZXNcL3JhdGluZ1wvcmF0aW5nXzMuZ2lmIiwicG9zdHMiOiI0MDAifSx7ImlkIjoiNSIsInJhdGluZyI6Imxvb2tcL2ltYWdlc1wvcmF0aW5nXC9yYXRpbmdfNC5naWYiLCJwb3N0cyI6IjYwMCJ9LHsiaWQiOiI2IiwicmF0aW5nIjoibG9va1wvaW1hZ2VzXC9yYXRpbmdcL3JhdGluZ181LmdpZiIsInBvc3RzIjoiMTAwMCJ9XQ==';
@@ -112,8 +112,8 @@ $inserts[] = "INSERT INTO pbb_info (id, var_name, value) VALUES
 (37, 'post_title_min', '4'),
 (38, 'post_title_max', '99'),
 (39, 'upload_avatar', '1'),
-(40, 'max_avatar_width', '650'),
-(41, 'max_avatar_height', '850'),
+(40, 'max_avatar_width', '460'),
+(41, 'max_avatar_height', '650'),
 (42, 'reg_close', '0'),
 (43, 'msg_title_temp', ''),
 (44, 'msg_content_temp', ''),
@@ -126,20 +126,20 @@ $inserts[] = "INSERT INTO pbb_info (id, var_name, value) VALUES
 (51, 'forums_cache', ''),
 (52, 'subforums_cache', ''),
 (53, 'sectiongroup_cache', ''),
-(54, 'subject_number', '0'),
+(54, 'subject_number', '1'),
 (55, 'reply_number', '0'),
-(56, 'member_number', '0'),
+(56, 'member_number', '1'),
 (57, 'last_member', ''),
-(58, 'last_member_id', '0'),
+(58, 'last_member_id', '1'),
 (59, 'floodctrl', '30'),
-(60, 'description', 'This program uses the PBBoard Forum to learn more go to www.pbboard.info'),
+(60, 'description', 'This program uses the PBBoard Forum to learn more go to https://pbboard.info'),
 (61, 'keywords', 'PBBoard,Power,bulletin,board,forums,forum,pbboard.info'),
 (62, 'content_language', 'en'),
 (63, 'content_dir', 'ltr'),
 (64, 'lasts_posts_bar_dir', 'left'),
 (65, 'special_bar_dir', 'left'),
 (66, 'max_online_date', ''),
-(67, 'chat_bar_dir', 'left'),
+(67, 'chat_bar_dir', 'out'),
 (68, 'def_lang', '1'),
 (69, 'charset', 'utf-8'),
 (70, 'toolbox_show', '1'),
@@ -155,7 +155,7 @@ $inserts[] = "INSERT INTO pbb_info (id, var_name, value) VALUES
 (80, 'default_imagesW', '400'),
 (81, 'default_imagesH', '600'),
 (82, 'wordwrap', '50'),
-(83, 'create_date', '1551040731'),
+(83, 'create_date', '".$now."'),
 (84, 'icon_path', 'look/images/icons/'),
 (85, 'sectiongroup_number', '0'),
 (86, 'subsections_number', '0'),
@@ -301,7 +301,10 @@ $inserts[] = "INSERT INTO pbb_info (id, var_name, value) VALUES
 (226, 'mention_active', '1'),
 (227, 'mention_exusergroups', '6,5'),
 (228, 'mention_exusers', '0'),
-(229, 'mention_exforum', '99');";
+(229, 'mention_exforum', '99'),
+(230, 'download_subject', '0'),
+(231, 'print_subject', '1'),
+(232, 'send_subject_to_friend', '1');";
 
 $inserts[] = "INSERT INTO pbb_lang (id, lang_title, lang_order, lang_on, lang_path) VALUES
 (1, 'English', 1, 1, 'ltr');";
@@ -315,21 +318,21 @@ $inserts[] = "INSERT INTO pbb_subject (id, title, text, writer, section, write_d
 
 $inserts[] = "INSERT INTO pbb_sectiongroup (id, section_id, group_id, view_section, view_subject, download_attach, write_subject, write_reply, upload_attach, edit_own_subject, edit_own_reply, del_own_subject, del_own_reply, write_poll, vote_poll, no_posts, main_section, group_name) VALUES
 (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 'Administrator'),
-(2, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 'Super Moderators'),
+(2, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 'General Moderator'),
 (3, 1, 3, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 'Moderators'),
 (4, 1, 4, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 'Members'),
-(5, 1, 5, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 'Validating'),
+(5, 1, 5, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 'Unconfirmed'),
 (6, 1, 6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 'Banneds'),
 (7, 1, 7, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 'Guests'),
-(8, 1, 8, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 'General Supervisor'),
+(8, 1, 8, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 'Observers'),
 (9, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 'Administrator'),
-(10, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 'Deputy Administrator'),
+(10, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 'General Moderator'),
 (11, 2, 3, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 0, 'Moderators'),
 (12, 2, 4, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 0, 'Members'),
-(13, 2, 5, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 'Validating'),
+(13, 2, 5, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 'Unconfirmed'),
 (14, 2, 6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 'Banneds'),
 (15, 2, 7, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 'Guests'),
-(16, 2, 8, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 'General Supervisor');";
+(16, 2, 8, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 'Observers');";
 
 $inserts[] = "INSERT INTO pbb_smiles (id, smile_short, smile_path, smile_type) VALUES
 (1, ':)', 'look/images/smiles/smile.gif', 0),

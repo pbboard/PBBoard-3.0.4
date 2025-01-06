@@ -196,6 +196,10 @@ txtExec: function(caller) {
 		}
 	};
 
+	for (var i in pbbCmd.video) {
+		var item = pbbCmd.video[i];
+		$.sceditor.defaultOptions.allowedIframeUrls.push(item.url);
+	}
  	// Add PBBoard video command
 	$.sceditor.formats.bbcode.set('video', {
 		allowsEmpty: true,

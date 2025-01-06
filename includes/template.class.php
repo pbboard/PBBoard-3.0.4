@@ -309,6 +309,19 @@ class PBBTemplate
 
              }
 
+			$editor_dir = ("./look/sceditor/minified/PBB_bbcode.js");
+			if(file_exists($editor_dir))
+			{
+			$edit_time = filemtime($editor_dir);
+			}
+			if($edit_time)
+			{
+			$string = str_replace("look/sceditor/minified/PBB_bbcode.js","look/sceditor/minified/PBB_bbcode.js?v=".$edit_time,$string);
+			}
+			else
+			{
+			$string = str_replace("look/sceditor/minified/PBB_bbcode.js","look/sceditor/minified/PBB_bbcode.js?v=1574",$string);
+			}
 
 			// We have loop
 			if (preg_match('~\{Des::while}{([^[<].*?)}~',$string)

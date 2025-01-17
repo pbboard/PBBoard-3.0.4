@@ -303,8 +303,8 @@ $inserts[] = "INSERT INTO pbb_info (id, var_name, value) VALUES
 (229, 'mention_exforum', '99'),
 (230, 'download_subject', '0'),
 (231, 'print_subject', '1'),
-(232, 'send_subject_to_friend', '1');";
-
+(232, 'send_subject_to_friend', '1'),
+(233, 'adsense_limited_usergroups', '0');";
 
 $inserts[] = "INSERT INTO pbb_lang (id, lang_title, lang_order, lang_on, lang_path) VALUES
 (1, 'Arabic', 1, 1, 'rtl');";

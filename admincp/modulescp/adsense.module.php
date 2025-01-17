@@ -139,6 +139,16 @@ class PowerBBCoreMOD
 		$AdsenseArr['proc']['*'] 		= 	array('method'=>'clean','param'=>'html');
 
 		$PowerBB->_CONF['template']['while']['AdsensesList'] = $PowerBB->core->GetList($AdsenseArr,'adsense');
+
+
+		$GroupArr 							= 	array();
+
+		$GroupArr['order'] 					= 	array();
+		$GroupArr['order']['field'] 		= 	'group_order';
+		$GroupArr['order']['type'] 			= 	'ASC';
+
+		$PowerBB->_CONF['template']['while']['AdsenseGroupList'] = $PowerBB->core->GetList($GroupArr,'group');
+
 		$PowerBB->template->display('adsense_main');
 	}
 
@@ -226,7 +236,38 @@ class PowerBBCoreMOD
 	{
 		global $PowerBB;
 
-	    $update = $PowerBB->info->UpdateInfo(array('value'=>$PowerBB->_POST['adsense_limited_sections'],'var_name'=>'adsense_limited_sections'));
+		if (isset($PowerBB->_POST['adsense_limited_usergroups']))
+			{
+				if (is_array($PowerBB->_POST['adsense_limited_usergroups']))
+				{
+
+					$adsense_limited_usergroups = array();
+					foreach ($PowerBB->_POST['adsense_limited_usergroups'] as $l)
+					{
+					 $adsense_limited_usergroups[] = intval($l);
+					}
+
+					if ( count( $adsense_limited_usergroups  ) )
+					{
+						foreach( $adsense_limited_usergroups  as $f )
+						{
+							if ( is_array($f) and count($f) )
+							{
+							$adsense_limited_usergroups  = array_merge( $adsense_limited_usergroups , $f );
+							}
+						}
+					}
+
+			     $member_group_ids = implode( ",", $adsense_limited_usergroups );
+			   }
+	         }
+	         else
+	         {
+	          $member_group_ids = '';
+	         }
+
+	    $update1 = $PowerBB->info->UpdateInfo(array('value'=>$PowerBB->_POST['adsense_limited_sections'],'var_name'=>'adsense_limited_sections'));
+	    $update2 = $PowerBB->info->UpdateInfo(array('value'=>$member_group_ids,'var_name'=>'adsense_limited_usergroups'));
 
 		$PowerBB->functions->msg($PowerBB->_CONF['template']['_CONF']['lang']['updated_successfully']);
 	    $PowerBB->functions->redirect('index.php?page=adsense&amp;control=1&amp;main=1');

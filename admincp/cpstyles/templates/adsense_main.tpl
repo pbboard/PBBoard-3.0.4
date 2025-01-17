@@ -90,9 +90,40 @@
 				<input name="adsense_limited_sections" id="input_adsense_limited_sections" value="{$_CONF['info_row']['adsense_limited_sections']}" size="40" type="text">
 			</td>
 		</tr>
+
+
+		<tr align="center">
+			<td class="main1" colspan="2">
+منع ظهور اعلانات ادسنس لمجموعات معينة
+			</td>
+		</tr>
+
+<tr valign="top">
+	<td colspan="2">
+<i><small>	اختر المجموعات التي لا تريد ان يتم ظهور اعلانات ادسنس لها</small></i>
+<br />
+		{Des::while}{AdsenseGroupList}
+		<?php
+
+		if (in_array($PowerBB->_CONF['template']['while']['AdsenseGroupList'][$this->x_loop]['id'], explode(',', $PowerBB->_CONF['info_row']['adsense_limited_usergroups']))){
+		?>
+		<input type="checkbox" tabindex="1" name="adsense_limited_usergroups[]" value="{$AdsenseGroupList['id']}" checked="checked" />
+		{else}
+		<input type="checkbox" tabindex="1" name="adsense_limited_usergroups[]" value="{$AdsenseGroupList['id']}" />
+		{/if}
+	{$AdsenseGroupList['title']}
+{/Des::while}
+<br />
+<br />
+</td>
+</tr>
+
+
+
 		<tr>
 			<td class="row2" colspan="2" align="center">
-					<input type="submit" value="{$lang['acceptable']}" name="submit" /></td>
+			<hr>
+			<input type="submit" value="{$lang['acceptable']}" name="submit" /></td>
 		</tr>
 </table>
 </form>

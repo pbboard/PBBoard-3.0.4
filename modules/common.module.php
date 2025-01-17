@@ -1200,7 +1200,10 @@ class PowerBBCommon
 			 {
 			   $Subject_Section = "000";
              }
-		 if (!in_array($Subject_Section, preg_split('#\s*,\s*#s', $PowerBB->_CONF['info_row']['adsense_limited_sections'], -1, PREG_SPLIT_NO_EMPTY)))
+
+
+		   if (!in_array($Subject_Section, preg_split('#\s*,\s*#s', $PowerBB->_CONF['info_row']['adsense_limited_sections'], -1, PREG_SPLIT_NO_EMPTY))
+		    and !in_array($PowerBB->_CONF['member_row']['usergroup'], preg_split('#\s*,\s*#s', $PowerBB->_CONF['info_row']['adsense_limited_usergroups'], -1, PREG_SPLIT_NO_EMPTY)))
 		  {
 			$AdsenseArr 					= 	array();
 			$AdsenseArr['order']			=	array();

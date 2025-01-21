@@ -3192,7 +3192,7 @@ return preg_replace($pattern, $replacement, $email);
  	/**
  	 *Update Section Cache ;)
  	 */
-function UpdateSectionCache($SectionCache)
+   function UpdateSectionCache($SectionCache)
  	{
       global $PowerBB;
 			// Get Section Info
@@ -3242,7 +3242,7 @@ function UpdateSectionCache($SectionCache)
 
 				if($GetLastReplyForm['write_time'] > $GetLastSubjectInf['native_write_time'])
 				{
-				$GetSubjectInfoQuery = $PowerBB->DB->sql_query("SELECT id,reply_number,icon,last_replier,write_time FROM " . $PowerBB->table['subject'] . " WHERE id = '".$GetLastReplyForm['subject_id']."' AND delete_topic='0' AND review_subject='0' ");
+				$GetSubjectInfoQuery = $PowerBB->DB->sql_query("SELECT id,title,reply_number,icon,last_replier,write_time FROM " . $PowerBB->table['subject'] . " WHERE id = '".$GetLastReplyForm['subject_id']."' AND delete_topic='0' AND review_subject='0' ");
 				$SubjectInf = $PowerBB->DB->sql_fetch_array($GetSubjectInfoQuery);
 				// Get info Reply
 				$countpage = $PowerBB->functions->get_count_perpage($SubjectInf['reply_number'],$PowerBB->_CONF['info_row']['perpage']);

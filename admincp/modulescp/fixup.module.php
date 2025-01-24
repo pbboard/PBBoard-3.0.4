@@ -23,8 +23,7 @@ class PowerBBFixMOD
 
 		if ($PowerBB->_CONF['member_permission'])
 		{
-            if (!$PowerBB->_GET['pbboard_updates']
-            or !$PowerBB->_GET['all_cache']){
+            if (!$PowerBB->_GET['pbboard_updates']){
 			$PowerBB->template->display('header');
              }
 			if ($PowerBB->_CONF['rows']['group_info']['admincp_fixup'] == '0')

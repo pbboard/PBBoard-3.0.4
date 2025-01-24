@@ -811,8 +811,8 @@ $(document).ready(Ready);
 		<td class="row2" width="50%" valign="top">{$lang['onlinepage_allow']}</td>
 		<td class="row2" width="50%" valign="top">
 		 <select size="1" name="onlinepage_allow">
-		  <option selected="selected" value="1">{$lang['yes']}</option>
-		  <option value="0">{$lang['no']}</option>
+		  <option value="1">{$lang['yes']}</option>
+		  <option selected="selected" value="0">{$lang['no']}</option>
 		 </select>
 		</td>
 		</tr>

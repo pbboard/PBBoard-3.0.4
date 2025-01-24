@@ -627,6 +627,10 @@ class PowerBBGroupsMOD extends _functions
 		$GroupArr['where']								=	array('id',$GroupInfo['id']);
 
 		$update = $PowerBB->group->UpdateGroup($GroupArr);
+        $GroupId = $PowerBB->_POST['usergroup'];
+
+          if($PowerBB->_GET['id'] != $GroupId)
+          {
 
 			$SecArr 						= 	array();
 			$SecArr['order'] 				= 	array();
@@ -634,9 +638,8 @@ class PowerBBGroupsMOD extends _functions
 			$SecArr['order']['type'] 		= 	'ASC';
 
 			$sections = $PowerBB->core->GetList($SecArr,'section');
-            $GroupId = $PowerBB->_POST['usergroup'];
-			$del = $PowerBB->group->DeleteSectionGroup(array('where'=>array('group_id',$PowerBB->_GET['id'])));
 
+			$del = $PowerBB->group->DeleteSectionGroup(array('where'=>array('group_id',$PowerBB->_GET['id'])));
 
          	$x = 0;
 			$n = sizeof($sections);
@@ -671,7 +674,7 @@ class PowerBBGroupsMOD extends _functions
 				$x += 1;
 			}
 
-
+           }
 
 			if ($PowerBB->_POST['hide_allow'] == '0')
 			{

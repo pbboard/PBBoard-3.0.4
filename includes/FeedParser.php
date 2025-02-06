@@ -167,6 +167,49 @@ class FeedParser{
                 $URLContent = str_replace("rights", "LINK", $URLContent);
             }
 
+           if(stristr($this->url,"youtube.com"))
+            {
+
+              $URLContent = str_replace('<feed xmlns:yt="http://www.youtube.com/xml/schemas/2015" xmlns:media="http://search.yahoo.com/mrss/" xmlns="http://www.w3.org/2005/Atom">', '<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">', $URLContent);
+              $URLContent = str_replace("</feed>", "</rss>", $URLContent);
+              $URLContent = str_replace(":media", "", $URLContent);
+              $URLContent = str_replace("media:", "", $URLContent);
+              $URLContent = str_replace("yt:", "", $URLContent);
+              $URLContent = str_replace(":yt", "", $URLContent);
+            preg_match("/<title>(.*?)<\\/title>/si", $URLContent, $matchtitle);
+              $URLContent = str_replace("<description></description>", "<description>".$matchtitle[1]."</description>", $URLContent);
+              $URLContent = preg_replace('#<link rel="alternate" href="(.*?)"/>#i', '<link>$1</link>', $URLContent);
+              $rss_start_xmlns = "\n";
+              $URLContent = str_replace('<?xml version="1.0" encoding="UTF-8"?>', '', $URLContent);
+              $URLContent = str_replace("</rss>", "</channel>".$rss_start_xmlns."</rss>", $URLContent);
+              $URLContent = preg_replace('#<content url="(.*?)" type="application/x-shockwave-flash" width="(.*?)" height="(.*?)"/>#i', '<content>[youtube]$1[/youtube]</content>', $URLContent);
+              $URLContent = str_replace("<entry>", "<item>", $URLContent);
+              $URLContent = str_replace("</entry>", "</item>", $URLContent);
+              $URLContent = str_replace('<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">', '<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">'.$rss_start_xmlns.'<channel>'.$rss_start_xmlns.'<atom:link href="'.$url.'" rel="self" type="application/rss+xml" />', $URLContent);
+
+              $URLContent = str_replace("<published", "<pubDate", $URLContent);
+              $URLContent = str_replace("</published", "</pubDate", $URLContent);
+              $URLContent = str_replace('<author>', '', $URLContent);
+              $URLContent = str_replace('</author>', '', $URLContent);
+              $URLContent = str_replace('<group>', '', $URLContent);
+              $URLContent = str_replace('</group>', '', $URLContent);
+              $URLContent = preg_replace('#<id>(.*?)</id>#i', '', $URLContent);
+
+              $URLContent = preg_replace('#<videoId>(.*?)</videoId>#i', '', $URLContent);
+              $URLContent = preg_replace('#<name>(.*?)</name>#i', '', $URLContent);
+              $URLContent = preg_replace('#<channelId>(.*?)</channelId>#i', '', $URLContent);
+              $URLContent = preg_replace('#<updated>(.*?)</updated>#i', '', $URLContent);
+              $URLContent = preg_replace('#<uri>(.*?)</uri>#i', '', $URLContent);
+              $URLContent = preg_replace('#<statistics(.*?)/>#i', '', $URLContent);
+              $URLContent = preg_replace('#<starRating(.*?)/>#i', '', $URLContent);
+              $URLContent = str_replace('<community>', '', $URLContent);
+              $URLContent = str_replace('</community>', '', $URLContent);
+              $URLContent = preg_replace('#<thumbnail(.*?)/>#i', '', $URLContent);
+
+
+				//echo '<textarea name="note" rows="9" cols="50" style="width: 100%;">'.$URLContent.'</textarea>';
+				//exit;
+            }
 
             if(!stristr(strtolower($URLContent),"content:encoded"))
             {
@@ -243,7 +286,8 @@ class FeedParser{
 				return $cloudFlarecontent;
 			}
 			else
-			{
+			{
+
 				$ch         = @curl_init();
 				curl_setopt($ch, CURLOPT_URL, $this->url);
 				curl_setopt($ch, CURLOPT_HEADER, false);
@@ -264,7 +308,8 @@ class FeedParser{
 				{
 					throw new Exception("Erroe occured while loading url by cURL.\n" . $error) ;
 					return false;
-				}
+				}
+
 			}
 		}
 
@@ -274,7 +319,7 @@ class FeedParser{
    function cloudFlareBypass($url)
    {
 
-	$useragent = "Mozilla/5.0 (Linux; Android 6.0.1; Nexus 5X Build/MMB29P) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/W.X.Y.Z‡ Mobile Safari/537.36 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)";
+	$useragent = "FeedFetcher-Google";
 
 	$ct = curl_init();
 
@@ -562,7 +607,8 @@ class FeedParser{
 	private function inItem()
 	{
 	   $this->version =  'RSS 2.0';
-		if($this->version == 'RSS 1.0' || $this->version == 'RSS 2.0')
+
+		if($this->version == 'RSS 1.0' || $this->version == 'RSS 2.0')
 		{
 			if(in_array('ITEM', $this->insideItem) && $this->currentTag != 'ITEM')
 			return TRUE;
@@ -606,7 +652,8 @@ class FeedParser{
 	// Converts an HTML email into bbcode
 	// This function is loosely based on cbparser.php by corz.org
 	function html2bb($string)
-	{	  $string = str_replace("&quot;", '"', $string);
+	{
+	  $string = str_replace("&quot;", '"', $string);
 	  $string = str_replace("&lt;","<", $string);
 	  $string = str_replace("&gt;",">", $string);
 	  $string = str_replace('\"','"', $string);

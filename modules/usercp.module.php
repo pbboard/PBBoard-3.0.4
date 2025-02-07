@@ -1686,11 +1686,29 @@ class PowerBBCoreMOD
 			$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['Sorry_you_This feature was disabled']);
 			$PowerBB->functions->GetFooter();
 		}
+		$PowerBB->_GET['count'] = (!isset($PowerBB->_GET['count'])) ? 0 : $PowerBB->_GET['count'];
+		$PowerBB->_GET['count'] = $PowerBB->functions->CleanVariable($PowerBB->_GET['count'],'intval');
+            if ($PowerBB->_GET['count'] > 0)
+	        {
+			 $PowerBB->template->assign('is_pager_show',false);
+	        }
+	        else
+	        {
+			 $PowerBB->template->assign('is_pager_show',true);
+	        }
+      	// Get the Member friends num
+      	$user_ = $PowerBB->_CONF['member_row']['username'];
+        $GetMemberFriendsNum = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['friends'] . " WHERE username = '$user_'"));
+       	$PowerBB->template->assign('friends_numer',$GetMemberFriendsNum );
+
+       	$perpage_friends_list = "12";
+
         // show Friends List
 		$FriendsArr 					= 	array();
 		$FriendsArr['order']			=	array();
 		$FriendsArr['order']['field']	=	'id';
 		$FriendsArr['order']['type']	=	'DESC';
+
 		$FriendsArr['proc'] 			= 	array();
 		$FriendsArr['proc']['*'] 		= 	array('method'=>'clean','param'=>'html');
 
@@ -1699,6 +1717,14 @@ class PowerBBCoreMOD
 		$FriendsArr['where'][0]['name'] 	=  'username';
 		$FriendsArr['where'][0]['oper']		=  '=';
 		$FriendsArr['where'][0]['value']    =  $PowerBB->_CONF['member_row']['username'];
+
+	   // Pager setup
+		$FriendsArr['pager'] 				= 	array();
+		$FriendsArr['pager']['total']		= 	$GetMemberFriendsNum;
+		$FriendsArr['pager']['perpage'] 	= 	$perpage_friends_list;
+		$FriendsArr['pager']['count'] 		= 	$PowerBB->_GET['count'];
+		$FriendsArr['pager']['location'] 	= 	'index.php?page=usercp&options=1&friends=1&main=1';
+		$FriendsArr['pager']['var'] 		= 	'count';
 
 		$PowerBB->_CONF['template']['while']['FriendsList'] = $PowerBB->core->GetList($FriendsArr,'friends');
 
@@ -1709,6 +1735,10 @@ class PowerBBCoreMOD
      	else
 		{
 			$PowerBB->template->assign('No_Friends',false);
+            if ($GetMemberFriendsNum > $perpage_friends_list)
+	        {
+			 $PowerBB->template->assign('friends_pager',$PowerBB->pager->show());
+	        }
 		}
 		// show approval Friends List
 		$FriendsApprovalArrr 					= 	array();

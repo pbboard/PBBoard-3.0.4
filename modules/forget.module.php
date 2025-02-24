@@ -270,6 +270,21 @@ class PowerBBForgetMOD
          $PowerBB->functions->ShowHeader();         $PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['not_need_to_activate']);
          }
 
+		$ReqArr 			= 	array();
+		$ReqArr['where'] 	= 	array('username',$PowerBB->_CONF['member_row']['username']);
+		// Get request information
+		$RequestInfo = $PowerBB->core->GetInfo($ReqArr,'requests');
+		if ($RequestInfo['request_type'] == '3')
+		{
+				$RequesArr 			= 	array();
+				$RequesArr['where'] 	= 	array('username',$PowerBB->_CONF['member_row']['username']);
+				$RequesInfo = $PowerBB->core->Deleted($RequesArr,'requests');
+            $PowerBB->functions->ShowHeader();
+			$PowerBB->functions->msg($PowerBB->_CONF['template']['_CONF']['lang']['Code_that_you_enter_the_wrong']);
+			$PowerBB->functions->redirect('active_user.html');
+                exit();
+		}
+
     	$Adress	= 	$PowerBB->functions->GetForumAdress();
 		$Code	=	$PowerBB->functions->RandomCode();
 

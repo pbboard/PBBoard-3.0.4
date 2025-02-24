@@ -845,6 +845,20 @@ class PowerBBCoreMOD
 				$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['bad_password']);
 			}
           }
+
+		$ReqArr 			= 	array();
+		$ReqArr['where'] 	= 	array('username',$PowerBB->_CONF['member_row']['username']);
+		// Get request information
+		$RequestInfo = $PowerBB->core->GetInfo($ReqArr,'requests');
+		if ($RequestInfo['request_type'] == '1')
+		{
+				$RequesArr 			= 	array();
+				$RequesArr['where'] 	= 	array('username',$PowerBB->_CONF['member_row']['username']);
+				$RequesInfo = $PowerBB->core->Deleted($RequesArr,'requests');
+                $PowerBB->functions->redirect('index.php?page=usercp&amp;control=1&amp;password=1&amp;main=1');
+                exit();
+		}
+
 		// Clean the information from white spaces (only in the begin and in the end)
 		$PowerBB->_POST['new_password'] = $PowerBB->functions->CleanVariable($PowerBB->_POST['new_password'],'trim');
 
@@ -998,6 +1012,18 @@ class PowerBBCoreMOD
 		if ($EmailExists)
 		{
 			$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['E-mail_is_registered_please_type_the_other']);
+		}
+
+		$ReqArr 			= 	array();
+		$ReqArr['where'] 	= 	array('username',$PowerBB->_CONF['member_row']['username']);
+		// Get request information
+		$RequestInfo = $PowerBB->core->GetInfo($ReqArr,'requests');
+		if ($RequestInfo['request_type'] == '2')
+		{				$RequesArr 			= 	array();
+				$RequesArr['where'] 	= 	array('username',$PowerBB->_CONF['member_row']['username']);
+				$RequesInfo = $PowerBB->core->Deleted($RequesArr,'requests');
+                $PowerBB->functions->redirect('index.php?page=usercp&amp;control=1&amp;email=1&amp;main=1');
+                exit();
 		}
 
 		$PowerBB->_POST['new_email'] = $PowerBB->functions->CleanVariable($PowerBB->_POST['new_email'],'trim');

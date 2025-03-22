@@ -1,4 +1,3 @@
 .idea
 .env
 docker/mysql
-cache

@@ -1,4 +1,5 @@
 /* Start css for PBBoard 3.0.4 */
+*{unicode-bidi: plaintext;}
 .smiles-bbcode{
 width:13%;
 vertical-align: top;

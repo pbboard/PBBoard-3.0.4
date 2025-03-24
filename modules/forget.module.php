@@ -9,8 +9,6 @@ $CALL_SYSTEM['CORE'] 	= 	true;
 $CALL_SYSTEM['CACHE'] 		= 	true;
 $CALL_SYSTEM['MEMBER'] 		= 	true;
 
-
-
 define('CLASS_NAME','PowerBBForgetMOD');
 
 include('common.php');
@@ -22,24 +20,27 @@ class PowerBBForgetMOD
 
 		if ($PowerBB->_GET['index'])
 		{
+		    $_SESSION['pbb_forget_form'] = 1;
 			$this->_Index();
 		}
-		elseif ($PowerBB->_GET['start'])
+		elseif ($PowerBB->_GET['start'] and $_SESSION['pbb_forget_form'])
 		{
 			$this->_Start();
 		}
 		elseif ($PowerBB->_GET['active_member'])
 		{
+		    $_SESSION['pbb_active_form'] = 1;
 			$this->_IndexActiveMember();
 		}
-		elseif ($PowerBB->_GET['send_active_code'])
+		elseif ($PowerBB->_GET['send_active_code'] and $_SESSION['pbb_active_form'])
 		{
 			$this->_SendActiveCode();
 		}
 		else
 		{
-			header("Location: index.php");
-			exit;
+			 $PowerBB->functions->ShowHeader();
+             $PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['Sorry_url_not_true']);
+             $PowerBB->functions->GetFooter();
 		}
 
 		$PowerBB->functions->GetFooter();
@@ -75,8 +76,9 @@ class PowerBBForgetMOD
 		global $PowerBB;
          if ($PowerBB->_SERVER['REQUEST_METHOD'] != 'POST')
          {
-         	 header("Location: index.php?page=forget&index=1");
-		     exit;
+			 $PowerBB->functions->ShowHeader();
+             $PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['Sorry_url_not_true']);
+             $PowerBB->functions->GetFooter();
          }
 
 		$PowerBB->functions->ShowHeader();

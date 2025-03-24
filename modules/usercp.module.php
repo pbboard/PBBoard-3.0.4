@@ -55,8 +55,9 @@ class PowerBBCoreMOD
 				}
 			    else
 				{
-					header("Location: index.php");
-					exit;
+				 $PowerBB->functions->ShowHeader();
+	             $PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['Sorry_url_not_true']);
+	             $PowerBB->functions->GetFooter();
 				}
 			}
 			/** **/
@@ -74,8 +75,9 @@ class PowerBBCoreMOD
 				}
 				else
 				{
-					header("Location: index.php");
-					exit;
+				 $PowerBB->functions->ShowHeader();
+	             $PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['Sorry_url_not_true']);
+	             $PowerBB->functions->GetFooter();
 				}
 			}
 			/** **/
@@ -86,7 +88,7 @@ class PowerBBCoreMOD
 				if (!$PowerBB->_CONF['group_info']['sig_allow'])
 				{
 		            $PowerBB->functions->ShowHeader();
-					$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['You_can_not_use_this_feature']);
+					$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['Sorry_You_do_not_have_powers_to_access_this_page']);
 				}
 
 				if ($PowerBB->_GET['main'])
@@ -99,8 +101,9 @@ class PowerBBCoreMOD
 				}
 				else
 				{
-					header("Location: index.php");
-					exit;
+				 $PowerBB->functions->ShowHeader();
+	             $PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['Sorry_url_not_true']);
+	             $PowerBB->functions->GetFooter();
 				}
 			}
 			/** **/
@@ -153,8 +156,9 @@ class PowerBBCoreMOD
 	     	}
 			else
 			{
-				header("Location: index.php");
-				exit;
+			 $PowerBB->functions->ShowHeader();
+             $PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['Sorry_url_not_true']);
+             $PowerBB->functions->GetFooter();
 			}
 		    /** **/
          }
@@ -232,15 +236,17 @@ class PowerBBCoreMOD
 			}
 			else
 			{
-				header("Location: index.php");
-				exit;
+			 $PowerBB->functions->ShowHeader();
+             $PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['Sorry_url_not_true']);
+             $PowerBB->functions->GetFooter();
 			}
 
 		}
 		else
 		{
-			header("Location: index.php");
-			exit;
+			 $PowerBB->functions->ShowHeader();
+             $PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['Sorry_url_not_true']);
+             $PowerBB->functions->GetFooter();
 		}
 
       eval($PowerBB->functions->get_fetch_hooks('usercp_hook_end'));

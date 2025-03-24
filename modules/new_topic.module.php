@@ -808,11 +808,11 @@ class PowerBBTopicAddMOD
 		     				{		                            $tag 	= 	$PowerBB->functions->CleanVariable($tag,'sql');
 		                            if (function_exists('mb_strlen'))
 		                            {
-		                                $tag_less_num = mb_strlen($tag, 'UTF-8') >= 4;
+		                                $tag_less_num = mb_strlen($tag, 'UTF-8') >= 6;
 		                            }
 		                            else
 		                            {
-		                                $tag_less_num = strlen(utf8_decode($tag)) >= 4;
+		                                $tag_less_num = strlen(utf8_decode($tag)) >= 6;
 		                            }
 		                           if($tag_less_num)
 		                           {
@@ -880,11 +880,11 @@ class PowerBBTopicAddMOD
 
                             if (function_exists('mb_strlen'))
                             {
-                                $tag_less_num = mb_strlen($excludedWords[$x], 'UTF-8') >= 4;
+                                $tag_less_num = mb_strlen($excludedWords[$x], 'UTF-8') >= 6;
                             }
                             else
                             {
-                                $tag_less_num = strlen(utf8_decode($excludedWords[$x])) >= 4;
+                                $tag_less_num = strlen(utf8_decode($excludedWords[$x])) >= 6;
                             }
 
                            if($tag_less_num)

@@ -1328,9 +1328,14 @@ class PowerBBCodeParse
 	   $Attachinfo = $PowerBB->core->GetInfo($GetAttachArr,'attach');
 	    return $url.$Attachinfo['filepath'];
 	}
+
 	function content_search_highlight( $text, $highlight )
 	{
         global $PowerBB;
+
+	 $text = str_replace($highlight, "[color=#ff0000]".$highlight."[/color]", $text );
+
+        /*
 		$highlight  = urldecode( $highlight );
 		$loosematch = strstr( $highlight, '*' ) ? 1 : 0;
 		$keywords   = str_replace( '*', '', str_replace( "+", " ", str_replace( "++", "+", str_replace( '-', '', trim($highlight) ) ) ) );
@@ -1372,6 +1377,7 @@ class PowerBBCodeParse
 				}
 			}
 		}
+		*/
 		return $text;
 	}
 	function bb_common(&$string)
@@ -1467,7 +1473,7 @@ class PowerBBCodeParse
 	  $string = str_replace('\"','"', $string);
 	  $string = str_replace("&#39;","'", $string);
       $string = str_replace("&nbsp;", ' ', $string);
-      $string = str_replace("<br />", "", $string);
+      $string = str_replace("<br />", "{n}", $string);
       $string = str_replace("</div>\r\n", '</div>', $string);
 		$regexcode_iframe['[iframe]'] = '#<iframe (.*)src="(.*)">(.*)</iframe>#siU';
 		$string = preg_replace_callback($regexcode_iframe, function($matches_iframe) {
@@ -1653,7 +1659,7 @@ class PowerBBCodeParse
 
 		// Convert HTML quotes
 		$string = $this->htmlspecialchars_uni($string);
-
+       $string = str_replace("{n}", "<br />", $string);
          eval($PowerBB->functions->get_fetch_hooks('convert_html_off'));
 
 	  return $string;

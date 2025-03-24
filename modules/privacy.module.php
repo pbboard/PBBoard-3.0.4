@@ -12,8 +12,9 @@ class PowerBBCoreMOD
 
 		if (!$PowerBB->_CONF['info_row']['users_security'])
 		{
-			header("Location: index.php");
-			exit;
+			 $PowerBB->functions->ShowHeader();
+             $PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['Sorry_url_not_true']);
+             $PowerBB->functions->GetFooter();
 		}
 
 		if (!$PowerBB->_CONF['group_info']['groups_security'])
@@ -35,22 +36,21 @@ class PowerBBCoreMOD
 		}
 
 		/** Persenol Information control **/
-		if ($PowerBB->_GET['infosecurity'])
-		{
-			if ($PowerBB->_GET['main'])
+
+			if ($PowerBB->_GET['main'] and $PowerBB->_GET['infosecurity'])
 			{
 				$this->_InfosecurityMain();
 			}
-			elseif ($PowerBB->_GET['start'])
+			elseif ($PowerBB->_GET['start'] and $PowerBB->_GET['infosecurity'])
 			{
 				$this->_InfosecurityStart();
 			}
-		 }
-		else
-		{
-			header("Location: index.php");
-			exit;
-		}
+			else
+			{
+			$PowerBB->functions->ShowHeader();
+			$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['Sorry_url_not_true']);
+			$PowerBB->functions->GetFooter();
+			}
 
 
 		$PowerBB->functions->GetFooter();
@@ -79,9 +79,14 @@ class PowerBBCoreMOD
 		}
 
 		// Check old password
-		if (md5($PowerBB->_POST['old_password']) != $PowerBB->_CONF['member_row']['password'])
+		$password = $PowerBB->functions->CleanVariable($PowerBB->_POST['old_password'], 'sql');
+		$password = $PowerBB->functions->CleanVariable($PowerBB->_POST['old_password'], 'trim');
+		$password_fields = $PowerBB->functions->verify_user_password($PowerBB->_CONF['member_row']['active_number'], $password);
+		$password = $password_fields['password'];
+
+		if ($password != $PowerBB->_CONF['member_row']['password'])
 		{
-			$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['bad_password']);
+		$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['bad_password']);
 		}
 
      	$PowerBB->_POST['send_security_code']	= 	$PowerBB->functions->CleanVariable($PowerBB->_POST['send_security_code'],'intval');

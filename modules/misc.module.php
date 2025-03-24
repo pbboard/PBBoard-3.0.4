@@ -6,12 +6,8 @@ $CALL_SYSTEM['REPUTATION']         = 	true;
 $CALL_SYSTEM['RATING']             = 	true;
 $CALL_SYSTEM['MESSAGE']            = 	true;
 $CALL_SYSTEM['EMAILED']            = 	true;
-
-
 define('JAVASCRIPT_PowerCode',true);
-
 define('CLASS_NAME','PowerBBMiscMOD');
-
 include('common.php');
 class PowerBBMiscMOD
 {
@@ -20,94 +16,95 @@ class PowerBBMiscMOD
 		global $PowerBB;
 
    		/** Show Rules form **/
-		if ($PowerBB->_GET['rules'])
+		if ($PowerBB->_GET['rules'] == '1')
 		{
 
 		$this->_GetRules();
 
 		}
 		// Go to the page
-		elseif ($PowerBB->_GET['pagenav'])
+		elseif ($PowerBB->_GET['pagenav'] == '1')
 		{
 			$this->_GoPagenav();
 		}
-		elseif ($PowerBB->_GET['pagenav_forum'])
+		elseif ($PowerBB->_GET['pagenav_forum'] == '1')
 		{
 			$this->_GoPagenav_forum();
 		}
-       elseif ($PowerBB->_GET['pagenav_memberlist'])
+       elseif ($PowerBB->_GET['pagenav_memberlist'] == '1')
        {
           $this->_GoPagenav_memberlist();
        }
-       elseif ($PowerBB->_GET['pagenav_pm'])
+       elseif ($PowerBB->_GET['pagenav_pm'] == '1')
        {
           $this->_GoPagenav_pm();
        }
-       elseif ($PowerBB->_GET['pagenav_search'])
+       elseif ($PowerBB->_GET['pagenav_search'] == '1')
        {
           $this->_GoPagenav_search();
        }
 		// rating subject
-		elseif ($PowerBB->_GET['rating'])
+		elseif ($PowerBB->_GET['rating'] == '1')
 		{
 			$this->_RatingSubject();
 		}
 		// Who posted
-		elseif ($PowerBB->_GET['whoposted'])
+		elseif ($PowerBB->_GET['whoposted'] == '1')
 		{
 			$this->_Whoposted();
 		}
 		// members reputation
-		elseif ($PowerBB->_GET['subject_reputation'])
+		elseif ($PowerBB->_GET['subject_reputation'] == '1')
 		{
 			$this->_SubjectSendReputation();
 		}
-		elseif ($PowerBB->_GET['reply_reputation'])
+		elseif ($PowerBB->_GET['reply_reputation'] == '1')
 		{
 			$this->_ReplySendReputation();
 		}
 		// send subject to friend
-		elseif ($PowerBB->_GET['sendtofriend'])
+		elseif ($PowerBB->_GET['sendtofriend'] == '1')
 		{
 			$this->_GoToPageSendToFriend();
 		}
-		elseif ($PowerBB->_GET['startsendtofriend'])
+		elseif ($PowerBB->_GET['startsendtofriend'] == '1')
 		{
 			$this->_StartSendToFriend();
 		}
 		// add subscription
-		elseif ($PowerBB->_GET['addsubscription'])
+		elseif ($PowerBB->_GET['addsubscription'] == '1')
 		{
 			$this->_StartAddSubscription();
 		}
-		elseif ($PowerBB->_GET['unsubscription'])
+		elseif ($PowerBB->_GET['unsubscription'] == '1')
 		{
 			$this->_StartUnSubscription();
 		}
-		elseif ($PowerBB->_GET['frame_form'])
+		elseif ($PowerBB->_GET['frame_form'] == '1')
 		{
 			$this->_StartAddFrame();
 		}
-		elseif ($PowerBB->_GET['gradient_form'])
+		elseif ($PowerBB->_GET['gradient_form'] == '1')
 		{
 			$this->_StartAddGradient();
 		}
-		elseif ($PowerBB->_GET['poem_form'])
+		elseif ($PowerBB->_GET['poem_form'] == '1')
 		{
 			$this->_StartAddPoem();
 		}
-		elseif ($PowerBB->_GET['poem_template'])
+		elseif ($PowerBB->_GET['poem_template'] == '1')
 		{
 			$this->_StartAddPoemTemplat();
 		}
-       elseif ($PowerBB->_GET['pagenav_general'])
+       elseif ($PowerBB->_GET['pagenav_general'] == '1')
        {
           $this->_GoPagenavGeneral();
        }
 		else
 		{
-			header("Location: index.php");
-			exit;
+			 $PowerBB->functions->ShowHeader();
+             $PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['Sorry_url_not_true']);
+             $PowerBB->functions->GetFooter();
 		}
 
 	}
@@ -228,8 +225,8 @@ class PowerBBMiscMOD
 
          if ($PowerBB->_SERVER['REQUEST_METHOD'] != 'POST')
          {
-         	 header("Location: index.php");
-		     exit;
+	             header('HTTP/1.1 404 Not Found');
+	             exit();
          }
 		  if (!is_numeric($PowerBB->_POST['count'])) {
             $PowerBB->functions->ShowHeader();
@@ -476,13 +473,28 @@ class PowerBBMiscMOD
 		 $PowerBB->functions->reputation_alert($PowerBB->_CONF['template']['_CONF']['lang']['no_vistor_Reputation']);
 		}
 
+
 		$PowerBB->_POST['subject_id'] = $PowerBB->functions->CleanVariable($PowerBB->_POST['subject_id'],'intval');
 		$PowerBB->_POST['subject_id']   = 	$PowerBB->functions->CleanVariable($PowerBB->_POST['subject_id'],'sql');
 		$PowerBB->_POST['subject_id']   = 	$PowerBB->functions->CleanVariable($PowerBB->_POST['subject_id'],'html');
 
+       if (empty($PowerBB->_POST['subject_id']))
+       {
+			 $PowerBB->functions->ShowHeader();
+             $PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['Sorry_url_not_true']);
+             $PowerBB->functions->GetFooter();
+       }
+
+
 		$PowerBB->_POST['vote']   = $PowerBB->functions->CleanVariable($PowerBB->_POST['vote'],'intval');
 		$PowerBB->_POST['vote']   = 	$PowerBB->functions->CleanVariable($PowerBB->_POST['vote'],'sql');
 		$PowerBB->_POST['vote']   = 	$PowerBB->functions->CleanVariable($PowerBB->_POST['vote'],'html');
+
+       if (empty($PowerBB->_POST['vote']))
+       {
+		 $PowerBB->functions->reputation_alert($PowerBB->_CONF['template']['_CONF']['lang']['No_Reputations']);
+          exit();
+       }
 
   		$PowerBB->_POST['subject_title']   = 	$PowerBB->functions->CleanVariable($PowerBB->_POST['subject_title'],'sql');
 		$PowerBB->_POST['username']   = 	$PowerBB->functions->CleanVariable($PowerBB->_POST['username'],'sql');
@@ -550,6 +562,12 @@ class PowerBBMiscMOD
 
 		 // Who posted
         $PowerBB->_GET['subject_id'] = $PowerBB->functions->CleanVariable($PowerBB->_GET['subject_id'],'intval');
+       if (empty($PowerBB->_GET['subject_id']))
+       {
+         $PowerBB->functions->ShowHeader();
+         $PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['Sorry_url_not_true']);
+       }
+
         $Posted_number = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['reply'] . " WHERE subject_id='" . $PowerBB->_GET['subject_id'] . "' and delete_topic <>1 LIMIT 1"));
         $PowerBB->template->assign('Posted_number',$Posted_number);
 

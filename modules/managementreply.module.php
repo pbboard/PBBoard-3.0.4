@@ -119,8 +119,11 @@ class PowerBBManagementMOD
 	{
 		global $PowerBB;
 
+        $PowerBB->_POST['subject_id'] = rawurldecode($PowerBB->_POST['subject_id']);
+        $PowerBB->_POST['subject_id'] = str_replace("topic/","index.php?page=topic&show=1&id=", $PowerBB->_POST['subject_id'] );
         $PowerBB->_POST['subject_id'] = str_replace($PowerBB->functions->GetForumAdress()."index.php?page=topic&show=1&id=","", $PowerBB->_POST['subject_id'] );
         $PowerBB->_POST['subject_id'] = str_replace($PowerBB->functions->GetForumAdress()."t","", $PowerBB->_POST['subject_id'] );
+        $PowerBB->_POST['subject_id'] = preg_replace('/\D/', '', $PowerBB->_POST['subject_id']);
         $urlhtml = ".html";
         $PowerBB->_POST['subject_id'] = str_replace($urlhtml,'', $PowerBB->_POST['subject_id'] );
 		$PowerBB->_POST['subject_id'] = $PowerBB->functions->CleanVariable($PowerBB->_POST['subject_id'],'intval');

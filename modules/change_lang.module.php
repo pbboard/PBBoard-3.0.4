@@ -1,17 +1,10 @@
 <?php
-
 (!defined('IN_PowerBB')) ? die() : '';
-
 define('STOP_STYLE',true);
-
 $CALL_SYSTEM			=	array();
 $CALL_SYSTEM['LANG'] 	= 	true;
 $CALL_SYSTEM['VISITOR'] 	= 	true;
-
-
-
 define('CLASS_NAME','PowerBBChangeLangMOD');
-
 include('common.php');
 class PowerBBChangeLangMOD
 {
@@ -23,11 +16,12 @@ class PowerBBChangeLangMOD
 
 		if (empty($PowerBB->_GET['id']))
 		{
-			header("Location: index.php");
-			exit;
+			 $PowerBB->functions->ShowHeader();
+             $PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['Sorry_url_not_true']);
+             $PowerBB->functions->GetFooter();
 		}
 
-		if ($PowerBB->_GET['change'])
+		if ($PowerBB->_GET['change'] == '1')
 		{
 
 			if ($PowerBB->_CONF['member_permission'])
@@ -55,21 +49,21 @@ class PowerBBChangeLangMOD
 
 			if ($change)
 			{
-
-		                if (strstr($PowerBB->_SERVER['HTTP_REFERER'],$PowerBB->functions->GetForumAdress()))
-						{
-							$PowerBB->functions->redirect2($PowerBB->_SERVER['HTTP_REFERER']);
-						}
-						else
-						{
-							$PowerBB->functions->redirect2('index.php');
-						}
+	            if (strstr($PowerBB->_SERVER['HTTP_REFERER'],$PowerBB->functions->GetForumAdress()))
+				{
+					$PowerBB->functions->redirect2($PowerBB->_SERVER['HTTP_REFERER']);
+				}
+				else
+				{
+					$PowerBB->functions->redirect2('index.php');
+				}
 			}
 		}
 		else
 		{
-			header("Location: index.php");
-			exit;
+			 $PowerBB->functions->ShowHeader();
+             $PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['Sorry_url_not_true']);
+             $PowerBB->functions->GetFooter();
 		}
 	}
 }

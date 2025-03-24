@@ -191,7 +191,7 @@ class PBBTemplate
 							 //echo("<br /><div class='direct'><div class='message'><u>ERROR</u>: Template Name: <b>".$template_name."</b> not found.<br /> <hr /> </div></div><div class='clear'></div><br />");
 							 // for old style IF not found template Get original from original default templates and Insert. 2025
 							 $this->_retrieved_template_original_Start($template_name,$style_id);
-							}
+							 }
                          }
 
                    }
@@ -218,11 +218,8 @@ class PBBTemplate
 	function _CompileTemplate($string, $filename)
 	{
 		global $PowerBB;
-        $write_b = ob_start();
-
-        @eval($PowerBB->functions->get_fetch_hooks('template_class_start'));
-
-        $page = empty($PowerBB->_GET['page']) ? 'index' : $PowerBB->_GET['page'];
+          $write_b = ob_start();
+            $page = empty($PowerBB->_GET['page']) ? 'index' : $PowerBB->_GET['page'];
 
          	$Template_name_dont_show = array("add_this", "add_reply_link", "add_subject_link", "signature_show" , "add_tags_table", "awards", "chat", "chat_edit", "chat_main", "editor_simple", "editor_js", "fast_reply_js", "imgs_resize", "jump_forums_list", "lasts_posts_bar", "last_subject_writer", "profile_cover_photo_upload", "statistics_list", "tags_edit_subject", "topic_end_fast_reply", "visitor_messag", "info_bar", "main_static_table", "visitor_message_js", "whatis_new");
 			$string = str_replace("&#39;", "'", $string);
@@ -243,6 +240,15 @@ class PBBTemplate
 			{
 			 $string = str_replace("javascript:logout('index.php?page=logout&amp;index=1')","index.php?page=logout&amp;index=1",$string);
             }
+			if ($filename == 'portal_last_news')
+			{
+			 $string = str_replace('<span class="read_more_button"> &nbsp; </span>','<span class="fa fa-arrow-circle-left"></span> <u>{$LastNews_subjectList["title"]}</u>',$string);
+            }
+			if ($filename == 'visitor_messag')
+			{
+			 $string = str_replace(']}">&nbsp;',']}">', $string);
+            }
+
 			 $string = str_replace("applications/core/archive.css","applications/core/archive/archive.css",$string);
 
 			if ($filename == 'sections_list')
@@ -252,6 +258,7 @@ class PBBTemplate
 			 if($catsort)
 			 {
 			  $string = str_replace("!= 1}", "!=". $catsort['sort']."}", $string);
+			  $string  = str_replace("'last_subject'", "'last_subject_title'", $string);
 			 }
             }
 
@@ -308,14 +315,11 @@ class PBBTemplate
 					}, $string);
 
              }
-
 			$editor_dir = ("./look/sceditor/minified/PBB_bbcode.js");
-
 			if(file_exists($editor_dir))
 			{
 			$edit_time = filemtime($editor_dir);
 			}
-
 			if($edit_time)
 			{
 			$string = str_replace("look/sceditor/minified/PBB_bbcode.js","look/sceditor/minified/PBB_bbcode.js?v=".$edit_time,$string);
@@ -324,6 +328,10 @@ class PBBTemplate
 			{
 			$string = str_replace("look/sceditor/minified/PBB_bbcode.js","look/sceditor/minified/PBB_bbcode.js?v=1574",$string);
 			}
+
+			// CSRF protect all your forms
+			//$string = str_ireplace("</form>",'<input type="hidden" name="csrf" value="{$csrf_key}" />'."\n</form>",$string);
+			@eval($PowerBB->functions->get_fetch_hooks('template_class_start'));
 
 			// We have loop
 			if (preg_match('~\{Des::while}{([^[<].*?)}~',$string)
@@ -495,9 +503,11 @@ class PBBTemplate
 			$string = str_replace($first_search,$first_replace,$string);
 			}
             elseif ($filename == 'usercp_options_attach')
-			{				if ($PowerBB->_CONF['group_info']['del_own_subject'] == '0'
+			{
+				if ($PowerBB->_CONF['group_info']['del_own_subject'] == '0'
 				or $PowerBB->_CONF['group_info']['del_own_reply'] == '0')
-				{				$search_attach_array 	= 	array();
+				{
+				$search_attach_array 	= 	array();
 				$replace_attach_array 	= 	array();
 				$search_attach_array[] = "button button_b";
 				$replace_attach_array[] = "buttons_no_link";
@@ -522,6 +532,12 @@ class PBBTemplate
 			{
 			$first_search = 'item"href';
 			$first_replace = 'item" href';
+			$string = str_replace($first_search,$first_replace,$string);
+			}
+            elseif ($filename == 'show_subject_information')
+			{
+			$first_search = '("#vote")';
+			$first_replace = "('[name=\"vote\"]:checked')";
 			$string = str_replace($first_search,$first_replace,$string);
 			}
             elseif ($filename == 'statistics_list')
@@ -550,6 +566,7 @@ class PBBTemplate
 
              $url = $PowerBB->functions->GetForumAdress();
              $string = str_replace('href="index.php','href="'.$url.'index.php',$string);
+
 
                $string = str_replace("php if","phpif",$string);
                $string = str_replace("if($.","T54T",$string);
@@ -585,8 +602,14 @@ class PBBTemplate
 				$string = str_replace('<div class="btn-nav"></div>','<li><b class="btn-nav"></b></li>',$string);
 				}
 
-            $write  = eval(" ?> $string <?php ");
+
+
+	        $write  = eval(" ?> $string <?php ");
             $write_b = ob_get_clean();
+
+
+			$write_b = str_replace("href='index.php","href='".$PowerBB->functions->GetForumAdress()."index.php",$write_b);
+
             if ($filename == 'sections_list')
 			{
             	$regex_last_Reply = '#page=topic&amp;show=1&amp;id=(.*?)"#is';
@@ -607,15 +630,22 @@ class PBBTemplate
 
 						$last_replyNumArr = $PowerBB->DB->sql_query("SELECT id,subject_id FROM " . $PowerBB->table['reply'] . " WHERE subject_id='".intval($match[1])."' AND delete_topic<>1 AND review_reply<>1 ORDER BY id DESC LIMIT 0,1");
 						$last_reply = $PowerBB->DB->sql_fetch_array($last_replyNumArr);
+
 					   if ($Info['reply_number'] > $PowerBB->_CONF['info_row']['perpage'])
 				        {
-						$match_replace = 'page=topic&amp;show=1&amp;id='.$match[1].'&count='.$countpage.'#'.$last_reply['id'].'"';
+				        	if ($PowerBB->_CONF['info_row']['auto_links_titles'])
+		                   {
+						    $match_replace = 'page=topic&amp;show=1&amp;id='.$match[1].'/page-'.$countpage.'#'.$last_reply['id'].'"';
+						   }
+                           else
+                           {
+						     $match_replace = 'page=topic&amp;show=1&amp;id='.$match[1].'&count='.$countpage.'#'.$last_reply['id'].'"';
+                           }
 						}
                         else
                         {
 					    $match_replace = 'page=topic&amp;show=1&amp;id='.$match[1].'#'.$last_reply['id'].'"';
 					    }
-
 					}
 					else
 					{
@@ -625,6 +655,86 @@ class PBBTemplate
 				}, $write_b);
 
 			}
+
+
+				// start auto link titles php
+				  $write_b = str_replace("option value='index.php","option value='".$PowerBB->functions->GetForumAdress()."index.php",$write_b);
+				  $write_b = str_replace('option value="index.php','option value="'.$PowerBB->functions->GetForumAdress().'index.php',$write_b);
+
+                    // if not active latest reply today Remove the’s lines.
+					if ($PowerBB->_CONF['info_row']['active_reply_today'] == '0')
+					{
+					$write_b = str_replace('<li><a title="'.$PowerBB->_CONF['template']['_CONF']['lang']['latest_reply'].'" href="'.$PowerBB->functions->GetForumAdress().'index.php?page=latest_reply&today=1"><i class="fa fa-message"></i> '.$PowerBB->_CONF['template']['_CONF']['lang']['latest_reply'].'</a></li>','', $write_b);
+					$write_b = str_replace('<a href="'.$PowerBB->functions->GetForumAdress().'index.php?page=latest_reply&amp;today=1">'.$PowerBB->_CONF['template']['_CONF']['lang']['whatis_new'].'</a>','', $write_b);
+					$write_b = str_replace('<a href="'.$PowerBB->functions->GetForumAdress().'index.php?page=latest_reply&amp;today=1">'.$PowerBB->_CONF['template']['_CONF']['lang']['latest_reply'].'</a>','', $write_b);
+					$write_b = str_replace('<a href="'.$PowerBB->functions->GetForumAdress().'index.php?page=latest_reply&amp;today=1" title="'.$PowerBB->_CONF['template']['_CONF']['lang']['latest_reply'].'">'.$PowerBB->_CONF['template']['_CONF']['lang']['latest_reply'].'</a>','', $write_b);
+					$write_b = str_replace("<option value='".$PowerBB->functions->GetForumAdress()."index.php?page=latest_reply&amp;today=1'>»".$PowerBB->_CONF['template']['_CONF']['lang']['latest_reply']."</option>","", $write_b);
+		             if ($filename == 'header_bar')
+					 {
+					  $write_b = preg_replace('#\<li\>(.*)<span class="fa fa-clipboard"></span>(.*)\</li\>#siU', '', $write_b);
+					 }
+					}
+				 if ($PowerBB->_CONF['info_row']['auto_links_titles'])
+				  {
+					if ($filename == 'forum_perpage_reply'
+					or $filename == 'forum_stick_perpage_reply'
+					or $filename == 'forum_review_perpage_reply')
+					{
+						$patterntitle='#title="(.*)"#siU';
+						preg_match($patterntitle, $write_b, $matctitle);
+                        $matctitle[1] = $PowerBB->functions->strip_auto_url_titles($matctitle[1]);
+						$write_b = preg_replace('#page=topic&amp;show=1&amp;id=(.*)&amp;count=(.*)#siU', 'topic/'.$matctitle[1].'.$1/page-$3', $write_b);
+						$write_b = preg_replace('#page=topic&amp;show=1&amp;id=(.*)#siU', 'topic/'.$matctitle[1].'.$1', $write_b);
+						$write_b = str_replace("index.php?","",$write_b);
+					}
+				  }
+
+					if (!preg_match('#\<div class="text"\>(.*)\</div\>#siU', $write_b)
+					or !preg_match('#\<div class="textemain"\>(.*)\</div\>#siU', $write_b))
+					{
+					$write_b = str_replace('<link rel="stylesheet" href=','<link rel="stylesheet" hrref=',$write_b);
+					$write_b = $PowerBB->functions->rewriterule($write_b);
+					$write_b = str_replace('<link rel="stylesheet" hrref=','<link rel="stylesheet" href=',$write_b);
+					}
+
+
+				 if ($PowerBB->_CONF['info_row']['auto_links_titles'])
+				  {
+	 				$page_title = trim($PowerBB->_CONF['template']['title']);
+					$page_title = $PowerBB->functions->strip_auto_url_titles($page_title);
+					$page_title = str_replace("الصفحة-","",$page_title);
+					$page_title = str_replace("Page-","",$page_title);
+					$page_title = preg_replace('/[0-9]+/', '', $page_title);
+					$page_title = rtrim($page_title, '-');
+					$page_title = ltrim($page_title, '-');
+					$write_b = str_replace("empty_tIt_empty",$page_title,$write_b);
+					$write_b = str_replace("empty_tIt_empty","",$write_b);
+					$write_b = preg_replace('#_tIt_(.*).(.*)/page-#siU', $page_title.'_tSt_$2/page-', $write_b);
+					$write_b = preg_replace('#_tSt_([1-9][0-9]*).#si', '.', $write_b);
+					$write_b = preg_replace('#_tSt_(.*).#siU', '$1.', $write_b);
+					//$write_b  = preg_replace("#/1.([0-9]+).#si", '/'.$updated_title.'.', $write_b );
+					if (!preg_match('#\<pre\>(.*)\</pre\>#siU', $write_b))
+		            {
+					$write_b = str_replace('/1.', '/'.$page_title.'.', $write_b);
+					}
+					$write_b = str_replace("_tSt_","",$write_b);
+					$write_b = str_replace("_tIt_","",$write_b);
+	               	$write_b = str_replace(".ptyempty","",$write_b);
+
+					if ($filename == 'sections_list')
+					{
+					$dcount = explode('#.([1-9][0-9]*)#si',$write_b);
+					$write_b = str_replace('topic/','topic/'.$dcount[1],$write_b);
+					}
+					if ($filename == 'show_post')
+					{
+                    $write_b = str_replace(".شاهدة-المشاركة-في-الموضوع-بالعرض-العادي","",$write_b);
+                    }
+			        $write_b = str_replace('a href="member/','a href="'.$PowerBB->functions->GetForumAdress().'member/', $write_b);
+			        $write_b = str_replace('a href="forum/','a href="'.$PowerBB->functions->GetForumAdress().'forum/', $write_b);
+			        $write_b = str_replace('a href="topic/','a href="'.$PowerBB->functions->GetForumAdress().'topic/', $write_b);
+				   // end auto link titles php
+		          }
 
 				$write_b = str_replace('src="look/','src="'.$PowerBB->functions->GetForumAdress().'look/', $write_b);
 				$write_b = str_replace("src='look/","src='".$PowerBB->functions->GetForumAdress()."look/", $write_b);
@@ -647,11 +757,10 @@ class PBBTemplate
 				$write_b = str_replace('url(download/','url('.$PowerBB->functions->GetForumAdress().'download/', $write_b);
 				$write_b = str_replace($PowerBB->functions->GetForumAdress().'http','http', $write_b);
 
-               $write_b = $PowerBB->functions->rewriterule($write_b);
+       @eval($PowerBB->functions->get_fetch_hooks('template_ob_get_clean'));
 
-			@eval($PowerBB->functions->get_fetch_hooks('template_ob_get_clean'));
+		echo $write_b;
 
-         echo $write_b;
 	}
 
 
@@ -712,7 +821,8 @@ class PBBTemplate
 		$loop = '<?php $this->x_loop = 0; $this->size_loop = sizeof($PowerBB->_CONF[\'template\'][\'while\'][\'' . $varname . '\']); while ($this->x_loop < $this->size_loop) { ?>';
 		}
 		else
-		{		$loop = '<?php while (0 < 0) { ?>';
+		{
+		$loop = '<?php while (0 < 0) { ?>';
 		}
 
 		return $loop;

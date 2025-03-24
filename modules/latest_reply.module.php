@@ -18,23 +18,23 @@ class PowerBBLatestMOD
 	{
 		global $PowerBB;
 
- 		if (!$PowerBB->_CONF['info_row']['active_reply_today'])
+ 		if ($PowerBB->_CONF['info_row']['active_reply_today'] == '0')
 		{
-			header("Location: index.php");
-			exit;
+			 $PowerBB->functions->ShowHeader();
+             $PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['You_can_not_use_this_feature']);
         }
 
-       $PowerBB->template->assign('latest_reply_page','primary_tabon');
+        $PowerBB->template->assign('latest_reply_page','primary_tabon');
 		$this->_GetJumpSectionsList();
 
-		if ($PowerBB->_GET['today'])
+		if ($PowerBB->_GET['today'] == '1')
 		{
 			$this->_TodayReply();
 		}
 		else
 		{
-			header("Location: index.php");
-			exit;
+			 $PowerBB->functions->ShowHeader();
+             $PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['Sorry_url_not_true']);
 		}
 
 		$PowerBB->functions->GetFooter();
@@ -56,11 +56,13 @@ class PowerBBLatestMOD
 		$from 	= 	mktime(0,0,0,$month,$day,$year);
 		$to 	= 	mktime(23,59,59,$month,$day,$year);
 
+        $deys = ($PowerBB->_CONF['now'] - (30 * 86400));
+
         $forum_not = $PowerBB->_CONF['info_row']['last_subject_writer_not_in'];
 
-        $subject_today_nm = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['subject'] . " WHERE write_time BETWEEN " . $from . " AND " . $to . " AND section not in (" .$forum_not. ") AND review_subject<>1 AND delete_topic<>1 LIMIT 1"));
+        $subject_today_nm = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['subject'] . " WHERE write_time >= " . $deys . " AND section not in (" .$forum_not. ") AND review_subject<>1 AND delete_topic<>1 LIMIT 1"));
 
-        $reply_today_nm = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['reply'] . " WHERE write_time BETWEEN " . $from . " AND " . $to . " AND section not in (" .$forum_not. ") AND delete_topic<>'1' AND review_reply<>'1' LIMIT 1"));
+        //$reply_today_nm = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['reply'] . " WHERE write_time >= " . $deys . " AND section not in (" .$forum_not. ") AND delete_topic<>'1' AND review_reply<>'1' LIMIT 1"));
 
 		$LastSubjectArr 							= 	array();
 
@@ -73,7 +75,7 @@ class PowerBBLatestMOD
 		// Ten rows only
         $LastSubjectArr['where'][1] 			= 	array();
 		$LastSubjectArr['where'][1]['con']		=	'AND';
-		$LastSubjectArr['where'][1]['name'] 	= 	'write_time BETWEEN ' . $from . ' AND ' . $to . ' AND section not in (' .$forum_not. ') AND review_subject<>1 AND delete_topic';
+		$LastSubjectArr['where'][1]['name'] 	= 	'write_time >= ' . $deys . ' AND section not in (' .$forum_not. ') AND review_subject<>1 AND delete_topic';
 		$LastSubjectArr['where'][1]['oper'] 	= 	'<>';
 		$LastSubjectArr['where'][1]['value'] 	= 	'1';
 

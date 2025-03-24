@@ -20,10 +20,32 @@ class PowerBBForumMOD
 
 		$PowerBB->template->assign('SECTION_RSS',true);
 		$PowerBB->template->assign('SECTION_ID',$PowerBB->_GET['id']);
+		if (isset($PowerBB->_GET['sort']))
+		{
+			if ($PowerBB->_GET['sort'] != 'asc'
+			and $PowerBB->_GET['sort'] != 'reply_number'
+			and $PowerBB->_GET['sort'] != 'visitor'
+			and $PowerBB->_GET['sort'] != 'rating'
+			and $PowerBB->_GET['sort'] != 'writer'
+			and $PowerBB->_GET['sort'] != 'write_time')
+			{
+	             header('HTTP/1.1 404 Not Found');
+	             exit();
+			}
+		}
+
+		if (isset($PowerBB->_GET['orderby']))
+		{
+			if ($PowerBB->_GET['orderby'] != '1')
+			{
+	             header('HTTP/1.1 404 Not Found');
+	             exit();
+			}
+		}
 
 
 		/** Browse the forum **/
-		if ($PowerBB->_GET['show'])
+		if ($PowerBB->_GET['show'] == '1')
 		{
 	     if($PowerBB->_COOKIE['pbb_sec'.$this->Section['id'].'_pass'] != $this->Section['section_password'])
     	 {
@@ -40,7 +62,7 @@ class PowerBBForumMOD
 			$this->_PasswordCheck();
 		}
 		/** Show the results of search **/
-		elseif ($PowerBB->_GET['start'])
+		elseif ($PowerBB->_GET['start'] == '1')
 		{
 		    $PowerBB->functions->ShowHeader();
 			$this->_SearchSection();
@@ -60,8 +82,9 @@ class PowerBBForumMOD
 		}
 		else
 		{
-		header("Location: index.php");
-		exit;
+			 $PowerBB->functions->ShowHeader();
+             $PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['Sorry_url_not_true']);
+             $PowerBB->functions->GetFooter();
 		}
 
 		$PowerBB->functions->GetFooter();
@@ -1607,6 +1630,7 @@ function _AllCacheStart()
 
       $PowerBB->_GET['orderby'] = $PowerBB->functions->CleanVariable($PowerBB->_GET['orderby'],'intval');
 
+
 		if (isset($PowerBB->_GET['sort'])
 		and $PowerBB->_GET['orderby'] == 1)
 		{
@@ -1743,7 +1767,7 @@ function _AllCacheStart()
                  $type 	= 	'DESC';
 			}
 
-			$location = $PowerBB->_SERVER['REQUEST_URI'];
+			$location = "index.php?page=forum&amp;show=1&amp;orderby=1&amp;id=".$PowerBB->_GET['id']."&amp;sort=".$order;
 			$location = preg_replace('/&submit=(.*?)&count='.$PowerBB->_GET['count'].'/is', "", $location);
 	    	$location = preg_replace('/&count='.$PowerBB->_GET['count'].'/is', "", $location);
 		    $SubjectArr['order'] = array();

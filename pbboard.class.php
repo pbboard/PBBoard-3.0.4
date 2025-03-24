@@ -237,11 +237,11 @@ class PowerBB
 		$this->_REQUEST		=	array();
 
 		// General systems
-		$this->DB				= 	new PowerBBSQL($this);
-  		$this->pager			=	new PowerBBPager($this);
-  		$this->sys_functions	=	new PowerBBSystemFunctions($this);
-  		$this->records			=	new PowerBBRecords($this);
-        $this->functions        =   new PowerBBFunctions($this);
+		$this->DB				   = 	new PowerBBSQL($this);
+  		$this->pager			   =	new PowerBBPager($this);
+  		$this->sys_functions	   =	new PowerBBSystemFunctions($this);
+  		$this->records			   =	new PowerBBRecords($this);
+        $this->functions           =    new PowerBBFunctions($this);
 
   		////////////
 		if (!defined('INSTALL'))
@@ -351,10 +351,6 @@ class PowerBB
     	$this->_CONF['info']					=	array();
     	$this->_CONF['info_row']				=	array();
 
-    	$this->_CONF['now']						=	time();
- 		$this->_CONF['timeout']					=	time()-300;
- 		$this->_CONF['date']					=	@date('j/n/Y');
- 		$this->_CONF['day']						=	@date('D');
  		$this->_CONF['temp']['query_num']		=	false; // Default false
  		$this->_CONF['username_cookie']			=	'PowerBB_username';
  		$this->_CONF['password_cookie']			=	'PowerBB_password';
@@ -371,7 +367,7 @@ class PowerBB
  		$this->_CONF['forums_parent_direct']      =	true; // Default true
  		////////////
 
- 		$this->sys_functions->LocalArraySetup();
+         $this->sys_functions->LocalArraySetup();
 
  		////////////
 
@@ -460,6 +456,30 @@ class PowerBB
  		   }
  		}
 		$this->_CONF['ip'] = $this->get_ip();
+
+         // Get the default timezone
+		if(function_exists('date_default_timezone_set'))
+		{
+		    if(empty($this->_CONF['info_row']['timeoffset'])
+		    or !strstr($this->_CONF['info_row']['timeoffset'],'/'))
+		    {
+			@date_default_timezone_set('GMT');
+			}
+			else
+			{
+			@date_default_timezone_set($this->_CONF['info_row']['timeoffset']);
+			}
+		}
+
+        ////////////
+
+    	$this->_CONF['now']						=	time();
+ 		$this->_CONF['timeout']					=	time()-300;
+ 		$this->_CONF['date']					=	@date('j/n/Y');
+ 		$this->_CONF['day']						=	@date('D');
+
+        ////////////
+
  	}
 
 
@@ -487,7 +507,6 @@ class PowerBB
   }
  	function _GetLangRows()
 	{
-
 
         if (isset($this->_COOKIE[$this->_CONF['lang_cookie']]))
         {
@@ -719,6 +738,10 @@ class PowerBB
 		            {
 		              $rows[$x]['text'] = str_replace($rows[$x]['text'], $rows[$x]['text'].": ", $rows[$x]['text']);
 		            }
+
+		            $rows[$x]['text'] = str_replace("مشاركات اليوم","المشاركات الجديدة", $rows[$x]['text']);
+		            $rows[$x]['text'] = str_replace("مواضيع اليوم","المواضيع الجديدة", $rows[$x]['text']);
+
 		            $rows[$x]['text'] = str_replace("{info_row_title}", $this->_CONF['info_row']['title'], $rows[$x]['text']);
 
 		            if (isset($rows[$x]['varname']))

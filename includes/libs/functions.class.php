@@ -590,6 +590,10 @@ function fetch_gzipped_text($source)
 
 	function CleanSymbols($text)
 	{
+		$text = str_replace("&quot;", '', $text);
+		$text = str_replace("&lt;","", $text);
+		$text = str_replace("&gt;","", $text);
+		$text = str_replace("&nbsp;", "", $text);
 		$text = str_replace("'",'',$text);
 		$text = str_replace(">",'',$text);
 		$text = str_replace("<",'',$text);
@@ -613,6 +617,7 @@ function fetch_gzipped_text($source)
 		$text = str_replace("]",'',$text);
 		$text = str_replace("[",'',$text);
 		$text = str_replace(";",'',$text);
+		$text = str_replace(".",'',$text);
 
 		return $text;
 	}

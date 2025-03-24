@@ -1,8 +1,6 @@
 <?php
 (!defined('IN_PowerBB')) ? die() : '';
-
 define('CLASS_NAME','PowerBBStaticMOD');
-
 include('common.php');
 class PowerBBStaticMOD
 {
@@ -12,20 +10,20 @@ class PowerBBStaticMOD
 
  		if (!$PowerBB->_CONF['info_row']['active_static'])
 		{
-			header("Location: index.php");
-			exit;
+			 $PowerBB->functions->ShowHeader();
+             $PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['You_can_not_use_this_feature']);
 		}
 
 
-		if ($PowerBB->_GET['index'])
+		if ($PowerBB->_GET['index'] == '1')
 		{
 	    	$this->_GetJumpSectionsList();
 			$this->_ShowStatic();
 		}
 		else
 		{
-			header("Location: index.php");
-			exit;
+			 $PowerBB->functions->ShowHeader();
+             $PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['Sorry_url_not_true']);
 		}
 
 		$PowerBB->functions->GetFooter();

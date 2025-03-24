@@ -11,60 +11,71 @@ class PowerBBRSSMOD
 	function run()
 	{
 	 global $PowerBB;
- 	 if (!$PowerBB->_CONF['info_row']['active_rss'])
+ 	 if ($PowerBB->_CONF['info_row']['active_rss'] == '0')
 	 {
-			@header("Location: index.php");
-			exit;
+		$PowerBB->functions->ShowHeader();
+		$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['You_can_not_use_this_feature']);
+		$PowerBB->functions->GetFooter();
 	 }
+
 		$charset                =   $PowerBB->_CONF['info_row']['charset'];
 		$datenow                =   date(DATE_RFC2822);
 	$PowerBB->_GET['subject'] = $PowerBB->functions->CleanVariable($PowerBB->_GET['subject'],'intval');
 	$PowerBB->_GET['section'] = $PowerBB->functions->CleanVariable($PowerBB->_GET['section'],'intval');
 	$PowerBB->_GET['id'] = $PowerBB->functions->CleanVariable($PowerBB->_GET['id'],'intval');
-		if ($PowerBB->_GET['subject'])
+		if ($PowerBB->_GET['subject'] == '1')
 		{
 		$Forumtitle                =   $PowerBB->_CONF['info_row']['title'];
+		$atomLink = 'index.php?page=rss&amp;subject=1';
 		}
-		elseif ($PowerBB->_GET['section'])
+		elseif ($PowerBB->_GET['section'] == '1')
 		{
 		$SecArr 		= 	array();
 		$SecArr['where'] 	= 	array('id',$PowerBB->_GET['id']);
 		$Section = $PowerBB->core->GetInfo($SecArr,'section');
 		$Forumtitle                =   $PowerBB->_CONF['info_row']['title'] .' - ' .$PowerBB->functions->CleanText($Section['title'])." - " .$PowerBB->functions->CleanText($Section['section_describe']);
+		$atomLink = 'index.php?page=rss&amp;section=1&amp;id='.$Section['id'];
+		}
+		else
+		{
+			$PowerBB->functions->ShowHeader();
+			$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['Sorry_url_not_true']);
+			$PowerBB->functions->GetFooter();
 		}
  		$PowerBB->_CONF['info_row']['title'] 	= 	$PowerBB->functions->CleanVariable($PowerBB->_CONF['info_row']['title'],'html');
 		$PowerBB->_CONF['info_row']['title'] 	= 	$PowerBB->functions->CleanVariable($PowerBB->_CONF['info_row']['title'],'sql');
         header('Content-Type: text/xml; charset=utf-8');
 		echo "<rss version=\"2.0\" xmlns:atom=\"http://www.w3.org/2005/Atom\">\n";
 		echo "<channel>\n";
-		$atomLink = $PowerBB->_SERVER['REQUEST_URI'];
-		if(strstr($atomLink,'rss.xml'))
-		{		$atomLink = 'rss.xml';
-		}
-		else
-		{
-		$atomLink = 'index.php?page=rss&subject=1';
-		}
-		$atomLink = str_replace("&","&amp;",$atomLink);
+
 		$PowerBB->_CONF['info_row']['title'] = $this->convert_int_to_utf8($PowerBB->_CONF['info_row']['title']);
 		$Forumtitle = $this->convert_int_to_utf8($Forumtitle);
+       if ($PowerBB->_CONF['info_row']['rewriterule'])
+ 	   {
+        $atomLink = $PowerBB->functions->rewriterule($atomLink);
+       }
 
-		echo "<atom:link href=\"".$PowerBB->functions->GetForumAdress().$atomLink."\" rel=\"self\" type=\"application/rss+xml\" />\n";
+		echo "<atom:link href='".$PowerBB->functions->GetForumAdress().$atomLink."' rel='self' type='application/rss+xml' />\n";
 		echo "<title>" . $PowerBB->_CONF['info_row']['title'] . " - " . $PowerBB->functions->GetForumAdress() . "</title>\n";
 		echo "<link>" . $PowerBB->functions->GetForumAdress() . "</link>\n";
 		echo "<description>".$PowerBB->_CONF['template']['_CONF']['lang']['Abstracts_another_active_topics_in'] . ":".$Forumtitle ."</description>\n";
 		echo "<generator>" . $PowerBB->_CONF['info_row']['title'] . "</generator>\n";
         echo "<pubDate>" . $datenow . "</pubDate>\n";
-		if ($PowerBB->_GET['subject'])
+		if ($PowerBB->_GET['subject'] == '1')
 		{
 			$this->_SubjectRSS();
+		   echo "</channel>\n</rss>\n";
 		}
-		elseif ($PowerBB->_GET['section'])
+		elseif ($PowerBB->_GET['section'] == '1')
 		{
 			$this->_SectionRSS();
+	    	echo "</channel>\n</rss>\n";
 		}
-		echo "</channel>\n";
-		echo "</rss>\n";
+		else
+		{			$PowerBB->functions->ShowHeader();
+			$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['Sorry_url_not_true']);
+			$PowerBB->functions->GetFooter();
+		}
 	}
 
 	function _SubjectRSS()
@@ -79,7 +90,7 @@ class PowerBBRSSMOD
 	$SubjectArr['order'] 		= 	array();
 	$SubjectArr['order']['field'] 	= 	'native_write_time';
 	$SubjectArr['order']['type'] 	= 	'DESC';
-	$SubjectArr['limit'] 		= 	'12';
+	$SubjectArr['limit'] 		= 	'15';
 	$SubjectArr['proc'] 		= 	array();
 	$SubjectArr['proc']['*'] 	= 	array('method'=>'clean','param'=>'html');
 	$SubjectArr['proc']['native_write_time'] 	= 	array('method'=>'date','store'=>'write_date','type'=>$datenow);
@@ -124,15 +135,15 @@ class PowerBBRSSMOD
 		$SubjectList[$x]['title'] = $this->convert_int_to_utf8($SubjectList[$x]['title']);
 
 		$extention = "";
-		$url = "index.php?page=topic&amp;show=1&amp;id=";
-		$url = $PowerBB->functions->rewriterule($url);
+		$url = "page=topic&amp;show=1&amp;id=".$SubjectList[$x]['id'];
+		$url = $PowerBB->functions->rewriterule_singl($url);
 
 		echo "<item>";
 		echo "<title>" . $PowerBB->functions->CleanText($SubjectList[$x]['title'])  . "</title>\n";
 		echo "<description>" . trim($description) . "</description>\n";
-		echo "<link>" . $PowerBB->functions->GetForumAdress() . $url . $SubjectList[$x]['id'] . $extention . "</link>\n";
+		echo "<link>" . $url . "</link>\n";
 		echo '<pubDate>' . date("r", $PowerBB->functions->CleanText($SubjectList[$x]['native_write_time'])) . '</pubDate>' . "\n";
-		echo "<guid>" . $PowerBB->functions->GetForumAdress() . $url . $SubjectList[$x]['id'] . $extention . "</guid>\n";
+		echo "<guid>" . $url . "</guid>\n";
 		echo "</item>\n";
 		$x += 1;
 	  }
@@ -223,15 +234,17 @@ class PowerBBRSSMOD
 		$description = $this->convert_int_to_utf8($description);
 		$SubjectList[$x]['title'] = $this->convert_int_to_utf8($SubjectList[$x]['title']);
 		$extention = "";
-		$url = "index.php?page=topic&amp;show=1&amp;id=";
-		$url = $PowerBB->functions->rewriterule($url);
+		$url = "page=topic&amp;show=1&amp;id=".$SubjectList[$x]['id'];
+		$url = $PowerBB->functions->rewriterule_singl($url);
 		$description = str_replace("[img]look/","[img]".$PowerBB->functions->GetForumAdress()."look/", $description);
+		$description = str_replace("=index.php","=".$PowerBB->functions->GetForumAdress()."index.php", $description);
+
 		echo "<item>";
 		echo "<title>" . $PowerBB->functions->CleanText($SubjectList[$x]['title'])  . "</title>\n";
 		echo "<description>" . trim($description) . "</description>\n";
-		echo "<link>" . $PowerBB->functions->GetForumAdress() . $url . $SubjectList[$x]['id'] . $extention . "</link>\n";
+		echo "<link>" . $url . "</link>\n";
 		echo '<pubDate>' . date("r", $PowerBB->functions->CleanText($SubjectList[$x]['native_write_time'])) . '</pubDate>' . "\n";
-		echo "<guid>" . $PowerBB->functions->GetForumAdress() . $url . $SubjectList[$x]['id'] . $extention . "</guid>\n";
+		echo "<guid>" . $url . "</guid>\n";
 		echo "</item>\n";
 		$x += 1;
 	}

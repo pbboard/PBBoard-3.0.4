@@ -175,10 +175,7 @@ class PowerBBCoreMOD
 		$MemberInfo = $PowerBB->core->GetInfo($MemberArr,'member');
 
 		$Item['TITLE'] = $PowerBB->functions->CleanVariable($Item['TITLE'],'html');
-		$Item['TITLE'] = $PowerBB->functions->CleanVariable($Item['TITLE'],'sql');
-		$Item['TITLE'] = str_ireplace("'",'"', $Item['TITLE']);
-		$Item['TITLE'] = str_ireplace("\\",'"', $Item['TITLE']);
-
+        $Item['TITLE'] 	= 	$PowerBB->sys_functions->CleanSymbols($Item['TITLE']);
 
 			$find = "{rss:link}";
 			if(stristr($PowerBB->_POST['text'],$find))
@@ -202,6 +199,7 @@ class PowerBBCoreMOD
 			$FROM__row  = $PowerBB->DB->sql_fetch_array($FROM_query);
 
 			$SubjectArr	=	array();
+			$SubjectArr['get_id'] =	true;
 			$SubjectArr['field']	=	array();
 			$SubjectArr['field']['title']	=	$Item['TITLE'];
 			$SubjectArr['field']['text']	=	$text;
@@ -220,20 +218,60 @@ class PowerBBCoreMOD
             $SubjectArr['field']['icon'] 				= 	'look/images/icons/i1.gif';
 			$SubjectArr['field']['section']	=	$PowerBB->_POST['section'];
 
-			$Insert = $PowerBB->core->Insert($SubjectArr,'subject');
+			$Insert = $PowerBB->subject->InsertSubject($SubjectArr);
+             if($Insert)
+             {
+	     		// The overall number of subjects
+	     		$UpdateSubjectNumber = $PowerBB->cache->UpdateSubjectNumber(array('subject_num'	=>	$PowerBB->_CONF['info_row']['subject_number']));
 
-     		// The overall number of subjects
-     		$UpdateSubjectNumber = $PowerBB->cache->UpdateSubjectNumber(array('subject_num'	=>	$PowerBB->_CONF['info_row']['subject_number']));
+	            // The overall number of Member posts
+				$posts = $MemberInfo['posts'] + 1;
+				$MemberArr 				= 	array();
+				$MemberArr['field'] 	= 	array();
+				$MemberArr['field']['posts']			=	$posts;
+				$MemberArr['field']['lastpost_time'] 	=	$PowerBB->_CONF['now'];
+				$MemberArr['where']						=	array('id',$MemberInfo['id']);
+				$UpdateMember = $PowerBB->core->Update($MemberArr,'member');
 
-            // The overall number of Member posts
-			$posts = $MemberInfo['posts'] + 1;
-			$MemberArr 				= 	array();
-			$MemberArr['field'] 	= 	array();
-			$MemberArr['field']['posts']			=	$posts;
-			$MemberArr['field']['lastpost_time'] 	=	$PowerBB->_CONF['now'];
-			$MemberArr['where']						=	array('id',$MemberInfo['id']);
-			$UpdateMember = $PowerBB->core->Update($MemberArr,'member');
+                   if ($PowerBB->_CONF['info_row']['add_tags_automatic'] == '1')
+	     		   {
+                       //add tags Automatic from subject title
+                       $string_title = implode(' ', array_unique(explode(' ', $Item['TITLE'])));
 
+					$excludedWords = array();
+					$censorwords = preg_split('/\s+/s', $string_title, -1, PREG_SPLIT_NO_EMPTY);
+					$excludedWords = array_merge($excludedWords, $censorwords);
+					unset($censorwords);
+
+					// Trim current exclusions
+					for ($x = 0; $x < count($excludedWords); $x++)
+					{
+					   $excludedWords[$x] = trim($excludedWords[$x]);
+
+                           if (function_exists('mb_strlen'))
+                           {
+                               $tag_less_num = mb_strlen($excludedWords[$x], 'UTF-8') >= 6;
+                           }
+                           else
+                           {
+                               $tag_less_num = strlen(utf8_decode($excludedWords[$x])) >= 6;
+                           }
+
+                          if($tag_less_num)
+					     {
+
+							$InsertArr 						= 	array();
+							$InsertArr['field']				=	array();
+					     	$InsertArr['field']['tag_id'] 			= 	"";
+							$InsertArr['field']['subject_id'] 		=	$PowerBB->subject->id;
+							$InsertArr['field']['tag'] 				= 	$PowerBB->functions->CleanVariable($excludedWords[$x],'html');
+							$InsertArr['field']['subject_title'] 	= 	$PowerBB->functions->CleanVariable($Item['TITLE'],'html');
+							// Note, this function is from tag system not subject system
+							$insert_tags = $PowerBB->core->Insert($InsertArr,'tags_subject');
+                         }
+					}
+                   }
+              }
            $exisT_s = true;
 
 		  }
@@ -542,6 +580,10 @@ class PowerBBCoreMOD
 
 		}
 
+		$MemberArr 			= 	array();
+		$MemberArr['where'] 	= 	array('username',$PowerBB->_POST['member']);
+		$MemberInfo = $PowerBB->core->GetInfo($MemberArr,'member');
+
 		if($PowerBB->_POST['options'] == '1')
 		{
 
@@ -559,54 +601,51 @@ class PowerBBCoreMOD
 				$SectionArr['where'][1]['value']	=	$PowerBB->_POST['section'];
 
 
-				if(!$PowerBB->core->Is($SectionArr,'section')){
+		if(!$PowerBB->core->Is($SectionArr,'section'))
+		{
+		  $PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['section_does_not_exist_or_is_not_a_forum']);
+		}
 
-					$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['section_does_not_exist_or_is_not_a_forum']);
 
-				}
+		$PowerBB->FeedParser->parse($PowerBB->_POST['link']);
 
-				$PowerBB->FeedParser->parse($PowerBB->_POST['link']);
-
-				$Items	= $PowerBB->FeedParser->getItems();
+		$Items	= $PowerBB->FeedParser->getItems();
 		if (!$Items)
 		{
 		$PowerBB->_CONF['template']['_CONF']['lang']['feed_has_been_not_brought']= str_replace("{linkrss}", $PowerBB->_POST['link'],$PowerBB->_CONF['template']['_CONF']['lang']['feed_has_been_not_brought']);
 		$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['feed_has_been_not_brought']);
 		}
-
+			  $x = 0;
+			  $y = $x++;
 			 foreach($Items as $Item)
 			 {
 				// Kill XSS & SQL Injection and clean the topic title
-				$MemberArr 			= 	array();
-				$MemberArr['where'] 	= 	array('username',$PowerBB->_POST['member']);
-				$MemberInfo = $PowerBB->core->GetInfo($MemberArr,'member');
+				$find = "{rss:link}";
+				if(stristr($PowerBB->_POST['text'],$find))
+				{
+				$LINK = "\n\n [url=".$Item['LINK']."]".$PowerBB->_CONF['template']['_CONF']['lang']['the_original_topic']."[/url]";
+				}else{
+				$LINK = "";
+				}
 
-				$Item['TITLE'] = $PowerBB->functions->CleanVariable($Item['TITLE'],'html');
-				$Item['TITLE'] = $PowerBB->functions->CleanVariable($Item['TITLE'],'sql');
-				$Item['TITLE'] = str_ireplace("'",'"', $Item['TITLE']);
-				$Item['TITLE'] = str_ireplace("\\",'"', $Item['TITLE']);
-		                    $Item['TITLE'] 	= 	$PowerBB->functions->CleanVariable($Item['TITLE'],'html');
-		                    //$Item['TITLE'] 	= 	$PowerBB->functions->CleanVariable($Item['TITLE'],'sql');
-					$find = "{rss:link}";
-					if(stristr($PowerBB->_POST['text'],$find))
-					{
-		            	$LINK = "\n\n [url=".$Item['LINK']."]".$PowerBB->_CONF['template']['_CONF']['lang']['the_original_topic']."[/url]";
-					}else{
-					$LINK = "";
-					}
+				$text = $PowerBB->Powerparse->html2bb($Item['CONTENT:ENCODED']).$LINK;
+				$Item['TITLE'] 	= 	$PowerBB->functions->CleanVariable($Item['TITLE'],'html');
+				$Item['TITLE'] 	= 	$PowerBB->sys_functions->CleanSymbols($Item['TITLE']);
 
-					$text = $PowerBB->Powerparse->html2bb($Item['CONTENT:ENCODED']).$LINK;
-					$section = $PowerBB->_POST['section'];
-					$ItemTitle	=	$Item['TITLE'];
-					// Make sure that the topic does not exist before
-					$exist_query = $PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['subject'] . " WHERE title LIKE '%$ItemTitle%' and section = '$section'");
-					$exist_row   = $PowerBB->DB->sql_fetch_array($exist_query);
-				 if (!$PowerBB->core->Is(array('where' => array('id',$exist_row['id'])),'subject'))
+
+				$section = $PowerBB->_POST['section'];
+				$ItemTitle	=	$Item['TITLE'];
+
+				 // Make sure that the topic does not exist before
+		           $exist_query = $PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['subject'] . " WHERE title LIKE '%$ItemTitle%' and section = '$section'");
+		           $exist_row   = $PowerBB->DB->sql_fetch_array($exist_query);
+				if (!$exist_row)
 				  {
 					$FROM_query = $PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['section'] . " WHERE id = '$section' ");
 					$FROM__row  = $PowerBB->DB->sql_fetch_array($FROM_query);
 
 					$SubjectArr	=	array();
+					$SubjectArr['get_id']						=	true;
 					$SubjectArr['field']	=	array();
 					$SubjectArr['field']['title']	=	$Item['TITLE'];
 					$SubjectArr['field']['text']	=	$text;
@@ -625,77 +664,112 @@ class PowerBBCoreMOD
 		            $SubjectArr['field']['icon'] 				= 	'look/images/icons/i1.gif';
 					$SubjectArr['field']['section']	=	$PowerBB->_POST['section'];
 
-					$Insert = $PowerBB->core->Insert($SubjectArr,'subject');
+					$Insert = $PowerBB->subject->InsertSubject($SubjectArr);
+                    if($Insert)
+                    {
+			            // The overall number of Member posts
+						$posts = $MemberInfo['posts'] + 1;
+						$MemberArr 				= 	array();
+						$MemberArr['field'] 	= 	array();
+						$MemberArr['field']['posts']			=	$posts;
+						$MemberArr['field']['lastpost_time'] 	=	$PowerBB->_CONF['now'];
+						$MemberArr['where']						=	array('username',$PowerBB->_POST['member']);
+						$UpdateMember = $PowerBB->core->Update($MemberArr,'member');
 
-			    		// The overall number of subjects
-			    		$UpdateSubjectNumber = $PowerBB->cache->UpdateSubjectNumber(array('subject_num'	=>	$PowerBB->_CONF['info_row']['subject_number']));
 
-			           // The overall number of Member posts
-					$posts = $MemberInfo['posts'] + 1;
-					$MemberArr 				= 	array();
-					$MemberArr['field'] 	= 	array();
-					$MemberArr['field']['posts']			=	$posts;
-					$MemberArr['field']['lastpost_time'] 	=	$PowerBB->_CONF['now'];
-					$MemberArr['where']						=	array('id',$MemberInfo['id']);
-					$UpdateMember = $PowerBB->core->Update($MemberArr,'member');
+	                    if ($PowerBB->_CONF['info_row']['add_tags_automatic'] == '1')
+			     		{
+	                        //add tags Automatic from subject title
+	                        $string_title = implode(' ', array_unique(explode(' ', $Item['TITLE'])));
 
-					$exisT_s = true;
+							$excludedWords = array();
+							$censorwords = preg_split('/\s+/s', $string_title, -1, PREG_SPLIT_NO_EMPTY);
+							$excludedWords = array_merge($excludedWords, $censorwords);
+							unset($censorwords);
+
+							// Trim current exclusions
+							for ($x = 0; $x < count($excludedWords); $x++)
+							{
+							   $excludedWords[$x] = trim($excludedWords[$x]);
+
+	                            if (function_exists('mb_strlen'))
+	                            {
+	                                $tag_less_num = mb_strlen($excludedWords[$x], 'UTF-8') >= 6;
+	                            }
+	                            else
+	                            {
+	                                $tag_less_num = strlen(utf8_decode($excludedWords[$x])) >= 6;
+	                            }
+
+	                           if($tag_less_num)
+							  {
+
+									$InsertArr 						= 	array();
+									$InsertArr['field']				=	array();
+							     	$InsertArr['field']['tag_id'] 			= 	"";
+									$InsertArr['field']['subject_id'] 		=	$PowerBB->subject->id;
+									$InsertArr['field']['tag'] 				= 	$PowerBB->functions->CleanVariable($excludedWords[$x],'html');
+									$InsertArr['field']['subject_title'] 	= 	$PowerBB->functions->CleanVariable($Item['TITLE'],'html');
+									// Note, this function is from tag system not subject system
+									$insert_tags = $PowerBB->core->Insert($InsertArr,'tags_subject');
+	                          }
+							}
+	                    }
+                    }
 				 }
-				 else
-				 {
-				    $exisT_s = false;
-				 }
-          	  }
 
-			if ($exisT_s)
-			{
-		      $section = $PowerBB->_POST['section'];
-		      $info_query = $PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['subject'] . " WHERE id and section = '$section' ORDER BY id ASC");
-		      $info_row   = $PowerBB->DB->sql_fetch_array($info_query);
-		   		$LastArr = array();
-		        $LastArr['writer'] 		= 	$info_row['writer'];
-		   		$LastArr['title'] 		= 	$PowerBB->functions->CleanVariable($info_row['title'],'html');
-		   		$LastArr['subject_id'] 	= 	$info_row['id'];
-		   		$LastArr['date'] 		= 	$PowerBB->_CONF['date'];
-		   		$LastArr['icon'] 		= 	'look/images/icons/i1.gif';
-		   		$LastArr['where'] 		= 	(!$this->SectionInfo['sub_section']) ? array('id',$PowerBB->_POST['section']) : array('id',$this->SectionInfo['from_sub_section']);
+				$x++;
+				if($x==$y) break;
 
-		   		// Update Last subject's information
-		   		$UpdateLast = $PowerBB->core->Update($LastArr,'section');
+			 }
 
+		$section = $PowerBB->_POST['section'];
+		$info_query = $PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['subject'] . " WHERE id and section = '$section' ORDER BY id ASC");
+		$info_row   = $PowerBB->DB->sql_fetch_array($info_query);
 
-		         $Upsubject_nm = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['subject'] . " WHERE section='$section'"));
+		$UpdateLastArr = array();
+		$UpdateLastArr['field']			=	array();
 
-				$SecArr 			= 	array();
-		        $SecArr['where'] 	= 	array('id',$PowerBB->_POST['section']);
+		$UpdateLastArr['field']['last_writer'] 		= 	$info_row['writer'];
+		$UpdateLastArr['field']['last_subject'] 	= 	$PowerBB->functions->CleanVariable($info_row['title'],'html');
+		$UpdateLastArr['field']['last_subjectid'] 	= 	$info_row['id'];
+		$UpdateLastArr['field']['last_date'] 	    = 	$PowerBB->_CONF['now'];
+		$UpdateLastArr['field']['last_time'] 	    = 	$PowerBB->_CONF['now'];
+		$UpdateLastArr['field']['icon'] 		    = 	'look/images/icons/i1.gif';
 
-				$this->SectionInfo = $PowerBB->core->GetInfo($SecArr,'section');
+		$UpdateLastArr['where'] 		            = 	array('id',$PowerBB->_POST['section']);
 
-		              // The overall number of subjects
-		    		$UpdateSubjectNumber = $PowerBB->cache->UpdateSubjectNumber(array('subject_num'	=>	$PowerBB->_CONF['info_row']['subject_number']));
+		// Update Last subject's information
+		$UpdateLast = $PowerBB->core->Update($UpdateLastArr,'section');
 
-		    		//////////
+		// Free memory
+		unset($UpdateLastArr);
 
-		    		// The number of section's subjects number
-		    		$UpdateArr 					= 	array();
-		    		$UpdateArr['field']			=	array();
+		$Upsubject_nm = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['subject'] . " WHERE section='$section'"));
 
-		    		$UpdateArr['field']['subject_num'] 	= 	$this->SectionInfo['subject_num'] + $Upsubject_nm;
-		    		$UpdateArr['where']					= 	array('id',$PowerBB->_POST['section']);
+		$SecArr 			= 	array();
+		$SecArr['where'] 	= 	array('id',$PowerBB->_POST['section']);
 
-		    		$UpdateSubjectNumber = $PowerBB->core->Update($UpdateArr,'section');
+		$this->SectionInfo = $PowerBB->core->GetInfo($SecArr,'section');
 
-		    		//////////
+		// The overall number of subjects
+		$UpdateSubjectNumber = $PowerBB->cache->UpdateSubjectNumber(array('subject_num'	=>	$PowerBB->_CONF['info_row']['subject_number']));
 
+		//////////
 
+		// The number of section's subjects number
+		$UpdateArr 					= 	array();
+		$UpdateArr['field']			=	array();
 
-		     }
-        }
-    		//////////
+		$UpdateArr['field']['subject_num'] 	= 	$this->SectionInfo['subject_num'] + $Upsubject_nm;
+		$UpdateArr['where']					= 	array('id',$PowerBB->_POST['section']);
 
-		$MemberArr 			= 	array();
-		$MemberArr['where'] 	= 	array('username',$PowerBB->_POST['member']);
-		$MemberInfo = $PowerBB->core->GetInfo($MemberArr,'member');
+		$UpdateSubjectNumber = $PowerBB->core->Update($UpdateArr,'section');
+
+		// Update section's cache
+		$UpdateSectionCache = $PowerBB->functions->UpdateSectionCache($PowerBB->_POST['section']);
+     }
+		// Update last feeds time
 
 			$FeedsArr	                    =	array();
 			$FeedsArr['field']	            =	array();
@@ -712,113 +786,112 @@ class PowerBBCoreMOD
 
 
 			$UpdateFeeds = $PowerBB->core->Update($FeedsArr,'feeds');
-		    // Update section's cache
-			$PowerBB->functions->UpdateSectionCache($PowerBB->_POST['section']);
+		if($PowerBB->_POST['options'] == '1')
+		{
+		$PowerBB->functions->msg($PowerBB->_CONF['template']['_CONF']['lang']['feed_has_been_brought_successfully']);
+		}
+		else
+		{		$PowerBB->functions->msg($PowerBB->_CONF['template']['_CONF']['lang']['updated_successfully']);
+		}
 
-	       $PowerBB->functions->msg($PowerBB->_CONF['template']['_CONF']['lang']['Has_been_saved_successfully_feed']);
-           $PowerBB->functions->redirect('index.php?page=feeder&amp;control=1&amp;main=1');
+		$PowerBB->functions->redirect('index.php?page=feeder&control=1&main=1');
 
 	}
 
 	function _RunFeedRss()
 	{
-
 		global $PowerBB;
 
 		$PowerBB->template->display('header');
-			if (empty($PowerBB->_GET['id']))
-			{
-				$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['The_declaration_does_not_exist']);
-			}
+
+		if (empty($PowerBB->_GET['id']))
+		{
+			$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['The_declaration_does_not_exist']);
+		}
 
 		$FeedsInfoArr 			= 	array();
 		$FeedsInfoArr['where'] 	= 	array('id',$PowerBB->_GET['id']);
 		$FeedsInfo = $PowerBB->core->GetInfo($FeedsInfoArr,'feeds');
 
+		$SectionArr = array();
+		$SectionArr['where']	=	array();
+		$SectionArr['where'][0]['name']	=	'parent';
+		$SectionArr['where'][0]['oper']	=	'>';
+		$SectionArr['where'][0]['value']	=	'0';
 
-				$SectionArr = array();
+		$SectionArr['where'][1]['con']	=	'AND';
+		$SectionArr['where'][1]['name']	=	'id';
+		$SectionArr['where'][1]['oper']	=	'=';
+		$SectionArr['where'][1]['value']	=	$FeedsInfo['forumid'];
 
-				$SectionArr['where']	=	array();
-
-				$SectionArr['where'][0]['name']	=	'parent';
-				$SectionArr['where'][0]['oper']	=	'>';
-				$SectionArr['where'][0]['value']	=	'0';
-
-				$SectionArr['where'][1]['con']	=	'AND';
-				$SectionArr['where'][1]['name']	=	'id';
-				$SectionArr['where'][1]['oper']	=	'=';
-				$SectionArr['where'][1]['value']	=	$FeedsInfo['forumid'];
-
-
-				if(!$PowerBB->core->Is($SectionArr,'section'))
-				{
-			        $PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['section_does_not_exist_or_is_not_a_forum']);
-				}
+		if(!$PowerBB->core->Is($SectionArr,'section'))
+		{
+		  $PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['section_does_not_exist_or_is_not_a_forum']);
+		}
 
 
-				$PowerBB->FeedParser->parse($FeedsInfo['rsslink']);
+		$PowerBB->FeedParser->parse($FeedsInfo['rsslink']);
 
-				$Items	= $PowerBB->FeedParser->getItems();
+		$Items	= $PowerBB->FeedParser->getItems();
 		if (!$Items)
 		{
 		$PowerBB->_CONF['template']['_CONF']['lang']['feed_has_been_not_brought']= str_replace("{linkrss}", $FeedsInfo['rsslink'],$PowerBB->_CONF['template']['_CONF']['lang']['feed_has_been_not_brought']);
 		$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['feed_has_been_not_brought']);
 		}
-
-				foreach($Items as $Item){
+			  $x = 0;
+			  $y = $x++;
+			 foreach($Items as $Item)
+			 {
 				// Kill XSS & SQL Injection and clean the topic title
+				$find = "{rss:link}";
+				if(stristr($FeedsInfo['text'],$find))
+				{
+				$LINK = "\n\n [url=".$Item['LINK']."]".$PowerBB->_CONF['template']['_CONF']['lang']['the_original_topic']."[/url]";
+				}else{
+				$LINK = "";
+				}
 
+				$text = $PowerBB->Powerparse->html2bb($Item['CONTENT:ENCODED']).$LINK;
+				$Item['TITLE'] 	= 	$PowerBB->functions->CleanVariable($Item['TITLE'],'html');
+				$Item['TITLE'] 	= 	$PowerBB->sys_functions->CleanSymbols($Item['TITLE']);
+				$MemberArr 			= 	array();
+				$MemberArr['where'] 	= 	array('id',$FeedsInfo['userid']);
+				$MemberInfo = $PowerBB->core->GetInfo($MemberArr,'member');
 
-					$find = "{rss:link}";
-					if(stristr($FeedsInfo['text'],$find))
+				$section = $FeedsInfo['forumid'];
+				$ItemTitle	=	$Item['TITLE'];
+
+				 // Make sure that the topic does not exist before
+		           $exist_query = $PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['subject'] . " WHERE title LIKE '%$ItemTitle%' and section = '$section'");
+		           $exist_row   = $PowerBB->DB->sql_fetch_array($exist_query);
+				if (!$exist_row)
+				  {
+					$FROM_query = $PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['section'] . " WHERE id = '$section' ");
+					$FROM__row  = $PowerBB->DB->sql_fetch_array($FROM_query);
+
+					$SubjectArr	=	array();
+					$SubjectArr['get_id']						=	true;
+					$SubjectArr['field']	=	array();
+					$SubjectArr['field']['title']	=	$Item['TITLE'];
+					$SubjectArr['field']['text']	=	$text;
+					if($FROM__row['review_subject'])
 					{
-		             	$LINK = "\n\n [url=".$Item['LINK']."]".$PowerBB->_CONF['template']['_CONF']['lang']['the_original_topic']."[/url]";
-					}else{
-					$LINK = "";
+					$SubjectArr['field']['review_subject'] = '1';
 					}
+					if($FROM__row['sec_section']
+					or $FROM__row['hide_subject'])
+					{
+					$SubjectArr['field']['sec_subject'] = '1';
+					}
+					$SubjectArr['field']['writer']	=	$MemberInfo['username'];
+				    $SubjectArr['field']['write_time'] 			= 	$PowerBB->_CONF['now'];
+				    $SubjectArr['field']['native_write_time'] 	= 	$PowerBB->_CONF['now'];
+		            $SubjectArr['field']['icon'] 				= 	'look/images/icons/i1.gif';
+					$SubjectArr['field']['section']	=	$FeedsInfo['forumid'];
 
-					$text = $PowerBB->Powerparse->html2bb($Item['CONTENT:ENCODED']).$LINK;
-		                    $Item['TITLE'] 	= 	$PowerBB->functions->CleanVariable($Item['TITLE'],'html');
-		                    //$Item['TITLE'] 	= 	$PowerBB->functions->CleanVariable($Item['TITLE'],'sql');
-						$MemberArr 			= 	array();
-						$MemberArr['where'] 	= 	array('id',$FeedsInfo['userid']);
-						$MemberInfo = $PowerBB->core->GetInfo($MemberArr,'member');
-
-			         $section = $FeedsInfo['forumid'];
-			         $ItemTitle	=	$Item['TITLE'];
-					 // Make sure that the topic does not exist before
-
-			           $exist_query = $PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['subject'] . " WHERE title LIKE '%$ItemTitle%' and section = '$section'");
-			           $exist_row   = $PowerBB->DB->sql_fetch_array($exist_query);
-					if (!$exist_row)
-					  {
-						$FROM_query = $PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['section'] . " WHERE id = '$section' ");
-						$FROM__row  = $PowerBB->DB->sql_fetch_array($FROM_query);
-
-						$SubjectArr	=	array();
-						$SubjectArr['field']	=	array();
-						$SubjectArr['field']['title']	=	$Item['TITLE'];
-						$SubjectArr['field']['text']	=	$text;
-						if($FROM__row['review_subject'])
-						{
-						$SubjectArr['field']['review_subject'] = '1';
-						}
-						if($FROM__row['sec_section']
-						or $FROM__row['hide_subject'])
-						{
-						$SubjectArr['field']['sec_subject'] = '1';
-						}
-						$SubjectArr['field']['writer']	=	$MemberInfo['username'];
-					    $SubjectArr['field']['write_time'] 			= 	$PowerBB->_CONF['now'];
-					    $SubjectArr['field']['native_write_time'] 	= 	$PowerBB->_CONF['now'];
-			            $SubjectArr['field']['icon'] 				= 	'look/images/icons/i1.gif';
-						$SubjectArr['field']['section']	=	$FeedsInfo['forumid'];
-
-						$Insert = $PowerBB->core->Insert($SubjectArr,'subject');
-
-			     		// The overall number of subjects
-			     		$UpdateSubjectNumber = $PowerBB->cache->UpdateSubjectNumber(array('subject_num'	=>	$PowerBB->_CONF['info_row']['subject_number']));
-
+					$Insert = $PowerBB->subject->InsertSubject($SubjectArr);
+                    if($Insert)
+                    {
 			            // The overall number of Member posts
 						$posts = $MemberInfo['posts'] + 1;
 						$MemberArr 				= 	array();
@@ -828,50 +901,108 @@ class PowerBBCoreMOD
 						$MemberArr['where']						=	array('id',$MemberInfo['id']);
 						$UpdateMember = $PowerBB->core->Update($MemberArr,'member');
 
-                     $exisT_s = true;
 
-					}
-                   else
-                   {
-                   	$exisT_s = false;
-                   }
-				  }
-			  if ($exisT_s)
-			  {
-		      $section = $FeedsInfo['forumid'];
-		      $info_query = $PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['subject'] . " WHERE id and section = '$section' ORDER BY id ASC");
-		      $info_row   = $PowerBB->DB->sql_fetch_array($info_query);
-		   		$LastArr = array();
-		        $LastArr['writer'] 		= 	$info_row['writer'];
-		   		$LastArr['title'] 		= 	$PowerBB->functions->CleanVariable($info_row['title'],'html');
-		   		$LastArr['subject_id'] 	= 	$info_row['id'];
-		   		$LastArr['date'] 		= 	$PowerBB->_CONF['date'];
-		   		$LastArr['icon'] 		= 	'look/images/icons/i1.gif';
-		   		$LastArr['where'] 		= 	(!$this->SectionInfo['sub_section']) ? array('id',$PowerBB->_POST['section']) : array('id',$this->SectionInfo['from_sub_section']);
+	                    if ($PowerBB->_CONF['info_row']['add_tags_automatic'] == '1')
+			     		{
+	                        //add tags Automatic from subject title
+	                        $string_title = implode(' ', array_unique(explode(' ', $Item['TITLE'])));
 
-		   		// Update Last subject's information
-		   		$UpdateLast = $PowerBB->core->Update($LastArr,'section');
+							$excludedWords = array();
+							$censorwords = preg_split('/\s+/s', $string_title, -1, PREG_SPLIT_NO_EMPTY);
+							$excludedWords = array_merge($excludedWords, $censorwords);
+							unset($censorwords);
 
+							// Trim current exclusions
+							for ($x = 0; $x < count($excludedWords); $x++)
+							{
+							   $excludedWords[$x] = trim($excludedWords[$x]);
 
-		         $Upsubject_nm = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['subject'] . " WHERE section='$section'"));
+	                            if (function_exists('mb_strlen'))
+	                            {
+	                                $tag_less_num = mb_strlen($excludedWords[$x], 'UTF-8') >= 6;
+	                            }
+	                            else
+	                            {
+	                                $tag_less_num = strlen(utf8_decode($excludedWords[$x])) >= 6;
+	                            }
 
-				$SecArr 			= 	array();
-		        $SecArr['where'] 	= 	array('id',$FeedsInfo['forumid']);
+	                           if($tag_less_num)
+							  {
 
-				$this->SectionInfo = $PowerBB->core->GetInfo($SecArr,'section');
+									$InsertArr 						= 	array();
+									$InsertArr['field']				=	array();
+							     	$InsertArr['field']['tag_id'] 			= 	"";
+									$InsertArr['field']['subject_id'] 		=	$PowerBB->subject->id;
+									$InsertArr['field']['tag'] 				= 	$PowerBB->functions->CleanVariable($excludedWords[$x],'html');
+									$InsertArr['field']['subject_title'] 	= 	$PowerBB->functions->CleanVariable($Item['TITLE'],'html');
+									// Note, this function is from tag system not subject system
+									$insert_tags = $PowerBB->core->Insert($InsertArr,'tags_subject');
+	                          }
+							}
+	                    }
+                    }
+				 }
 
-		              // The overall number of subjects
-		    		$UpdateSubjectNumber = $PowerBB->cache->UpdateSubjectNumber(array('subject_num'	=>	$PowerBB->_CONF['info_row']['subject_number']));
+				$x++;
+				if($x==$y) break;
 
-             }
+			 }
 
-		    	// Update section's cache
-		    	$PowerBB->functions->UpdateSectionCache($FeedsInfo['forumid']);
+		$section = $FeedsInfo['forumid'];
+		$info_query = $PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['subject'] . " WHERE id and section = '$section' ORDER BY id ASC");
+		$info_row   = $PowerBB->DB->sql_fetch_array($info_query);
 
-		       $PowerBB->functions->msg($PowerBB->_CONF['template']['_CONF']['lang']['feed_has_been_brought_successfully']);
-	           $PowerBB->functions->redirect('index.php?page=feeder&control=1&main=1');
+		$UpdateLastArr = array();
+		$UpdateLastArr['field']			=	array();
 
-  }
+		$UpdateLastArr['field']['last_writer'] 		= 	$info_row['writer'];
+		$UpdateLastArr['field']['last_subject'] 	= 	$PowerBB->functions->CleanVariable($info_row['title'],'html');
+		$UpdateLastArr['field']['last_subjectid'] 	= 	$info_row['id'];
+		$UpdateLastArr['field']['last_date'] 	    = 	$PowerBB->_CONF['now'];
+		$UpdateLastArr['field']['last_time'] 	    = 	$PowerBB->_CONF['now'];
+		$UpdateLastArr['field']['icon'] 		    = 	'look/images/icons/i1.gif';
+
+		$UpdateLastArr['where'] 		            = 	array('id',$FeedsInfo['forumid']);
+
+		// Update Last subject's information
+		$UpdateLast = $PowerBB->core->Update($UpdateLastArr,'section');
+
+		// Free memory
+		unset($UpdateLastArr);
+
+		$Upsubject_nm = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['subject'] . " WHERE section='$section'"));
+
+		$SecArr 			= 	array();
+		$SecArr['where'] 	= 	array('id',$FeedsInfo['forumid']);
+
+		$this->SectionInfo = $PowerBB->core->GetInfo($SecArr,'section');
+
+		// The overall number of subjects
+		$UpdateSubjectNumber = $PowerBB->cache->UpdateSubjectNumber(array('subject_num'	=>	$PowerBB->_CONF['info_row']['subject_number']));
+
+		//////////
+
+		// The number of section's subjects number
+		$UpdateArr 					= 	array();
+		$UpdateArr['field']			=	array();
+
+		$UpdateArr['field']['subject_num'] 	= 	$this->SectionInfo['subject_num'] + $Upsubject_nm;
+		$UpdateArr['where']					= 	array('id',$FeedsInfo['forumid']);
+
+		$UpdateSubjectNumber = $PowerBB->core->Update($UpdateArr,'section');
+
+		// Update section's cache
+		$UpdateSectionCache = $PowerBB->functions->UpdateSectionCache($FeedsInfo['forumid']);
+
+		// Update last feeds time
+		$feeds_time = $PowerBB->_CONF['now'];
+		$feeds_id = $FeedsInfo['id'];
+		$Update_Feeds = $PowerBB->DB->sql_query("UPDATE " . $PowerBB->table['feeds'] . " SET feeds_time ='$feeds_time' where id = '$feeds_id'");
+
+		$PowerBB->functions->msg($PowerBB->_CONF['template']['_CONF']['lang']['feed_has_been_brought_successfully']);
+		$PowerBB->functions->redirect('index.php?page=feeder&control=1&main=1');
+
+    }
 
 
 

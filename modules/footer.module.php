@@ -94,13 +94,14 @@ class PowerBBFooterMOD
 
 			$from 	= 	mktime(0,0,0,$month,$day,$year);
 			$to 	= 	mktime(23,59,59,$month,$day,$year);
-
+            $deys = ($PowerBB->_CONF['now'] - (30 * 86400));
 	        $forum_not = $PowerBB->_CONF['info_row']['last_subject_writer_not_in'];
 
-	        $subject_today_nm = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['subject'] . " WHERE native_write_time BETWEEN " . $from . " AND " . $to . " AND section not in (" .$forum_not. ") AND review_subject<>1 AND delete_topic<>1 LIMIT 1"));
+	        $subject_today_nm = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['subject'] . " WHERE native_write_time >= " . $deys . " AND section not in (" .$forum_not. ") AND review_subject<>1 AND delete_topic<>1 LIMIT 1"));
 
 			$PowerBB->template->assign('subject_today_nm',$subject_today_nm);
         }
+
        $PowerBB->template->assign('timer',$PowerBB->sys_functions->_time(time()));
 
         // Get Footer

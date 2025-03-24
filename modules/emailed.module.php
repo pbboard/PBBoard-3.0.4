@@ -34,20 +34,22 @@ class PowerBBEmailedMOD
 		/** Visitor can't use the Subscriptions postal system **/
 		if (!$PowerBB->_CONF['member_permission'])
 		{
-				header("Location: index.php");
-				exit;
+			 $PowerBB->functions->ShowHeader();
+             $PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['error_permission']);
+             $PowerBB->functions->GetFooter();
 		}
 		/** **/
 
 			/** Delete Subscriptions postal from usercp **/
-			if ($PowerBB->_GET['del'])
+			if ($PowerBB->_GET['del'] == '1')
 			{
 				$this->_DeleteSubscriptions();
 			}
 			else
 			{
-				header("Location: index.php");
-				exit;
+			 $PowerBB->functions->ShowHeader();
+             $PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['Sorry_url_not_true']);
+             $PowerBB->functions->GetFooter();
 			}
 		  /** **/
 

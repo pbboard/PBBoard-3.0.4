@@ -52,28 +52,30 @@ class PowerBBAJAXtMOD
 			 $this->_coverPhotoUploadStart();
 			 }
 			}
-			elseif ($PowerBB->_GET['coverPhotoRemove'])
+			elseif ($PowerBB->_GET['coverPhotoRemove'] == 1)
 			{
 			 $this->_coverPhotoRemove();
 			}
-			elseif ($PowerBB->_GET['editreplyajax'])
+			elseif ($PowerBB->_GET['editreplyajax'] == 1)
 			{
 			 $this->_editreplyajax();
 			}
-			elseif ($PowerBB->_GET['editsubjectajax'])
+			elseif ($PowerBB->_GET['editsubjectajax'] == 1)
 			{
 			 $this->_editsubjectajax();
 			}
 			else
 			{
-				header("Location: index.php");
-				exit;
+			 $PowerBB->functions->ShowHeader();
+             $PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['Sorry_url_not_true']);
+             $PowerBB->functions->GetFooter();
 			}
 		}
 		else
 		{
-			header("Location: index.php");
-			exit;
+			 $PowerBB->functions->ShowHeader();
+             $PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['Sorry_url_not_true']);
+             $PowerBB->functions->GetFooter();
 		}
 	}
 
@@ -195,8 +197,9 @@ class PowerBBAJAXtMOD
 		global $PowerBB;
          if ($PowerBB->_SERVER['REQUEST_METHOD'] != 'POST')
          {
-         	 header("Location: index.php");
-		     exit;
+			 $PowerBB->functions->ShowHeader();
+             $PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['Sorry_url_not_true']);
+             $PowerBB->functions->GetFooter();
          }
         $PowerBB->_POST['message'] = str_replace('target="_blank" ','',$PowerBB->_POST['message']);
 
@@ -270,8 +273,9 @@ class PowerBBAJAXtMOD
 		global $PowerBB;
          if ($PowerBB->_SERVER['REQUEST_METHOD'] != 'POST')
          {
-         	 header("Location: index.php");
-		     exit;
+			 $PowerBB->functions->ShowHeader();
+             $PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['Sorry_url_not_true']);
+             $PowerBB->functions->GetFooter();
          }
        $PowerBB->_POST['message'] = str_replace('target="_blank" ','',$PowerBB->_POST['message']);
 

@@ -6,10 +6,7 @@ error_reporting(E_ERROR | E_PARSE);
 @ini_set('default_socket_timeout', -1);
 @session_start();
 $page = empty($_GET['page']) ? 'index' : $_GET['page'];
-if(function_exists('date_default_timezone_set') && !ini_get('date.timezone'))
-{
-	@date_default_timezone_set('GMT');
-}
+
 // Security REQUEST METHOD POST
 if ($_SERVER['REQUEST_METHOD'] == 'POST')
 {

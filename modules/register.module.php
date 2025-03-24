@@ -46,27 +46,29 @@ class PowerBBRegisterMOD
 			}
 			else
 			{
+			    $_SESSION['pbb_register_form'] = 1;
 				$this->_RegisterForm();
 			}
 		}
 		/** **/
-		  elseif ($PowerBB->_GET['checkname'])
+		  elseif ($PowerBB->_GET['checkname'] and $_SESSION['pbb_register_form'])
 		  {
 		   $this->_CheckNameStart();
 		  }
-		  elseif ($PowerBB->_GET['checkemail'])
+		  elseif ($PowerBB->_GET['checkemail'] and $_SESSION['pbb_register_form'])
 		  {
 		   $this->_CheckEmailStart();
 		  }
 		/** Start registetr **/
-		elseif ($PowerBB->_GET['start'])
+		elseif ($PowerBB->_GET['start'] and $_SESSION['pbb_register_form'])
 		{
 			$this->_RegisterStart();
 		}
 		else
 		{
-			header("Location: index.php");
-			exit;
+			 $PowerBB->functions->ShowHeader();
+             $PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['Sorry_url_not_true']);
+             $PowerBB->functions->GetFooter();
 		}
 
 
@@ -150,12 +152,11 @@ class PowerBBRegisterMOD
 	{
 		global $PowerBB;
 
-
-
 		if ($PowerBB->_CONF['member_permission'])
 		{
-			  header("Location: index.php");
-			  exit;
+			 $PowerBB->functions->ShowHeader();
+			 $PowerBB->functions->error($PowerBB->_CONF['rows']['member_row']['username']." ".$PowerBB->_CONF['template']['_CONF']['lang']['You_are_already_registered']);
+             $PowerBB->functions->GetFooter();
         }
 		if(is_numeric($PowerBB->_POST['username']))
 		{

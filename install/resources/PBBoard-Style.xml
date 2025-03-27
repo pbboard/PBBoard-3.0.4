@@ -3324,7 +3324,7 @@ document.write('<option value=' + i + '>{$lang['Under_Num']}  ' + i);</script></
 <script language="javascript">
 showFrame(1);
 </script>]]></template>
-<template name="friends_main" templatetype="template" date="1735000527" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<title> {$lang['friends_list']} -
+<template name="friends_main" templatetype="template" date="1738967034" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<title> {$lang['friends_list']} -
 {$_CONF['info_row']['title']}</title>
 {template}address_bar_part1{/template}
 <li itemprop="itemListElement" itemscope
@@ -3347,10 +3347,12 @@ itemtype="https://schema.org/ListItem">
 <meta itemprop="position" content="3" />
 </li>
 {template}address_bar_part2{/template}
-<!-- table --><div style="width:98%;border-collapse: collapse;margin: auto;" class="table">
+<!-- tableW -->
+<div style="width:98%;border-collapse: collapse;margin: auto;" class="table">
 <dl>
 <dt></dt>
 <dd class="center_text_align usercp_left">
+{if {$is_pager_show}}
 <form name="info" method="post" action="index.php?page=usercp&amp;options=1&amp;friends=1&amp;add=1">
 <div class="center_text_align">
 <table class="border wd100 brd1 clpc0">
@@ -3375,9 +3377,58 @@ itemtype="https://schema.org/ListItem">
 </form>
 <br />
 <div class="center_text_align">
+<!-- tableE -->
+<div style="width:100%; border-spacing:1px;" class="table border">
+<dl>
+<dt></dt>
+<dd class="tcat">{$lang['friend_requests_sent_to_you_by_the_members']}</dd>
+</dl>
+</div>
+<!-- /table0 -->
+<!-- table0 -->
+<div style="width:100%; border-spacing:1px;" class="table border">
+{Des::while}{FriendsApprovalList}
+<dl>
+<dt></dt>
+<dd class="row1 center_text_align friend_name">
+{$lang['new_friend_request_sent_by']}
+<b>{$FriendsApprovalList['username']}</b>
+</dd>
+<dd class="row1 center_text_align friend_iagree">
+<form name="info" method="post" action="index.php?page=usercp&amp;options=1&amp;friends=1&amp;approval=1&amp;id={$FriendsApprovalList['id']}&amp;username={$FriendsApprovalList['username']}">
+<input name="send" type="submit" value="{$lang['i_agree_to_the_request_of_friendship']}
+ {$FriendsApprovalList['username']}" />
+</form>
+</dd>
+<dd class="row1 center_text_align friend_noagree">
+<form name="info" method="post" action="index.php?page=usercp&amp;options=1&amp;friends=1&amp;del=1&amp;id={$FriendsApprovalList['id']}">
+<input name="send" type="submit" value="{$lang['no_agree_to_the_request_of_friendship']}
+ {$FriendsApprovalList['username']}" />
+</form>
+</dd>
+</dl>
+{if {$No_Approval_Friends}}
+</div>
+<!-- /table1 -->
+<!-- table1 -->
+<div style="width:100%; border-spacing:1px;" class="table border">
+<dl>
+<dt></dt>
+<dd class="row1 center_text_align">
+<b>{$lang['does_not_have_friend_requests']}</b>
+</dd>
+</dl>
+{/if}
+{/Des::while}
+</div>
+<!-- /table2 -->
+</div>
+<br />
+{/if}
+<div class="center_text_align">
 <table class="border wd100 brd1 clpc0">
 <tr>
-<td class="tcat" colspan="2">{$lang['friends_list']}</td>
+<td class="tcat" colspan="2"><i class="fa fa-users" aria-hidden="true"></i> {$lang['friends_list']} (<b>{$friends_numer}</b>)</td>
 </tr>
 <tr>
 <td class="thead rows_space">{$lang['user_name']}</td>
@@ -3407,52 +3458,13 @@ itemtype="https://schema.org/ListItem">
 {/Des::while}
 </table>
 </div>
+<span class="pager-left">{$friends_pager}</span>
 <br />
-<div class="center_text_align">
-<!-- table --><div style="width:100%; border-spacing:1px;" class="table border">
-<dl>
-<dt></dt>
-<dd class="tcat">{$lang['friend_requests_sent_to_you_by_the_members']}</dd>
-</dl>
-</div><!-- /table -->
-<!-- table --><div style="width:100%; border-spacing:1px;" class="table border">
-{Des::while}{FriendsApprovalList}
-<dl>
-<dt></dt>
-<dd class="row1 center_text_align friend_name">
-{$lang['new_friend_request_sent_by']}
-<b>{$FriendsApprovalList['username']}</b>
-</dd>
-<dd class="row1 center_text_align friend_iagree">
-<form name="info" method="post" action="index.php?page=usercp&amp;options=1&amp;friends=1&amp;approval=1&amp;id={$FriendsApprovalList['id']}&amp;username={$FriendsApprovalList['username']}">
-<input name="send" type="submit" value="{$lang['i_agree_to_the_request_of_friendship']}
- {$FriendsApprovalList['username']}" />
-</form>
-</dd>
-<dd class="row1 center_text_align friend_noagree">
-<form name="info" method="post" action="index.php?page=usercp&amp;options=1&amp;friends=1&amp;del=1&amp;id={$FriendsApprovalList['id']}">
-<input name="send" type="submit" value="{$lang['no_agree_to_the_request_of_friendship']}
- {$FriendsApprovalList['username']}" />
-</form>
-</dd>
-</dl>
-{if {$No_Approval_Friends}}
-</div><!-- /table -->
-<!-- table --><div style="width:100%; border-spacing:1px;" class="table border">
-<dl>
-<dt></dt>
-<dd class="row1 center_text_align">
-<b>{$lang['does_not_have_friend_requests']}</b>
-</dd>
-</dl>
-{/if}
-{/Des::while}
-</div><!-- /table -->
-</div>
 </dd>
 <dd class="usercp_right">{template}usercp_menu{/template}</dd>
 </dl>
-</div><!-- /table -->
+</div>
+<!-- /table3 -->
 <br /><br />
 <br />]]></template>
 <template name="guest_info" templatetype="template" date="1735000527" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[	<div class="center_text_align">

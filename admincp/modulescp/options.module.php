@@ -906,7 +906,7 @@ class PowerBBOptionsMOD
 			$update[4] = $PowerBB->info->UpdateInfo(array('value'=>$PowerBB->_POST['sidebar_list_exclusion_forums'],'var_name'=>'sidebar_list_exclusion_forums'));
 			$update[5] = $PowerBB->info->UpdateInfo(array('value'=>$PowerBB->_POST['sidebar_list_content'],'var_name'=>'sidebar_list_content'));
 
-			if ($update[0] and $update[1]and $update[2]and $update[3]and $update[4]and $update[5])
+			if ($update[0] and $update[1] and $update[2] and $update[3] and $update[4] and $update[5])
 			{
 				$PowerBB->functions->msg($PowerBB->_CONF['template']['_CONF']['lang']['updated_successfully_Please_wait']);
 				$PowerBB->functions->redirect('index.php?page=options&amp;sidebar_list=1&amp;main=1');
@@ -1162,6 +1162,13 @@ class PowerBBOptionsMOD
         $update = array();
       	$update[0] = $PowerBB->info->UpdateInfo(array('value'=>$PowerBB->_POST['rewriterule'],'var_name'=>'rewriterule'));
 
+	      	if($PowerBB->_POST['auto_links_titles'] == '0'
+	      	or $PowerBB->_POST['auto_links_titles'] == '1')
+	      	{
+	      	$update[1] = $PowerBB->info->UpdateInfo(array('value'=>$PowerBB->_POST['auto_links_titles'],'var_name'=>'auto_links_titles'));
+	      	}
+
+
 		if ($update[0])
 		{
 			$PowerBB->functions->msg($PowerBB->_CONF['template']['_CONF']['lang']['updated_successfully_Please_wait']);
@@ -1190,15 +1197,15 @@ class PowerBBOptionsMOD
 	function _PbbSitemap()
 	{
 		global $PowerBB;
-
         $update = array();
 		$update[0] = $PowerBB->info->UpdateInfo(array('value'=>$PowerBB->_POST['sitemap'],'var_name'=>'sitemap'));
-
-		if ($update[0])
+		$update[1] = $PowerBB->info->UpdateInfo(array('value'=>$PowerBB->_POST['sitemap_gzip'],'var_name'=>'sitemap_gzip'));
+		$update[2] = $PowerBB->info->UpdateInfo(array('value'=>$PowerBB->_POST['sitemap_url_max'],'var_name'=>'sitemap_url_max'));
+        if ($update[0] and $update[1] and $update[2])
 		{
-			$PowerBB->functions->msg($PowerBB->_CONF['template']['_CONF']['lang']['updated_successfully_Please_wait']);
-			$PowerBB->functions->redirect('index.php?page=options&amp;pbb_seo=1&amp;main=1');
-		}
+		$PowerBB->functions->msg($PowerBB->_CONF['template']['_CONF']['lang']['updated_successfully_Please_wait']);
+		$PowerBB->functions->redirect('index.php?page=options&amp;pbb_seo=1&amp;main=1');
+        }
 
 	}
 

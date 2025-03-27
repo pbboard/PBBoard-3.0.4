@@ -45,7 +45,7 @@ class PowerBBRSSMOD
  		$PowerBB->_CONF['info_row']['title'] 	= 	$PowerBB->functions->CleanVariable($PowerBB->_CONF['info_row']['title'],'html');
 		$PowerBB->_CONF['info_row']['title'] 	= 	$PowerBB->functions->CleanVariable($PowerBB->_CONF['info_row']['title'],'sql');
         header('Content-Type: text/xml; charset=utf-8');
-		echo "<rss version=\"2.0\" xmlns:atom=\"http://www.w3.org/2005/Atom\">\n";
+		echo "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<rss version=\"2.0\" xmlns:atom=\"http://www.w3.org/2005/Atom\">\n";
 		echo "<channel>\n";
 
 		$PowerBB->_CONF['info_row']['title'] = $this->convert_int_to_utf8($PowerBB->_CONF['info_row']['title']);

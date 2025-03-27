@@ -1,8 +1,8 @@
 <?php
+
 class PowerBBFunctions
 {
 	var $PowerBB;
-
 		/**
 	 * Get sections list from cache and show it.
 	 */
@@ -22,6 +22,7 @@ class PowerBBFunctions
 		$SecArr['where'][0]['value']	= 	'0';
 		// Get main sections
 		$cats = $PowerBB->core->GetList($SecArr,'section');
+
  		////////////
 		// Loop to read the information of main sections
 		foreach($cats as $cat)
@@ -1506,9 +1507,31 @@ class PowerBBFunctions
 		{
 			$redirectcode = 302;
 		}
+		if($PowerBB->_CONF['info_row']['rewriterule'])
+		{
         $url = $PowerBB->functions->rewriterule($url);
+        }
+        elseif($PowerBB->_CONF['info_row']['auto_links_titles'])
+		{
+        $url = $PowerBB->functions->rewriterule_2($url);
+        }
 		 @header("Location: $url", 0, $redirectcode);
 	  	 exit;
+ 	}
+
+ 	function rewriterule_header_redirect($url)
+ 	{
+	     global $PowerBB;
+		$url = str_replace('&amp;', '&', $url); // prevent possible oddity
+		 header("Location: $url");
+	  	 die();
+ 	}
+	function java_redirect($url)
+ 	{
+		$java_redirect = '<script type="text/javascript">
+		window.location.href="'.$url.'"
+		</script>';
+		echo $java_redirect;
  	}
 	/**
 	 * Show $msg in nice template
@@ -1595,7 +1618,9 @@ class PowerBBFunctions
     	{
     		$this->ShowHeader('');
     	}
+
   		$this->msg($msg,$no_style);
+        $PowerBB->template->assign('timer',$PowerBB->sys_functions->_time(time()));
   		$this->stop($no_style);
  	}
 	/**
@@ -1876,7 +1901,7 @@ class PowerBBFunctions
 			{
 			$PowerBB->template->assign('description',$description);
 			}
-			$title    = $PowerBB->Powerparse->_wordwrap($ReplyInfo['title']." ".$description,$titlenum);
+			$title    = $ReplyInfo['title'];
 
 			$page_address['post'] = $title;
 			$PowerBB->template->assign('index',1);
@@ -2502,11 +2527,11 @@ return preg_replace($pattern, $replacement, $email);
 
 				if (function_exists('mb_strlen'))
 				{
-				$tag_less_num = mb_strlen($excludedWords[$x], 'UTF-8') >= 4;
+				$tag_less_num = mb_strlen($excludedWords[$x], 'UTF-8') >= 6;
 				}
 				else
 				{
-				$tag_less_num = strlen(utf8_decode($excludedWords[$x])) >= 4;
+				$tag_less_num = strlen(utf8_decode($excludedWords[$x])) >= 6;
 				}
 
 
@@ -2614,7 +2639,7 @@ return preg_replace($pattern, $replacement, $email);
    function CleanRSSText($string)
  	{
  	 global $PowerBB;
-
+        $string = str_replace("\n","{n}",$string);
 		$string = preg_replace('#\[php\](.*)\[/php\]#siU', '[code]$1[/code]', $string);
 		$string = preg_replace('#\[js\](.*)\[/js\]#siU', '[code]$1[/code]', $string);
 		$string = preg_replace('#\[html\](.*)\[/html\]#siU', '[code]$1[/code]', $string);
@@ -2703,6 +2728,8 @@ return preg_replace($pattern, $replacement, $email);
 		$matchesg[1] = str_replace('"',"&quot;",$matchesg[1]);
 		return "[code]".$matchesg[1]."[/code]";
 		}, $originally_text);
+
+       $originally_text = str_replace("{n}","<br />",$originally_text);
 
 		return ($originally_text);
     }
@@ -3192,7 +3219,7 @@ return preg_replace($pattern, $replacement, $email);
  	/**
  	 *Update Section Cache ;)
  	 */
-   function UpdateSectionCache($SectionCache)
+function UpdateSectionCache($SectionCache)
  	{
       global $PowerBB;
 			// Get Section Info
@@ -3217,16 +3244,14 @@ return preg_replace($pattern, $replacement, $email);
 			$GetLastSubjectInf = $PowerBB->DB->sql_fetch_array($GetLastSubjectInfoQuery);
 			}
 
-            if($subject_nm
-            or $reply_num)
-            {
+
 			$UpdateArr 					= 	array();
 			$UpdateArr['field']			=	array();
 			$UpdateArr['field']['reply_num'] 	= 	$reply_num;
 			$UpdateArr['field']['subject_num'] 	= 	$subject_nm;
             $UpdateArr['where']					= 	array('id',$SectionCache);
 			$UpdateSubjectNumber = $PowerBB->core->Update($UpdateArr,'section');
-			}
+
 
 			if ($PowerBB->_GET['page'] == 'new_topic')
 			{
@@ -3243,6 +3268,7 @@ return preg_replace($pattern, $replacement, $email);
 				if($GetLastReplyForm['write_time'] > $GetLastSubjectInf['native_write_time'])
 				{
 				$GetSubjectInfoQuery = $PowerBB->DB->sql_query("SELECT id,title,reply_number,icon,last_replier,write_time FROM " . $PowerBB->table['subject'] . " WHERE id = '".$GetLastReplyForm['subject_id']."' AND delete_topic='0' AND review_subject='0' ");
+
 				$SubjectInf = $PowerBB->DB->sql_fetch_array($GetSubjectInfoQuery);
 				// Get info Reply
 				$countpage = $PowerBB->functions->get_count_perpage($SubjectInf['reply_number'],$PowerBB->_CONF['info_row']['perpage']);
@@ -3355,6 +3381,7 @@ return preg_replace($pattern, $replacement, $email);
 			return;
  	}
 
+
 	function _AllCacheStart()
 	{
 		global $PowerBB;
@@ -3382,7 +3409,6 @@ return preg_replace($pattern, $replacement, $email);
 		}
 
 	}
-
 	function _MeterGroupsStart()
 	  {
 		global $PowerBB;
@@ -3577,6 +3603,52 @@ return preg_replace($pattern, $replacement, $email);
 	}
 //	****** Conversion and shorten links ******
 //	This setting allows you to change the links
+ 	function rewriterule_singl($type)
+	{
+		global $PowerBB;
+     if ($PowerBB->_CONF['info_row']['auto_links_titles'])
+ 	  {
+        if (!defined('IN_ADMIN'))
+         {
+
+            if(strstr($type,'page=topic'))
+            {
+			$regssly = explode('page=topic&amp;show=1&amp;id=',$type);
+			$subjectArr = $PowerBB->DB->sql_query("SELECT id,title FROM " . $PowerBB->table['subject'] . " WHERE id = '".intval($regssly[1])."'");
+			$Info = $PowerBB->DB->sql_fetch_array($subjectArr);
+			$auto_url_titles_array = $this->strip_auto_url_titles($Info['title']);
+
+			$auto_url = $PowerBB->functions->GetForumAdress()."topic/".$auto_url_titles_array.".".intval($regssly[1]);
+			}
+			elseif(strstr($type,'page=post'))
+			{
+			$reply_ex= explode('page=post&amp;show=1&amp;id=',$type);
+			$replyArr = $PowerBB->DB->sql_query("SELECT id,title FROM " . $PowerBB->table['reply'] . " WHERE id = '".intval($reply_ex[1])."'");
+			$InfoArr = $PowerBB->DB->sql_fetch_array($replyArr);
+			$auto_url_titles_array = $this->strip_auto_url_titles($InfoArr['title']);
+			$auto_url = $PowerBB->functions->GetForumAdress()."post/".$auto_url_titles_array.".".intval($reply_ex[1]);
+            }
+            $auto_url = str_replace("-.", '.', $auto_url);
+
+			return $auto_url;
+
+        }
+      }
+      else
+      {
+
+        	if(!strstr($type,'index.php?page='))
+			{
+			 $type = 'index.php?'.$type;
+			}
+        	if(!strstr($type,$PowerBB->functions->GetForumAdress()))
+			{
+			 $type = $PowerBB->functions->GetForumAdress().$type;
+			}
+      	return $PowerBB->functions->rewriterule($type);
+      }
+    }
+
  	function rewriterule($type)
 	{
 		global $PowerBB;
@@ -3584,6 +3656,83 @@ return preg_replace($pattern, $replacement, $email);
  	  {
         if (!defined('IN_ADMIN'))
         {
+           if ($PowerBB->_CONF['info_row']['auto_links_titles'])
+ 	       {
+
+
+                 if($PowerBB->_GET['page'] == 'forum')
+                 {
+					$type = preg_replace('#index.php([?])page=forum&amp;show=1&amp;orderby=1&amp;id=([0-9]+)&amp;sort=#si', 'forum/empty_tIt_empty.$2&orderby=1&sort=', $type);
+
+		           if ($PowerBB->_GET['sort'] == 'asc')
+		 	       {
+			        $type = str_replace("&sort=asc","&sort=desc",$type);
+			       }
+                 }
+
+	            $rege_auto_url_titles = array();
+				$rege_auto_url_titles[] = '#<a(.*)href="(.*)"(.*)>(.*)</a>#siU';
+				$rege_auto_url_titles[] = "#<a(.*)href='(.*)'(.*)>(.*)</a>#siU";
+
+				$type = preg_replace_callback($rege_auto_url_titles, function($auto_url_titles_array)
+				{
+				    global $PowerBB;
+					$title = $auto_url_titles_array[4];
+					$auto_url_titles_array[4] = $this->strip_auto_url_titles($auto_url_titles_array[4]);
+
+	                 if(empty($auto_url_titles_array[4]))
+	                 {
+	                   $auto_url_titles_array[4] = "empty_tIt_empty";
+	                 }
+
+
+					$auto_url_titles_array[2] = str_replace("index.php?page=forum&amp;show=1&amp;id=","forum/".$auto_url_titles_array[4].".",$auto_url_titles_array[2]);
+					$auto_url_titles_array[2] = str_replace("index.php?page=forum&show=1&id=","forum/".$auto_url_titles_array[4].".",$auto_url_titles_array[2]);
+					$auto_url_titles_array[2] = str_replace("index.php?page=forum&show=1&amp;id=","forum/".$auto_url_titles_array[4].".",$auto_url_titles_array[2]);
+					$auto_url_titles_array[2] = preg_replace("#".$this->GetForumAdress()."forum/(.*).(.*)&amp;count=#siU", 'forum/_tIt_.$2/page-', $auto_url_titles_array[2]);
+
+					$auto_url_titles_array[2] = str_replace("index.php?page=topic&amp;show=1&amp;id=","topic/".$auto_url_titles_array[4].".",$auto_url_titles_array[2]);
+					$auto_url_titles_array[2] = str_replace("index.php?page=topic&show=1&id=","topic/".$auto_url_titles_array[4].".",$auto_url_titles_array[2]);
+					$auto_url_titles_array[2] = str_replace("index.php?page=topic&show=1&amp;id=","topic/".$auto_url_titles_array[4].".",$auto_url_titles_array[2]);
+					$auto_url_titles_array[2] = str_replace("index.php?page=topic_archive&show=1&id=","topic/".$auto_url_titles_array[4].".",$auto_url_titles_array[2]);
+					$auto_url_titles_array[2] = preg_replace("#".$this->GetForumAdress()."t([0-9]+)#si", "".$this->GetForumAdress()."t$1", $auto_url_titles_array[2]); // replace url user mention of strt u+numbr
+					$auto_url_titles_array[2] = preg_replace("#".$this->GetForumAdress()."t([0-9]+).html#si", "".$this->GetForumAdress()."t$1.html", $auto_url_titles_array[2]); // replace url user mention of strt u+numbr
+
+					$auto_url_titles_array[2] = preg_replace("#".$this->GetForumAdress()."topic/(.*).(.*)&amp;count=#siU", 'topic/_tIt_.$2/page-', $auto_url_titles_array[2]);
+
+					$auto_url_titles_array[2] = str_replace("index.php?page=post&amp;show=1&amp;id=","post/".$auto_url_titles_array[4].".",$auto_url_titles_array[2]);
+
+					$auto_url_titles_array[2] = str_replace("index.php?page=pages&show=1&id=","page/".$auto_url_titles_array[4].".",$auto_url_titles_array[2]);
+					$auto_url_titles_array[2] = str_replace("index.php?page=pages&amp;show=1&amp;id=","page/".$auto_url_titles_array[4].".",$auto_url_titles_array[2]);
+
+
+					$auto_url_titles_array[2] = preg_replace("#".$this->GetForumAdress()."u([0-9]+)#si", "".$this->GetForumAdress()."member/$1", $auto_url_titles_array[2]); // replace url user mention of strt u+numbr
+					$auto_url_titles_array[2] = str_replace("index.php?page=profile&show=1&id=","member/",$auto_url_titles_array[2]);
+					$auto_url_titles_array[2] = str_replace("index.php?page=profile&amp;show=1&amp;id=","member/",$auto_url_titles_array[2]);
+					$auto_url_titles_array[2] = str_replace("index.php?page=profile&show=1&username=","member/",$auto_url_titles_array[2]);
+					$auto_url_titles_array[2] = str_replace("index.php?page=profile&amp;show=1&amp;username=","member/",$auto_url_titles_array[2]);
+
+					$auto_url_titles_array[2] = str_replace("index.php?page=announcement&show=1&id=","announcement/".$auto_url_titles_array[4].".",$auto_url_titles_array[2]);
+					$auto_url_titles_array[2] = str_replace("index.php?page=announcement&amp;show=1&amp;id=","announcement/".$auto_url_titles_array[4].".",$auto_url_titles_array[2]);
+
+					$auto_url_titles_array[2] = str_replace("index.php?page=tags&amp;show=1&amp;tag=","tag/",$auto_url_titles_array[2]);
+					$auto_url_titles_array[2] = str_replace("index.php?page=tags&show=1&tag=","tag/",$auto_url_titles_array[2]);
+
+					$auto_url_titles_array[2] = str_replace("index.php?page=forum&amp;show=1&amp;id=","forum/".$auto_url_titles_array[4].".",$auto_url_titles_array[2]);
+					$auto_url_titles_array[2] = str_replace("index.php?page=forum&show=1&id=","forum/".$auto_url_titles_array[4].".",$auto_url_titles_array[2]);
+					$auto_url_titles_array[2] = str_replace("index.php?page=forum&show=1&amp;id=","forum/".$auto_url_titles_array[4].".",$auto_url_titles_array[2]);
+					$auto_url_titles_array[2] = preg_replace("#".$this->GetForumAdress()."forum/(.*).(.*)&amp;count=#siU", 'forum/_tIt_.$2/page-', $auto_url_titles_array[2]);
+
+                    $auto_url_titles_array[2] = str_replace("-.", '.', $auto_url_titles_array[2]);
+
+					return '<a'.$auto_url_titles_array[1].'href="'.$auto_url_titles_array[2].'"'.$auto_url_titles_array[3].'>'.$title.'</a>';
+
+				}, $type);
+
+           }
+           elseif ($PowerBB->_CONF['info_row']['rewriterule']
+           and $PowerBB->_CONF['info_row']['auto_links_titles'] == '0')
+           {
 	   		$type = str_replace("index.php?page=forum&show=1&id=","f",$type);
 	   		$type = str_replace("index.php?page=forum&amp;show=1&amp;id=","f",$type);
 	   		$type = str_replace("index.php?page=forum&show=1&amp;id=","f",$type);
@@ -3592,25 +3741,33 @@ return preg_replace($pattern, $replacement, $email);
 	   		$type = str_replace("index.php?page=topic&show=1&amp;id=","t",$type);
 	   		$type = str_replace("index.php?page=profile&show=1&id=","u",$type);
 	   		$type = str_replace("index.php?page=profile&amp;show=1&amp;id=","u",$type);
+            $type = str_replace("index.php?page=post&show=1&id=","post-",$type);
+            $type = str_replace("index.php?page=post&amp;show=1&amp;id=","post-",$type);
+	   		$type = str_replace("index.php?page=profile&show=1&id=","u",$type);
+	   		$type = str_replace("index.php?page=profile&amp;show=1&amp;id=","u",$type);
+            $type = str_replace("index.php?page=tags&amp;show=1&amp;tag=","tag-",$type);
+            $type = str_replace("index.php?page=tags&show=1&tag=","tag-",$type);
+           }
 	   		//$type = str_replace("index.php?page=profile&show=1&username=","name-",$type);
 	   		//$type = str_replace("index.php?page=profile&amp;show=1&amp;username=","name-",$type);
 	   		$type = str_replace("index.php?page=print&show=1&id=","p",$type);
 	   		$type = str_replace("index.php?page=print&amp;show=1&amp;id=","p",$type);
 	   		$type = str_replace("index.php?page=archive","archive.html",$type);
-	   		//$type = str_replace("index.php?page=portal&","portal",$type);
-	   		$type = str_replace("index.php?page=portal","portal.html",$type);
+	   		$type = str_replace("index.php?page=portal","portal",$type);
+	   		$type = str_replace("portal&amp;count=","portal&amp;page-",$type);
+
 	   		$type = str_replace("index.php?page=forum_archive&show=1&id=","Af",$type);
 	   		$type = str_replace("index.php?page=forum_archive&amp;show=1&amp;id=","Af",$type);
-	   		$type = str_replace("index.php?page=topic_archive&show=1&id=","t",$type);
-	   		$type = str_replace("index.php?page=topic_archive&amp;show=1&amp;id=","t",$type);
-	   		//$type = str_replace("index.php?page=search&index=1","search.html",$type);
-	   		//$type = str_replace("index.php?page=search&amp;index=1","search.html",$type);
+
+
 	   		$type = str_replace("index.php?page=sitemap&subject=1","sitemap.xml",$type);
 	   		$type = str_replace("index.php?page=sitemap&amp;subject=1","sitemap.xml",$type);
 	   		$type = str_replace("index.php?page=sitemap&section=1&id=","sitemap_forum_",$type);
 	   		$type = str_replace("index.php?page=sitemap&amp;section=1&amp;id=","sitemap_forum_",$type);
 	   		$type = str_replace("index.php?page=sitemap&sitemaps=1","sitemap.htm",$type);
 	   		$type = str_replace("index.php?page=sitemap&amp;sitemaps=1","sitemap.htm",$type);
+
+
 	   		$type = str_replace("index.php?page=team&show=1","team.html",$type);
 	   		$type = str_replace("index.php?page=team&amp;show=1","team.html",$type);
 	   		$type = str_replace("index.php?page=misc&rules=1&show=1","rules.html",$type);
@@ -3619,7 +3776,8 @@ return preg_replace($pattern, $replacement, $email);
 	   		$type = str_replace("index.php?page=calendar&amp;show=1","calendar.html",$type);
 	   		$type = str_replace("index.php?page=special_subject&index=1","special_subject.html",$type);
 	   		$type = str_replace("index.php?page=special_subject&amp;index=1","special_subject.html",$type);
-	   		$type = str_replace("index.php?page=member_list&amp;index=1&amp;show=1","member",$type);
+
+	   		$type = str_replace("index.php?page=member_list&amp;index=1&amp;show=1","members-list",$type);
 	   		$type = str_replace("index.php?page=member_list&amp;index=1&amp;order=1&amp;order_type=DESC","mem_order_posts",$type);
 	   		$type = str_replace("index.php?page=member_list&amp;index=1&amp;order=3&amp;order_type=DESC","mem_order_visit",$type);
 	   		$type = str_replace("index.php?page=member_list&amp;index=1&amp;order=2&amp;order_type=DESC","mem_order_reg",$type);
@@ -3627,8 +3785,8 @@ return preg_replace($pattern, $replacement, $email);
 			$type = str_replace("index.php?page=member_list&index=1&order=1&order_type=DESC","mem_order_posts",$type);
 			$type = str_replace("index.php?page=member_list&index=1&order=3&order_type=DESC","mem_order_visit",$type);
 			$type = str_replace("index.php?page=member_list&index=1&order=2&order_type=DESC","mem_order_reg",$type);
-			$type = str_replace("index.php?page=member_list&index=1&sort=username&letr=","mem_order_letters",$type);
-	   		$type = str_replace("index.php?page=member_list&index=1&show=1","member.html",$type);
+			$type = str_replace("index.php?page=member_list&amp;index=1&amp;letr=","mem_order_letters",$type);
+
 	   		$type = str_replace("index.php?page=static&index=1","static.html",$type);
 	   		$type = str_replace("index.php?page=static&amp;index=1","static.html",$type);
 	   		$type = str_replace("index.php?page=register&amp;index=1","register.html",$type);
@@ -3636,14 +3794,13 @@ return preg_replace($pattern, $replacement, $email);
 	   		$type = str_replace("index.php?page=register&amp;index=1&amp;agree=1","register-agree.html",$type);
 	   		$type = str_replace("index.php?page=login&amp;sign=1","login.html",$type);
 	   		$type = str_replace("index.php?page=send&amp;sendmessage=1","contact.html",$type);
+	   		$type = str_replace("index.php?page=send&sendmessage=1","contact.html",$type);
 			$type = str_replace("index.php?page=rss&amp;subject=1","rss.xml",$type);
 			$type = str_replace("index.php?page=rss&subject=1","rss.xml",$type);
-			$type = str_replace("index.php?page=rss&amp;section=1&amp;id=","rss_forum_",$type);
-			$type = str_replace("index.php?page=rss&section=1&id=","rss_forum_",$type);
-            $type = preg_replace('#rss_forum_(.*?)"#i', 'rss_forum_$1.xml"', $type);
-            $type = preg_replace('#sitemap_forum(.*?)"#i', 'sitemap_forum_$1.xml"', $type);
-            $type = str_replace("index.php?page=post&show=1&id=","post-",$type);
-            $type = str_replace("index.php?page=post&amp;show=1&amp;id=","post-",$type);
+
+
+            $type = preg_replace("#index.php([?])page=rss&amp;section=1&amp;id=([0-9]+)#si", "rss_forum_$2.xml", $type);
+            $type = preg_replace("#index.php([?])page=rss&section=1&id=([0-9]+)#si", "rss_forum_$2.xml", $type);
 
             $type = str_replace("index.php?page=new_topic&index=1&id=","new_topic-",$type);
             $type = str_replace("index.php?page=new_topic&amp;index=1&amp;id=","new_topic-",$type);
@@ -3657,11 +3814,8 @@ return preg_replace($pattern, $replacement, $email);
             $type = preg_replace('#new_reply-(.*?)&qu_Reply=(.*?)&user=(.*?)"#si', 'index.php?page=new_reply&index=1&id=$1&user=$3&qu_Reply=$2"', $type);
             $type = preg_replace('#new_reply-(.*?)&qu_Subject=(.*?)&user=(.*?)"#si', 'index.php?page=new_reply&index=1&id=$1&user=$3&qu_Subject=$2"', $type);
 
-            $type = preg_replace('#index.php?page=new_reply&amp;index=1&amp;count=(.*?)&amp;id=#i', 'count=$1&new_reply-', $type);
+            $type = preg_replace('#index.php([?])page=new_reply&amp;index=1&amp;count=(.*?)&amp;id=#si', 'count=$2&new_reply-', $type);
 
-
-            $type = str_replace("index.php?page=tags&amp;show=1&amp;tag=","tag-",$type);
-            $type = str_replace("index.php?page=tags&show=1&tag=","tag-",$type);
 
             $type = str_replace('index.php?page=latest_reply&amp;today=1', 'whats_new', $type);
             $type = str_replace('index.php?page=latest_reply&today=1', 'whats_new', $type);
@@ -3678,11 +3832,56 @@ return preg_replace($pattern, $replacement, $email);
             $type = str_replace("index.php?page=ads&amp;goto=1&amp;id=","ads-",$type);
             $type = str_replace("index.php?page=ads&goto=1&id=","ads-",$type);
 
-
 	   	}
       }
 	   return $type;
 	}
+
+ function rewriterule_2($type)
+   {
+       global $PowerBB;
+        if ($PowerBB->_CONF['info_row']['auto_links_titles'])
+ 	    {
+	      if (!defined('IN_ADMIN'))
+	        {
+			    $dirForum = $PowerBB->functions->GetForumAdress();
+				if(strstr($type,'page=topic'))
+				{
+					parse_str(parse_url($type, PHP_URL_QUERY ), $params );
+					$d_id =intval($params["id"]);
+					$InfoArr = array();
+					$InfoArr['where'] = array('id',$d_id);
+					$Info = $PowerBB->core->GetInfo($InfoArr,'subject');
+					$auto_url_titles_array = $this->strip_auto_url_titles($Info['title']);
+					$dcount = explode('count=',$type);
+					if($dcount[1])
+					{
+				     $header_redirect = $dirForum.'topic/'.$auto_url_titles_array.'.'.$d_id.'/page-'.$dcount[1];
+					}
+					else
+					{
+					 $header_redirect = $dirForum.'topic/'.$auto_url_titles_array.'.'.$d_id;
+					}
+
+	                 $PowerBB->functions->rewriterule_header_redirect($header_redirect);
+	                 exit;
+	             }
+				else
+				{
+				 return($type);
+				}
+             }
+			else
+			{
+			 return($type);
+			}
+		}
+		else
+		{
+		 return($type);
+		}
+    }
+
 function xml_array($contents, $get_attributes=1, $priority = 'tag')
  {
 	     global $PowerBB;
@@ -3982,7 +4181,7 @@ function my_strlen($string)
 		$feeds_result = $PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['feeds'] . " WHERE options = '1'");
       	 while ($FeedsInfo = $PowerBB->DB->sql_fetch_array($feeds_result))
 		  {
-		   if ($FeedsInfo)
+		   if ($FeedsInfo['options'])
 		   {
 		     if ($FeedsInfo['feeds_time'] < $PowerBB->_CONF['now'] - $FeedsInfo['ttl'])
 		     {
@@ -4012,7 +4211,7 @@ function my_strlen($string)
 					$text = str_replace($bad_characters, "", $text);
 					$Item['TITLE'] = str_replace($bad_characters, "", $Item['TITLE']);
                     $Item['TITLE'] 	= 	$PowerBB->functions->CleanVariable($Item['TITLE'],'html');
-                    $Item['TITLE'] 	= 	$PowerBB->functions->CleanVariable($Item['TITLE'],'sql');
+                    $Item['TITLE'] 	= 	$PowerBB->sys_functions->CleanSymbols($Item['TITLE']);
                    	$section = $FeedsInfo['forumid'];
                     $section 	= 	$PowerBB->functions->CleanVariable($section,'intval');
 					$ItemTitle	=	$Item['TITLE'];
@@ -4027,9 +4226,17 @@ function my_strlen($string)
 						$section = $FeedsInfo['forumid'];
 						$FROM_query = $PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['section'] . " WHERE id = '$section' ");
 						$FROM__row  = $PowerBB->DB->sql_fetch_array($FROM_query);
+
+						$regexcodew['[code]'] = '#\[code\](.*)\[/code\]#siU';
+						$text = preg_replace_callback($regexcodew, function($matchesw) {
+						$matchesw[1] = str_replace("<br />", "\r", $matchesw[1]);
+						return '[code]'.$matchesw[1].'[/code]';
+						}, $text);
+
 						if($FROM__row)
 						{
 							$SubjectArr	=	array();
+							$SubjectArr['get_id']						=	true;
 							$SubjectArr['field']	=	array();
 							$SubjectArr['field']['title']	=	$Item['TITLE'];
 							$SubjectArr['field']['text']	=	$text;
@@ -4058,9 +4265,48 @@ function my_strlen($string)
 								$MemberArr['field']['lastpost_time'] 	=	$PowerBB->_CONF['now'];
 								$MemberArr['where']						=	array('id',$MemberInfo['id']);
 								$UpdateMember = $PowerBB->member->UpdateMember($MemberArr);
-							}
-						  }
-                        }
+
+			                    if ($PowerBB->_CONF['info_row']['add_tags_automatic'] == '1')
+					     		{
+			                        //add tags Automatic from subject title
+			                        $string_title = implode(' ', array_unique(explode(' ', $Item['TITLE'])));
+
+									$excludedWords = array();
+									$censorwords = preg_split('/\s+/s', $string_title, -1, PREG_SPLIT_NO_EMPTY);
+									$excludedWords = array_merge($excludedWords, $censorwords);
+									unset($censorwords);
+
+									// Trim current exclusions
+									for ($x = 0; $x < count($excludedWords); $x++)
+									{
+									   $excludedWords[$x] = trim($excludedWords[$x]);
+
+			                            if (function_exists('mb_strlen'))
+			                            {
+			                                $tag_less_num = mb_strlen($excludedWords[$x], 'UTF-8') >= 6;
+			                            }
+			                            else
+			                            {
+			                                $tag_less_num = strlen(utf8_decode($excludedWords[$x])) >= 6;
+			                            }
+
+			                           if($tag_less_num)
+									  {
+
+											$InsertArr 						= 	array();
+											$InsertArr['field']				=	array();
+									     	$InsertArr['field']['tag_id'] 			= 	"";
+											$InsertArr['field']['subject_id'] 		=	$PowerBB->subject->id;
+											$InsertArr['field']['tag'] 				= 	$PowerBB->functions->CleanVariable($excludedWords[$x],'html');
+											$InsertArr['field']['subject_title'] 	= 	$PowerBB->functions->CleanVariable($Item['TITLE'],'html');
+											// Note, this function is from tag system not subject system
+											$insert_tags = $PowerBB->core->Insert($InsertArr,'tags_subject');
+			                          }
+									}
+			                    }
+			                }
+						 }
+                     }
 					$x++;
 					if($x==$y) break;
 				  }
@@ -5118,6 +5364,62 @@ function dec_to_utf8($src)
 		$countpage = $round0_r+1;
 		$countpage = str_replace("-", '', $countpage);
 		return ($countpage);
+	}
+
+	function strip_auto_url_titles($title)
+	{
+
+
+		$title = strip_tags($title);
+		$title = stripslashes($title);
+        $title = htmlspecialchars($title);
+		$title = trim($title);
+		$title = rtrim($title, ".");
+		$title = ltrim($title, ".");
+		$title = htmlspecialchars_decode($title, ENT_QUOTES);
+		$title = preg_replace('#\n\t+#', "\n", $title);
+		$title = preg_replace('#(\r?\n){3,}#', "\n\n", $title);
+		$title = str_replace("  ", '', $title);
+		$title = str_replace("|", '', $title);
+		$title = str_replace("'", '', $title);
+		$title = str_replace('"', '', $title);
+	    $title = str_replace("&quot;", '', $title);
+	    $title = str_replace("&nbsp;", '', $title);
+		$title = str_replace("&lt;", '', $title);
+		$title = str_replace("&gt;", '', $title);
+		$title = str_replace("&#39;", '', $title);
+		$title = str_replace("]", '', $title);
+		$title = str_replace("[", '', $title);
+		$title = str_replace("(", '', $title);
+		$title = str_replace(")", '', $title);
+		$title = str_replace(".", ' ', $title);
+		$title = str_replace("$", '', $title);
+		$title = str_replace("=", '', $title);
+		$title = str_replace("%", '', $title);
+		$title = str_replace("*", '', $title);
+		$title = str_replace("@", '', $title);
+		$title = str_replace("#", '', $title);
+		$title = str_replace("!", '', $title);
+		$title = str_replace("?", '', $title);
+		$title = str_replace("^", '', $title);
+		$title = str_replace("#", '', $title);
+		$title = str_replace("@", '', $title);
+		$title = str_replace("~", '', $title);
+		$title = str_replace(":", '', $title);
+		$title = str_replace(" - ", '', $title);
+		$title = str_replace(" -", '', $title);
+		$title = str_replace("- ", '', $title);
+		$title = str_replace("-", '', $title);
+		$title = str_replace("+", '', $title);
+		$title = str_replace("<", '', $title);
+		$title = str_replace(">", '', $title);
+		$title = str_replace(";", '', $title);
+		$title = str_replace("&", '', $title);
+		$title  = preg_replace('/\s+/', '-', $title);
+		$title = rtrim($title, "-");
+		$title = ltrim($title, "-");
+
+		return ($title);
 	}
 
  }

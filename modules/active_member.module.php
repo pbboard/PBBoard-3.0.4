@@ -17,7 +17,7 @@ class PowerBBCoreMOD
 	{
 		global $PowerBB;
 		// The index page for active
-		if ($PowerBB->_GET['index'])
+		if ($PowerBB->_GET['index'] == '1')
 		{
 			$this->_Index();
 		}
@@ -33,7 +33,7 @@ class PowerBBCoreMOD
 		global $PowerBB;
 
 		// No code !
-
+        $PowerBB->_GET['id'] = $PowerBB->functions->CleanVariable($PowerBB->_GET['id'],'intval');
 
 		if (empty($PowerBB->_GET['code'])
 			or empty($PowerBB->_GET['id']))

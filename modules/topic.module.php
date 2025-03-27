@@ -76,7 +76,7 @@ class PowerBBTopicMOD
 			$regexcodeww['[code]'] = '#\[code\](.*)\[/code\]#siU';
 			$regexcodeww['[php]'] = '#\[php\](.*)\[/php\]#siU';
 			$PowerBB->_CONF['template']['SubjectInfo']['text'] = preg_replace_callback($regexcodeww, function($matchesww) {
-			return '[code]'.base64_encode($matchesww[1]).'[/code]';
+			return '[code]'.htmlspecialchars(base64_decode($matchesww[1])).'[/code]';
 			}, $PowerBB->_CONF['template']['SubjectInfo']['text']);
 
 			$PowerBB->_CONF['template']['SubjectInfo']['text']    =   $PowerBB->Powerparse->html2bb($PowerBB->_CONF['template']['SubjectInfo']['text']);
@@ -771,7 +771,8 @@ class PowerBBTopicMOD
 		$SubjectInfReplyNum = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['reply'] . " WHERE subject_id='$SubjectInfid' and delete_topic <>1 and review_reply <>1 LIMIT 1"));
 		}
               // Update rely reply number to Subject & no Update in Again on the same link
-             $Get_Page_URL  = "http://".$PowerBB->_SERVER['HTTP_HOST'].$PowerBB->_SERVER['REQUEST_URI'];
+             $Get_Page_URL  = $PowerBB->functions->GetServerProtocol().$PowerBB->_SERVER['HTTP_HOST'].$PowerBB->_SERVER['REQUEST_URI'];
+
 			   if ($PowerBB->_SERVER['HTTP_REFERER'] != $Get_Page_URL)
 				{
 		        	if ($SubjectInfReplyNum != $this->Info['reply_number'])
@@ -841,22 +842,25 @@ class PowerBBTopicMOD
 				$countpage = str_replace("-", '', $countpage);
 
 		    $PowerBB->template->assign('count',$countpage);
-			if ($PowerBB->_GET['last_post'])
-			{
-				$last_replyNumArr = $PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['reply'] . " WHERE subject_id='$subject_id' AND delete_topic<>1 AND review_reply<>1 ORDER BY id DESC LIMIT 0,1");
-				$last_reply = $PowerBB->DB->sql_fetch_array($last_replyNumArr);
-
-				if ($PowerBB->_CONF['info_row']['rewriterule'])
+             if (!$PowerBB->_CONF['info_row']['auto_links_titles'])
+		     {
+				if ($PowerBB->_GET['last_post'])
 				{
-				$PowerBB->functions->redirect2('t'.$PowerBB->_GET['id'].'&amp;count='.$countpage.'#'.$last_reply['id']);
-				}
-				else
-				{
-				$PowerBB->functions->redirect2('index.php?page=topic&amp;show=1&amp;id='.$PowerBB->_GET['id'].'&amp;count='.$countpage.'#'.$last_reply['id']);
-				}
-				exit;
+					$last_replyNumArr = $PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['reply'] . " WHERE subject_id='$subject_id' AND delete_topic<>1 AND review_reply<>1 ORDER BY id DESC LIMIT 0,1");
+					$last_reply = $PowerBB->DB->sql_fetch_array($last_replyNumArr);
 
-			}
+					if ($PowerBB->_CONF['info_row']['rewriterule'])
+					{
+					$PowerBB->functions->redirect2('t'.$PowerBB->_GET['id'].'&amp;count='.$countpage.'#'.$last_reply['id']);
+					}
+					else
+					{
+					$PowerBB->functions->redirect2('index.php?page=topic&amp;show=1&amp;id='.$PowerBB->_GET['id'].'&amp;count='.$countpage.'#'.$last_reply['id']);
+					}
+					exit;
+
+				}
+		     }
           }
 
 

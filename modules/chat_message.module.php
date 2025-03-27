@@ -22,33 +22,34 @@ class PowerBBCOREMOD
 	function run()
 	{
 		global $PowerBB;
-		if (!isset($PowerBB->_CONF['info_row']['activate_chat_bar']))
+		if ($PowerBB->_CONF['info_row']['activate_chat_bar'] == '0')
 		{
-		header("Location: index.php");
-		exit;
+			 $PowerBB->functions->ShowHeader();
+             $PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['You_can_not_use_this_feature']);
+             $PowerBB->functions->GetFooter();
 		}
 		/** Go to Chat site **/
-		if ($PowerBB->_GET['chat'])
+		if ($PowerBB->_GET['chat'] == '1')
 		{
 		    $PowerBB->functions->ShowHeader();
 			$this->_AddchatMessage();
 		}
-		elseif ($PowerBB->_GET['chatout'])
+		elseif ($PowerBB->_GET['chatout'] == '1')
 		{
 		   $this->_OpinChatout();
 		   $PowerBB->_POST['ajax'] = 1;
  		}
-		elseif ($PowerBB->_GET['chat_w'])
+		elseif ($PowerBB->_GET['chat_w'] == '1')
 		{
 		   $this->_ChatWindow();
 		   $PowerBB->_POST['ajax'] = 1;
  		}
-		elseif ($PowerBB->_GET['chat_users'])
+		elseif ($PowerBB->_GET['chat_users'] == '1')
 		{
 		   $this->_onlineChat();
 		   $PowerBB->_POST['ajax'] = 1;
  		}
-		elseif ($PowerBB->_GET['start'])
+		elseif ($PowerBB->_GET['start'] == '1')
 		{
 			$this->_StartchatMessage();
 		}
@@ -60,34 +61,50 @@ class PowerBBCOREMOD
 				{
 
                     $PowerBB->functions->ShowHeader();
-					if ($PowerBB->_GET['control'])
+					if ($PowerBB->_GET['control'] == '1')
 					{
-						if ($PowerBB->_GET['main'])
+						if ($PowerBB->_GET['main'] == '1')
 						{
 							$this->_ControlMain();
 						}
+						else
+						{
+			             $PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['Sorry_url_not_true']);
+						}
 					}
-					elseif ($PowerBB->_GET['edit'])
+					elseif ($PowerBB->_GET['edit'] == '1')
 					{
-						if ($PowerBB->_GET['main'])
+						if ($PowerBB->_GET['main'] == '1')
 						{
 							$this->_EditMain();
 						}
-						elseif ($PowerBB->_GET['started'])
+						elseif ($PowerBB->_GET['started'] == '1')
 						{
 							$this->_EditStart();
 						}
+						else
+						{
+			             $PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['Sorry_url_not_true']);
+						}
 					}
-					elseif ($PowerBB->_GET['del'])
+					elseif ($PowerBB->_GET['del'] == '1')
 					{
-		                if ($PowerBB->_GET['startdel'])
+		                if ($PowerBB->_GET['startdel'] == '1')
 						{
 							$this->_DelStart();
 						}
-						elseif ($PowerBB->_GET['del_all'])
+						elseif ($PowerBB->_GET['del_all'] == '1')
 						{
 							$this->_DelAllStart();
 						}
+						else
+						{
+			             $PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['Sorry_url_not_true']);
+						}
+					}
+					else
+					{
+		             $PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['Sorry_url_not_true']);
 					}
 				}
 				else
@@ -416,7 +433,8 @@ class PowerBBCOREMOD
 			$CahtEditArr				=	array();
 		    $CahtEditArr['where'] 	= 	array('id',$PowerBB->_GET['id']);
 
-			$chatEdit = $PowerBB->chat->GetChatInfo($CahtEditArr);
+			$chatEdit = $PowerBB->core->GetInfo($CahtEditArr,'chat');
+
 			if (empty($chatEdit['id']))
 			{
 				$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['Chat_message_requested_does_not_exist']);
@@ -499,8 +517,7 @@ class PowerBBCOREMOD
 		$ChatArr['field']['username'] 	= 	$PowerBB->_POST['username'];
 		$ChatArr['where'] 				= 	array('id',$PowerBB->_GET['id']);
 
-		$update = $PowerBB->chat->UpdateChat($ChatArr);
-
+        $update = $PowerBB->core->Update($ChatArr,'chat');
 		if ($update)
 		{
 			$PowerBB->functions->msg($PowerBB->_CONF['template']['_CONF']['lang']['Chat_message_has_been_updated_successfully']);

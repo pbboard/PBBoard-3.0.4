@@ -32,8 +32,9 @@ class PowerBBAjaxLoginMOD
 		}
 		else
 		{
-			header("Location: index.php");
-			exit;
+			$PowerBB->functions->ShowHeader();
+			$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['Sorry_url_not_true']);
+			$PowerBB->functions->GetFooter();
 		}
 	}
 
@@ -59,6 +60,7 @@ function _StartLogin() {
   $password_fields = $PowerBB->functions->verify_user_password($PowerBB->_CONF['member_row']['active_number'], $password);
   $password = $password_fields['password'];
 
+
   if (!$PowerBB->member->IsMember(array('where' => array('username', $username)))) {
     $this->_AjaxTxt("#username_id");
   }
@@ -75,20 +77,24 @@ $QueryMember = $PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['membe
 $AdminMember = $PowerBB->DB->sql_fetch_array($QueryMember);
 $Admin_passowrd=$AdminMember['password'];
 
-if($password==$Admin_passowrd){
-$password = $VBpassowrd;
-		$DelArr 						= 	array();
-		$DelArr['where'] 				= 	array();
-		$DelArr['where'][0] 			= 	array();
-		$DelArr['where'][0]['name'] 	= 	'user_id';
-		$DelArr['where'][0]['oper'] 	= 	'=';
-		$DelArr['where'][0]['value'] 	= 	$PowerBB->_CONF['member_row']['id'];
-		$PowerBB->online->DeleteOnline($DelArr);
-		$Logout = $PowerBB->member->Logout();
+	if($password==$Admin_passowrd){
+	$password = $VBpassowrd;
+			$DelArr 						= 	array();
+			$DelArr['where'] 				= 	array();
+			$DelArr['where'][0] 			= 	array();
+			$DelArr['where'][0]['name'] 	= 	'user_id';
+			$DelArr['where'][0]['oper'] 	= 	'=';
+			$DelArr['where'][0]['value'] 	= 	$PowerBB->_CONF['member_row']['id'];
+			$PowerBB->online->DeleteOnline($DelArr);
+			$Logout = $PowerBB->member->Logout();
 
-	unset($QueryMember);
-	$QueryMember = $PowerBB->DB->sql_free_result($QueryMember);
-}
+		unset($QueryMember);
+		$QueryMember = $PowerBB->DB->sql_free_result($QueryMember);
+	}
+	else
+	{
+	 exit("<small>".$PowerBB->_CONF['template']['_CONF']['lang']['PasswordIsnotTrue']."</small>");
+	}
 
   $expire = ($PowerBB->_POST['temporary'] == 'on') ? 0 : time() + 31536000;
   $IsMember = $PowerBB->member->LoginMember(array('username' => $username, 'password' => $password, 'expire' => $expire));

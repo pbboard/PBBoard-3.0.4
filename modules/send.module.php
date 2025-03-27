@@ -31,29 +31,41 @@ class PowerBBCoreMOD
 		header('Status: 403 You Do Not Have Access To This Page');
 		 exit;
         }
-		if ($PowerBB->_GET['member'])
+
+       $PowerBB->_GET['id']	= 	$PowerBB->functions->CleanVariable($PowerBB->_GET['id'],'intval');
+
+		if ($PowerBB->_GET['member'] and $PowerBB->functions->CleanVariable($PowerBB->_GET['member'],'intval'))
 		{
 			if ($PowerBB->_GET['index'])
 			{
+			    $_SESSION['pbb_send_maill_form'] = 1;
 				$this->_MemberSendIndex();
 			}
-			elseif ($PowerBB->_GET['start'])
+			elseif ($PowerBB->_GET['start'] and $_SESSION['pbb_forget_form'])
 			{
 				$this->_MemberSendStart();
 			}
+			else
+			{
+			 $PowerBB->functions->ShowHeader();
+             $PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['Sorry_url_not_true']);
+             $PowerBB->functions->GetFooter();
+			}
 		}
-        elseif ($PowerBB->_GET['sendmessage'])
+        elseif ($PowerBB->_GET['sendmessage'] and $PowerBB->functions->CleanVariable($PowerBB->_GET['sendmessage'],'intval'))
 		{
+		    $_SESSION['pbb_send_message_form'] = 1;
 			$this->_SendIndex();
 		}
-		elseif ($PowerBB->_GET['startsendmessage'])
+		elseif ($PowerBB->functions->CleanVariable($PowerBB->_GET['startsendmessage'],'intval') and $_SESSION['pbb_forget_form'])
 		{
 			$this->_SendStart();
 		}
 		else
 		{
-			header("Location: index.php");
-			exit;
+			 $PowerBB->functions->ShowHeader();
+             $PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['Sorry_url_not_true']);
+             $PowerBB->functions->GetFooter();
 		}
 
 		$PowerBB->functions->GetFooter();

@@ -16,9 +16,11 @@ class PowerBBCommon
 	{
 		global $PowerBB;
 
+
   		// Stop any external post request.
   	  if(isset($PowerBB->_SERVER['REQUEST_METHOD']))
        {
+
          if ($PowerBB->_SERVER['REQUEST_METHOD'] == 'POST')
          {
              $Y = explode('/',$PowerBB->_SERVER['HTTP_REFERER']);
@@ -26,11 +28,11 @@ class PowerBBCommon
 
              if ($Y[2] != $X[0])
              {
-              exit('No direct script access allowed - المعذرة هذه الطريقة غير شرعية');
+              exit('No direct script access allowed - ÇáãÚÐÑÉ åÐå ÇáØÑíÞÉ ÛíÑ ÔÑÚíÉ');
              }
              elseif ($Y[2] != $PowerBB->_SERVER['HTTP_HOST'])
              {
-              exit('No direct script access allowed - المعذرة هذه الطريقة غير شرعية');
+              exit('No direct script access allowed - ÇáãÚÐÑÉ åÐå ÇáØÑíÞÉ ÛíÑ ÔÑÚíÉ');
              }
          }
       }
@@ -62,7 +64,8 @@ class PowerBBCommon
 		$this->_CheckSessionMember();
 		}
 		else
-		{		$this->_CheckMember();
+		{
+		$this->_CheckMember();
 		}
 
 		$this->_SetInformation();
@@ -84,7 +87,153 @@ class PowerBBCommon
 		global $PowerBB;
 
 		$PowerBB->template->assign('csrf_key',$_SESSION['csrf']);
+         // start auto link titles php
+		 if ($PowerBB->_CONF['info_row']['auto_links_titles'])
+		 {
+			$PowerBB->_GET['id'] = $PowerBB->functions->CleanVariable($PowerBB->_GET['id'],'intval');
+			 if($PowerBB->_GET['page'] == 'topic' and $PowerBB->_GET['id'])
+			  {
+				$InfoArr = array();
+				$InfoArr['where'] = array('id',$PowerBB->_GET['id']);
+				$Info = $PowerBB->core->GetInfo($InfoArr,'subject');
 
+	            $characters_request_url = rawurldecode($PowerBB->_SERVER['REQUEST_URI']);
+                  $Convert = '0';
+                  if(strstr($characters_request_url,'index.php'))
+                  {
+                    $Convert = '1';
+                  }
+                $characters_request_url = $PowerBB->functions->rewriterule('<a href="'.$characters_request_url.'">'.$Info['title'].'</a>');
+                $characters_request_url = str_replace('<a href="',"",$characters_request_url);
+                $characters_request_url = str_replace('">',"",$characters_request_url);
+                $characters_request_url = str_replace($Info['title'].'</a>',"",$characters_request_url);
+                $characters_request_url = str_replace('&count=',"/page-",$characters_request_url);
+
+                $auto_url_titles_array = $PowerBB->functions->strip_auto_url_titles($Info['title']);
+
+				$host = $PowerBB->_SERVER['PHP_SELF'];
+				$host = str_replace("/index.php","/",$host);
+				$get_page = explode('/page-',$characters_request_url);
+
+               if($PowerBB->_GET['count'])
+				{
+                $Original_link = $host.'topic/'.$auto_url_titles_array.'.'.$PowerBB->_GET['id'].'/page-'.$get_page[1];
+				}
+				else
+				{
+                $Original_link = $host.'topic/'.$auto_url_titles_array.'.'.$PowerBB->_GET['id'];
+                }
+
+                  if($characters_request_url != $Original_link
+                  or $Convert)
+                  {
+                    $characters_request_url = $Original_link;
+                    if(empty($PowerBB->_GET['fastEdit']))
+                    {
+			        $PowerBB->functions->rewriterule_header_redirect($characters_request_url);
+			        }
+                  }
+			  }
+
+			 if($PowerBB->_GET['page'] == 'post')
+			  {
+				$InfoArr = array();
+				$InfoArr['where'] = array('id',$PowerBB->_GET['id']);
+				$Info = $PowerBB->core->GetInfo($InfoArr,'reply');
+
+	             $characters_request_url = rawurldecode($PowerBB->_SERVER['REQUEST_URI']);
+                  $Convert = '0';
+                  if(strstr($characters_request_url,'index.php'))
+                  {
+                    $Convert = '1';
+                  }
+                $characters_request_url = $PowerBB->functions->rewriterule('<a href="'.$characters_request_url.'">'.$Info['title'].'</a>');
+                $characters_request_url = str_replace('<a href="',"",$characters_request_url);
+                $characters_request_url = str_replace('">',"",$characters_request_url);
+                $characters_request_url = str_replace($Info['title'].'</a>',"",$characters_request_url);
+
+                $auto_url_titles_array = $PowerBB->functions->strip_auto_url_titles($Info['title']);
+
+				$host = $PowerBB->_SERVER['PHP_SELF'];
+				$host = str_replace("/index.php","/",$host);
+				$get_page = explode('/page-',$characters_request_url);
+
+                $Original_link = $host.'post/'.$auto_url_titles_array.'.'.$PowerBB->_GET['id'];
+
+                  if($characters_request_url != $Original_link
+                  or $Convert)
+                  {
+                    $characters_request_url = $Original_link;
+			        $PowerBB->functions->rewriterule_header_redirect($characters_request_url);
+                  }
+			  }
+
+			 if($PowerBB->_GET['page'] == 'forum' and $PowerBB->_GET['id'])
+			  {
+				$InfoArr = array();
+				$InfoArr['where'] = array('id',$PowerBB->_GET['id']);
+				$Info = $PowerBB->core->GetInfo($InfoArr,'section');
+
+	            $characters_request_url = rawurldecode($PowerBB->_SERVER['REQUEST_URI']);
+                 $Convert = '0';
+                  if(strstr($characters_request_url,'index.php'))
+                  {
+                    $Convert = '1';
+                  }
+                $characters_request_url = $PowerBB->functions->rewriterule('<a href="'.$characters_request_url.'">'.$Info['title'].'</a>');
+                $characters_request_url = str_replace('<a href="',"",$characters_request_url);
+                $characters_request_url = str_replace('">',"",$characters_request_url);
+                $characters_request_url = str_replace($Info['title'].'</a>',"",$characters_request_url);
+                $characters_request_url = str_replace('&count=',"/page-",$characters_request_url);
+
+                $auto_url_titles_array = $PowerBB->functions->strip_auto_url_titles($Info['title']);
+
+				$host = $PowerBB->_SERVER['PHP_SELF'];
+				$host = str_replace("/index.php","/",$host);
+				$get_page = explode('/page-',$characters_request_url);
+				$get_sort = explode('sort=',$characters_request_url);
+
+
+				if($PowerBB->_GET['orderby'])
+				{
+		         $Original_link = $host.'forum/'.$auto_url_titles_array.'.'.$PowerBB->_GET['id'].'&orderby=1&sort='.$get_sort[1];
+				}
+				elseif($PowerBB->_GET['count']
+				and empty($PowerBB->_GET['orderby']))
+				{
+                $Original_link = $host.'forum/'.$auto_url_titles_array.'.'.$PowerBB->_GET['id'].'/page-'.$get_page[1];
+
+				}
+				else
+				{
+                $Original_link = $host.'forum/'.$auto_url_titles_array.'.'.$PowerBB->_GET['id'];
+                }
+                  if($characters_request_url != $Original_link
+                  or $Convert)
+                  {
+                    $characters_request_url = $Original_link;
+			        $PowerBB->functions->rewriterule_header_redirect($characters_request_url);
+                  }
+			  }
+
+			 if($PowerBB->_GET['page'] == 'pages')
+			  {
+	            $characters_request_url = rawurldecode($PowerBB->_SERVER['REQUEST_URI']);
+				$InfoArr = array();
+				$InfoArr['where'] = array('id',$PowerBB->_GET['id']);
+				$Info = $PowerBB->core->GetInfo($InfoArr,'pages');
+				$auto_url_titles_array = $PowerBB->functions->strip_auto_url_titles($Info['title']);
+
+                  if(!strstr($characters_request_url,$auto_url_titles_array)
+                  or strstr($characters_request_url,'index.php'))
+                  {
+
+                    $characters_request_url = $PowerBB->functions->GetForumAdress()."page/".$auto_url_titles_array.".".$PowerBB->_GET['id'];
+			        $PowerBB->functions->rewriterule_header_redirect($characters_request_url);
+                  }
+			  }
+	     }
+          // end auto link titles php
 			if ($PowerBB->_CONF['info_row']['mor_seconds_online'] == '300')
 			{
 	 		// Delete not important rows in online table
@@ -638,7 +787,8 @@ class PowerBBCommon
 				  $PowerBB->_CONF['info_row']['content_language'] = 'en';
 			}
 			else
-			{				$PowerBB->template->assign('align','right');
+			{
+				$PowerBB->template->assign('align','right');
 				$PowerBB->_CONF['info_row']['content_dir'] = 'rtl';
 				$PowerBB->_CONF['info_row']['content_language'] = 'ar';
 			}
@@ -913,13 +1063,32 @@ class PowerBBCommon
 
 		$IsBanned = $PowerBB->core->GetInfo($BanInfoArr,'banned');
 
+		// Sorry visitor you can't visit this forum today :(
+		if (!$PowerBB->_CONF['member_permission'])
+		{
+			if (!$PowerBB->_CONF['info_row'][$PowerBB->_CONF['day']])
+	   		{
+				if ($PowerBB->_CONF['group_info']['admincp_allow'] != 1
+				and !defined('LOGIN')
+				and !$PowerBB->_GET['page']=='sitemap'
+				and !$PowerBB->_GET['page']=='register')
+				{
+                 $PowerBB->_CONF['info_row']['sidebar_list_active'] = 0;
+    	         $PowerBB->_CONF['template']['_CONF']['info_row']['sidebar_list_active']= 0;
+				 $PowerBB->functions->ShowHeader($PowerBB->_CONF['template']['_CONF']['lang']['sorry_visitor_you_cant_visit_this_forum_today']);
+				 $PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['sorry_visitor_you_cant_visit_this_forum_today']);
+				}
+	   		}
+   		}
+
 		// if the forum close by admin , stop the page
        if ($PowerBB->_CONF['info_row']['board_close'])
     	{
 
   			if ($PowerBB->_CONF['group_info']['admincp_allow'] != 1
   				and !defined('LOGIN'))
-        	{
+        	{
+
                  $PowerBB->_CONF['info_row']['sidebar_list_active'] = 0;
     	          $PowerBB->_CONF['template']['_CONF']['info_row']['sidebar_list_active']= 0;
         		// If the PowerCode is allow , use it
@@ -936,7 +1105,8 @@ class PowerBBCommon
     			$PowerBB->functions->error($PowerBB->_CONF['info_row']['board_msg']);
   			}
   			else
-  			{  			 $PowerBB->_CONF['info_row']['sidebar_list_active'] = 1;
+  			{
+  			 $PowerBB->_CONF['info_row']['sidebar_list_active'] = 1;
     	     $PowerBB->_CONF['template']['_CONF']['info_row']['sidebar_list_active']= 1;
   			}
 
@@ -1036,9 +1206,9 @@ class PowerBBCommon
 
 			$from 	= 	@mktime(0,0,0,$month,$day,$year);
 			$to 	= 	@mktime(23,59,59,$month,$day,$year);
-
+            $deys = ($PowerBB->_CONF['now'] - (30 * 86400));
 		     $forum_not = $PowerBB->_CONF['info_row']['last_subject_writer_not_in'];
-		     $subject_today_nm = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['subject'] . " WHERE native_write_time BETWEEN " . $from . " AND " . $to . " AND section not in (" .$forum_not. ") AND review_subject<>1 AND delete_topic<>1 LIMIT 1"));
+		     $subject_today_nm = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['subject'] . " WHERE native_write_time >= " . $deys . " AND section not in (" .$forum_not. ") AND review_subject<>1 AND delete_topic<>1 LIMIT 1"));
 			 $PowerBB->template->assign('subject_today_nm',$subject_today_nm);
 
 		}
@@ -1125,7 +1295,8 @@ class PowerBBCommon
 			}
          }
 			if ($PowerBB->_CONF['info_row']['activate_chat_bar'])
-			{				if ($PowerBB->_CONF['member_row']['posts'] < $PowerBB->_CONF['info_row']['chat_num_mem_posts']
+			{
+				if ($PowerBB->_CONF['member_row']['posts'] < $PowerBB->_CONF['info_row']['chat_num_mem_posts']
 				and $PowerBB->_CONF['group_info']['banned'])
 				{
 		          $PowerBB->template->assign('num_mem_posts',true);
@@ -1223,15 +1394,7 @@ class PowerBBCommon
 				$PowerBB->template->assign('STOP_ADSENSES_TEMPLATE',true);
 			}
           }
-		// Sorry visitor you can't visit this forum today :(
-		if (!$PowerBB->_CONF['member_permission'])
-		{
-			if (!$PowerBB->_CONF['info_row'][$PowerBB->_CONF['day']])
-	   		{
-				$PowerBB->functions->ShowHeader($PowerBB->_CONF['template']['_CONF']['lang']['sorry_visitor_you_cant_visit_this_forum_today']);
-				$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['sorry_visitor_you_cant_visit_this_forum_today']);
-	   		}
-   		}
+
    		////////////////////////////
 
    		// Get username style
@@ -1341,14 +1504,16 @@ class PowerBBCommon
                if($page == 'forum')
                {
                 if(in_array($PowerBB->_GET['id'],$sidebar_list_exclusion_forums_array))
-                {               	 $PowerBB->template->assign('on_sidebar_list_thes_page',0);
+                {
+               	 $PowerBB->template->assign('on_sidebar_list_thes_page',0);
                 }
                }
               }
 			}
 
 			if ($PowerBB->_CONF['info_row']['sidebar_list_align'] == 'left')
-			{			$PowerBB->template->assign('opposite_direction','right');
+			{
+			$PowerBB->template->assign('opposite_direction','right');
 			}
 			elseif ($PowerBB->_CONF['info_row']['sidebar_list_align'] == 'right')
 			{

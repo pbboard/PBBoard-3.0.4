@@ -169,20 +169,23 @@ class FeedParser{
 
            if(stristr($this->url,"youtube.com"))
             {
-
               $URLContent = str_replace('<feed xmlns:yt="http://www.youtube.com/xml/schemas/2015" xmlns:media="http://search.yahoo.com/mrss/" xmlns="http://www.w3.org/2005/Atom">', '<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">', $URLContent);
               $URLContent = str_replace("</feed>", "</rss>", $URLContent);
-              $URLContent = str_replace(":media", "", $URLContent);
-              $URLContent = str_replace("media:", "", $URLContent);
+              preg_match("/<title>(.*?)<\\/title>/si", $URLContent, $matchtitle);
+              $URLContent = str_replace("<media:description>", "<description>", $URLContent);
+              $URLContent = str_replace("</media:description>", "</description>", $URLContent);
               $URLContent = str_replace("yt:", "", $URLContent);
               $URLContent = str_replace(":yt", "", $URLContent);
-            preg_match("/<title>(.*?)<\\/title>/si", $URLContent, $matchtitle);
+               if(empty($matchtitle[1]))
+              {
+               preg_match("/<title>(.*?)<\\/title>/si", $URLContent, $matchtitle);
+              }
               $URLContent = str_replace("<description></description>", "<description>".$matchtitle[1]."</description>", $URLContent);
               $URLContent = preg_replace('#<link rel="alternate" href="(.*?)"/>#i', '<link>$1</link>', $URLContent);
               $rss_start_xmlns = "\n";
               $URLContent = str_replace('<?xml version="1.0" encoding="UTF-8"?>', '', $URLContent);
               $URLContent = str_replace("</rss>", "</channel>".$rss_start_xmlns."</rss>", $URLContent);
-              $URLContent = preg_replace('#<content url="(.*?)" type="application/x-shockwave-flash" width="(.*?)" height="(.*?)"/>#i', '<content>[youtube]$1[/youtube]</content>', $URLContent);
+              $URLContent = preg_replace('#<media:content url="(.*?)" type="application/x-shockwave-flash" width="(.*?)" height="(.*?)"/>#i', '<content>[youtube]$1[/youtube]</content>', $URLContent);
               $URLContent = str_replace("<entry>", "<item>", $URLContent);
               $URLContent = str_replace("</entry>", "</item>", $URLContent);
               $URLContent = str_replace('<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">', '<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">'.$rss_start_xmlns.'<channel>'.$rss_start_xmlns.'<atom:link href="'.$url.'" rel="self" type="application/rss+xml" />', $URLContent);
@@ -205,10 +208,8 @@ class FeedParser{
               $URLContent = str_replace('<community>', '', $URLContent);
               $URLContent = str_replace('</community>', '', $URLContent);
               $URLContent = preg_replace('#<thumbnail(.*?)/>#i', '', $URLContent);
+              $URLContent = str_replace('#', '', $URLContent);
 
-
-				//echo '<textarea name="note" rows="9" cols="50" style="width: 100%;">'.$URLContent.'</textarea>';
-				//exit;
             }
 
             if(!stristr(strtolower($URLContent),"content:encoded"))
@@ -242,7 +243,8 @@ class FeedParser{
 				$URLContent = str_replace("صورة :", "", $URLContent);
 				$URLContent = str_ireplace("Image:", "", $URLContent);
 			}
-
+				//echo '<textarea name="note" rows="9" cols="50" style="width: 100%;">'.$URLContent.'</textarea>';
+				//exit;
 			$segments   = str_split($URLContent);
 			foreach($segments as $index=>$data)
 			{

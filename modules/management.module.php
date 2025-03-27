@@ -70,6 +70,11 @@ class PowerBBManagementMOD
 					$this->_ManagementUpdateHooks();
 				}
 			}
+		else
+		{
+			$PowerBB->functions->ShowHeader();
+            $PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['Sorry_url_not_true']);
+		}
 
 	}
 
@@ -553,8 +558,8 @@ class PowerBBManagementMOD
 
          if ($PowerBB->_SERVER['REQUEST_METHOD'] != 'POST')
          {
-         	 header("Location: index.php");
-		     exit;
+	             header('HTTP/1.1 404 Not Found');
+	             exit();
          }
 		// Check the powers group mod  of transfer of the subject
 		if ($PowerBB->_CONF['group_info']['group_mod'] == '1')
@@ -672,8 +677,8 @@ class PowerBBManagementMOD
 
          if ($PowerBB->_SERVER['REQUEST_METHOD'] != 'POST')
          {
-         	 header("Location: index.php");
-		     exit;
+	             header('HTTP/1.1 404 Not Found');
+	             exit();
          }
 
 		if ($PowerBB->_CONF['group_info']['group_mod'] == '1')
@@ -800,8 +805,8 @@ class PowerBBManagementMOD
 
          if ($PowerBB->_SERVER['REQUEST_METHOD'] != 'POST')
          {
-         	 header("Location: index.php");
-		     exit;
+	             header('HTTP/1.1 404 Not Found');
+	             exit();
          }
 
 		$PowerBB->_GET['subject_id'] = $PowerBB->functions->CleanVariable($PowerBB->_GET['subject_id'],'intval');
@@ -1320,8 +1325,8 @@ class PowerBBManagementMOD
 
          if ($PowerBB->_SERVER['REQUEST_METHOD'] != 'POST')
          {
-         	 header("Location: index.php");
-		     exit;
+	             header('HTTP/1.1 404 Not Found');
+	             exit();
          }
         $PowerBB->_POST['title']	= 	$PowerBB->functions->CleanVariable($PowerBB->_POST['title'],'html');
 		$PowerBB->_GET['subject_id'] = $PowerBB->functions->CleanVariable($PowerBB->_GET['subject_id'],'intval');
@@ -2113,8 +2118,8 @@ class PowerBBManagementMOD
 
          if ($PowerBB->_SERVER['REQUEST_METHOD'] != 'POST')
          {
-         	 header("Location: index.php");
-		     exit;
+	             header('HTTP/1.1 404 Not Found');
+	             exit();
          }
 
 		$PowerBB->_GET['reply_id'] = $PowerBB->functions->CleanVariable($PowerBB->_GET['reply_id'],'intval');
@@ -2377,8 +2382,8 @@ class PowerBBManagementMOD
 
          if ($PowerBB->_SERVER['REQUEST_METHOD'] != 'POST')
          {
-         	 header("Location: index.php");
-		     exit;
+	             header('HTTP/1.1 404 Not Found');
+	             exit();
          }
 		$PowerBB->_GET['subject_id'] = $PowerBB->functions->CleanVariable($PowerBB->_GET['subject_id'],'intval');
 
@@ -2864,11 +2869,24 @@ class PowerBBManagementMOD
 
          if ($PowerBB->_SERVER['REQUEST_METHOD'] != 'POST')
          {
-         	 header("Location: index.php");
-		     exit;
+	             header('HTTP/1.1 404 Not Found');
+	             exit();
          }
 		$PowerBB->_GET['subject_id'] = $PowerBB->functions->CleanVariable($PowerBB->_GET['subject_id'],'intval');
-    		$PowerBB->_POST['url']   = 	$PowerBB->functions->CleanVariable($PowerBB->_POST['url'],'sql');
+
+       $PowerBB->_POST['url']   = 	$PowerBB->functions->CleanVariable($PowerBB->_POST['url'],'sql');
+       $orje_url   = 	$PowerBB->_POST['url'];
+
+        $PowerBB->_POST['url'] = rawurldecode($PowerBB->_POST['url']);
+        $PowerBB->_POST['url'] = str_replace("topic/","index.php?page=topic&show=1&id=", $PowerBB->_POST['url'] );
+        $PowerBB->_POST['url'] = str_replace($PowerBB->functions->GetForumAdress()."index.php?page=topic&show=1&id=","", $PowerBB->_POST['url'] );
+        $PowerBB->_POST['url'] = str_replace($PowerBB->functions->GetForumAdress()."t","", $PowerBB->_POST['url'] );
+        $PowerBB->_POST['url'] = preg_replace('/\D/', '', $PowerBB->_POST['url']);
+
+        $urlhtml = ".html";
+        $PowerBB->_POST['url'] = str_replace($urlhtml,'', $PowerBB->_POST['url']);
+		$PowerBB->_POST['url'] = $PowerBB->functions->CleanVariable($PowerBB->_POST['url'],'intval');
+
 
 		if (empty($PowerBB->_GET['subject_id']))
 		{
@@ -2915,7 +2933,7 @@ class PowerBBManagementMOD
      		$ReplyArr 			= 	array();
      		$ReplyArr['field'] 	= 	array();
 
-     		$ReplyArr['field']['text'] 			= 	  $PowerBB->_CONF['template']['_CONF']['lang']['Duplicate_this_topic_see_the_original'] .'[url=' . $PowerBB->_POST['url'] . '] ' . $PowerBB->_CONF['template']['_CONF']['lang']['Here'] .' [/url]';
+     		$ReplyArr['field']['text'] 			= 	  $PowerBB->_CONF['template']['_CONF']['lang']['Duplicate_this_topic_see_the_original'] .'[url=' . $orje_url . '] ' . $PowerBB->_CONF['template']['_CONF']['lang']['Here'] .' [/url]';
      		$ReplyArr['field']['writer'] 		= 	$PowerBB->_CONF['member_row']['username'];
      		$ReplyArr['field']['subject_id'] 	= 	$PowerBB->_GET['subject_id'];
      		$ReplyArr['field']['write_time'] 	= 	$PowerBB->_CONF['now'];
@@ -3374,8 +3392,8 @@ class PowerBBManagementMOD
 
          if ($PowerBB->_SERVER['REQUEST_METHOD'] != 'POST')
          {
-         	 header("Location: index.php");
-		     exit;
+	             header('HTTP/1.1 404 Not Found');
+	             exit();
          }
 
 		$PowerBB->_GET['subject_id'] = $PowerBB->functions->CleanVariable($PowerBB->_GET['subject_id'],'intval');
@@ -3404,11 +3422,14 @@ class PowerBBManagementMOD
             $PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['Please_fill_in_all_the_information']);
 		}
 
-
+        $PowerBB->_POST['url'] = rawurldecode($PowerBB->_POST['url']);
+        $PowerBB->_POST['url'] = str_replace("topic/","index.php?page=topic&show=1&id=", $PowerBB->_POST['url'] );
         $PowerBB->_POST['url'] = str_replace($PowerBB->functions->GetForumAdress()."index.php?page=topic&show=1&id=","", $PowerBB->_POST['url'] );
         $PowerBB->_POST['url'] = str_replace($PowerBB->functions->GetForumAdress()."t","", $PowerBB->_POST['url'] );
+        $PowerBB->_POST['url'] = preg_replace('/\D/', '', $PowerBB->_POST['url']);
+
         $urlhtml = ".html";
-        $PowerBB->_POST['url'] = str_replace($urlhtml,'', $PowerBB->_POST['url'] );
+        $PowerBB->_POST['url'] = str_replace($urlhtml,'', $PowerBB->_POST['url']);
 		$PowerBB->_POST['url'] = $PowerBB->functions->CleanVariable($PowerBB->_POST['url'],'intval');
 
 		$SubjecturlArr 			= 	array();
@@ -3684,8 +3705,8 @@ class PowerBBManagementMOD
 
          if ($PowerBB->_SERVER['REQUEST_METHOD'] != 'POST')
          {
-         	 header("Location: index.php");
-		     exit;
+	             header('HTTP/1.1 404 Not Found');
+	             exit();
          }
 		if (empty($PowerBB->_POST['check']))
 		{
@@ -3847,8 +3868,8 @@ class PowerBBManagementMOD
 
          if ($PowerBB->_SERVER['REQUEST_METHOD'] != 'POST')
          {
-         	 header("Location: index.php");
-		     exit;
+	             header('HTTP/1.1 404 Not Found');
+	             exit();
          }
 
 		if ($PowerBB->_CONF['group_info']['group_mod'] == '1')
@@ -4371,8 +4392,8 @@ class PowerBBManagementMOD
 
          if ($PowerBB->_SERVER['REQUEST_METHOD'] != 'POST')
          {
-         	 header("Location: index.php");
-		     exit;
+	             header('HTTP/1.1 404 Not Found');
+	             exit();
          }
 
 		if (empty($PowerBB->_POST['check']))

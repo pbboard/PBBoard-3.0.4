@@ -20,19 +20,21 @@ class PowerBBReplyAddMOD
 		$PowerBB->_GET['count'] = '1';
 		}
 		$PowerBB->_GET['count'] = $PowerBB->functions->CleanVariable($PowerBB->_GET['count'],'intval');
-		if ($PowerBB->_GET['index'])
+		if ($PowerBB->_GET['index'] == '1')
 		{
 			$this->_Index();
 			$PowerBB->functions->GetFooter();
 		}
-		elseif($PowerBB->_GET['start'])
+		elseif($PowerBB->_GET['start'] == '1')
 		{
 			$this->_Start();
 		}
 		else
 		{
-			header("Location: index.php");
-			exit;
+			 $PowerBB->functions->ShowHeader();
+             $PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['Sorry_url_not_true']);
+             $PowerBB->functions->GetFooter();
+
 		}
 	}
 
@@ -44,7 +46,8 @@ class PowerBBReplyAddMOD
 		$PowerBB->functions->CleanVariable($PowerBB->_GET['id'],'intval');
         $PowerBB->functions->CleanVariable($_GET['id'],'intval');
 
-		if (empty($PowerBB->_GET['id']))
+		if (empty($PowerBB->_GET['id'])
+		or !$PowerBB->functions->CleanVariable($PowerBB->_GET['id'],'intval'))
 		{
 			$PowerBB->functions->ShowHeader($PowerBB->_CONF['template']['_CONF']['lang']['path_not_true']);
 			$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['path_not_true']);
@@ -553,6 +556,7 @@ class PowerBBReplyAddMOD
 						{
 						   $PowerBB->functions->ShowHeader();
   			               $floodctrl = @time() - $PowerBB->_CONF['member_row']['lastpost_time'] - $PowerBB->_CONF['info_row']['floodctrl'] ;
+  			               $PowerBB->_CONF['template']['_CONF']['lang']['floodctrl'] = str_replace("30", " <b>".$floodctrl."</b> ", $PowerBB->_CONF['template']['_CONF']['lang']['floodctrl']);
   			               $PowerBB->_CONF['template']['_CONF']['lang']['floodctrl'] = str_replace($PowerBB->_CONF['info_row']['floodctrl'], " <b>".$floodctrl."</b> ", $PowerBB->_CONF['template']['_CONF']['lang']['floodctrl']);
   			               $PowerBB->_CONF['template']['_CONF']['lang']['floodctrl'] = str_replace("-", "", $PowerBB->_CONF['template']['_CONF']['lang']['floodctrl']);
 						   $PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['floodctrl']);
@@ -632,7 +636,7 @@ class PowerBBReplyAddMOD
 		     }
 		     else
 		     {
-						     if ((time() - 1800) <= $PowerBB->_CONF['member_row']['lastpost_time'])
+						     if ((time() - 1800) <= $PowerBB->_CONF['member_row']['lastpost_time'] and !$PowerBB->functions->ModeratorCheck($this->SectionInfo['id']))
 						     {
 		     	              $ajax_lastpost_time = true;
 						     }
@@ -657,6 +661,7 @@ class PowerBBReplyAddMOD
 						if (!$PowerBB->functions->ModeratorCheck($this->SectionInfo['id']))
 						{
   			               $floodctrl = @time() - $PowerBB->_CONF['member_row']['lastpost_time'] - $PowerBB->_CONF['info_row']['floodctrl'] ;
+  			               $PowerBB->_CONF['template']['_CONF']['lang']['floodctrl'] = str_replace("30", " <b>".$floodctrl."</b> ", $PowerBB->_CONF['template']['_CONF']['lang']['floodctrl']);
   			               $PowerBB->_CONF['template']['_CONF']['lang']['floodctrl'] = str_replace($PowerBB->_CONF['info_row']['floodctrl'], " <b>".$floodctrl."</b> ", $PowerBB->_CONF['template']['_CONF']['lang']['floodctrl']);
   			               $PowerBB->_CONF['template']['_CONF']['lang']['floodctrl'] = str_replace("-", "", $PowerBB->_CONF['template']['_CONF']['lang']['floodctrl']);
   			               echo "<!-- #flood: -->";

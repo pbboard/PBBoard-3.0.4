@@ -977,20 +977,40 @@ class PowerBBMemberMOD extends _functions
 	function _WarningsMain()
 	{
 		global $PowerBB;
-		$MemArr 				= 	array();
-		$MemArr['proc'] 			= 	array();
-		$MemArr['proc']['*'] 		= 	array('method'=>'clean','param'=>'html');
-		$MemArr['where']					=	array();
-		$MemArr['where'][0]				=	array();
-		$MemArr['where'][0]['name']		=	'warnings';
-		$MemArr['where'][0]['oper']		=	'>';
-		$MemArr['where'][0]['value']		=	'0';
-		$MemArr['order']			=	array();
-		$MemArr['order']['field']	=	'id';
-		$MemArr['order']['type']	=	'DESC';
-		$PowerBB->_CONF['template']['while']['WarnedMembersList'] = $PowerBB->core->GetList($MemArr,'member');
+
+		$PowerBB->_GET['count'] = (!isset($PowerBB->_GET['count'])) ? 0 : $PowerBB->_GET['count'];
+		$PowerBB->_GET['count'] = $PowerBB->functions->CleanVariable($PowerBB->_GET['count'],'intval');
+
+	 $GetMemberNumber = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['warnlog'] . " LIMIT 1"));
+
+
+
+
+		$MemWarningArr 					= 	array();
+
+		$MemWarningArr['order']			=	array();
+		$MemWarningArr['order']['field']	=	'id';
+		$MemWarningArr['order']['type']	=	'DESC';
+		$MemWarningArr['proc'] 			= 	array();
+		$MemWarningArr['proc']['*'] 		= 	array('method'=>'clean','param'=>'html');
+
+		$MemWarningArr['pager'] 				= 	array();
+		$MemWarningArr['pager']['total']		= 	$GetMemberNumber;
+		$MemWarningArr['pager']['perpage'] 	= 	32;
+		$MemWarningArr['pager']['count'] 		= 	$PowerBB->_GET['count'];
+		$MemWarningArr['pager']['location'] 	= 	'index.php?page=member&amp;warnings=1&amp;main=1';
+		$MemWarningArr['pager']['var'] 		= 	'count';
+
+		$PowerBB->_CONF['template']['while']['WarnedMembersList'] = $PowerBB->core->GetList($MemWarningArr,'warnlog');
+
+       if ($GetMemberNumber > 32)
+        {
+		$PowerBB->template->assign('pager',$PowerBB->pager->show());
+        }
+
 		$PowerBB->template->display('warnings_main');
 	}
+
 	function _WarningsDel()
 	{
 		global $PowerBB;
@@ -1001,28 +1021,37 @@ class PowerBBMemberMOD extends _functions
 		$GroupInfo = $PowerBB->core->GetInfo($GrpArr,'group');
 
 		$MemArr 			= 	array();
-		$MemArr['where'] 	= 	array('id',$PowerBB->_GET['id']);
+		$MemArr['where'] 	= 	array('username',$PowerBB->_GET['username']);
 
 		$MemInfo = $PowerBB->core->GetInfo($MemArr,'member');
-
-		$style = $GroupInfo['username_style'];
-		$username_style_cache = str_replace('[username]',$MemInfo['username'],$style);
-
-		$UpdateArr 				= 	array();
-		$UpdateArr['field'] 	= 	array();
-
-		$UpdateArr['field']['usergroup'] 		= 	'4';
-		$UpdateArr['field']['username_style_cache'] 		= 	$username_style_cache;
-		$UpdateArr['field']['user_title'] 		= 	$PowerBB->_CONF['template']['_CONF']['lang']['Member'];
-		$UpdateArr['field']['warnings'] 		= 	0;
-		$UpdateArr['where']		=	array('id',$PowerBB->_GET['id']);
-		$update = $PowerBB->core->Update($UpdateArr,'member');
-
-		if ($update)
+      	if ($MemInfo)
 		{
-			$PowerBB->functions->msg($PowerBB->_CONF['template']['_CONF']['lang']['member_has_been_updated_successfully']);
-			$PowerBB->functions->redirect('index.php?page=member&amp;warnings=1&amp;main=1');
-		}
+			$style = $GroupInfo['username_style'];
+			$style = str_replace('[username]',$PowerBB->_GET['username'],$style);
+
+			$UpdateArr 				= 	array();
+			$UpdateArr['field'] 	= 	array();
+
+			$UpdateArr['field']['usergroup'] 		= 	'4';
+			$UpdateArr['field']['username_style_cache'] 		= 	$style;
+			$UpdateArr['field']['user_title'] 		= 	$PowerBB->_CONF['template']['_CONF']['lang']['Member'];
+			$UpdateArr['field']['warnings'] 		= 	0;
+			$UpdateArr['where']		=	array('username',$PowerBB->_GET['username']);
+			$update = $PowerBB->core->Update($UpdateArr,'member');
+
+			if ($update)
+			{	   	         $DelWarnlogArr				=	array();
+		         $DelWarnlogArr['where'] 	= 	array('warn_to',$PowerBB->_GET['username']);
+
+				  $DeleteWarnlog = $PowerBB->core->Deleted($DelWarnlogArr,'warnlog');
+
+				$PowerBB->functions->msg($PowerBB->_CONF['template']['_CONF']['lang']['member_has_been_updated_successfully']);
+				$PowerBB->functions->redirect('index.php?page=member&amp;warnings=1&amp;main=1');
+			}
+       }
+       else
+       {             $PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['member_requested_does_not_exist']);
+       }
 
 	}
 

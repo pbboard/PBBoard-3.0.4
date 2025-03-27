@@ -260,7 +260,7 @@ class PowerBBGroupsMOD extends _functions
 		$GroupArr['field']['del_own_reply']			 	= 	$PowerBB->_POST['del_own_reply'];
 		$GroupArr['field']['write_poll'] 				= 	$PowerBB->_POST['write_poll'];
 		$GroupArr['field']['no_posts'] 		    		= 	'1';
-		$GroupArr['field']['vote_poll'] 				= 	'1';
+		$GroupArr['field']['vote_poll'] 				= 	$PowerBB->_POST['vote_poll'];
 		$GroupArr['field']['use_pm'] 					= 	$PowerBB->_POST['use_pm'];
 		$GroupArr['field']['send_pm'] 					= 	$PowerBB->_POST['use_pm'];
 		$GroupArr['field']['resive_pm'] 				= 	$PowerBB->_POST['use_pm'];
@@ -326,9 +326,9 @@ class PowerBBGroupsMOD extends _functions
         $GroupArr['field']['see_who_on_topic']          =    $PowerBB->_POST['see_who_on_topic'];
         $GroupArr['field']['topic_day_number']          =    $PowerBB->_POST['topic_day_number'];
         $GroupArr['field']['reputation_number']         =    $PowerBB->_POST['reputation_number'];
-		$GroupArr['field']['review_subject'] 		    = 	'0';
-		$GroupArr['field']['review_reply'] 		        = 	'0';
-		$GroupArr['field']['view_action_edit'] 		        = 	'1';
+		$GroupArr['field']['review_subject'] 		    = 	$PowerBB->_POST['review_subject'];
+		$GroupArr['field']['review_reply'] 		        = 	$PowerBB->_POST['review_reply'];
+		$GroupArr['field']['view_action_edit'] 		    = 	$PowerBB->_POST['view_action_edit'];
 
 		$GroupArr['get_id']								=	true;
 

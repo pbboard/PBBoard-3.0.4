@@ -24,25 +24,25 @@ class PowerBBLoginMOD
 		}
 
 		/** Normal login **/
-		if ($PowerBB->_GET['sign'])
+		if ($PowerBB->_GET['sign'] == '1')
 		{
 			$this->_StartSign();
 		}
-		elseif ($PowerBB->_GET['login'])
+		elseif ($PowerBB->_GET['login'] == '1')
 		{
 			$this->_StartLogin();
 		}
 		/** **/
 		/** Login after register **/
-		elseif ($PowerBB->_GET['register_login'])
+		elseif ($PowerBB->_GET['register_login'] == '1')
 		{
 			$this->_StartLogin(true);
 		}
 		/** **/
 		else
 		{
-			header("Location: index.php");
-			exit;
+			 $PowerBB->functions->ShowHeader();
+             $PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['Sorry_url_not_true']);
 		}
 
 
@@ -60,8 +60,8 @@ class PowerBBLoginMOD
 		}
 		else
 		{
-		header("Location: index.php");
-		exit;
+		  $PowerBB->functions->ShowHeader();
+          $PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['You_are_already_registered']);
 		}
 	}
 
@@ -81,8 +81,8 @@ class PowerBBLoginMOD
 
 		if ($PowerBB->_CONF['member_permission'])
 		{
-		header("Location: index.php");
-		exit;
+		  $PowerBB->functions->ShowHeader();
+          $PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['You_are_already_registered']);
 		}
 
          if ($register_login)
@@ -106,8 +106,8 @@ class PowerBBLoginMOD
 
 			if ($PowerBB->_SERVER['REQUEST_METHOD'] != 'POST')
 			{
-			header("Location: index.php");
-			exit;
+	             header('HTTP/1.1 404 Not Found');
+	             exit();
 			}
 
 			if (empty($PowerBB->_POST['username'])

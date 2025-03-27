@@ -1,8 +1,6 @@
 <?php
 (!defined('IN_PowerBB')) ? die() : '';
-
 define('CLASS_NAME','PowerBBCoreMOD');
-
 include('common.php');
 class PowerBBCoreMOD
 {
@@ -10,19 +8,19 @@ class PowerBBCoreMOD
 	{
 		global $PowerBB;
 
-
-			if ($PowerBB->_GET['index'])
+			if ($PowerBB->_GET['index'] == '1')
 			{
 				$this->_MemberWarnIndex();
 			}
-			elseif($PowerBB->_GET['start'])
+			elseif($PowerBB->_GET['start'] == '1')
 			{
 				$this->_MemberWarnStart();
 			}
 			else
 			{
-				header("Location: index.php");
-				exit;
+			 $PowerBB->functions->ShowHeader();
+             $PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['Sorry_url_not_true']);
+             $PowerBB->functions->GetFooter();
 			}
 
 
@@ -36,18 +34,22 @@ class PowerBBCoreMOD
 		global $PowerBB;
 		$PowerBB->_GET['id'] = $PowerBB->functions->CleanVariable($PowerBB->_GET['id'],'intval');
 
-     			if (empty($PowerBB->_GET['id']))
-     		{
-     			$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['path_not_true']);
-     		}
 		$PowerBB->functions->ShowHeader();
+
+   		if (empty($PowerBB->_GET['id']))
+   		{
+   		 $PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['path_not_true']);
+   		}
 		// Getting member info
 		$MemArr = array();
 		$MemArr['where'] = array('id',$PowerBB->_GET['id']);
 		$PowerBB->_CONF['member_row'] = $PowerBB->core->GetInfo($MemArr,'member');
 		$PowerBB->_CONF['template']['MemberInfo'] = $PowerBB->_CONF['member_row'];
 		//////////
-
+		if (!$PowerBB->_CONF['template']['MemberInfo'])
+     	{
+     		$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['Member_does_not_exist']);
+     	}
 		// Getting member group
 		$GroupInfo = array();
 		$GroupInfo['where'] = array('id',$PowerBB->_CONF['member_row']['usergroup']);
@@ -59,12 +61,13 @@ class PowerBBCoreMOD
      		$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['Visitors_can_not_use_your_warning']);
      	}
 		elseif(!$PowerBB->_CONF['rows']['group_info']['send_warning'])
-	{
-		$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['You_have_no_powers_to_use_this_system']);
-	}	elseif(!$PowerBB->_CONF['group_info']['can_warned'])
-	{
-		$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['You_can_not_notice_this_member']);
-	}
+		{
+			$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['You_have_no_powers_to_use_this_system']);
+		}
+		elseif(!$PowerBB->_CONF['group_info']['can_warned'])
+		{
+			$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['You_can_not_notice_this_member']);
+		}
 
      	$PowerBB->template->display('warn_send');
      }
@@ -78,10 +81,10 @@ class PowerBBCoreMOD
 
  		$PowerBB->_GET['id'] = $PowerBB->functions->CleanVariable($PowerBB->_GET['id'],'intval');
 		$PowerBB->_POST['warn_liftdate'] = $PowerBB->functions->CleanVariable($PowerBB->_POST['warn_liftdate'],'intval');
-			if (empty($PowerBB->_GET['id']))
-     		{
-     			$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['path_not_true']);
-     		}
+		if (empty($PowerBB->_GET['id']))
+		{
+		 $PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['path_not_true']);
+		}
 		if (empty($PowerBB->_POST['text']))
 		{
 			$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['Please_enter_the_reason_for_warning_this_member']);
@@ -90,6 +93,23 @@ class PowerBBCoreMOD
 		$MemArr = array();
 		$MemArr['where'] = array('id',$PowerBB->_GET['id']);
 		$PowerBB->_CONF['member_row'] = $PowerBB->core->GetInfo($MemArr,'member');
+		if (!$PowerBB->_CONF['member_row'])
+     	{
+     		$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['Member_does_not_exist']);
+     	}
+		// Getting member group
+		$GroupInfo = array();
+		$GroupInfo['where'] = array('id',$PowerBB->_CONF['member_row']['usergroup']);
+		$PowerBB->_CONF['group_info'] = $PowerBB->core->GetInfo($GroupInfo,'group');
+
+        if(!$PowerBB->_CONF['rows']['group_info']['send_warning'])
+		{
+			$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['You_have_no_powers_to_use_this_system']);
+		}
+		elseif(!$PowerBB->_CONF['group_info']['can_warned'])
+		{
+			$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['You_can_not_notice_this_member']);
+		}
 		///////
 		$StartArr = array();
 		$StartArr['field'] = array();

@@ -60,31 +60,24 @@ class PowerBBPrivateMassegeSendMOD
 		}
 
 		/** Action to send the masseges **/
-		if ($PowerBB->_GET['send'])
-		{
+
 			/** Show a nice form :) **/
-			if ($PowerBB->_GET['index'])
+			if ($PowerBB->_GET['send'] and $PowerBB->_GET['index'])
 			{
 				$this->_SendForm();
+				$PowerBB->functions->GetFooter();
 			}
-			/** **/
-			/** Start send the massege **/
-			elseif ($PowerBB->_GET['start'])
+			elseif ($PowerBB->_GET['send'] and $PowerBB->_GET['start'])
 			{
 				$this->_StartSend();
+				$PowerBB->functions->GetFooter();
 			}
-
-		$PowerBB->functions->GetFooter();
-
-		}
-
-			/** ADD A New attach in New Pm :) **/
-			if ($PowerBB->_GET['add_attach_pm'])
+			elseif ($PowerBB->_GET['send'] and $PowerBB->_GET['add_attach_pm'])
 			{
 				$this->_Add_attach_Pm();
 			}
 			/** Start uplud and Add attach in New pm **/
-			elseif ($PowerBB->_GET['add_start_pm'])
+			elseif ($PowerBB->_GET['start'] and $PowerBB->_GET['add_start_pm'])
 			{
 				$this->_Star_Add_pm();
 			}
@@ -92,6 +85,12 @@ class PowerBBPrivateMassegeSendMOD
 			elseif ($PowerBB->_GET['delete_attach_pm'])
 			{
 				$this->_Delete_Attach_Pm();
+			}
+			else
+			{
+			 $PowerBB->functions->ShowHeader();
+             $PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['Sorry_url_not_true']);
+             $PowerBB->functions->GetFooter();
 			}
 
 	}

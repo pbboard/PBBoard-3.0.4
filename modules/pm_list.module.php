@@ -53,8 +53,9 @@ class PowerBBPrivateMassegeListMOD
 		}
 		else
 		{
-			header("Location: index.php");
-			exit;
+			 $PowerBB->functions->ShowHeader();
+             $PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['Sorry_url_not_true']);
+             $PowerBB->functions->GetFooter();
 		}
 
 		$PowerBB->functions->GetFooter();
@@ -74,6 +75,16 @@ class PowerBBPrivateMassegeListMOD
 			$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['path_not_true']);
 		}
 
+
+		if ($PowerBB->_GET['folder'] == 'inbox'
+		or $PowerBB->_GET['folder'] == 'sent')
+		{
+			//continue;
+		}
+		else
+		{
+			$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['path_not_true']);
+		}
 
 		$PowerBB->_GET['count'] = (!isset($PowerBB->_GET['count'])) ? 0 : $PowerBB->_GET['count'];
 		$PowerBB->_GET['count'] = $PowerBB->functions->CleanVariable($PowerBB->_GET['count'],'intval');

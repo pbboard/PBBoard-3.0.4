@@ -1,13 +1,7 @@
 <?php
-
 (!defined('IN_PowerBB')) ? die() : '';
-
 define('STOP_STYLE',true);
-
-
-
 define('CLASS_NAME','PowerBBChangeStyleMOD');
-
 include('common.php');
 class PowerBBChangeStyleMOD
 {
@@ -19,11 +13,12 @@ class PowerBBChangeStyleMOD
 
 		if (empty($PowerBB->_GET['id']))
 		{
-			header("Location: index.php");
-			exit;
+			 $PowerBB->functions->ShowHeader();
+             $PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['Sorry_url_not_true']);
+             $PowerBB->functions->GetFooter();
 		}
 
-		if ($PowerBB->_GET['change'])
+		if ($PowerBB->_GET['change'] == '1')
 		{
 			$StyleArr 				= 	array();
 			$StyleArr['field']		=	array();
@@ -48,37 +43,35 @@ class PowerBBChangeStyleMOD
 				$options['expires']	 =	time()+2592000;
 	            $PowerBB->functions->pbb_set_cookie('PowerBB_style',$Style_id,$options);
 
-		                if (strstr($PowerBB->_SERVER['HTTP_REFERER'],$PowerBB->functions->GetForumAdress()))
-						{
-							$PowerBB->functions->redirect2($PowerBB->_SERVER['HTTP_REFERER']);
-						}
-						else
-						{
-							$PowerBB->functions->redirect2('index.php');
-						}
-
-
+                if (strstr($PowerBB->_SERVER['HTTP_REFERER'],$PowerBB->functions->GetForumAdress()))
+				{
+					$PowerBB->functions->redirect2($PowerBB->_SERVER['HTTP_REFERER']);
+				}
+				else
+				{
+					$PowerBB->functions->redirect2('index.php');
+				}
 
 			}
 
 			if ($change)
 			{
 
-
-		                if (strstr($PowerBB->_SERVER['HTTP_REFERER'],$PowerBB->functions->GetForumAdress()))
-						{
-							$PowerBB->functions->redirect2($PowerBB->_SERVER['HTTP_REFERER']);
-						}
-						else
-						{
-							$PowerBB->functions->redirect2('index.php');
-						}
+	            if (strstr($PowerBB->_SERVER['HTTP_REFERER'],$PowerBB->functions->GetForumAdress()))
+				{
+					$PowerBB->functions->redirect2($PowerBB->_SERVER['HTTP_REFERER']);
+				}
+				else
+				{
+					$PowerBB->functions->redirect2('index.php');
+				}
 			}
 		}
 		else
 		{
-			header("Location: index.php");
-			exit;
+			 $PowerBB->functions->ShowHeader();
+             $PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['Sorry_url_not_true']);
+             $PowerBB->functions->GetFooter();
 		}
 	}
 

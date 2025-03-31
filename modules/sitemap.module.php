@@ -251,7 +251,7 @@ class PowerBBSitemapMOD
 					 {					 $ContentCompress .= "<loc>".$PowerBB->functions->GetForumAdress()."t".$SubjectList[$x]['id']."</loc>\n";
 					 }
 					 else
-					 {					 $ContentCompress .= '<loc>'.$PowerBB->functions->rewriterule('page=topic&amp;show=1&amp;id='.$SubjectList[$x]['id']).'</loc>'."\n";
+					 {					 $ContentCompress .= '<loc>'.$PowerBB->functions->rewriterule($PowerBB->functions->GetForumAdress().'index.php?page=topic&show=1&id='.$SubjectList[$x]['id']).'</loc>'."\n";
 					 }
 
 					$ContentCompress .= '<lastmod>'.$this->lastmod_date($SubjectList[$x]['native_write_time']).'</lastmod>'."\n";
@@ -345,7 +345,7 @@ class PowerBBSitemapMOD
 					 }
 					 else
 					 {
-					 $ContentCompress .= '<loc>'.$PowerBB->functions->rewriterule('page=topic&amp;show=1&amp;id='.$Topics_row['id']).'</loc>'."\n";
+					 $ContentCompress .= '<loc>'.$PowerBB->functions->rewriterule($PowerBB->functions->GetForumAdress().'index.php?page=topic&show=1&id='.$Topics_row['id']).'</loc>'."\n";
 					 }
 				$ContentCompress .= '<changefreq>daily</changefreq>'."\n";
 				$ContentCompress .= '<priority>0.8</priority>'."\n";
@@ -400,7 +400,7 @@ class PowerBBSitemapMOD
 					 }
 					 else
 					 {
-					 $ContentCompress .= '<loc>'.$PowerBB->functions->rewriterule('page=post&amp;show=1&amp;id='.$Replys_row['id']).'</loc>'."\n";
+					 $ContentCompress .= '<loc>'.$PowerBB->functions->rewriterule($PowerBB->functions->GetForumAdress().'index.php?page=post&show=1&id='.$Replys_row['id']).'</loc>'."\n";
 					 }
 				$ContentCompress .= '<changefreq>daily</changefreq>'."\n";
 				$ContentCompress .= '<priority>0.8</priority>'."\n";

@@ -1,11 +1,6 @@
 <?php
-
 (!defined('IN_PowerBB')) ? die() : '';
-
 define('IN_ADMIN',true);
-
-
-
 define('CLASS_NAME','PowerBBOptionsMOD');
 
 include('../common.php');
@@ -876,7 +871,8 @@ class PowerBBOptionsMOD
 	{
 		global $PowerBB;
         if ($PowerBB->_POST['submit'] == $PowerBB->_CONF['template']['_CONF']['lang']['restore_defaults'])
-        {             $sidebar_list_active ='1';
+        {
+             $sidebar_list_active ='1';
              $sidebar_list_align = 'left';
              $sidebar_list_pages ='index';
              $sidebar_list_width ='25';
@@ -895,7 +891,8 @@ class PowerBBOptionsMOD
 			$PowerBB->functions->msg($PowerBB->_CONF['template']['_CONF']['lang']['updated_successfully_Please_wait']);
 			$PowerBB->functions->redirect('index.php?page=options&amp;sidebar_list=1&amp;main=1');
 			}
-        }
+
+        }
         elseif ($PowerBB->_POST['submit'] == $PowerBB->_CONF['template']['_CONF']['lang']['acceptable'])
         {
 			$update = array();
@@ -906,7 +903,7 @@ class PowerBBOptionsMOD
 			$update[4] = $PowerBB->info->UpdateInfo(array('value'=>$PowerBB->_POST['sidebar_list_exclusion_forums'],'var_name'=>'sidebar_list_exclusion_forums'));
 			$update[5] = $PowerBB->info->UpdateInfo(array('value'=>$PowerBB->_POST['sidebar_list_content'],'var_name'=>'sidebar_list_content'));
 
-			if ($update[0] and $update[1] and $update[2] and $update[3] and $update[4] and $update[5])
+			if ($update[0] and $update[1]and $update[2]and $update[3]and $update[4]and $update[5])
 			{
 				$PowerBB->functions->msg($PowerBB->_CONF['template']['_CONF']['lang']['updated_successfully_Please_wait']);
 				$PowerBB->functions->redirect('index.php?page=options&amp;sidebar_list=1&amp;main=1');
@@ -1147,7 +1144,8 @@ class PowerBBOptionsMOD
     	$PowerBB->template->assign('context',$context);
        }
        else
-       {      	$context = '<span dir="ltr">.htaccess file does not exist </span><br /><span dir="rtl"> يجب ان ترفع ملف .htaccess بداخل مجلد منتداك لتعمل مع خاصية تحويل الروابط</span>';
+       {
+      	$context = '<span dir="ltr">.htaccess file does not exist </span><br /><span dir="rtl"> يجب ان ترفع ملف .htaccess بداخل مجلد منتداك لتعمل مع خاصية تحويل الروابط</span>';
 		$PowerBB->functions->msg($context);
 
        }
@@ -1161,13 +1159,11 @@ class PowerBBOptionsMOD
 
         $update = array();
       	$update[0] = $PowerBB->info->UpdateInfo(array('value'=>$PowerBB->_POST['rewriterule'],'var_name'=>'rewriterule'));
-
-	      	if($PowerBB->_POST['auto_links_titles'] == '0'
-	      	or $PowerBB->_POST['auto_links_titles'] == '1')
-	      	{
-	      	$update[1] = $PowerBB->info->UpdateInfo(array('value'=>$PowerBB->_POST['auto_links_titles'],'var_name'=>'auto_links_titles'));
-	      	}
-
+      	if($PowerBB->_POST['auto_links_titles'] == '0'
+      	or $PowerBB->_POST['auto_links_titles'] == '1')
+      	{
+      	$update[1] = $PowerBB->info->UpdateInfo(array('value'=>$PowerBB->_POST['auto_links_titles'],'var_name'=>'auto_links_titles'));
+      	}
 
 		if ($update[0])
 		{
@@ -1197,15 +1193,13 @@ class PowerBBOptionsMOD
 	function _PbbSitemap()
 	{
 		global $PowerBB;
-        $update = array();
-		$update[0] = $PowerBB->info->UpdateInfo(array('value'=>$PowerBB->_POST['sitemap'],'var_name'=>'sitemap'));
-		$update[1] = $PowerBB->info->UpdateInfo(array('value'=>$PowerBB->_POST['sitemap_gzip'],'var_name'=>'sitemap_gzip'));
-		$update[2] = $PowerBB->info->UpdateInfo(array('value'=>$PowerBB->_POST['sitemap_url_max'],'var_name'=>'sitemap_url_max'));
-        if ($update[0] and $update[1] and $update[2])
-		{
+
+		$PowerBB->info->UpdateInfo(array('value'=>$PowerBB->_POST['sitemap'],'var_name'=>'sitemap'));
+		$PowerBB->info->UpdateInfo(array('value'=>$PowerBB->_POST['sitemap_gzip'],'var_name'=>'sitemap_gzip'));
+		$PowerBB->info->UpdateInfo(array('value'=>$PowerBB->_POST['sitemap_url_max'],'var_name'=>'sitemap_url_max'));
+
 		$PowerBB->functions->msg($PowerBB->_CONF['template']['_CONF']['lang']['updated_successfully_Please_wait']);
 		$PowerBB->functions->redirect('index.php?page=options&amp;pbb_seo=1&amp;main=1');
-        }
 
 	}
 

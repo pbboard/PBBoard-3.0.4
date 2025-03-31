@@ -133,7 +133,12 @@ class PBBTemplate
            $string = str_replace("<!--versioncheck-->",$PowerBB->functions->check_version_date(),$string);
 		}
 
-			$string = str_replace("}look/","}look/", $string);
+        if ($filename == 'options_pbbseo')
+		{
+			$search_arho 	= 	"~\{get_hook}options_pbbseo{/get_hook}
+{get_hook}options_pbbseo{/get_hook}~";
+			$string = preg_replace($search_arho,"{get_hook}options_pbbseo{/get_hook}", $string);
+		}
 
 			// CSRF protect all your forms
 			//$string = str_ireplace("</form>",'<input type="hidden" name="csrf" value="{$csrf_key}" />'."\n</form>",$string);

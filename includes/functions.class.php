@@ -3730,8 +3730,7 @@ function UpdateSectionCache($SectionCache)
 				}, $type);
 
            }
-           elseif ($PowerBB->_CONF['info_row']['rewriterule']
-           and $PowerBB->_CONF['info_row']['auto_links_titles'] == '0')
+           elseif ($PowerBB->_CONF['info_row']['rewriterule'])
            {
 	   		$type = str_replace("index.php?page=forum&show=1&id=","f",$type);
 	   		$type = str_replace("index.php?page=forum&amp;show=1&amp;id=","f",$type);

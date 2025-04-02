@@ -638,7 +638,7 @@ class PowerBBManagementMOD
 		    $UpdateArr['field'] 				= 	array();
 		    $UpdateArr['field']['section'] 		= 	$PowerBB->_POST['section'];
 			$UpdateArr['field']['sec_subject']	    =	$SectionToInfo['sec_section'];
-			$UpdateArr['field']['review_subject']	=	$SectionToInfo['review_subject'];
+			//$UpdateArr['field']['review_subject']	=	$SectionToInfo['review_subject'];
 			$UpdateArr['where'] 				= 	array('id',$PowerBB->_GET['subject_id']);
 
 			$update = $PowerBB->core->Update($UpdateArr,'subject');
@@ -4472,7 +4472,7 @@ class PowerBBManagementMOD
 			$Update_Arr['field'] 				    = 	array();
 			$Update_Arr['field']['section']	        =	$this->SectionInfo['section'];
 			$Update_Arr['field']['sec_subject']	    =	$this->SectionInfo['sec_section'];
-			$Update_Arr['field']['review_subject']	=	$this->SectionInfo['review_subject'];
+			//$Update_Arr['field']['review_subject']	=	$this->SectionInfo['review_subject'];
 			$Update_Arr['where'] 		            = 	array('id',intval($GetThread));
 
 			$update_ = $PowerBB->core->Update($Update_Arr,'subject');

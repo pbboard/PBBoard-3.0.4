@@ -202,8 +202,8 @@
 <phrase name="active_send_admin_message" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1670802917" fieldname="admincp"><![CDATA[تفعيل مراسلة الإدارة]]></phrase>
 <phrase name="active_calendar" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1670802917" fieldname="admincp"><![CDATA[تفعيل التقويم]]></phrase>
 <phrase name="active_static" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1670802917" fieldname="admincp"><![CDATA[تفعيل احصائيات المنتدى العامة]]></phrase>
-<phrase name="active_subject_today" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1670802917" fieldname="admincp"><![CDATA[تفعيل مواضيع اليوم]]></phrase>
-<phrase name="active_reply_today" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1670802917" fieldname="admincp"><![CDATA[تفعيل مشاركات اليوم]]></phrase>
+<phrase name="active_subject_today" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1670802917" fieldname="admincp"><![CDATA[تفعيل المواضيع الجديدة]]></phrase>
+<phrase name="active_reply_today" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1670802917" fieldname="admincp"><![CDATA[تفعيل المشاركات الجديدة]]></phrase>
 <phrase name="RepairMemberPosts" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1670802917" fieldname="admincp"><![CDATA[تحديث عدد مشاركات الأعضاء]]></phrase>
 <phrase name="active_team" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1670802917" fieldname="admincp"><![CDATA[تفعيل مشاهدة المسؤولين عن المنتدى]]></phrase>
 <phrase name="RepairMemberPosts_not" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1670802917" fieldname="admincp"><![CDATA[<font color="#FF0000">هذا سيرجع عدد مشاركات الأعضاء إلى مشاركاتهم الأصلية</font> في قاعدة البيانات. لا تشغل هذا إذا كنت قد حذف مشاركات, أو قمت بتغيير (زيادة) عدد المشاركات يدوياً, أو استوردها من حزمة منتدى آخر إذا كنت تريد إبقاء عدد مشاركات الأعضاء الحالية. من المحتمل أن عدد مشاركات أعضائك ستتناقص إذا قمت بتشغيل هذا، لذا فقط قم بتنفيذ هذا إذا كنت واثقاً بأنك حقاً تحتاجه! بمجرد تناقص عدد مشاركات أعضائك لن تستطيع إعادة رفعها بدون استعادة قاعدة بياناتك أو تعديل كل عضو على حده. لقد تم تحذيرك!]]></phrase>
@@ -521,7 +521,7 @@
 <phrase name="home" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1670802917" fieldname="forum"><![CDATA[الرئيسية]]></phrase>
 <phrase name="register" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1670802917" fieldname="forum"><![CDATA[التسجيل]]></phrase>
 <phrase name="static" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1670802917" fieldname="forum"><![CDATA[إحصائيات]]></phrase>
-<phrase name="latest_reply" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1670802917" fieldname="forum"><![CDATA[مشاركات اليوم]]></phrase>
+<phrase name="latest_reply" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1670802917" fieldname="forum"><![CDATA[المشاركات الجديدة]]></phrase>
 <phrase name="search" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1670802917" fieldname="forum"><![CDATA[الـبـحــث]]></phrase>
 <phrase name="memberlist" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1670802917" fieldname="forum"><![CDATA[الأعضاء]]></phrase>
 <phrase name="logout" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1670802917" fieldname="forum"><![CDATA[تسجيل الخروج]]></phrase>
@@ -597,7 +597,7 @@
 <phrase name="time_logged_online" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1670802917" fieldname="forum"><![CDATA[الدخول : ]]></phrase>
 <phrase name="forummap" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1670802917" fieldname="forum"><![CDATA[الخريطة]]></phrase>
 <phrase name="archive" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1670802917" fieldname="forum"><![CDATA[الأرشيف]]></phrase>
-<phrase name="subject_today" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1670802917" fieldname="forum"><![CDATA[مواضيع اليوم]]></phrase>
+<phrase name="subject_today" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1670802917" fieldname="forum"><![CDATA[المواضيع الجديدة]]></phrase>
 <phrase name="send_message" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1670802917" fieldname="forum"><![CDATA[مراسلة الادارة]]></phrase>
 <phrase name="team" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1670802917" fieldname="forum"><![CDATA[المسؤلين عن المنتدى]]></phrase>
 <phrase name="UP" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1670802917" fieldname="forum"><![CDATA[الأعلى]]></phrase>
@@ -1036,8 +1036,8 @@
 <phrase name="Leaders" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1670802917" fieldname="forum"><![CDATA[المسؤلين]]></phrase>
 <phrase name="Forum_Leaders" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1670802917" fieldname="forum"><![CDATA[المسؤولين عن المنتدى]]></phrase>
 <phrase name="Pm_Message" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1670802917" fieldname="forum"><![CDATA[رسالة خاصة]]></phrase>
-<phrase name="no_subjects_today" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1670802917" fieldname="forum"><![CDATA[لايوجد مواضيع جديدة تمت كتابتها لهذا اليوم]]></phrase>
-<phrase name="no_replies_today" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1670802917" fieldname="forum"><![CDATA[لايوجد مشاركات جديدة تمت كتابتها لهذا اليوم]]></phrase>
+<phrase name="no_subjects_today" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1670802917" fieldname="forum"><![CDATA[لايوجد مواضيع جديدة تمت كتابتها اخر 30 يوما]]></phrase>
+<phrase name="no_replies_today" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1670802917" fieldname="forum"><![CDATA[لايوجد مشاركات جديدة تمت كتابتها اخر 30 يوما]]></phrase>
 <phrase name="Your_Personal_Information" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1670802917" fieldname="forum"><![CDATA[معلوماتك الشخصية]]></phrase>
 <phrase name="New_email" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1670802917" fieldname="forum"><![CDATA[البريد الإلكتروني الجديد]]></phrase>
 <phrase name="Change_email" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1670802917" fieldname="forum"><![CDATA[تغيير بريدك الإلكتروني]]></phrase>

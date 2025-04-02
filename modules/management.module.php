@@ -636,12 +636,14 @@ class PowerBBManagementMOD
 		// Change the Section number to Section transferee
 		    $UpdateArr 					= 	array();
 		    $UpdateArr['field'] 				= 	array();
-		    $UpdateArr['field']['section'] 		= 	$Move_to_section;
+		    $UpdateArr['field']['section'] 		= 	$PowerBB->_POST['section'];
+			$UpdateArr['field']['sec_subject']	    =	$SectionToInfo['sec_section'];
+			$UpdateArr['field']['review_subject']	=	$SectionToInfo['review_subject'];
 			$UpdateArr['where'] 				= 	array('id',$PowerBB->_GET['subject_id']);
 
 			$update = $PowerBB->core->Update($UpdateArr,'subject');
 
-            $UpdateSectionCache2 = $PowerBB->functions->UpdateSectionCache($PowerBB->_POST['section']);
+            $UpdateSectionCache2 = $PowerBB->functions->UpdateSectionCache($Move_to_section);
 
 		    // INSERT moderators Action
 
@@ -2482,6 +2484,7 @@ class PowerBBManagementMOD
 			$UpdateArr['field']['close'] 				= 	$state;
 			$UpdateArr['field']['stick'] 				= 	$pin;
 			$UpdateArr['field']['review_subject'] 	     = 	$approve;
+			$UpdateArr['field']['sec_subject']	    =	$SectionmoveFormInfo['sec_section'];
 			$UpdateArr['field']['section'] 	     = 	$move;
 			$UpdateArr['where'] 						= 	array('id',$PowerBB->_GET['subject_id']);
 
@@ -4464,6 +4467,16 @@ class PowerBBManagementMOD
 			$UpdateArr['where'] 		= 	array('id',intval($GetThread));
 
 			$update = $PowerBB->subject->MoveSubject($UpdateArr);
+
+			$Update_Arr 					        = 	array();
+			$Update_Arr['field'] 				    = 	array();
+			$Update_Arr['field']['section']	        =	$this->SectionInfo['section'];
+			$Update_Arr['field']['sec_subject']	    =	$this->SectionInfo['sec_section'];
+			$Update_Arr['field']['review_subject']	=	$this->SectionInfo['review_subject'];
+			$Update_Arr['where'] 		            = 	array('id',intval($GetThread));
+
+			$update_ = $PowerBB->core->Update($Update_Arr,'subject');
+
 
 	        $Move_replys = $PowerBB->DB->sql_query("SELECT  *   FROM " . $PowerBB->table['reply'] . " WHERE subject_id = '$subject_id' ");
 	         while ($Moved = $PowerBB->DB->sql_fetch_array($Move_replys))

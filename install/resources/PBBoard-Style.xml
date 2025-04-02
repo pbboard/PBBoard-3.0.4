@@ -10900,32 +10900,24 @@ $(document).ready(Ready);
 <template name="show_subject_information" templatetype="template" date="1735000527" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<script type='text/javascript'>
 function AjaxSubjectRating()
 {
-
     var AjaxState = {ajaxSend : $("#rating_status").html("<div class='info_bar'> <img border='0' alt='' src='{$image_path}/loading.gif'></div>")};
-
     var data = {};
-
     data['by_username']    =    $("#by_username").val();
     data['subject_title']    =    $("#subject_title").val();
     data['subject_id']    =    $("#subject_id").val();
     data['username']    =    $("#username").val();
-    data['vote']    =    $("#vote").val();
-
+    data['vote']    =    $('[name="vote"]:checked').val();
     $.post("index.php?page=misc&rating=1",data,function Success(xml) { $("#rating_status").html(xml); });
 }
-
 function Wait()
 {
     $("#rating_status").html("{$lang['Ongoing_process']}");
 }
-
 function Ready()
 {
     $("#rating_id").click(AjaxSubjectRating);
 }
-
 $(document).ready(Ready);
-
 </script>
 <!-- table -->
 <div style="width:98%; border-spacing:0px;" class="table mrgTable border_radius">
@@ -10959,7 +10951,8 @@ $(document).ready(Ready);
 <img alt="" class="brd0" src="{$image_path}/menu_open.gif" />
 </a>
 <div style="display:none;" id="Options_mods" class="drop_menu">
-<!-- table --><div style="border-spacing:1px;" class="table border">
+<!-- tabler -->
+<div style="border-spacing:1px;" class="table border">
 <dl class="center_text_align">
 <dt></dt>
 <dd class="thead">
@@ -10972,7 +10965,8 @@ $(document).ready(Ready);
 {template}show_subject_control{/template}
 </dd>
 </dl>
-</div><!-- /table -->
+</div>
+<!-- /tablet -->
 </div>
 <!-- Code Options_mods Menu End -->
 </li>
@@ -10988,7 +10982,8 @@ $(document).ready(Ready);
 </a>
 <div style="display:none;" id="subject_rating" class="drop_menu">
 <form name="misc" method="post" action="index.php?page=misc&amp;rating=1">
-<!-- table --><div style="width:160px; border-spacing:1px;" class="table border">
+<!-- tableee -->
+<div style="width:160px; border-spacing:1px;" class="table border">
 <dl class="center_text_align">
 <dt></dt>
 <dd class="thead">
@@ -11045,7 +11040,8 @@ $(document).ready(Ready);
 <input type="button" name="rating" id="rating_id" value="{$lang['Vote_now']}" onclick="comm._submit();"><div class="center_text_align" id="rating_status"></div>
 </dd>
 </dl>
-</div><!-- /table -->
+</div>
+<!-- /tabletzx -->
 </form>
 </div>
 <!-- Code subject_rating Menu End -->
@@ -11053,14 +11049,25 @@ $(document).ready(Ready);
 {/if}
 {/if}
 {/if}
+{if {$_CONF['info_row']['allowed_emailed']} == '1' AND {$_CONF['member_permission']}}
+<?php
+$PowerBB->_CONF['template']['_CONF']['info_row']['allowed_emailed_thread_tools']= 1;
+?>
+{else}
+<?php
+$PowerBB->_CONF['template']['_CONF']['info_row']['allowed_emailed_thread_tools']= 0;
+?>
+{/if}
 <!--sub_tools_s-->
+{if {$_CONF['info_row']['allowed_emailed_thread_tools']} == '1' or {$_CONF['info_row']['download_subject']} == '1' or {$_CONF['info_row']['print_subject']} == '1' or {$_CONF['info_row']['send_subject_to_friend']} == '1'}
 <li class="l-left sub_tools">
 <a href="javascript:switchMenuNone('subject_tools')" class="popmenubutton button_b" onclick="switchBlock('subject_rating');">
 {$lang['Thread_Tools']}
 <img alt="" class="brd0" src="{$image_path}/menu_open.gif" />
 </a>
 <div style="display:none;" id="subject_tools" class="drop_menu">
-<!-- table --><div style="width:200px; border-spacing:1px;" class="table border">
+<!-- yuxtable -->
+<div style="width:200px; border-spacing:1px;" class="table border">
 <dl class="center_text_align">
 <dt></dt>
 <style>
@@ -11096,6 +11103,7 @@ $(document).ready(Ready);
 </dd>
 </dl>
 {/if}
+{if {$_CONF['info_row']['send_subject_to_friend']} == '1'}
 <dl>
 <dt></dt>
 <dd class="menu_popup">
@@ -11105,6 +11113,7 @@ $(document).ready(Ready);
 </a>
 </dd>
 </dl>
+{/if}
 {if {$_CONF['info_row']['allowed_emailed']} == '1' AND {$_CONF['member_permission']}}
 <dl>
 <dt></dt>
@@ -11128,15 +11137,17 @@ title="{$lang['Cancel']}
 </dl>
 {/if}
 </div>
-<!-- /table -->
+<!-- /table85 -->
 </div>
 <!-- Code subject_tools Menu End -->
 </li>
+{/if}
 <!--sub_tools-->
 </ul>
 </dd>
 </dl>
-</div><!-- /table -->]]></template>
+</div>
+<!-- /table14 -->]]></template>
 <template name="show_tags_topic" templatetype="template" date="1735000527" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<table class="border wd98 brd1 clpc0 a-center">
 <tr>
 <td class="thead1 right_text_align wd98">

@@ -226,10 +226,10 @@
 <phrase name="RepairMemberPosts" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1676589616" fieldname="admincp"><![CDATA[Update the number of Member]]></phrase>
 <phrase name="active_team" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1676589616" fieldname="admincp"><![CDATA[Activate View Forum Leaders]]></phrase>
 <phrase name="active_static" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1676589616" fieldname="admincp"><![CDATA[Activate stats General Forum]]></phrase>
-<phrase name="active_subject_today" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1676589616" fieldname="admincp"><![CDATA[Activation of Todays Replys]]></phrase>
+<phrase name="active_subject_today" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1676589616" fieldname="admincp"><![CDATA[Activation New Topics]]></phrase>
 <phrase name="active_calendar" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1676589616" fieldname="admincp"><![CDATA[Activate the Calendar]]></phrase>
 <phrase name="active_send_admin_message" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1676589616" fieldname="admincp"><![CDATA[Activate the Contact Us]]></phrase>
-<phrase name="active_reply_today" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1676589616" fieldname="admincp"><![CDATA[Activate Todays Replys]]></phrase>
+<phrase name="active_reply_today" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1676589616" fieldname="admincp"><![CDATA[Activate New Posts]]></phrase>
 <phrase name="active_archive" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1676589616" fieldname="admincp"><![CDATA[Activate the Archive]]></phrase>
 <phrase name="active_friend" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1676589616" fieldname="admincp"><![CDATA[Activate the buddy-list]]></phrase>
 <phrase name="active_visitor_message" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1676589616" fieldname="admincp"><![CDATA[Activate Visitor messages]]></phrase>
@@ -1952,8 +1952,8 @@
 <phrase name="Previous" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1676589616" fieldname="forum"><![CDATA[Previous]]></phrase>
 <phrase name="Next" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1676589616" fieldname="forum"><![CDATA[Next]]></phrase>
 <phrase name="No_members_are_reading_this_topic_now" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1676589616" fieldname="forum"><![CDATA[No members are viewing this Subject now!]]></phrase>
-<phrase name="no_replies_today" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1676589616" fieldname="forum"><![CDATA[There are no new replies for today till now!]]></phrase>
-<phrase name="no_subjects_today" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1676589616" fieldname="forum"><![CDATA[There are no new Subjects for today till now!]]></phrase>
+<phrase name="no_replies_today" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1676589616" fieldname="forum"><![CDATA[There are no new posts for now!]]></phrase>
+<phrase name="no_subjects_today" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1676589616" fieldname="forum"><![CDATA[There are no new topics for now!]]></phrase>
 <phrase name="Pm_Message" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1676589616" fieldname="forum"><![CDATA[Private message]]></phrase>
 <phrase name="Forum_Leaders" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1676589616" fieldname="forum"><![CDATA[Forum Team]]></phrase>
 <phrase name="E-mail_Message" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1676589616" fieldname="forum"><![CDATA[Email]]></phrase>
@@ -2399,7 +2399,7 @@
 <phrase name="team" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1676589616" fieldname="forum"><![CDATA[Forum admins]]></phrase>
 <phrase name="send_message" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1676589616" fieldname="forum"><![CDATA[Contact us]]></phrase>
 <phrase name="forummap" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1676589616" fieldname="forum"><![CDATA[Forum map]]></phrase>
-<phrase name="subject_today" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1676589616" fieldname="forum"><![CDATA[Today Subjects]]></phrase>
+<phrase name="subject_today" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1676589616" fieldname="forum"><![CDATA[New Topics]]></phrase>
 <phrase name="archive" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1676589616" fieldname="forum"><![CDATA[Archive]]></phrase>
 <phrase name="time_logged_online" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1676589616" fieldname="forum"><![CDATA[login: ]]></phrase>
 <phrase name="max_online" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1676589616" fieldname="forum"><![CDATA[The most users online at one time was:]]></phrase>
@@ -2474,7 +2474,7 @@
 <phrase name="Special_Subject" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1676589616" fieldname="forum"><![CDATA[Special Subjects]]></phrase>
 <phrase name="logout" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1676589616" fieldname="forum"><![CDATA[Sign Out]]></phrase>
 <phrase name="memberlist" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1676589616" fieldname="forum"><![CDATA[Members]]></phrase>
-<phrase name="latest_reply" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1676589616" fieldname="forum"><![CDATA[New Replys]]></phrase>
+<phrase name="latest_reply" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1676589616" fieldname="forum"><![CDATA[New Posts]]></phrase>
 <phrase name="usercp" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1676589616" fieldname="forum"><![CDATA[Control Panel]]></phrase>
 <phrase name="rules" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1676589616" fieldname="forum"><![CDATA[Rules]]></phrase>
 <phrase name="register" pbbversion="3.0.4" product="PBBoard" username="PBBoard_Staff" date="1676589616" fieldname="forum"><![CDATA[Register]]></phrase>

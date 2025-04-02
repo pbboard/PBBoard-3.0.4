@@ -308,7 +308,7 @@ $inserts[] = "INSERT INTO pbb_info (id, var_name, value) VALUES
 (233, 'adsense_limited_usergroups', '0'),
 (234, 'send_subject_to_friend', '1'),
 (235, 'sitemap_gzip', '1'),
-(236, 'sitemap_url_max', '10000');";
+(236, 'sitemap_url_max', '1500');";
 
 $inserts[] = "INSERT INTO pbb_lang (id, lang_title, lang_order, lang_on, lang_path) VALUES
 (1, 'English', 1, 1, 'ltr');";

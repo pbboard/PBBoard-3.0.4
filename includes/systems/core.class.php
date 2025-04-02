@@ -303,7 +303,7 @@ class PowerBBCore
 			{
 
 	         $InfSectionID = $Posts[$x]['section'];
-	         $sql_Section = $this->Engine->DB->sql_query("SELECT id FROM " . $PowerBB->table['section'] . " WHERE id = '$InfSectionID' ");
+	         $sql_Section = $this->Engine->DB->sql_query("SELECT id FROM " . $PowerBB->table['section'] . " WHERE id = '$InfSectionID' and review_subject<>1 AND sec_section<>1 AND hide_subject<>1");
 	         if($sql_Section)
 	          {
 

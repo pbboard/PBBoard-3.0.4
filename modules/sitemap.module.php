@@ -251,7 +251,7 @@ class PowerBBSitemapMOD
 					 {					 $ContentCompress .= "<loc>".$PowerBB->functions->GetForumAdress()."t".$SubjectList[$x]['id']."</loc>\n";
 					 }
 					 else
-					 {					 $ContentCompress .= '<loc>'.$PowerBB->functions->rewriterule($PowerBB->functions->GetForumAdress().'index.php?page=topic&amp;show=1&amp;id='.$SubjectList[$x]['id']).'</loc>'."\n";
+					 {					 $ContentCompress .= "<loc>".$PowerBB->functions->GetForumAdress()."t".$SubjectList[$x]['id']."</loc>\n";
 					 }
 
 					$ContentCompress .= '<lastmod>'.$this->lastmod_date($SubjectList[$x]['native_write_time']).'</lastmod>'."\n";

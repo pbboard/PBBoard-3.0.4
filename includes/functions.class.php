@@ -3240,7 +3240,7 @@ function UpdateSectionCache($SectionCache)
 			}
 			if($subject_nm)
 			{
-			$GetLastSubjectInfoQuery = $PowerBB->DB->sql_query("SELECT id,icon,writer,title,native_write_time,reply_number FROM " . $PowerBB->table['subject'] . " WHERE section = '$SectionCache' AND delete_topic='0' AND review_subject='0' ORDER by native_write_time DESC");
+			$GetLastSubjectInfoQuery = $PowerBB->DB->sql_query("SELECT id,icon,writer,title,native_write_time,write_time,reply_number FROM " . $PowerBB->table['subject'] . " WHERE section = '$SectionCache' AND delete_topic='0' AND review_subject='0' ORDER by native_write_time DESC");
 			$GetLastSubjectInf = $PowerBB->DB->sql_fetch_array($GetLastSubjectInfoQuery);
 			}
 
@@ -3265,9 +3265,9 @@ function UpdateSectionCache($SectionCache)
 			else
 			{
 
-				if($GetLastReplyForm['write_time'] > $GetLastSubjectInf['native_write_time'])
+				if($GetLastReplyForm['write_time'] >= $GetLastSubjectInf['native_write_time'])
 				{
-				$GetSubjectInfoQuery = $PowerBB->DB->sql_query("SELECT id,title,reply_number,icon,last_replier,write_time FROM " . $PowerBB->table['subject'] . " WHERE id = '".$GetLastReplyForm['subject_id']."' AND delete_topic='0' AND review_subject='0' ");
+				$GetSubjectInfoQuery = $PowerBB->DB->sql_query("SELECT id,title,reply_number,icon,last_replier,native_write_time,write_time FROM " . $PowerBB->table['subject'] . " WHERE id = '".$GetLastReplyForm['subject_id']."' AND delete_topic='0' AND review_subject='0' ");
 
 				$SubjectInf = $PowerBB->DB->sql_fetch_array($GetSubjectInfoQuery);
 				// Get info Reply
@@ -3289,7 +3289,7 @@ function UpdateSectionCache($SectionCache)
 				$last_berpage_nm = $countpage;
 				$last_writer = $GetLastSubjectInf['writer'];
 				$title = $GetLastSubjectInf['title'];
-				$last_date = $GetLastSubjectInf['write_time'];
+				$last_date = $GetLastSubjectInf['native_write_time'];
 				}
 			}
 
@@ -4460,6 +4460,7 @@ function my_strlen($string)
 		  }
 	   }
 	}
+
 	function PBB_Create_last_posts_cache($cache_long)
 	{
 		global $PowerBB;
@@ -4468,7 +4469,7 @@ function my_strlen($string)
 		$max_limit = '20';
 		$Now= $PowerBB->_CONF['now'];
 		$cache_end = $cache_time+($cache_long*60);
-		if(!$cache || ($cache_end < $Now))
+		if(!$cache || ($cache_end <= $Now))
 		{
 		$last_posts_cache 							= 	array();
 		// Order data

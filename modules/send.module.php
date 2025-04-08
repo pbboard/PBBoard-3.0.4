@@ -38,10 +38,9 @@ class PowerBBCoreMOD
 		{
 			if ($PowerBB->_GET['index'])
 			{
-			    $_SESSION['pbb_send_maill_form'] = 1;
 				$this->_MemberSendIndex();
 			}
-			elseif ($PowerBB->_GET['start'] and $_SESSION['pbb_forget_form'])
+			elseif ($PowerBB->_GET['start'])
 			{
 				$this->_MemberSendStart();
 			}
@@ -52,12 +51,11 @@ class PowerBBCoreMOD
              $PowerBB->functions->GetFooter();
 			}
 		}
-        elseif ($PowerBB->_GET['sendmessage'] and $PowerBB->functions->CleanVariable($PowerBB->_GET['sendmessage'],'intval'))
+        elseif ($PowerBB->_GET['sendmessage'] == '1')
 		{
-		    $_SESSION['pbb_send_message_form'] = 1;
 			$this->_SendIndex();
 		}
-		elseif ($PowerBB->functions->CleanVariable($PowerBB->_GET['startsendmessage'],'intval') and $_SESSION['pbb_forget_form'])
+		elseif ($PowerBB->_GET['startsendmessage'] == '1')
 		{
 			$this->_SendStart();
 		}
@@ -158,7 +156,7 @@ class PowerBBCoreMOD
          }
 
 		$PowerBB->functions->ShowHeader();
-		$flood_send_email_time = "40";
+		$flood_send_email_time = "10";
 		if ((@time() - $flood_send_email_time) <= $_SESSION['last_send_email_time'])
 		{
 		$PowerBB->functions->error(" <p>It requires you to wait ".$flood_send_email_time." seconds to send Mail again.</p>");
@@ -350,7 +348,7 @@ class PowerBBCoreMOD
      		$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['Visitors_can_not_send_an_email']);
      	}
 
-		$flood_send_email_time = "40";
+		$flood_send_email_time = "10";
 		if ((@time() - $flood_send_email_time) <= $_SESSION['last_send_email_time'])
 		{
 		$PowerBB->functions->error(" <p>It requires you to wait ".$flood_send_email_time." seconds to send Mail again.</p>");

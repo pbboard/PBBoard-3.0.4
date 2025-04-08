@@ -733,23 +733,33 @@ class PowerBBMiscMOD
 			$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['Please_enter_a_valid_e-mail']);
 		}
 
-   		if (!$PowerBB->_CONF['member_permission'])
-         {
-		        if($PowerBB->_CONF['info_row']['captcha_type'] == 'captcha_Q_A')
-				 {
-	                if($PowerBB->_POST['code'] != $PowerBB->_POST['code_answer'])
-					 {
-			            $PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['random_answer_not_correct']);
-				     }
-			     }
-		        if($PowerBB->_CONF['info_row']['captcha_type'] == 'captcha_IMG')
-				 {
-			        if(md5($PowerBB->_POST['code']) != $_SESSION['captcha_key'])
-					 {
-			            $PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['Code_that_you_enter_the_wrong']);
-				     }
-			    }
-         }
+
+        if($PowerBB->_CONF['info_row']['captcha_type'] == 'captcha_Q_A')
+		 {
+
+			$PowerBB->_POST['code']    =    $PowerBB->functions->CleanVariable($PowerBB->_POST['code'],'trim');
+			$PowerBB->_POST['code']   = 	$PowerBB->functions->CleanVariable($PowerBB->_POST['code'],'sql');
+			$PowerBB->_POST['code']   = 	$PowerBB->functions->CleanVariable($PowerBB->_POST['code'],'html');
+
+               if($PowerBB->_POST['code'] != $PowerBB->_POST['code_answer'])
+			 {
+	            $PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['random_answer_not_correct']);
+		     }
+	     }
+
+        if($PowerBB->_CONF['info_row']['captcha_type'] == 'captcha_IMG')
+		 {
+
+			$PowerBB->_POST['code_confirm']    =    $PowerBB->functions->CleanVariable($PowerBB->_POST['code_confirm'],'trim');
+			$PowerBB->_POST['code_confirm']   = 	$PowerBB->functions->CleanVariable($PowerBB->_POST['code_confirm'],'sql');
+			$PowerBB->_POST['code_confirm']   = 	$PowerBB->functions->CleanVariable($PowerBB->_POST['code_confirm'],'html');
+
+	        if(md5($PowerBB->_POST['code_confirm']) != $_SESSION['captcha_key'])
+			 {
+	            $PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['Code_that_you_enter_the_wrong']);
+		     }
+	     }
+
 
             $PowerBB->_POST['text'] = $PowerBB->Powerparse->replace($PowerBB->_POST['text']);
           	$PowerBB->_POST['text'] = str_ireplace('{39}',"'",$PowerBB->_POST['text']);

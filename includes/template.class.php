@@ -756,6 +756,7 @@ class PBBTemplate
 				$write_b = str_replace('src="applications/','src="'.$PowerBB->functions->GetForumAdress().'applications/', $write_b);
 				$write_b = str_replace('url(download/','url('.$PowerBB->functions->GetForumAdress().'download/', $write_b);
 				$write_b = str_replace($PowerBB->functions->GetForumAdress().'http','http', $write_b);
+                $write_b = str_replace('href="forum/','href="'.$PowerBB->functions->GetForumAdress().'forum/', $write_b);
 
        @eval($PowerBB->functions->get_fetch_hooks('template_ob_get_clean'));
 

@@ -2613,7 +2613,8 @@ return preg_replace($pattern, $replacement, $email);
      $string = preg_replace('#\[html\](.*)\[/html\]#siU', '', $string);
      $string = preg_replace('#\[xml\](.*)\[/xml\]#siU', '', $string);
      $string = preg_replace('#\[css\](.*)\[/css\]#siU', '', $string);
-     $string = preg_replace('/\n+/ ', ' ', $string);
+
+
 
 		$string = str_replace("[","<", $string);
 		$string = str_replace("]",">", $string);
@@ -2632,6 +2633,12 @@ return preg_replace($pattern, $replacement, $email);
 
         $originally_text = strip_tags($originally_text);
         $originally_text = htmlspecialchars($originally_text);
+
+		$originally_text = str_replace("\n", ' ', $originally_text);
+		$originally_text = str_replace("\r", '', $originally_text);
+		$originally_text = str_replace("\t", '', $originally_text);
+		$originally_text = str_replace("   ", " ", $originally_text);
+		$originally_text = str_replace("  ", " ", $originally_text);
 
 		return ($originally_text);
     }

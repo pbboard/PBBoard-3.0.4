@@ -671,7 +671,7 @@ class PBBTemplate
 					$write_b = str_replace("<option value='".$PowerBB->functions->GetForumAdress()."index.php?page=latest_reply&amp;today=1'>»".$PowerBB->_CONF['template']['_CONF']['lang']['latest_reply']."</option>","", $write_b);
 		             if ($filename == 'header_bar')
 					 {
-					  $write_b = preg_replace('#\<li\>(.*)<span class="fa fa-clipboard"></span>(.*)\</li\>#siU', '', $write_b);
+                     $write_b = preg_replace('#<li>(\r\n?|\n?)<span class="fa fa-clipboard"></span>(\r\n?|\n?)</li>#si', '', $write_b);
 					 }
 					}
 				 if ($PowerBB->_CONF['info_row']['auto_links_titles'])

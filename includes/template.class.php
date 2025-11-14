@@ -599,9 +599,8 @@ class PBBTemplate
 				}
                 else
 				{
-				$string = str_replace('<div class="btn-nav"></div>','<li><b class="btn-nav"></b></li>',$string);
+				$string = str_replace('<div class="btn-nav"></div>','<b class="btn-nav"></b>',$string);
 				}
-
 
 
 	        $write  = eval(" ?> $string <?php ");
@@ -757,6 +756,13 @@ class PBBTemplate
 				$write_b = str_replace('url(download/','url('.$PowerBB->functions->GetForumAdress().'download/', $write_b);
 				$write_b = str_replace($PowerBB->functions->GetForumAdress().'http','http', $write_b);
                 $write_b = str_replace('href="forum/','href="'.$PowerBB->functions->GetForumAdress().'forum/', $write_b);
+
+
+				 if (strstr($write_b,'<!--adding_route_sequence_numbers-->'))
+				 {
+				  $write_b = str_replace('<b class="btn-nav"></b>','',$write_b);
+				 }
+
 
        @eval($PowerBB->functions->get_fetch_hooks('template_ob_get_clean'));
 

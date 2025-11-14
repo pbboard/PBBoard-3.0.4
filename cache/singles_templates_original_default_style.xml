@@ -2264,48 +2264,23 @@ doc.src = "includes/captcha.php" + "?act=" + clicks;
 <br />
 </form><br />]]></forget_password_form>
 <forum><![CDATA[{template}address_bar_part1{/template}
+<!--adding_route_sequence_numbers-->
 <?php
- $itemprop_content = 0;
+ $itemprop_content = 2;
 ?>
-{if {$section_parent} == '0'}
-<?php
-$itemprop_content = 1;
-?>
+{Des::while}{ParentList}
+<div class='btn-nav'></div>
 <li itemprop="itemListElement" itemscope
 itemtype="https://schema.org/ListItem">
-<a itemprop="item" href="index.php?page=forum&amp;show=1&amp;id={$sec_address_id}">
-<span itemprop="name">
- {$sec_address_title}
-</span>
+<a itemprop="item" href="index.php?page=forum&amp;show=1&amp;id={$ParentList['id']}">
+<span itemprop="name">{$ParentList['title']}</span>
 </a>
-<meta itemprop="position" content="2" />
+<meta itemprop="position" content="<?php echo $itemprop_content;?>" />
 </li>
-<div class="btn-nav"></div>
-{/if}
-{if {$section_parent}}
 <?php
-$itemprop_content = 1;
+$itemprop_content += 1;
 ?>
-<li itemprop="itemListElement" itemscope
-itemtype="https://schema.org/ListItem">
-<a itemprop="item" href="index.php?page=forum&amp;show=1&amp;id={$section_info['parent']}">
-<span itemprop="name">
-{$sec_address_title}
-</span>
-</a>
-<meta itemprop="position" content="<?php echo 3-$itemprop_content;?>" />
-</li>
-<div class="btn-nav"></div>
-{/if}
-<li itemprop="itemListElement" itemscope
-itemtype="https://schema.org/ListItem">
-<a itemprop="item" href="index.php?page=forum&amp;show=1&amp;id={$SECTION_ID}">
-<span itemprop="name">
-{$section_info['title']}
-</span>
-</a>
-<meta itemprop="position" content="<?php echo 4-$itemprop_content;?>" />
-</li>
+{/Des::while}
 
 {template}address_bar_part2{/template}<br />
 <br />
@@ -13248,92 +13223,21 @@ $(document).ready(Ready);
 </div>
 <!-- Code reputation Menu End -->]]></subject_reputation>
 <subject_top><![CDATA[{template}address_bar_part1{/template}
-
 <?php
-$itemprop_content = 0;
-if($PowerBB->_CONF['template']['sec_main_id']){
-$SecSubject3 			= 	array();
-$SecSubject3['where'] 	= 	array('id',$PowerBB->_CONF['template']['sec_main_id']);
-$Section_rwo3 = $PowerBB->core->GetInfo($SecSubject3,'section');
-}
-if($Section_rwo3['parent']){
-$SecSubject4 			= 	array();
-$SecSubject4['where'] 	= 	array('id',$Section_rwo3['parent']);
-
-$Section_rwo4 = $PowerBB->core->GetInfo($SecSubject4,'section');
-}
-
-$SecSubject5 			= 	array();
-$SecSubject5['where'] 	= 	array('id',$Section_rwo4['parent']);
-
-$Section_rwo5 = $PowerBB->core->GetInfo($SecSubject5,'section');
-if($Section_rwo5['id'])
-{
+ $itemprop_content = 2;
 ?>
-
+{Des::while}{ParentList}
 <li itemprop="itemListElement" itemscope
 itemtype="https://schema.org/ListItem">
-<a itemprop="item" href="index.php?page=forum&amp;show=1&amp;id=<?php echo $Section_rwo5['id']; ?>">
-<span itemprop="name">
-<?php echo $Section_rwo5['title']; ?>
-</span>
-</a>
-<meta itemprop="position" content="5" />
+<a itemprop="item" href="index.php?page=forum&amp;show=1&amp;id={$ParentList['id']}">
+<span itemprop="name">{$ParentList['title']}</span></a>
+<meta itemprop="position" content="<?php echo $itemprop_content;?>" />
 </li>
-<div class="btn-nav"></div>
+<div class='btn-nav'></div>
 <?php
-}
-if($Section_rwo4['id'])
-{
-$itemprop_content = 1;
+$itemprop_content += 1;
 ?>
-<li itemprop="itemListElement" itemscope
-itemtype="https://schema.org/ListItem">
-<a itemprop="item" href="index.php?page=forum&amp;show=1&amp;id=<?php echo $Section_rwo4['id']; ?>">
-<span itemprop="name">
-<?php echo $Section_rwo4['title']; ?>
-</span>
-</a>
-<meta itemprop="position" content="2" />
-</li>
-<div class="btn-nav"></div>
-<?php
-}
-?>
-{if {$Section_rwo2['id']}}
-<li itemprop="itemListElement" itemscope
-itemtype="https://schema.org/ListItem">
-<a itemprop="item" href="index.php?page=forum&amp;show=1&amp;id={$Section_rwo2['id']}">
-<span itemprop="name">
-{$Section_rwo2['title']}
-</span>
-</a>
-<meta itemprop="position" content="3" />
-</li>
-<div class="btn-nav"></div>
-{/if}
-{if {$sec_main_id}}
-<li itemprop="itemListElement" itemscope
-itemtype="https://schema.org/ListItem">
-<a itemprop="item" href="index.php?page=forum&amp;show=1&amp;id={$sec_main_id}">
-<span itemprop="name">
-{$sec_main_title}
-</span>
-</a>
-<meta itemprop="position" content="<?php echo 2+$itemprop_content;?>" />
-</li>
-<div class="btn-nav"></div>
-{/if}
-<li itemprop="itemListElement" itemscope
-itemtype="https://schema.org/ListItem">
-<a itemprop="item" href="index.php?page=forum&amp;show=1&amp;id={$section_info['id']}{$password}">
-<span itemprop="name">
-{$section_info['title']}
-</span>
-</a>
-<meta itemprop="position" content="<?php echo 3+$itemprop_content;?>" />
-</li>
-<div class="btn-nav"></div>
+{/Des::while}
 <li itemprop="itemListElement" itemscope
 itemtype="https://schema.org/ListItem">
 <a itemprop="item" href="index.php?page=topic&amp;show=1&amp;id={$subject_id}">
@@ -13341,7 +13245,7 @@ itemtype="https://schema.org/ListItem">
 {$subject_title}
 </span>
 </a>
-<meta itemprop="position" content="<?php echo 4+$itemprop_content;?>" />
+<meta itemprop="position" content="<?php echo $PowerBB->_CONF['template']['child_num']+2;?>" />
 </li>
 {template}address_bar_part2{/template}
 <!-- table -->

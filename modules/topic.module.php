@@ -437,6 +437,18 @@ class PowerBBTopicMOD
         $PowerBB->template->assign('count_peg',$PowerBB->_GET['count']);
         $PowerBB->template->assign('write_reply',$PowerBB->functions->section_group_permission($PowerBB->_CONF['template']['SubjectInfo']['section'],$PowerBB->_CONF['group_info']['id'],'write_reply'));
         $PowerBB->template->assign('write_subject',$PowerBB->functions->section_group_permission($PowerBB->_CONF['template']['SubjectInfo']['section'],$PowerBB->_CONF['group_info']['id'],'write_subject'));
+
+
+         // nav bar get all child sections of parent
+		 $ParentList = $this->get_parent($this->SectionInfo['id']);
+		 $nmy = sizeof($ParentList);
+		 $nmy_neg = $nmy-1;
+		 $PowerBB->template->assign('child_num',$nmy);
+		 $PowerBB->template->assign('neg_num',$nmy_neg);
+         $PowerBB->_CONF['template']['while']['ParentList'] = $ParentList;
+
+         eval($PowerBB->functions->get_fetch_hooks('subject_top_template_hooks'));
+
 		// Aha, there are tags in this subject
 		if ($PowerBB->_CONF['template']['while']['tags'] != false)
 		{
@@ -1573,6 +1585,24 @@ class PowerBBTopicMOD
      	$PowerBB->template->display('topic_end');
 
    }
+
+    //get all child sections of parent
+	function get_parent($catid = 0)
+	{
+	    global $PowerBB;
+	    $parent = array();
+	    $query_child =$PowerBB->DB->sql_query("SELECT id,parent,title  FROM " . $PowerBB->table['section'] . " WHERE id = '$catid' ORDER BY parent DESC");
+		$child = $PowerBB->DB->sql_fetch_array($query_child);
+
+	    $parent[] = $child;
+
+	       if ($child['parent'] == 0) {
+	           return $parent;
+	       } else {
+	           $item = $this->get_parent($child['parent']);
+	         return array_merge($item,$parent);
+	       }
+	}
 
 	function _MBstrlen($text)
 	{

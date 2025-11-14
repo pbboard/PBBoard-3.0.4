@@ -2211,9 +2211,35 @@ function _AllCacheStart()
       $PowerBB->template->assign('sec_address_title',$Section_rwo1['title']);
       $PowerBB->template->assign('sec_main_title',$Section_rwo2['title']);
 	 $PowerBB->template->assign('sec_main_id',$Section_rwo2['id']);
+         // nav bar get all child sections of parent
+		 $ParentList = $this->get_parent($this->Section['id']);
+		 $nmy = sizeof($ParentList);
+		 $nmy_neg = $nmy-1;
+		 $PowerBB->template->assign('child_num',$nmy);
+		 $PowerBB->template->assign('neg_num',$nmy_neg);
+         $PowerBB->_CONF['template']['while']['ParentList'] = $ParentList;
 
+         eval($PowerBB->functions->get_fetch_hooks('start_forum_template_hooks'));
 		$PowerBB->template->display('forum');
 
+	}
+
+    //get all child sections of parent
+	function get_parent($catid = 0)
+	{
+	    global $PowerBB;
+	    $parent = array();
+	    $query_child =$PowerBB->DB->sql_query("SELECT id,parent,title  FROM " . $PowerBB->table['section'] . " WHERE id = '$catid' ORDER BY parent DESC");
+		$child = $PowerBB->DB->sql_fetch_array($query_child);
+
+	    $parent[] = $child;
+
+	       if ($child['parent'] == 0) {
+	           return $parent;
+	       } else {
+	           $item = $this->get_parent($child['parent']);
+	         return array_merge($item,$parent);
+	       }
 	}
 
 	    /**

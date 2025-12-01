@@ -56,15 +56,21 @@ class PowerBBChangeStyleMOD
 
 			if ($change)
 			{
+			    $referer = $PowerBB->_SERVER['HTTP_REFERER'];
+			    $forum_address = $PowerBB->functions->GetForumAdress();
 
-	            if (strstr($PowerBB->_SERVER['HTTP_REFERER'],$PowerBB->functions->GetForumAdress()))
-				{
-					$PowerBB->functions->redirect2($PowerBB->_SERVER['HTTP_REFERER']);
-				}
-				else
-				{
-					$PowerBB->functions->redirect2('index.php');
-				}
+			    if (
+			        !empty($referer) &&
+			        strpos($referer, $forum_address) === 0 &&
+			        strpos($referer, "change_style") === false
+			    )
+			    {
+			        $PowerBB->functions->header_redirect($referer);
+			    }
+			    else
+			    {
+			        $PowerBB->functions->header_redirect('index.php');
+			    }
 			}
 		}
 		else

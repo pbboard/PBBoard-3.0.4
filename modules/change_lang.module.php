@@ -20,7 +20,6 @@ class PowerBBChangeLangMOD
              $PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['Sorry_url_not_true']);
              $PowerBB->functions->GetFooter();
 		}
-
 		if ($PowerBB->_GET['change'] == '1')
 		{
 
@@ -46,17 +45,23 @@ class PowerBBChangeLangMOD
 
 
 			}
-
 			if ($change)
 			{
-	            if (strstr($PowerBB->_SERVER['HTTP_REFERER'],$PowerBB->functions->GetForumAdress()))
-				{
-					$PowerBB->functions->redirect2($PowerBB->_SERVER['HTTP_REFERER']);
-				}
-				else
-				{
-					$PowerBB->functions->redirect2('index.php');
-				}
+			    $referer = $PowerBB->_SERVER['HTTP_REFERER'];
+			    $forum_address = $PowerBB->functions->GetForumAdress();
+
+			    if (
+			        !empty($referer) &&
+			        strpos($referer, $forum_address) === 0 &&
+			        strpos($referer, "change_lang") === false
+			    )
+			    {
+			        $PowerBB->functions->header_redirect($referer);
+			    }
+			    else
+			    {
+			        $PowerBB->functions->header_redirect('index.php');
+			    }
 			}
 		}
 		else

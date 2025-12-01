@@ -92,10 +92,13 @@ class PowerBBAwardMOD
 	{
 		global $PowerBB;
 
-		if (empty($PowerBB->_POST['username'])
-			or empty($PowerBB->_POST['award_path']))
+		if (empty($PowerBB->_POST['username']))
 		{
-			$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['Please_fill_in_all_the_information']);
+			$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['Enter_the_name_of_a_member']);
+		}
+		if (empty($PowerBB->_FILES['award_path']['name']))
+		{
+			$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['Please_select_a_file']." ".$PowerBB->_CONF['template']['_CONF']['lang']['image_award']);
 		}
 
 		$MemberArr 				= 	array();
@@ -108,19 +111,40 @@ class PowerBBAwardMOD
 		 	$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['The_name_of_the_user_does_not_exist']);
 		   }
 
-        if ($PowerBB->functions->IsImage($PowerBB->_POST['award_path'],0) == false)
-        {
-          $PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['INcorrect_information']);
-		}
+			$BAD_TYPES = array("image/gif",
+			"image/pjpeg",
+			"image/jpeg",
+			"image/png",
+			"image/jpg",
+			"image/bmp",
+			"image/x-png");
+
+			if(!in_array($PowerBB->_FILES['award_path']['type'],$BAD_TYPES))
+			{
+			$PowerBB->functions->error("❌ الملف الذي تم رفعه ليس صورة صالحة.<br />يجب ان يكون بهذه الصيغ:<b dir='ltr'> .jpg .jpeg .png .gif .bmp</b>");
+			}
+
+		$uploads_dir = '../look/images/awards/';
+		$uploads_dir_s = 'look/images/awards/';
+
+        $award_image = $PowerBB->_FILES['award_path']['name'];
+        $ext = $PowerBB->functions->GetFileExtension($award_image);
+        $award_image = str_replace($ext,'',$award_image);
+		if ($PowerBB->_FILES['award_path']['name'])
+		{
 			$AwardArr 			= 	array();
 			$AwardArr['field']	=	array();
 
-			$AwardArr['field']['award_path']    = 	 $PowerBB->_POST['award_path'];
+			$AwardArr['field']['award_path']    = 	$uploads_dir_s.$PowerBB->_FILES['award_path']['name'];
 			$AwardArr['field']['award'] 		= 	$PowerBB->_POST['award'];
 			$AwardArr['field']['username'] 		= 	$PowerBB->_POST['username'];
 			$AwardArr['field']['user_id'] 		= 	$member['id'];
 
 			$insert = $PowerBB->award->InsertAward($AwardArr);
+
+		   $uploaded = move_uploaded_file($PowerBB->_FILES['award_path']['tmp_name'] , $uploads_dir.$PowerBB->_FILES['award_path']['name']);
+        }
+
 
 			if ($insert)
 			{
@@ -143,7 +167,15 @@ class PowerBBAwardMOD
 		$AwardArr['proc']['*'] 		= 	array('method'=>'clean','param'=>'html');
 
 		$PowerBB->_CONF['template']['while']['AwardsList'] = $PowerBB->award->GetAwardList($AwardArr);
-
+			$x = 0;
+			$n	=	sizeof($PowerBB->_CONF['template']['while']['AwardsList']);
+			while ($x < $n)
+			{
+		        if(strstr($PowerBB->_CONF['template']['while']['AwardsList'][$x]['award_path'],"look/images/awards/"))
+		        {		        $PowerBB->_CONF['template']['while']['AwardsList'][$x]['award_path'] = str_ireplace("look/images/awards/", '../look/images/awards/', $PowerBB->_CONF['template']['while']['AwardsList'][$x]['award_path']);
+		        }
+	      	 $x += 1;
+			}
 		$PowerBB->template->display('award_main');
 	}
 
@@ -164,6 +196,10 @@ class PowerBBAwardMOD
 
 			$AwardEdit = $PowerBB->award->GetAwardInfo($AwardEditArr);
 
+			if(strstr($AwardEdit['award_path'],"look/images/awards/"))
+			{
+			$AwardEdit['award_path'] = str_ireplace("look/images/awards/", '../look/images/awards/', $AwardEdit['award_path']);
+			}
 			$PowerBB->template->assign('AwardEdit',$AwardEdit);
 
 
@@ -174,10 +210,16 @@ class PowerBBAwardMOD
 	{
 		global $PowerBB;
 
-			if (empty($PowerBB->_GET['id']))
-			{
-				$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['Medal_requested_does_not_exist']);
-			}
+		if (empty($PowerBB->_GET['id']))
+		{
+			$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['Medal_requested_does_not_exist']);
+		}
+
+		if (empty($PowerBB->_POST['username']))
+		{
+			$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['Enter_the_name_of_a_member']);
+		}
+
 
 		$MemberArr 				= 	array();
 		$MemberArr['where']		=	array('username',$PowerBB->_POST['username']);
@@ -189,21 +231,45 @@ class PowerBBAwardMOD
 		 	$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['The_name_of_the_user_does_not_exist']);
 		   }
 
-        if ($PowerBB->functions->IsImage($PowerBB->_POST['award_path'],0) == false)
-        {
-          $PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['INcorrect_information']);
-		}
+               $BAD_TYPES = array("image/gif",
+                    "image/pjpeg",
+                    "image/jpeg",
+                    "image/png",
+                    "image/jpg",
+                    "image/bmp",
+                    "image/x-png");
 
-		$AwardArr 			= 	array();
-		$AwardArr['field']	=	array();
+			   if(!in_array($PowerBB->_FILES['award_path']['type'],$BAD_TYPES))
+			   {
+			    $PowerBB->functions->error("❌ الملف الذي تم رفعه ليس صورة صالحة.	<br />يجب ان يكون بهذه الصيغ:<b dir='ltr'> .jpg .jpeg .png .gif .bmp</b>");
+			   }
 
-		$AwardArr['field']['award_path']    = 	 $PowerBB->_POST['award_path'];
-		$AwardArr['field']['award'] 		= 	$PowerBB->_POST['award'];
-		$AwardArr['field']['username'] 		= 	$PowerBB->_POST['username'];
-		$AwardArr['field']['user_id'] 		= 	$member['id'];
-		$AwardArr['where'] 				= 	array('id',$PowerBB->_GET['id']);
+		$uploads_dir = '../look/images/awards/';
+		$uploads_dir_s = 'look/images/awards/';
 
-		$update = $PowerBB->award->UpdateAward($AwardArr);
+        $award_image = $PowerBB->_FILES['award_path']['name'];
+        $ext = $PowerBB->functions->GetFileExtension($award_image);
+        $award_image = str_replace($ext,'',$award_image);
+		if ($PowerBB->_FILES['award_path']['name'])
+		{
+			$AwardInfArr				=	array();
+		    $AwardInfArr['where'] 	= 	array('id',$PowerBB->_GET['id']);
+			$AwardInf = $PowerBB->award->GetAwardInfo($AwardInfArr);
+	        $del_award = @unlink("../".$AwardInf['award_path']);
+
+			$AwardArr 			= 	array();
+			$AwardArr['field']	=	array();
+
+			$AwardArr['field']['award_path']    = 	$uploads_dir_s.$PowerBB->_FILES['award_path']['name'];
+			$AwardArr['field']['award'] 		= 	$PowerBB->_POST['award'];
+			$AwardArr['field']['username'] 		= 	$PowerBB->_POST['username'];
+			$AwardArr['field']['user_id'] 		= 	$member['id'];
+			$AwardArr['where'] 				= 	array('id',$PowerBB->_GET['id']);
+
+			$update = $PowerBB->award->UpdateAward($AwardArr);
+
+		   $uploaded = move_uploaded_file($PowerBB->_FILES['award_path']['tmp_name'] , $uploads_dir.$PowerBB->_FILES['award_path']['name']);
+        }
 
 		if ($update)
 		{
@@ -220,6 +286,12 @@ class PowerBBAwardMOD
 			{
 				$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['Medal_requested_does_not_exist']);
 			}
+
+			$AwardInfArr				=	array();
+		    $AwardInfArr['where'] 	= 	array('id',$PowerBB->_GET['id']);
+			$AwardInf = $PowerBB->award->GetAwardInfo($AwardInfArr);
+	        $del_award = @unlink("../".$AwardInf['award_path']);
+
 
 			$DelArr 			= 	array();
 			$DelArr['where'] 	= 	array('id',$PowerBB->_GET['id']);

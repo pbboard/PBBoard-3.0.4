@@ -59,21 +59,43 @@ instance.insert('['+bbcode_tag+']' + getSelection() , '[/'+bbcode_tag+']', true,
 	tooltip: "Mention"
 	});
 
-// Add undo command
+// Add undo command (Ctrl+Z / Cmd+Z)
 $.sceditor.command.set('undo', {
-	exec: function() {
-	PBBEditor.execCommand("undo", false, null);
-	},
-	tooltip: "Undo"
+    exec: function() {
+        this.execCommand('undo');
+    },
+    tooltip: "Undo",
+    // إضافة keybind لضمان الارتباط
+    keybind: 'ctrl+z|cmd+z'
 });
 
-// Add redo command
+// Add redo command (Ctrl+Y / Cmd+Y أو Ctrl+Shift+Z / Cmd+Shift+Z)
 $.sceditor.command.set('redo', {
-	exec: function() {
-	PBBEditor.execCommand("redo", false, null);
-	},
-	tooltip: "Redo"
+    exec: function() {
+        this.execCommand('redo');
+    },
+    tooltip: "Redo",
+    // إضافة keybind لضمان الارتباط
+    keybind: 'ctrl+y|cmd+y|ctrl+shift+z|cmd+shift+z'
 });
+
+// Add warning command
+$.sceditor.command.set('warning', {
+exec: function() {
+ var editor = this;
+ editor.insert('[warn]' + getSelection() , '[/warn]', true, true, true);
+ },
+ tooltip: 'Insert Alert Tag'
+ });
+
+ // Add info command
+$.sceditor.command.set('info', {
+exec: function() {
+ var editor = this;
+ editor.insert('[info]' + getSelection() , '[/info]', true, true, true);
+ },
+ tooltip: 'Insert Info Tag'
+ });
 
 $.sceditor.command.set("codebrush", {
 	exec: function(caller) {

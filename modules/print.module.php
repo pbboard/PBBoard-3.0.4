@@ -15,21 +15,26 @@
 
 define('JAVASCRIPT_PowerCode',true);
 
-
-
 define('CLASS_NAME','PowerBBPrintMOD');
 
 include('common.php');
 class PowerBBPrintMOD
 {
-
-
 	/**
 	 * The main function , will require from kernel file "index.php"
 	 */
 	function run()
 	{
 		global $PowerBB;
+		if (!$PowerBB->_CONF['info_row']['print_subject'])
+		{
+		    // إرسال كود 403
+		    header("HTTP/1.1 403 Forbidden");
+		    header("Status: 403 Forbidden");
+
+		    $PowerBB->functions->ShowHeader();
+		    $PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['Sorry_You_do_not_have_powers_to_access_this_page']);
+		}
 
 		// Show the topic
 		if ($PowerBB->_GET['show'])

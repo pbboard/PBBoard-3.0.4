@@ -611,6 +611,7 @@ class PowerBBCommon
 			$InsertOnline['field']['user_ip'] 			= 	$PowerBB->_CONF['ip'];
 			$InsertOnline['field']['hide_browse'] 		= 	$PowerBB->_CONF['member_row']['hide_online'];
 			$InsertOnline['field']['user_location'] 	= 	$MemberLocation;
+			if($page )
 			$InsertOnline['field']['user_id'] 			= 	$PowerBB->_CONF['member_row']['id'];
 
 			$insert = $PowerBB->core->Insert($InsertOnline,'online');
@@ -629,12 +630,22 @@ class PowerBBCommon
 
 				$UpdateOnline['field']['username'] 			= 	$PowerBB->_CONF['member_row']['username'];
 				$UpdateOnline['field']['username_style'] 	= 	$username_style;
-				$UpdateOnline['field']['logged']			=	$PowerBB->_CONF['now'];
 				$UpdateOnline['field']['path']				=	$path;
 				$UpdateOnline['field']['user_ip']			=	$PowerBB->_CONF['ip'];
 				$UpdateOnline['field']['hide_browse']		=	$PowerBB->_CONF['member_row']['hide_online'];
 				$UpdateOnline['field']['user_location']		=	$MemberLocation;
 				$UpdateOnline['field']['user_id']			=	$PowerBB->_CONF['member_row']['id'];
+				$UpdateOnline['field']['last_move']         =   $PowerBB->_CONF['now'];
+
+				$valid_pages = ['forum', 'topic', 'post'];
+				// إذا كانت قيمة $PowerBB->_GET['page'] غير موجودة (!) في المصفوفة
+				if (!in_array($PowerBB->_GET['page'], $valid_pages))
+				{
+				    $UpdateOnline['field']['section_id']		=	"";
+				    $UpdateOnline['field']['subject_id']		=	"";
+				    $UpdateOnline['field']['subject_show']		=	"";
+				}
+
 				$UpdateOnline['where']						=	array('username',$PowerBB->_CONF['member_row']['username']);
 
 				$update = $PowerBB->core->Update($UpdateOnline,'online');
@@ -762,11 +773,6 @@ class PowerBBCommon
 
 			$PowerBB->core->Update($LoggedArr,'member');
 
-			$UpdateOnline 					= 	array();
-			$UpdateOnline['field']			=	array();
-			$UpdateOnline['field']['last_move'] = $PowerBB->_CONF['now'];
-			$UpdateOnline['where']                    =    array('username',$PowerBB->_CONF['member_row']['username']);
-	        $update = $PowerBB->core->Update($UpdateOnline,'online');
 		}
 
        	$PowerBB->_CONF['rows']['style']['image_path']= str_replace('../','',$PowerBB->_CONF['rows']['style']['image_path']);
@@ -892,11 +898,11 @@ class PowerBBCommon
 
 		// Check if the visitor is already online
        	$IsGuestOnline = $OnlineInfo;
+       	$isBot = $PowerBB->functions->is_bot();
+        $BotName = $PowerBB->functions->bot_name();
 
 		if (!$IsGuestOnline)
 		{
-       	$isBot = $PowerBB->functions->is_bot();
-        $BotName = $PowerBB->functions->bot_name();
 
 			$InsertOnlineArr 			= 	array();
 			$InsertOnlineArr['field'] 	= 	array();
@@ -928,13 +934,25 @@ class PowerBBCommon
 					$UpdateOnlineArr 					= 	array();
 					$UpdateOnlineArr['field']			=	array();
 
-					$UpdateOnlineArr['field']['path']				=	addslashes($PowerBB->_SERVER['QUERY_STRING']);
-					$UpdateOnlineArr['field']['username'] 	= 	'Guest';
+					$UpdateOnlineArr['field']['username'] 			= 	'Guest';
 					$UpdateOnlineArr['field']['username_style'] 	= 	'Guest';
-					$UpdateOnlineArr['field']['user_location']		=	$GuestLocation;
-					$UpdateOnlineArr['field']['subject_show']		=	$subject_show;
-					$UpdateOnlineArr['field']['subject_id']		    =	$subject_id;
-					$UpdateOnlineArr['field']['last_move']          =   $PowerBB->_CONF['now'];
+					$UpdateOnlineArr['field']['path'] 				= 	addslashes($PowerBB->_SERVER['QUERY_STRING']);
+					$UpdateOnlineArr['field']['user_ip'] 			= 	$PowerBB->_CONF['ip'];
+					$UpdateOnlineArr['field']['user_location'] 	    = 	$GuestLocation;
+					$UpdateOnlineArr['field']['user_id']			=	-1;
+		            $UpdateOnlineArr['field']['last_move']          = $PowerBB->_CONF['now'];
+		            $UpdateOnlineArr['field']['is_bot']             = $isBot;
+		            $UpdateOnlineArr['field']['bot_name']           = $BotName;
+
+					$valid_pages = ['forum', 'topic', 'post'];
+					// إذا كانت قيمة $PowerBB->_GET['page'] غير موجودة (!) في المصفوفة
+					if (!in_array($PowerBB->_GET['page'], $valid_pages))
+					{
+					    $UpdateOnlineArr['field']['section_id']		=	"";
+					    $UpdateOnlineArr['field']['subject_id']		=	"";
+					    $UpdateOnlineArr['field']['subject_show']		=	"";
+					}
+
 					$UpdateOnlineArr['where']						=	array('id',$OnlineInfo['id']);
 
 				   $update = $PowerBB->core->Update($UpdateOnlineArr,'online');

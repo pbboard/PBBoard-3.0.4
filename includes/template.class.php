@@ -764,6 +764,18 @@ class PBBTemplate
 				 }
 
 
+                if ($PowerBB->_CONF['info_row']['auto_links_titles'])
+				{
+					// Regex لفك ترميز اللغة العربية فقط داخل الروابط
+					$write_b = preg_replace_callback(
+					    '/https?:\/\/[^\s"\'<>]+/',
+					    function ($matches) {
+					        return urldecode($matches[0]);
+					    },
+					    $write_b
+					);
+                }
+
        @eval($PowerBB->functions->get_fetch_hooks('template_ob_get_clean'));
 
 		echo $write_b;

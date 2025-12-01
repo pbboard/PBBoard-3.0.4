@@ -290,44 +290,41 @@ class PowerBBCodeParse
      $string = preg_replace("#(</?(?:html|head|body|div|p|form|table|thead|tbody|tfoot|tr|td|th|ul|ol|li|div|p|blockquote|cite|hr|h1|h2|h3|h4|h5|h6)[^>]*>)\s*<br />#i", "$1", $string);
 	 $string = preg_replace("#(&nbsp;)+(</?(?:html|head|body|div|p|form|table|thead|tbody|tfoot|tr|td|th|ul|ol|li|div|p|blockquote|cite|hr|h1|h2|h3|h4|h5|h6)[^>]*>)#i", "$2", $string);
 
-			//replace Custom bbcode
-	        $Custom_bbcodes = $PowerBB->functions->GetCachedCustom_bbcode();
-	        if(!empty($Custom_bbcodes))
-	        {
-              foreach ($Custom_bbcodes as $getbbcode_row)
-		      {
-		      	$bbcode_tag = $getbbcode_row['bbcode_tag'];
-		      	$bbcode_replace = $getbbcode_row['bbcode_replace'];
-                $bbcode_replace = str_replace("'","&#39;",$bbcode_replace);
-				$bbcode_replace = $this->htmlspecialchars_off($bbcode_replace);
-					$bbcode_count = substr_count($string,'[/'.$bbcode_tag.']');
-                    $p = 0;
-                 while ($p < $bbcode_count)
-                 {
+	     //replace Custom bbcode using preg_replace_callback
+ 	     $Custom_bbcodes = $PowerBB->functions->GetCachedCustom_bbcode();
+		if(!empty($Custom_bbcodes))
+		{
+			foreach ($Custom_bbcodes as $getbbcode_row)
+			{
+				$bbcode_tag = $getbbcode_row['bbcode_tag'];
+				$bbcode_replace = $getbbcode_row['bbcode_replace'];
+				$bbcode_useoption = $getbbcode_row['bbcode_useoption'];
+				$pattern = "#\[".$bbcode_tag."(?:=(.*))?\](.*)\[/".$bbcode_tag."\]#siU";
 
-					if ($getbbcode_row['bbcode_useoption'] == '1')
-					{
-						if(preg_match("#\[".$bbcode_tag."=(.*)\](.*)\[/".$bbcode_tag."\]#siU", $string, $matches))
-						{
-						  $matches[1] = $this->htmlspecialchars_off($matches[1]);
-			              $stringbcode = $this->PowerCode_BBcode($matches[1],$matches[2],$bbcode_tag);
-	                      $string = str_replace("[".$bbcode_tag."=".$matches[1]."]".$matches[2]."[/".$bbcode_tag."]",$stringbcode, $string);
-			            }
-					}
-					else
-					{
-						if(preg_match("#\[".$bbcode_tag."\](.*)\[/".$bbcode_tag."\]#siU", $string, $matches))
-						{
-						   $matches[1] = $this->htmlspecialchars_off($matches[1]);
-			               $stringbcode  = $this->PowerCode_Tag_BBcode($bbcode_replace,$bbcode_tag,$matches[1]);
-	                       $string = str_replace("[".$bbcode_tag."]".$matches[1]."[/".$bbcode_tag."]",$stringbcode, $string);
-			            }
-			          }
-                  $p += 1;
-				 }
-		      }
+				$string = preg_replace_callback(
+					$pattern,
+					function ($matches) use ($PowerBB, $bbcode_replace, $bbcode_useoption, $bbcode_tag) {
 
-            }
+						$option  = isset($matches[1]) ? $matches[1] : '';
+						$content = isset($matches[2]) ? $matches[2] : '';
+
+						$content = $this->htmlspecialchars_off($content);
+
+						if ($bbcode_useoption == '1' && !empty($option))
+						{
+							return $this->PowerCode_BBcode($option, $content, $bbcode_replace);
+						}
+						else
+						{
+							return $this->PowerCode_Tag_BBcode($bbcode_replace, $bbcode_tag, $content);
+						}
+					},
+					$string
+				);
+	        }
+        }
+
+
 
 
 			// end replaces codes
@@ -459,21 +456,23 @@ class PowerBBCodeParse
                 }
                 return "<$tag$att>$message</$tag>";
         }
-         function PowerCode_Tag_BBcode($bbcode_replace,$bbcode_tag,$message)
-        {
-        	global $PowerBB;
-				if (trim($message) == '')
-                {
-                        return '';
-                }
-                $bbcode_replace = $this->htmlspecialchars_off($bbcode_replace);
-                $bbcode_replace = str_replace("&#39;","'",$bbcode_replace);
-                $message = str_replace('\\"', '"', $message);
-                $bbcode_replace = str_replace("#", '', $bbcode_replace);
-                $bbcode_replace = str_replace("{content}",$message, $bbcode_replace);
-                $bbcode_replace = str_replace("{option}","", $bbcode_replace);
-                return $bbcode_replace;
-        }
+
+		function PowerCode_Tag_BBcode($bbcode_replace,$bbcode_tag,$message)
+		{
+		    global $PowerBB;
+		    if (trim($message) == '')
+		    {
+		        return '';
+		    }
+		    $message = htmlspecialchars($message, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+		    $bbcode_replace = $this->htmlspecialchars_off($bbcode_replace);
+		    $bbcode_replace = str_replace("&#39;","'",$bbcode_replace);
+		    $message = str_replace('\\"', '"', $message);
+		    $bbcode_replace = str_replace("#", '', $bbcode_replace);
+		    $bbcode_replace = str_replace("{content}",$message, $bbcode_replace);
+		    $bbcode_replace = str_replace("{option}","", $bbcode_replace);
+		    return $bbcode_replace;
+		}
 
  	  function PowerCode_Quote($message)
       {
@@ -751,22 +750,24 @@ class PowerBBCodeParse
                 $linky = str_replace("/v/", "/embed/", $linky);
              return '<iframe width="560" height="315" src="'.$linky.'" title="YouTube video player" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" frameborder="0" allowfullscreen></iframe>';
          }
-		function PowerCode_BBcode($option, $content, $bbcode_tag)
-        {
-		      global $PowerBB;
-                $content = str_replace('\\"', '"', $content);
-            if ($PowerBB->_POST['preview'] == false)
-            {
-                    $content = $PowerBB->functions->pbb_stripslashes($content);
-            }
-                $querybbcode1 = $PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['custom_bbcode'] . " WHERE bbcode_tag = '$bbcode_tag' ");
-				$bbcode_row1 = $PowerBB->DB->sql_fetch_array($querybbcode1);
-				$bbcode_replace = $bbcode_row1['bbcode_replace'];
-                $bbcode_replace = str_replace("&#39;","'",$bbcode_replace);
-                $bbcode_replace = str_replace("{option}",$option , $bbcode_replace );
-                $bbcode_replace = str_replace("{content}", $content, $bbcode_replace);
-                return $bbcode_replace;
-         }
+
+		function PowerCode_BBcode($option, $content, $bbcode_replace)
+		{
+		    global $PowerBB;
+			$option  = htmlspecialchars($option, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+			$content = htmlspecialchars($content, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+
+		    $content = str_replace('\\"', '"', $content);
+		    if ($PowerBB->_POST['preview'] == false)
+		    {
+		        $content = $PowerBB->functions->pbb_stripslashes($content);
+		    }
+
+		    $bbcode_replace = str_replace("&#39;","'",$bbcode_replace);
+		    $bbcode_replace = str_replace("{option}", $option , $bbcode_replace );
+		    $bbcode_replace = str_replace("{content}", $content, $bbcode_replace);
+		    return $bbcode_replace;
+		}
 
  	    function DoListli($txt)
         {

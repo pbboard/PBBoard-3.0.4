@@ -11,16 +11,37 @@ class PowerBBProfileMOD
 	{
 		global $PowerBB;
 
+		if (!$PowerBB->_CONF['group_info']['memberlist_allow'])
+		{
+
+          if (!$PowerBB->_CONF['member_permission'])
+              {
+		      header("HTTP/1.1 403 Forbidden");
+		      header("Status: 403 Forbidden");
+		      $PowerBB->functions->ShowHeader();
+              $PowerBB->template->assign('timer',$PowerBB->sys_functions->_time(time()));
+              $PowerBB->template->display('login');
+              $PowerBB->functions->error_stop();
+			}
+	        else
+	        {
+	        $PowerBB->functions->ShowHeader();
+	        $PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['no_online']);
+	        }
+	     }
      $PowerBB->_GET['id']	= 	$PowerBB->functions->CleanVariable($PowerBB->_GET['id'],'intval');
      $PowerBB->_GET['username']	= 	$PowerBB->functions->CleanVariable($PowerBB->_GET['username'],'sql');
 
 		/** Show the profile of member **/
 		if ($PowerBB->_GET['show'])
 		{
+		    $PowerBB->functions->ShowHeader();
 			$this->_ShowProfile();
 		}
 		else
 		{
+		     header("HTTP/1.1 403 Forbidden");
+		     header("Status: 403 Forbidden");
 			 $PowerBB->functions->ShowHeader();
              $PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['Sorry_url_not_true']);
              $PowerBB->functions->GetFooter();
@@ -36,21 +57,6 @@ class PowerBBProfileMOD
 
 		//////////
 		// Show the header
-	        $PowerBB->functions->ShowHeader();
-		if (!$PowerBB->_CONF['group_info']['memberlist_allow'])
-		{
-
-          if (!$PowerBB->_CONF['member_permission'])
-              {
-              $PowerBB->template->display('login');
-              $PowerBB->functions->error_stop();
-			}
-	        else
-	        {
-	        $PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['no_online']);
-	        }
-	     }
-
 		eval($PowerBB->functions->get_fetch_hooks('profileHooksStart'));
 
        		////////

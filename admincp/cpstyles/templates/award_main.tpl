@@ -23,7 +23,7 @@
 			<a target="_blank" href="../index.php?page=profile&show=1&id={$AwardsList['user_id']}">{$AwardsList['username']}</a>
 		</td>
 		<td class="row1">
-			<img border="0" src="{$AwardsList['award_path']}">
+			<img border="0" src="{$AwardsList['award_path']}" width="150" height="150">
 		</td>
 		<td class="row1">
 			<a href="index.php?page=award&amp;edit=1&amp;main=1&amp;id={$AwardsList['id']}">{$lang['edit']}</a>

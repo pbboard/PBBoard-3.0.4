@@ -7,7 +7,7 @@
 
 <br />
 
-<form action="index.php?page=award&amp;edit=1&amp;start=1&amp;id={$AwardEdit['id']}" method="post">
+<form action="index.php?page=award&amp;edit=1&amp;start=1&amp;id={$AwardEdit['id']}" method="post" enctype="multipart/form-data">
 
 	<table width="70%" class="t_style_b" border="0" cellspacing="1" align="center">
 		<tr align="center">
@@ -30,11 +30,12 @@
 		</tr>
 		<tr>
 			<td class="row1">
-			{$lang['Image_Path_award']}</td>
+			{$lang['image_award']}</td>
 			<td class="row1">
-			<img border="0" src="{$AwardEdit['award_path']}">
+			<img border="0" src="{$AwardEdit['award_path']}" width="150" height="150">
 			<br />
-				<input type="text" name="award_path" value="{$AwardEdit['award_path']}" size="60" /></td>
+				<input name="award_path" style="border: 1px solid #666;" type="file" value="{$AwardEdit['award_path']}" accept=".jpg, .jpeg, .png, .gif" size="25" dir="ltr" /><br /> النوع (mime) <b dir='ltr'><u> .jpg .jpeg .png .gif .bmp</u></b>
+				</td>
 		</tr>
 		<tr>
 			<td class="row1" colspan="2" align="center">

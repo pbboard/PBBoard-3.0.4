@@ -2440,38 +2440,46 @@ return preg_replace($pattern, $replacement, $email);
         $send = @mail($to,$subject,$message,$headers);
         return ($send) ? true : false;
  	}
+
 	/**
 	 * Just send email for smtp :)
 	 */
-  function send_this_smtp($to, $fromname, $message, $subject, $from)
-    {
-        global $PowerBB;
+	function send_this_smtp($to, $fromname, $message, $subject, $from)
+	{
+	    global $PowerBB, $mail;
+	    require_once("class_mail.php");
+	    // تعريف جسم الرسالة (HTML)
+	    $body  = $message;
 
-        require_once("class_mail.php");
-   	    // HTML body
-	    $body  = "";
-	    $body .= "";
-	    $body .= $message;
-	    $text_body  = "";
-	    $text_body .= "";
-	    $text_body .= $fromname;
-		/////////////
-		//$mail->SMTPDebug = 3;  // Enable verbose debug output
-		$mail->setFrom($from, $fromname);
-		$mail->FromName = $PowerBB->_CONF['info_row']['title'];
-		$mail->addAddress($to);     // Add a recipient
-		//$mail->addCC($to);
-		//$mail->addReplyTo($to, $PowerBB->_CONF['info_row']['title']);
-		$mail->Subject = $subject;
-		$mail->Body    = $body;
-		$mail->AltBody = $text_body;
-		if($mail->send()) {
-		$mail->ClearAddresses();
-        return true;
-		} else {
-		return false;
-		}
+	    // تعيين عنوان واسم المرسل (الاسم المعروض)
+	    $mail->setFrom($from, $fromname);
+
+	    // إضافة المستلم
+	    $mail->addAddress($to);
+	    $mail->Subject = $subject;
+
+	    // تعيين جسم الرسالة HTML
+	    $mail->Body    = $body;
+
+	    // تعيين جسم الرسالة البديل (النصي)
+	    $mail->AltBody = strip_tags($message);
+
+	    if($mail->send()) {
+	        // تنظيف حالة PHPMailer بعد النجاح
+	        $mail->ClearAddresses();
+	        $mail->ClearAllRecipients();
+	        $mail->ClearAttachments();
+	        return true;
+	    } else {
+	        // تنظيف حالة PHPMailer بعد الفشل
+	        // يمكنك هنا تسجيل الخطأ: error_log('PHPMailer Error: ' . $mail->ErrorInfo);
+	        $mail->ClearAddresses();
+	        $mail->ClearAllRecipients();
+	        $mail->ClearAttachments();
+	        return false;
+	    }
 	}
+
  	function words_count($string,$words_count)
  	{
  	 global $PowerBB;
@@ -4179,161 +4187,7 @@ function my_strlen($string)
 		return $position;
 	}
 
-  // slurp all enabled feeds from the database
-	function _RunFeedRss()
-	{
-     	 global $PowerBB;
-        require_once('includes/FeedParser.php');
-		$feeds_result = $PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['feeds'] . " WHERE options = '1'");
-      	 while ($FeedsInfo = $PowerBB->DB->sql_fetch_array($feeds_result))
-		  {
-		   if ($FeedsInfo['options'])
-		   {
-		     if ($FeedsInfo['feeds_time'] < $PowerBB->_CONF['now'] - $FeedsInfo['ttl'])
-		     {
-				$this->FeedParser	  	= 	new FeedParser;
-				$this->FeedParser->parse($FeedsInfo['rsslink']);
-				$Items	= $this->FeedParser->getItems();
-				if ($Items)
-				{
-				  $x = 0;
-				  $y = $x++;
-				  foreach($Items as $Item)
-				  {
-					$find = "{rss:link}";
-					if(stristr($FeedsInfo['text'],$find))
-					{
-					  if($PowerBB->_CONF['template']['_CONF']['lang']['url_Original_repeat'] == '')
-						{
-						 $PowerBB->_CONF['template']['_CONF']['lang']['the_original_topic'] = $PowerBB->_CONF['template']['_CONF']['lang']['url_Original_repeat'];
-						}
-					$LINK = "\n\n [url=".$Item['LINK']."]".$PowerBB->_CONF['template']['_CONF']['lang']['the_original_topic']."[/url]";
-					}else{
-					$LINK = "";
-					}
-					// $bad_characters: All ASCII characters below ASCII 32 (except 9, 10 and 13 (tab, newline and carrige return)).
-					$bad_characters = array_diff(range(chr(0), chr(31)), array(chr(9), chr(10), chr(13)));
-					$text = $PowerBB->Powerparse->html2bb($Item['CONTENT:ENCODED']).$LINK;
-					$text = str_replace($bad_characters, "", $text);
-					$Item['TITLE'] = str_replace($bad_characters, "", $Item['TITLE']);
-                    $Item['TITLE'] 	= 	$PowerBB->functions->CleanVariable($Item['TITLE'],'html');
-                    $Item['TITLE'] 	= 	$PowerBB->sys_functions->CleanSymbols($Item['TITLE']);
-                   	$section = $FeedsInfo['forumid'];
-                    $section 	= 	$PowerBB->functions->CleanVariable($section,'intval');
-					$ItemTitle	=	$Item['TITLE'];
-					// Make sure that the topic does not exist before
-					$exist_query = $PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['subject'] . " WHERE title LIKE '%$ItemTitle%'");
-					$exist_row   = $PowerBB->DB->sql_fetch_array($exist_query);
-					if (!$exist_row)
-					{
-					    $MemberArr 			= 	array();
-						$MemberArr['where'] 	= 	array('id',$FeedsInfo['userid']);
-						$MemberInfo = $PowerBB->core->GetInfo($MemberArr,'member');
-						$section = $FeedsInfo['forumid'];
-						$FROM_query = $PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['section'] . " WHERE id = '$section' ");
-						$FROM__row  = $PowerBB->DB->sql_fetch_array($FROM_query);
 
-						$regexcodew['[code]'] = '#\[code\](.*)\[/code\]#siU';
-						$text = preg_replace_callback($regexcodew, function($matchesw) {
-						$matchesw[1] = str_replace("<br />", "\r", $matchesw[1]);
-						return '[code]'.$matchesw[1].'[/code]';
-						}, $text);
-
-						if($FROM__row)
-						{
-							$SubjectArr	=	array();
-							$SubjectArr['get_id']						=	true;
-							$SubjectArr['field']	=	array();
-							$SubjectArr['field']['title']	=	$Item['TITLE'];
-							$SubjectArr['field']['text']	=	$text;
-							$SubjectArr['field']['writer']	=	$MemberInfo['username'];
-							$SubjectArr['field']['write_time'] 			= 	$PowerBB->_CONF['now'];
-							$SubjectArr['field']['native_write_time'] 	= 	$PowerBB->_CONF['now'];
-							if($FROM__row['review_subject'])
-							{
-							$SubjectArr['field']['review_subject'] = '1';
-							}
-							if($FROM__row['sec_section']
-							or $FROM__row['hide_subject'])
-							{
-							$SubjectArr['field']['sec_subject'] = '1';
-							}
-							$SubjectArr['field']['icon'] 				= 	'look/images/icons/i1.gif';
-							$SubjectArr['field']['section']	=	$FeedsInfo['forumid'];
-							$Insert = $PowerBB->subject->InsertSubject($SubjectArr);
-							if($Insert)
-							{
-								// The overall number of Member posts
-								$posts = $MemberInfo['posts'] + 1;
-								$MemberArr 				= 	array();
-								$MemberArr['field'] 	= 	array();
-								$MemberArr['field']['posts']			=	$posts;
-								$MemberArr['field']['lastpost_time'] 	=	$PowerBB->_CONF['now'];
-								$MemberArr['where']						=	array('id',$MemberInfo['id']);
-								$UpdateMember = $PowerBB->member->UpdateMember($MemberArr);
-
-			                    if ($PowerBB->_CONF['info_row']['add_tags_automatic'] == '1')
-					     		{
-			                        //add tags Automatic from subject title
-			                        $string_title = implode(' ', array_unique(explode(' ', $Item['TITLE'])));
-
-									$excludedWords = array();
-									$censorwords = preg_split('/\s+/s', $string_title, -1, PREG_SPLIT_NO_EMPTY);
-									$excludedWords = array_merge($excludedWords, $censorwords);
-									unset($censorwords);
-
-									// Trim current exclusions
-									for ($x = 0; $x < count($excludedWords); $x++)
-									{
-									   $excludedWords[$x] = trim($excludedWords[$x]);
-
-			                            if (function_exists('mb_strlen'))
-			                            {
-			                                $tag_less_num = mb_strlen($excludedWords[$x], 'UTF-8') >= 6;
-			                            }
-			                            else
-			                            {
-			                                $tag_less_num = strlen(utf8_decode($excludedWords[$x])) >= 6;
-			                            }
-
-			                           if($tag_less_num)
-									  {
-
-											$InsertArr 						= 	array();
-											$InsertArr['field']				=	array();
-									     	$InsertArr['field']['tag_id'] 			= 	"";
-											$InsertArr['field']['subject_id'] 		=	$PowerBB->subject->id;
-											$InsertArr['field']['tag'] 				= 	$PowerBB->functions->CleanVariable($excludedWords[$x],'html');
-											$InsertArr['field']['subject_title'] 	= 	$PowerBB->functions->CleanVariable($Item['TITLE'],'html');
-											// Note, this function is from tag system not subject system
-											$insert_tags = $PowerBB->core->Insert($InsertArr,'tags_subject');
-			                          }
-									}
-			                    }
-			                }
-						 }
-                     }
-					$x++;
-					if($x==$y) break;
-				  }
-				}
-
-				// Update section's cache
-				$UpdateSectionCache = $PowerBB->functions->UpdateSectionCache($FeedsInfo['forumid']);
-				// Update last feeds time
-				$feeds_time = $PowerBB->_CONF['now'];
-				$feeds_id = $FeedsInfo['id'];
-				$Update_Feeds = $PowerBB->DB->sql_query("UPDATE " . $PowerBB->table['feeds'] . " SET feeds_time ='$feeds_time' where id = '$feeds_id'");
-             }
-           }
-          }
-		//////////
-		if (($current_memory_limit = $PowerBB->functions->size_to_bytes(@ini_get('memory_limit'))) < 128 * 1024 * 1024 AND $current_memory_limit > 0)
-		{
-			@ini_set('memory_limit', 128 * 1024 * 1024);
-		}
-		@set_time_limit(0);
-    }
      // Visitor Today number
 	function visitor_today_number()
 	{

@@ -87,7 +87,7 @@
 		<option value="">{$lang['no_place']}</option>
 	{else}
 		<option value="SSL">SSL</option>
-		<option value="smtp">TLS</option>
+		<option value="TLS">TLS</option>
 		<option value="" selected="selected">{$lang['no_place']}</option>
 	{/if}
 </select>

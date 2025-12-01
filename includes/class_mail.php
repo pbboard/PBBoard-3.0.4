@@ -14,9 +14,6 @@ $_SERVER['REQUEST_URI'] = str_replace('includes/class_mail.php', '', $_SERVER['R
 	use PHPMailer\PHPMailer\PHPMailer;
 	use PHPMailer\PHPMailer\SMTP;
 	use PHPMailer\PHPMailer\Exception;
-	require 'mailer/phpmailer/phpmailer/src/Exception.php';
-	require 'mailer/phpmailer/phpmailer/src/PHPMailer.php';
-	require 'mailer/phpmailer/phpmailer/src/SMTP.php';
 	//Load Composer's autoloader
 	require 'mailer/autoload.php';
 	//Create an instance; passing `true` enables exceptions

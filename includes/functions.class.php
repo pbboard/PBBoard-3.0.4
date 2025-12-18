@@ -3689,12 +3689,32 @@ function UpdateSectionCache($SectionCache)
 				$rege_auto_url_titles[] = '#<a(.*)href="(.*)"(.*)>(.*)</a>#siU';
 				$rege_auto_url_titles[] = "#<a(.*)href='(.*)'(.*)>(.*)</a>#siU";
 
+
+
 				$type = preg_replace_callback($rege_auto_url_titles, function($auto_url_titles_array)
 				{
 				    global $PowerBB;
-					$title = $auto_url_titles_array[4];
+				    $title = $auto_url_titles_array[4];
+                    if(strstr($auto_url_titles_array[3],'id="noop_ener"'))
+                    {
+                    $find_title_start = $this->find_title($auto_url_titles_array[1]);
+                    $find_title_end = $this->find_title($auto_url_titles_array[3]);
+					if (trim($find_title_start) !== '')
+					{
+					$auto_url_titles_array[4] = $this->strip_auto_url_titles($find_title_start);
+					}
+					elseif (trim($find_title_end) !== '')
+					{
+					$auto_url_titles_array[4] = $this->strip_auto_url_titles($find_title_end);
+					}
+					else
+					{					$auto_url_titles_array[4] = $this->strip_auto_url_titles($auto_url_titles_array[4]);
+					}
+                   }
+					else
+					{
 					$auto_url_titles_array[4] = $this->strip_auto_url_titles($auto_url_titles_array[4]);
-
+					}
 	                 if(empty($auto_url_titles_array[4]))
 	                 {
 	                   $auto_url_titles_array[4] = "empty_tIt_empty";
@@ -3850,6 +3870,17 @@ function UpdateSectionCache($SectionCache)
       }
 	   return $type;
 	}
+
+ function find_title($text)
+  {
+    global $PowerBB;
+	$regex = '~\btitle\s*=\s*["\']([^"\']+)["\']~i';
+
+	$text = preg_replace_callback($regex, function($m) {
+	return trim($m[1]);
+	}, $text);
+	return $text;
+  }
 
  function rewriterule_2($type)
    {
@@ -5279,6 +5310,7 @@ function dec_to_utf8($src)
 		$title  = preg_replace('/\s+/', '-', $title);
 		$title = rtrim($title, "-");
 		$title = ltrim($title, "-");
+	    $title = preg_replace('/^\s+|\s+$/u', '', $title);
 
 		return ($title);
 	}

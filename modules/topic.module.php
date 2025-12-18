@@ -29,7 +29,7 @@ class PowerBBTopicMOD
 			$this->_ShowTopic();
 		}
 		else
-		{
+		{			header("HTTP/1.1 404 Not Found");
 			$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['path_not_true']);
 		}
 
@@ -156,7 +156,7 @@ class PowerBBTopicMOD
 
 		// If the id is empty, so stop the page
 		if (empty($PowerBB->_GET['id']))
-		{
+		{			header("HTTP/1.1 404 Not Found");
 			$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['path_not_true']);
 		}
 
@@ -169,7 +169,8 @@ class PowerBBTopicMOD
 		// There is no subject, so show error message
 		if (!$PowerBB->core->GetInfo($SubjectArr,'subject'))
 		{
-			$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['Sorry_requested_topic_does_not_exist']);
+		    header("HTTP/1.1 404 Not Found");
+		    $PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['Sorry_requested_topic_does_not_exist']);
 		}
 
     	//$PowerBB->_CONF['template']['SubjectInfo']['title'] 				= 	$PowerBB->functions->CleanVariable($PowerBB->_CONF['template']['SubjectInfo']['title'],'html');
@@ -250,6 +251,7 @@ class PowerBBTopicMOD
 		{
           if (!$PowerBB->_CONF['member_permission'])
               {
+              header("HTTP/1.1 404 Not Found");
               $PowerBB->template->display('login');
               $PowerBB->functions->error_stop();
 			}
@@ -263,6 +265,7 @@ class PowerBBTopicMOD
 		 {
           if (!$PowerBB->_CONF['member_permission'])
               {
+              header("HTTP/1.1 404 Not Found");
               $PowerBB->template->display('login');
               $PowerBB->functions->error_stop();
 			}
@@ -290,6 +293,7 @@ class PowerBBTopicMOD
 		{
           if (!$PowerBB->_CONF['member_permission'])
               {
+              header("HTTP/1.1 404 Not Found");
               $PowerBB->template->display('login');
               $PowerBB->functions->error_stop();
 			}
@@ -328,6 +332,7 @@ class PowerBBTopicMOD
 		if ($PowerBB->_CONF['template']['SubjectInfo']['delete_topic']
 			and !$PowerBB->_CONF['group_info']['admincp_allow'])
 		{
+		     header("HTTP/1.1 404 Not Found");
 			$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['Subject_Was_Trasht']);
 		}
 

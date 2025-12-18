@@ -23,6 +23,7 @@ class PowerBBForumMOD
 		if (isset($PowerBB->_GET['sort']))
 		{
 			if ($PowerBB->_GET['sort'] != 'asc'
+            and $PowerBB->_GET['sort'] != 'id'
 			and $PowerBB->_GET['sort'] != 'reply_number'
 			and $PowerBB->_GET['sort'] != 'visitor'
 			and $PowerBB->_GET['sort'] != 'rating'
@@ -1635,6 +1636,7 @@ function _AllCacheStart()
 		and $PowerBB->_GET['orderby'] == 1)
 		{
 			if ($PowerBB->_GET['sort'] != 'asc'
+            and $PowerBB->_GET['sort'] != 'id'
 			and $PowerBB->_GET['sort'] != 'reply_number'
 			and $PowerBB->_GET['sort'] != 'visitor'
 			and $PowerBB->_GET['sort'] != 'rating'
@@ -1730,49 +1732,34 @@ function _AllCacheStart()
 		/** Show the subject order by (oldr - new )**/
 		if($PowerBB->_GET['orderby'] == '1')
 		{
-		/** Show the subject order by (reply_number - visitor - rating)**/
-			if ($PowerBB->_GET['sort'] == 'reply_number')
-			{
-				$order 	= 	'reply_number';
-                 $type 	= 	'DESC';
-			}
-			elseif ($PowerBB->_GET['sort'] == 'visitor')
-			{
-				$order 	= 	'visitor';
-                 $type 	= 	'DESC';
-			}
-			elseif ($PowerBB->_GET['sort'] == 'rating')
-			{
-                 $order 	= 	'rating';
-                 $type 	= 	'DESC';
-			}
-			elseif ($PowerBB->_GET['sort'] == 'writer')
-			{
-                 $order 	= 	'writer';
-                 $type 	= 	'DESC';
-			}
-			elseif ($PowerBB->_GET['sort'] == 'asc')
-			{
-                 $order 	= 	'id';
-                 $type 	= 	'ASC';
+		    if ($PowerBB->_GET['sort'] == 'reply_number') {
+		        $order = 'reply_number';
+		        $type  = 'DESC';
+		    } elseif ($PowerBB->_GET['sort'] == 'visitor') {
+		        $order = 'visitor';
+		        $type  = 'DESC';
+		    } elseif ($PowerBB->_GET['sort'] == 'rating') {
+		        $order = 'rating';
+		        $type  = 'DESC';
+		    } elseif ($PowerBB->_GET['sort'] == 'writer') {
+		        $order = 'writer';
+		        $type  = 'DESC';
+		    } elseif ($PowerBB->_GET['sort'] == 'asc' || $PowerBB->_GET['sort'] == 'id') {
+		        // توحيد الحالتين لضمان عدم حدوث تعارض في الروابط
+		        $order = 'id';
+		        $type  = 'ASC';
+		        $PowerBB->_GET['sort'] = 'id'; // تثبيت القيمة لتستخدم في الرابط (Location)
+		    } else {
+		        $order = 'write_time';
+		        $type  = 'DESC';
 		    }
-			elseif ($PowerBB->_GET['sort'] == 'write_time')
-			{
-                 $order 	= 	'write_time';
-                 $type 	= 	'DESC';
-		    }
-			else
-			{
-                 $order 	= 	'write_time';
-                 $type 	= 	'DESC';
-			}
 
-			$location = "index.php?page=forum&amp;show=1&amp;orderby=1&amp;id=".$PowerBB->_GET['id']."&amp;sort=".$order;
-			$location = preg_replace('/&submit=(.*?)&count='.$PowerBB->_GET['count'].'/is', "", $location);
-	    	$location = preg_replace('/&count='.$PowerBB->_GET['count'].'/is', "", $location);
+		    $location = "index.php?page=forum&amp;show=1&amp;orderby=1&amp;id=".$PowerBB->_GET['id']."&amp;sort=".$PowerBB->_GET['sort'];
+		    $location = preg_replace('/&count='.$PowerBB->_GET['count'].'/is', "", $location);
+
 		    $SubjectArr['order'] = array();
-			$SubjectArr['order']['field'] 	= 	$order;
-			$SubjectArr['order']['type'] 	= 	$type;
+		    $SubjectArr['order']['field'] 	= 	$order;
+		    $SubjectArr['order']['type'] 	= 	$type;
 		}
         else
         {

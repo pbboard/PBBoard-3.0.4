@@ -2329,32 +2329,46 @@ class PowerBBFunctions
  	/**
  	 * Get page the full URL
  	 */
- 	function GetPageUrl()
- 	{
- 		global $PowerBB;
-		// Get server port
-		$Protocol = $PowerBB->functions->GetServerProtocol();
-        $actual_link = $Protocol.$PowerBB->_SERVER['HTTP_HOST'].$PowerBB->_SERVER['REQUEST_URI'];
-        $page = empty($PowerBB->_GET['page']) ? 'index' : $PowerBB->_GET['page'];
-        if ($page == 'index')
-		{
-        $actual_link = str_replace("/index.php","", $actual_link);
-		}
-		elseif($page == 'topic')
-		{
-        $actual_link = str_replace(".html","", $actual_link);
-		}
-		elseif($page == 'sitemap')
-		{
-        $actual_link = str_replace("&count=-","count=", $actual_link);
-		}
-        if(strstr($actual_link,'count='))
-        {
-        $actual_link = str_replace("&count=0","", $actual_link);
-        $actual_link = str_replace("&count=1","", $actual_link);
-        }
- 		return $actual_link;
- 	}
+	function GetPageUrl()
+	{
+	    global $PowerBB;
+	    $Protocol = $PowerBB->functions->GetServerProtocol();
+	    $actual_link = $Protocol . $PowerBB->_SERVER['HTTP_HOST'] . $PowerBB->_SERVER['REQUEST_URI'];
+	    $page = empty($PowerBB->_GET['page']) ? 'index' : $PowerBB->_GET['page'];
+
+	    // --- فلتر تنظيف التشويه الشامل ---
+	    if ($page == 'forum' || $page == 'topic') {
+
+	        // 1. تنظيف أي أرقام عشوائية تلتصق بالكلمات بعد علامة =
+	        // هذا السطر يبحث عن (sort=كلمة) أو (orderby=رقم) ويحذف الأرقام الطويلة التي تلتصق بها
+	        $actual_link = preg_replace('/(sort=[a-z]+|orderby=[\d]{1})[\d]{5,}/i', '$1', $actual_link);
+
+	        // 2. تنظيف أي أرقام عشوائية تلتصق برقم القسم أو الموضوع (ID)
+	        $id = isset($PowerBB->_GET['id']) ? intval($PowerBB->_GET['id']) : 0;
+	        if ($id > 0) {
+	            // يبحث عن .43 متبوعة بـ 5 أرقام أو أكثر ويحذف الزيادة فقط
+	            $actual_link = preg_replace('/(\.'.$id.')[\d]{5,}/', '$1', $actual_link);
+	        }
+	    }
+	    // ---------------------------------
+
+	    // بقية التنظيفات التقليدية
+	    if ($page == 'index') {
+	        $actual_link = str_replace("/index.php", "", $actual_link);
+	    }
+	    elseif ($page == 'topic') {
+	        $actual_link = str_replace(".html", "", $actual_link);
+	    }
+	    elseif ($page == 'sitemap') {
+	        $actual_link = str_replace("&count=-", "count=", $actual_link);
+	    }
+
+	    if (strstr($actual_link, 'count=')) {
+	        $actual_link = str_replace(["&count=0", "&count=1"], "", $actual_link);
+	    }
+
+	    return $actual_link;
+	}
 	/**
  	 * Get the Mian folder forum url adress
  	 */
@@ -3708,7 +3722,8 @@ function UpdateSectionCache($SectionCache)
 					$auto_url_titles_array[4] = $this->strip_auto_url_titles($find_title_end);
 					}
 					else
-					{					$auto_url_titles_array[4] = $this->strip_auto_url_titles($auto_url_titles_array[4]);
+					{
+					$auto_url_titles_array[4] = $this->strip_auto_url_titles($auto_url_titles_array[4]);
 					}
                    }
 					else

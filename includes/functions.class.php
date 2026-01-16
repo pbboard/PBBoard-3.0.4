@@ -668,16 +668,6 @@ class PowerBBFunctions
 						   $forum['hide_subject']	= '1';
                          }
 
-							// Get the number of posts per page from the forum general settings
-							$posts_per_page = $PowerBB->_CONF['info_row']['perpage'];
-							// Ensure the value exists; if not, assume the topic is on the first page
-							if (isset($forum['total_posts_count']) && $forum['total_posts_count'] > 0) {
-                               // Formula: round up (number of posts before the current reply / posts per page)
-							    $forum['real_last_page'] = ceil($forum['total_posts_count'] / $posts_per_page);
-							} else {
-							    $forum['real_last_page'] = 0;
-							}
-
                             $forum['subject_num']= $PowerBB->functions->with_comma($forum['subject_num']);
 							$forum['reply_num']  = $PowerBB->functions->with_comma($forum['reply_num']);
 

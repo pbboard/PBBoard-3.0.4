@@ -931,15 +931,12 @@ function run()
 		return $returns;
 	}
 
-  function _pbboard_updates_start()
+	function _pbboard_updates_start()
 	{
 		global $PowerBB;
-
-		// 1. Initialize main directory path
-		$To = $PowerBB->functions->GetMianDir();
-		$To = str_ireplace("index.php/", '', $To);
-
-		// 2. Determine update source based on version
+            // get main dir
+			$To = $PowerBB->functions->GetMianDir();
+			$To = str_ireplace("index.php/", '', $To);
         if($PowerBB->_CONF['info_row']['MySBB_version'] == '3.0.4')
         {
 		$pbboard_last_time_updates = 'https://raw.githubusercontent.com/pbboard/updates/main/check_updates/pbboard_last_time_updates_304.txt';
@@ -953,109 +950,61 @@ function run()
 		$pbboard_last_time_updates = 'https://raw.githubusercontent.com/pbboard/updates/main/check_updates/pbboard_last_time_updates.txt';
 		}
 
-		// 3. Fetch update metadata from GitHub
 		$last_time_updates = @file_get_contents($pbboard_last_time_updates);
-		if(!$last_time_updates) {
-			$last_time_updates = $PowerBB->sys_functions->CURL_URL($pbboard_last_time_updates);
-		}
 
-		$arr = explode('-', $last_time_updates);
-		$url = trim($arr[2]);
-		$zipFile = $To . "Tmpfile.zip";
+         if(!$last_time_updates)
+		 {
+		 $last_time_updates = $PowerBB->sys_functions->CURL_URL($pbboard_last_time_updates);
+		 }
 
-		/**
-		 * STEP 4: SELF-PATCHING PHASE
-		 * If 'is_fixup_module' is flagged, we extract ONLY the fixup module first.
-		 * This replaces the OLD logic on disk before the main extraction.
-		 */
-		if(trim($arr[6]) == 'is_fixup_module') {
-			$urls = $PowerBB->sys_functions->CURL_URL($url);
-			file_put_contents($zipFile, $urls);
+		$arr = explode('-',$last_time_updates);
 
-			$zip = new ZipArchive;
-			if ($zip->open($zipFile) === TRUE) {
-				$adminDir = $PowerBB->admincpdir;
+		$url     = trim($arr[2]);
+        $urls= $PowerBB->sys_functions->CURL_URL($url);
 
-				// Path of the new fixup module inside the ZIP (Default structure)
-				$fixup_in_zip = 'admincp/modulescp/fixup.module.php';
-				$new_content = $zip->getFromName($fixup_in_zip);
+        $file_put = file_put_contents($To."Tmpfile.zip", $urls);
 
-				if ($new_content) {
-					// Path to the current running module on the server
-					$fixup_on_disk = '../' . $adminDir . '/modulescp/fixup.module.php';
+           $zip = new ZipArchive;
+			$file = $To.'Tmpfile.zip';
+			//$path = pathinfo(realpath($file), PATHINFO_DIRNAME);
+			if ($zip->open($file) === TRUE) {
+			    $zip->extractTo($To);
 
-					if (@file_put_contents($fixup_on_disk, $new_content)) {
-						$zip->close();
-						@unlink($zipFile); // Clean up to start fresh
+			    $ziped = true;
+			} else {
+			   $ziped = false;
+			   echo 'Failed to open zip file';
+			}
 
-						// Trigger AJAX restart to load the NEW code into RAM
-						echo "<div style='background:#e0f2fe; color:#0369a1; padding:15px; border-radius:8px; border:1px solid #bae6fd;'>
-								<i class='fa fa-sync fa-spin'></i> Core updated. Restarting to apply new logic...
-							  </div>";
-						echo "<script type='text/javascript'>setTimeout(function(){ AjaxUpdated(); }, 1500);</script>";
-						exit;
+	         if($ziped)
+	         {
+	          if($PowerBB->admincpdir !='admincp')
+			  {
+					for ($i = 0; $i < $zip->numFiles; $i++) {
+					   if(strstr($zip->getNameIndex($i),'admincp'))
+					   {
+						    $zip->renameIndex($i, str_replace("admincp",$PowerBB->admincpdir, $zip->getNameIndex($i)));
+						     $zip->extractTo($To,$zip->getNameIndex($i));
+					   }
 					}
-				}
-				$zip->close();
-			}
-		}
+	          }
+	         $zip->close();
 
-		/**
-		 * STEP 5: MAIN EXTRACTION PHASE
-		 * This runs only when the file has the NEW logic (either patched or already updated).
-		 */
-		$urls = $PowerBB->sys_functions->CURL_URL($url);
-		file_put_contents($zipFile, $urls);
+             // updates chmods sql
+             if(trim($arr[3]) == 'sql')
+             {
+	         $xml_code_sql     = trim($arr[0]);
+	         $updates_sql = $this->_pbboard_updates_sql($xml_code_sql);
+			  echo("\n<br />✅ Query executed successfully \n");
+	         }
 
-		$zip = new ZipArchive;
-		$ziped = false;
-
-		if ($zip->open($zipFile) === TRUE) {
-			$adminDir = $PowerBB->admincpdir;
-
-			for ($i = 0; $i < $zip->numFiles; $i++) {
-				$fileName = $zip->getNameIndex($i);
-				$targetName = $fileName;
-
-				// Map 'admincp/' from ZIP to the user's custom admin folder
-				if (strpos($fileName, 'admincp/') === 0) {
-					$targetName = str_replace('admincp/', $adminDir . '/', $fileName);
-				}
-
-				$fullPath = $To . $targetName;
-
-				if (substr($fileName, -1) === '/') {
-					if (!is_dir($fullPath)) @mkdir($fullPath, 0755, true);
-				} else {
-					$parentDir = dirname($fullPath);
-					if (!is_dir($parentDir)) @mkdir($parentDir, 0755, true);
-
-					$content = $zip->getFromIndex($i);
-					@file_put_contents($fullPath, $content);
-				}
-			}
-			$zip->close();
-			$ziped = true;
-		} else {
-			$ziped = false;
-			echo 'Failed to open zip file';
-		}
-
-		/**
-		 * STEP 6: POST-UPDATE (SQL, Templates, Cache, Cleanup)
-		 */
-		if($ziped) {
-			// SQL Execution
-			if(trim($arr[3]) == 'sql') {
-				$this->_pbboard_updates_sql(trim($arr[0]));
-				echo "\n<br />✅ SQL Queries executed successfully \n";
-			}
-
-			// Template Execution
-			if(trim($arr[4]) == 'templates') {
-				$this->_pbboard_updates_templates(trim($arr[0]));
-				echo "\n<br />✅ Templates updated successfully \n<br />";
-			}
+             // updates templates
+             if(trim($arr[4]) == 'templates')
+             {
+	         $xml_date     = trim($arr[0]);
+	         $updates_templates = $this->_pbboard_updates_templates($xml_date);
+			  echo("\n<br />✅ Templates eupdated successfully \n<br />");
+	         }
 
 			// Cache Notification
 			if(trim($arr[5]) == 'cache') {
@@ -1065,18 +1014,24 @@ function run()
 				</div>');
 			}
 
-			// Finalize and Clean up
 			$PowerBB->info->UpdateInfo(array('value'=>$PowerBB->_CONF['now'],'var_name'=>'last_time_updates'));
-			@unlink($zipFile);
-
+			unlink($file);
 			echo $PowerBB->_CONF['template']['_CONF']['lang']['pbboard_updated'];
 
-			if(trim($arr[3]) == 'sql' || trim($arr[4]) == 'templates') {
-				@unlink($To . 'addons/' . $arr[0] . '.xml');
+			  if(trim($arr[3]) == 'sql'
+			  or trim($arr[4]) == 'templates')
+			  {
+			 	// get main dir
+				$xml_file = $PowerBB->functions->GetMianDir();
+				$xml_file = str_ireplace("index.php/", '', $xml_file);
+				$file_x = $xml_file.'addons/'.$arr[0].'.xml';
+				unlink($file_x);
+			  }
 			}
-		} else {
-			echo $PowerBB->_CONF['template']['_CONF']['lang']['automatic_update_fails'];
-		}
+			else
+	         {
+			 echo $PowerBB->_CONF['template']['_CONF']['lang']['automatic_update_fails'];
+			}
 	}
 
 

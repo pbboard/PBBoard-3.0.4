@@ -3,7 +3,6 @@
 class PowerBBFunctions
 {
     var $PowerBB;
-
      /**
 	 * Get sections list from cache and show it.
 	 */
@@ -564,8 +563,7 @@ class PowerBBFunctions
 	                          //
 						  // Get the moderators list as a _link_ and store it in $forum['moderators_list']
 		                   if ($PowerBB->_CONF['info_row']['no_moderators'])
-						   {    $forum['ModeratorCheck'] = 1;
-                                $forum['IsModeratorCheck'] = 0;
+						   {
 								$forum['is_moderators'] 		= 	0;
 								$forum['moderators_list']		=	'';
 								if (isset($forum['moderators']))
@@ -588,8 +586,7 @@ class PowerBBFunctions
 											or $PowerBB->_CONF['group_info']['vice']
 											or $PowerBB->_CONF['member_row']['usergroup'] == '1')
 											{
-					                              $forum['ModeratorCheck'] = 0;
-					                              $forum['IsModeratorCheck'] = 1;
+
 								               if ($forum['subjects_review_num']>0)
 												{
 												$forum['num_subjects_awaiting_approval'] =	$PowerBB->functions->with_comma($forum['subjects_review_num']);
@@ -655,6 +652,16 @@ class PowerBBFunctions
 								}
                              }
 
+                             if($PowerBB->functions->ModeratorCheck($forum['moderators']))
+                             {
+                              $forum['ModeratorCheck'] = 0;
+                              $forum['IsModeratorCheck'] = 1;
+                             }
+                             else
+                             {
+                              $forum['ModeratorCheck'] = 1;
+                              $forum['IsModeratorCheck'] = 0;
+                             }
 
                          if ($forum['review_subject'])
 						 {
@@ -2553,7 +2560,6 @@ return preg_replace($pattern, $replacement, $email);
 				}
 				else
 				{
-					    $moderators = json_decode($Row, true);
 				       if (is_array($moderators))
 						{
 						 foreach($moderators as $moderator)

@@ -251,16 +251,7 @@ class PBBTemplate
 
 			 $string = str_replace("applications/core/archive.css","applications/core/archive/archive.css",$string);
 
-			if ($filename == 'sections_list')
-			{
-		     $CatArr = $PowerBB->DB->sql_query("SELECT sort FROM " . $PowerBB->table['section'] . " WHERE parent = '0' ORDER BY sort ASC");
-			 $catsort = $PowerBB->DB->sql_fetch_array($CatArr);
-			 if($catsort)
-			 {
-			  $string = str_replace("!= 1}", "!=". $catsort['sort']."}", $string);
-			  $string  = str_replace("'last_subject'", "'last_subject_title'", $string);
-			 }
-            }
+
 
             if ($filename == 'info_bar')
 			{
@@ -445,12 +436,7 @@ class PBBTemplate
 			$first_replace = 'name="textc"';
 			$string = str_replace($first_search,$first_replace,$string);
 			}
-			elseif ($filename == 'sections_list')
-			{
-			$first_search = "count=";
-			$first_replace = "last_post=1&amp;count=";
-			$string = str_replace($first_search,$first_replace,$string);
-			}
+
 			elseif ($filename == 'portal_main_categories')
 			{
 			$first_search = "forumsy_list";
@@ -606,55 +592,21 @@ class PBBTemplate
 	        $write  = eval(" ?> $string <?php ");
             $write_b = ob_get_clean();
 
+			if ($filename == 'headinclud') {
+			    if (preg_match('/<title>(.*?)<\/title>/is', $write_b, $matches)) {
+			        $fullTitle = $matches[1];
 
-			$write_b = str_replace("href='index.php","href='".$PowerBB->functions->GetForumAdress()."index.php",$write_b);
-
-            if ($filename == 'sections_list')
-			{
-            	$regex_last_Reply = '#page=topic&amp;show=1&amp;id=(.*?)"#is';
-				$write_b = preg_replace_callback($regex_last_Reply, function($match) {
-					global $PowerBB;
-		            $subjectArr = $PowerBB->DB->sql_query("SELECT id,reply_number FROM " . $PowerBB->table['subject'] . " WHERE id = '".intval($match[1])."'");
-			        $Info = $PowerBB->DB->sql_fetch_array($subjectArr);
-			        if($Info['reply_number'])
-			        {
-		              	$subject_id = intval($match[1]);
-						$ss_r = $PowerBB->_CONF['info_row']['perpage']/2+1;
-						$roun_ss_r = round($ss_r, 0);
-						$reply_number_r = $Info['reply_number']-$roun_ss_r;
-						$pagenum_r = $reply_number_r/$PowerBB->_CONF['info_row']['perpage'];
-						$round0_r = round($pagenum_r, 0);
-						$countpage = $round0_r+1;
-						$countpage = str_replace("-", '', $countpage);
-
-						$last_replyNumArr = $PowerBB->DB->sql_query("SELECT id,subject_id FROM " . $PowerBB->table['reply'] . " WHERE subject_id='".intval($match[1])."' AND delete_topic<>1 AND review_reply<>1 ORDER BY id DESC LIMIT 0,1");
-						$last_reply = $PowerBB->DB->sql_fetch_array($last_replyNumArr);
-
-					   if ($Info['reply_number'] > $PowerBB->_CONF['info_row']['perpage'])
-				        {
-				        	if ($PowerBB->_CONF['info_row']['auto_links_titles'])
-		                   {
-						    $match_replace = 'page=topic&amp;show=1&amp;id='.$match[1].'/page-'.$countpage.'#'.$last_reply['id'].'"';
-						   }
-                           else
-                           {
-						     $match_replace = 'page=topic&amp;show=1&amp;id='.$match[1].'&count='.$countpage.'#'.$last_reply['id'].'"';
-                           }
-						}
-                        else
-                        {
-					    $match_replace = 'page=topic&amp;show=1&amp;id='.$match[1].'#'.$last_reply['id'].'"';
-					    }
-					}
-					else
-					{
-					$match_replace = 'page=topic&amp;show=1&amp;id='.$match[1].'"';
-					}
-				    return $match_replace;
-				}, $write_b);
-
+			        if (strpos($fullTitle, ' - ') !== false) {
+			            $parts = explode(' - ', $fullTitle);
+			            $GLOBALS['captured_subject_title'] = trim($parts[0]);
+			        } else {
+			            $GLOBALS['captured_subject_title'] = trim($fullTitle);
+			        }
+			        $GLOBALS['captured_subject_title'] = htmlspecialchars(strip_tags($GLOBALS['captured_subject_title']), ENT_QUOTES, 'UTF-8');
+			    }
 			}
 
+			$write_b = str_replace("href='index.php","href='".$PowerBB->functions->GetForumAdress()."index.php",$write_b);
 
 				// start auto link titles php
 				  $write_b = str_replace("option value='index.php","option value='".$PowerBB->functions->GetForumAdress()."index.php",$write_b);
@@ -776,7 +728,14 @@ class PBBTemplate
 					);
                 }
 
-       @eval($PowerBB->functions->get_fetch_hooks('template_ob_get_clean'));
+if (!empty($GLOBALS['captured_subject_title'])) {
+    $write_b = str_replace("--SUBJECT_TITLE--", $GLOBALS['captured_subject_title'], $write_b);
+} else {
+    // احتياطاً إذا لم يجد تايتل
+    $write_b = str_replace("--SUBJECT_TITLE--", "عرض الصورة", $write_b);
+}
+
+   @eval($PowerBB->functions->get_fetch_hooks('template_ob_get_clean'));
 
 		echo $write_b;
 
@@ -847,64 +806,64 @@ class PBBTemplate
 		return $loop;
 	}
 
-	function _ProccessForeach($string)
-	{
-		global $PowerBB;
-		$search_array 		= 	array();
-		$replace_array 		= 	array();
+function _ProccessForeach($string)
+{
+    global $PowerBB;
+    $search_array       = array();
+    $replace_array      = array();
 
+    // التعديل هنا: السماح بالرموز الخاصة في الجزء الأول من الفوريتش
+    $string = preg_replace_callback("~\{Des::foreach}\{([^\}]+)\}\{([^\}]+)\}~Ui", function ($matches) {
+        return $this->_StoreForeachVarName($matches[2], $matches[1]);
+    }, $string);
 
-        $string =preg_replace_callback("~\{Des::foreach}{([^[<].*?)}{([^[<].*?)}~Ui", function ($matches) {
-        return $this->_StoreForeachVarName($matches[2],$matches[1]);
-         }, $string);
+    if (preg_match('~\{if (.*)\}~', $string) or preg_match('~if (.*) {~', $string)) {
+        $string = $this->_ProccessIfStatement($string, 'foreach');
+    }
 
-		if (preg_match('~\{if (.*)\}~',$string)
-			or preg_match('~if (.*) {~',$string))
-		{
-			$string = $this->_ProccessIfStatement($string,'foreach');
-		}
+    foreach ($this->_foreach_var as $var_name) {
+        $search_array[]     = '~\{{\$' . $var_name . '\}}~';
+        $replace_array[]    = '$' . $var_name;
 
-		foreach ($this->_foreach_var as $var_name)
-		{
-			// Variable (Without print) :
-			//				{$var} -> $var
-			$search_array[] 	= 	'~\{{\$' . $var_name . '\}}~';
-			$replace_array[] 	= 	'$' . $var_name;
+        $search_array[]     = '~\{{\$' . $var_name . '\[([^[<].*?)\]}}~';
+        $replace_array[]    = '$' . $var_name . '[\\1]';
 
-			$search_array[] 	=	'~\{{\$' . $var_name . '\[([^[<].*?)\]}}~';
-			$replace_array[] 	=	'$' . $var_name . '[\\1]';
+        $search_array[]     = '~\{\$' . $var_name . '\}~';
+        $replace_array[]    = '<?php echo $' . $var_name . '; ?>';
 
-			// Variable :
-			//				{$var} -> $var
-			$search_array[] 	= 	'~\{\$' . $var_name . '\}~';
-			$replace_array[] 	= 	'<?php echo $' . $var_name . '; ?>';
+        $search_array[]     = '~\{\$' . $var_name . '\[([^[<].*?)\]\}~';
+        $replace_array[]    = '<?php echo $' . $var_name . '[\\1]; ?>';
+    }
 
-			$search_array[] 	=	'~\{\$' . $var_name . '\[([^[<].*?)\]\}~';
-			$replace_array[] 	=	'<?php echo $' . $var_name . '[\\1]; ?>';
-		}
+    $search_array[]     = '~\{counter}~';
+    $replace_array[]    = '<?php echo $this->x_loop ?>';
 
-		$search_array[] 	=	'~\{counter}~';
-		$replace_array[] 	=	'<?php echo $this->x_loop ?>';
+    $search_array[]     = '~\{{counter}}~';
+    $replace_array[]    = '$this->x_loop';
 
-		$search_array[] 	=	'~\{{counter}}~';
-		$replace_array[] 	=	'$this->x_loop';
+    $string             = preg_replace($search_array, $replace_array, $string);
+    $string             = str_replace('{/Des::foreach}', '<?php $this->x_loop += 1; } ?>', $string);
 
-		$string 			= 	preg_replace($search_array,$replace_array,$string);
+    return $string;
+}
 
-		$string 			= 	str_replace('{/Des::foreach}','<?php $this->x_loop += 1; } ?>',$string);
+function _StoreForeachVarName($varname, $oldname)
+{
+    global $PowerBB;
+    $this->_foreach_var[$this->_foreach_var_num] = $varname;
+    $this->_foreach_var_num += 1;
 
-		return $string;
-	}
-
-	function _StoreForeachVarName($varname,$oldname)
-	{
-		global $PowerBB;
-		$this->_foreach_var[$this->_foreach_var_num] = $varname;
-
-		$this->_foreach_var_num += 1;
-
-		return '<?php foreach ($PowerBB->_CONF[\'template\'][\'foreach\'][\'' . $oldname . '\'] as $' . $varname . ') { ?>';
-	}
+    // إذا كان الاسم يبدأ بـ $ (مثل $cat['sub_data'])
+    if (strpos($oldname, '$') === 0) {
+        // تحويل الصيغة من {$var} إلى $var لتكون صالحة في PHP
+        $php_var = str_replace(array('{', '}', '$'), array('', '', '$'), $oldname);
+        return '<?php if(isset(' . $php_var . ') && is_array(' . $php_var . ')) foreach (' . $php_var . ' as $' . $varname . ') { ?>';
+    }
+    // إذا كان اسماً عادياً (مثل main_forums)
+    else {
+        return '<?php if(isset($PowerBB->_CONF[\'template\'][\'foreach\'][\'' . $oldname . '\'])) foreach ($PowerBB->_CONF[\'template\'][\'foreach\'][\'' . $oldname . '\'] as $' . $varname . ') { ?>';
+    }
+}
 
 
 	function _ProccessIfStatement($string,$type = null)

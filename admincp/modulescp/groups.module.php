@@ -390,8 +390,8 @@ class PowerBBGroupsMOD extends _functions
 
 			$cache = $PowerBB->group->UpdateGroupCache($CacheArr);
 
-				$PowerBB->functions->msg("يرجى الإنتظار سيتم ادخال صلاحية المجموعة ".$PowerBB->_POST['name']." لجميع الأقسام والمنتديات");
-				$PowerBB->functions->redirect('index.php?page=groups&amp;update_group_meter=1&amp;group_cache=1');
+				$PowerBB->functions->msg($PowerBB->_CONF['template']['_CONF']['lang']['group_has_been_added_successfully']);
+				$PowerBB->functions->redirect('index.php?page=groups&amp;control=1&amp;main=1');
 		}
 	}
 
@@ -711,8 +711,8 @@ class PowerBBGroupsMOD extends _functions
 
 			$cache = $PowerBB->group->UpdateGroupCache($CacheArr);
 
-				$PowerBB->functions->msg("يرجى الإنتظار سيتم ادخال صلاحية المجموعة ".$PowerBB->_POST['name']." لجميع الأقسام والمنتديات");
-				$PowerBB->functions->redirect('index.php?page=groups&amp;update_group_meter=1&amp;group_cache=1');
+			$PowerBB->functions->msg($PowerBB->_CONF['template']['_CONF']['lang']['group_has_been_updated_successfully']);
+			$PowerBB->functions->redirect('index.php?page=groups&amp;control=1&amp;main=1');
 
 	}
 

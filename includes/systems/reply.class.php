@@ -25,6 +25,25 @@ class PowerBBReply
  		return $rows;
 	}
 
+	function GetReplyListAdvanced($param)
+	{
+	    if (!isset($param) || !is_array($param)) {
+	        $param = array();
+	    }
+
+	    if (empty($param['select'])) {
+	        $param['select'] = 's.*';
+	    }
+
+	    if (empty($param['from'])) {
+	        $param['from'] = $this->Engine->table['reply'] . ' AS s';
+	    }
+
+        $rows = $this->Engine->records->GetList($param);
+
+	    return $rows;
+	}
+
 	function GetReplyDistinctList($param)
 	{
  		if (!isset($param)
@@ -83,6 +102,8 @@ class PowerBBReply
 		return $num;
 	}
 
+
+
 	function GetReplyWriterInfo($param)
 	{
  		if (!isset($param)
@@ -108,7 +129,6 @@ class PowerBBReply
      	$rows = $this->Engine->records->GetList($param);
 
 		return $rows;
-        $this->Engine->DB->sql_free_result($rows);
 	}
 
 	function InsertReply($param)

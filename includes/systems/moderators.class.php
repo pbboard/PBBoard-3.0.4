@@ -130,7 +130,7 @@ class PowerBBModerators
 
 			$x += 1;
 		}
-		$cache = json_encode($cache);
+		  $cache = json_encode($cache,JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
 		return $cache;
  	}
  	function IsModerator($param)

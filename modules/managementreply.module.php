@@ -722,7 +722,6 @@ class PowerBBManagementMOD
 				  $delReply = $PowerBB->reply->DeleteReply($DeleteReplyArr);
 
 
-					$UpdateSubjectNumber = $PowerBB->cache->UpdateReplyNumber(array('reply_num'	=>	$PowerBB->_CONF['info_row']['reply_number']));
 
 		     		$UpdateArr 					= 	array();
 		     		$UpdateArr['field']			=	array();
@@ -888,7 +887,8 @@ class PowerBBManagementMOD
 			$update_reply_number = $PowerBB->info->UpdateInfo(array('value'=>$reply_number,'var_name'=>'reply_number'));
 
            $UpdateSectionCache2 = $PowerBB->functions->UpdateSectionCache($PowerBB->_GET['section']);
-
+           $reply_number = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query('SELECT COUNT(1),id FROM '.$PowerBB->table['reply'].' WHERE delete_topic <> 1 LIMIT 1'));
+			$PowerBB->info->UpdateInfo(array('value'=>$reply_number,'var_name'=>'reply_number'));
 			//$PowerBB->functions->msg($PowerBB->_CONF['template']['_CONF']['lang']['Deleted_reply_successfully']);
 			$PowerBB->functions->header_redirect('index.php?page=topic&amp;show=1&amp;id=' . $PowerBB->_GET['subject_id']);
 

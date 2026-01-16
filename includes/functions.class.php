@@ -2,13 +2,34 @@
 
 class PowerBBFunctions
 {
-	var $PowerBB;
-		/**
+    var $PowerBB;
+
+     /**
 	 * Get sections list from cache and show it.
 	 */
-	function _GetSections()
+	function _GetSections_cache($section_id = null)
 	{
 		global $PowerBB;
+
+        $is_cache	= true;
+		if (isset($section_id)) {
+		    $parent = $section_id;
+		    $name = 'id';
+		} else {
+		    $parent = '0';
+		    $name = 'parent';
+		}
+
+        // Get online forums
+		if ($PowerBB->_CONF['info_row']['active_forum_online_number'])
+		{
+			$online_counts = array();
+			$res_online = $PowerBB->DB->sql_query("SELECT section_id, COUNT(*) as total FROM {$PowerBB->table['online']} GROUP BY section_id");
+			while ($on_row = $PowerBB->DB->sql_fetch_array($res_online)) {
+			$online_counts[$on_row['section_id']] = $on_row['total'];
+			}
+		}
+
 		$SecArr 						= 	array();
 		$SecArr['get_from']				=	'db';
 		$SecArr['proc'] 				= 	array();
@@ -17,34 +38,51 @@ class PowerBBFunctions
 		$SecArr['order']['field']		=	'sort';
 		$SecArr['order']['type']		=	'ASC';
 		$SecArr['where']				=	array();
-		$SecArr['where'][0]['name']		= 	'parent';
+		$SecArr['where'][0]['name']		= 	$name;
 		$SecArr['where'][0]['oper']		= 	'=';
-		$SecArr['where'][0]['value']	= 	'0';
+		$SecArr['where'][0]['value']	= 	$parent;
 		// Get main sections
 		$cats = $PowerBB->core->GetList($SecArr,'section');
 
- 		////////////
+		 		////////////
 		// Loop to read the information of main sections
 		foreach($cats as $cat)
 		{
+
 		   if ($PowerBB->functions->section_group_permission($cat['id'],$PowerBB->_CONF['group_info']['id'],'view_section',$cat['sectiongroup_cache']))
 	      	{
              // foreach main sections
-			$PowerBB->_CONF['template']['foreach']['forums_list'][$cat['id'] . '_m'] = $cat;
+             if ($parent == 0)
+             {	             if ($cat['sort'] == 0)
+	             {
+				  $cat['sort'] =  "1";
+				 }
+			  $PowerBB->_CONF['template']['foreach']['forums_list'][$cat['id'] . '_m'] = $cat;
+			 }
+
 
 			if($PowerBB->_CONF['files_forums_Cache'])
 			{
-			@include("cache/forums_cache/forums_cache_".$cat['id'].".php");
+				   $cache_include = "cache/forums_cache/forums_cache_".$cat['id'].".php";
+					if (is_file($cache_include)) {
+					include $cache_include;
+					}
+					elseif ($parent == 0)
+				    {
+				   	$is_cache	= false;
+				   	}
 			}
 			else
 			{
 			$forums_cache = $PowerBB->functions->get_forum_cache($cat['id'],$cat['forums_cache']);
 			}
+
  			 if (!empty($forums_cache))
 			 {
+
                 $forums = $PowerBB->functions->decode_forum_cache($forums_cache);
 					foreach($forums as $forum)
-					{
+					{						$subs_ids = array();
 						if ($PowerBB->_CONF['group_info']['vice']
 						or $PowerBB->_CONF['member_row']['usergroup'] == '1')
 						{
@@ -77,10 +115,9 @@ class PowerBBFunctions
 							$forum['last_date_ago'] = $PowerBB->sys_functions->_time($forum_last_time1);
 							$forum['last_subjectid'] = $forum['last_subjectid'];
 							$forum['last_time'] = $forum['last_time'];
-							$forum['last_reply'] = $forum['last_reply'];
+							$forum['last_reply'] = isset($forum['last_reply']) ? $forum['last_reply'] : 0;
 							$forum['icon'] = $forum['icon'];
 							$forum['review_subject'] = $forum['review_subject'];
-							$forum['last_berpage_nm'] = $forum['last_berpage_nm'];
 							$forum['last_writer']= $forum['last_writer'];
 							$forum['username_style_cache'] = $forum['username_style_cache'];
 							if (isset($forum['writer_photo']))
@@ -91,6 +128,9 @@ class PowerBBFunctions
 							$forum['last_subject'] =  $forum['prefix_subject']." ".$PowerBB->functions->pbb_stripslashes($forum['last_subject']);
                             $forum['sec_section']= $forum['sec_section'];
                             $forum['last_writer_id']= $forum['last_writer_id'];
+                         	$forum['total_posts_count']= $forum['total_posts_count'];
+                            $forum['real_last_page'] = $forum['last_berpage_nm'];
+
                            }
 
                             $kay =$cat['id'];
@@ -109,9 +149,11 @@ class PowerBBFunctions
 									{
 									$forums_cache = $PowerBB->functions->get_forum_cache($forum['id'],$forum['forums_cache']);
 									}
+
                                     if (!empty($forums_cache))
 		                           {
 										$subs = $PowerBB->functions->decode_forum_cache($forums_cache);
+
 		                               foreach($subs as $sub)
 										{
 
@@ -128,9 +170,9 @@ class PowerBBFunctions
 										           if ($sub['last_time'] > $forum['last_time'])
 										           {
 	                                             	$forum_last_time1 = $sub['last_date'];
-													$forum['last_subject'] = $PowerBB->Powerparse->censor_words($sub['last_subject']);
-                                                   	$forum['last_subject_title'] =  $forum['last_subject'];
-													$forum['last_subject'] =  $PowerBB->Powerparse->_wordwrap($sub['last_subject'],'35');
+													$sub['last_subject'] = $PowerBB->Powerparse->censor_words($sub['last_subject']);
+                                                   	$forum['last_subject_title'] =  $sub['last_subject'];
+								                    $forum['last_subject'] =  $sub['prefix_subject']." ".$PowerBB->functions->pbb_stripslashes($PowerBB->Powerparse->_wordwrap($sub['last_subject'],'35'));
 													$forum['last_post_date'] = $PowerBB->sys_functions->_date($forum_last_time1);
 				                                     $forum['l_date'] = $forum_last_time1;
 													 $forum['last_date'] = $PowerBB->sys_functions->time_ago($forum_last_time1);
@@ -138,19 +180,21 @@ class PowerBBFunctions
 													 $forum['last_date_ago'] = $PowerBB->sys_functions->_time($forum_last_time1);
 													$forum['last_subjectid'] = $sub['last_subjectid'];
 													$forum['last_time'] = $sub['last_time'];
-													$forum['last_reply'] = $sub['last_reply'];
+						                        	$forum['last_reply'] = isset($sub['last_reply']) ? $sub['last_reply'] : 0;
 													$forum['icon'] = $sub['icon'];
 													$forum['review_subject'] = $sub['review_subject'];
-													$forum['last_berpage_nm'] = $sub['last_berpage_nm'];
 													$forum['last_writer']= $sub['last_writer'];
                        							    $forum['username_style_cache'] = $sub['username_style_cache'];
                        							    $forum['writer_photo']= $sub['writer_photo'];
                        							    $forum['avater_path']= $sub['avater_path'];
-								                    $forum['last_subject'] =  $sub['prefix_subject']." ".$PowerBB->functions->pbb_stripslashes($sub['last_subject']);
 								                    $forum['sec_section']= $sub['sec_section'];
 								                    $forum['last_writer_id']= $sub['last_writer_id'];
+                         	                        $forum['total_posts_count']= $sub['total_posts_count'];
+                            						$forum['real_last_page'] = $sub['last_berpage_nm'];
+
 								                  }
                                                }
+
 
 												  if ($PowerBB->functions->section_group_permission($sub['id'],$PowerBB->_CONF['group_info']['id'],'view_section',$sub['forums_cache']))
 												   {
@@ -162,6 +206,10 @@ class PowerBBFunctions
 														if ($sub['id'])
 														{
 														$forum['is_sub'] = 1;
+
+														// Store the ID of each sub-forum to calculate aggregated online users later
+														 $subs_ids[] = (int)$sub['id'];
+
 														}
 														if($t_sub== $PowerBB->_CONF['info_row']['sub_columns_number']){
 														$t_sub=0;
@@ -172,6 +220,8 @@ class PowerBBFunctions
 														$forum['sub'] .= ' <a class="sub-forums-title" style="padding-right:11px;" href="'.$PowerBB->functions->rewriterule($forum_url).$sub['id'].'"> '.$sub['title'].'</a>';
 														$forum['sub'] .= "</li>";
 														$t_sub=$t_sub+1;
+
+
 											        }
                                                    // subs forum ++
 													if ($PowerBB->_CONF['files_forums_Cache'])
@@ -200,9 +250,9 @@ class PowerBBFunctions
 															           if ($subforum['last_time'] > $sub['last_time'] and $subforum['last_time'] > $forum['last_time'])
 															           {
 						                                             	$forum_last_time1 = $subforum['last_date'];
-																		$forum['last_subject'] = $PowerBB->Powerparse->censor_words($subforum['last_subject']);
-																		$forum['last_subject_title'] =  $forum['last_subject'];
-																		$forum['last_subject'] =  $PowerBB->Powerparse->_wordwrap($subforum['last_subject'],'35');
+																		$subforum['last_subject'] = $PowerBB->Powerparse->censor_words($subforum['last_subject']);
+																		$forum['last_subject_title'] =  $subforum['last_subject'];
+																		$forum['last_subject'] =  $sub['prefix_subject']." ".$PowerBB->functions->pbb_stripslashes($PowerBB->Powerparse->_wordwrap($subforum['last_subject'],'35'));
 																		$forum['last_post_date'] = $PowerBB->sys_functions->_date($forum_last_time1);
 									                                    $forum['l_date'] = $forum_last_time1;
 																		$forum['last_date'] = $PowerBB->sys_functions->time_ago($forum_last_time1);
@@ -210,17 +260,17 @@ class PowerBBFunctions
 																		$forum['last_date_ago'] = $PowerBB->sys_functions->_time($forum_last_time1);
 																		$forum['last_subjectid'] = $subforum['last_subjectid'];
 																		$forum['last_time'] = $subforum['last_time'];
-																		$forum['last_reply'] = $subforum['last_reply'];
+																		$forum['last_reply'] = isset($subforum['last_reply']) ? $subforum['last_reply'] : 0;
 																		$forum['icon'] = $subforum['icon'];
 																		$forum['review_subject'] = $subforum['review_subject'];
-																		$forum['last_berpage_nm'] = $subforum['last_berpage_nm'];
 																		$forum['last_writer']= $subforum['last_writer'];
                                        							        $forum['username_style_cache'] = $subforum['username_style_cache'];
                                        							        $forum['writer_photo']= $subforum['writer_photo'];
                                        							        $forum['avater_path']= $subforum['avater_path'];
-													                    $forum['last_subject'] =  $subforum['prefix_subject']." ".$PowerBB->functions->pbb_stripslashes($subforum['last_subject']);
 													                    $forum['sec_section']= $subforum['sec_section'];
 													                    $forum['last_writer_id']= $subforum['last_writer_id'];
+													                    $forum['total_posts_count']= $subforum['total_posts_count'];
+                            								            $forum['real_last_page'] = $subforum['last_berpage_nm'];
 	                                                                   }
 				                                                 }
 
@@ -252,9 +302,9 @@ class PowerBBFunctions
 																	           if ($sub4forum['last_time'] > $sub['last_time'] and $sub4forum['last_time'] > $subforum['last_time'] and $sub4forum['last_time'] > $forum['last_time'])
 																	           {
 								                                             	$forum_last_time1 = $sub4forum['last_date'];
-																				$forum['last_subject'] = $PowerBB->Powerparse->censor_words($sub4forum['last_subject']);
-																				$forum['last_subject_title'] =  $forum['last_subject'];
-																				$forum['last_subject'] =  $PowerBB->Powerparse->_wordwrap($sub4forum['last_subject'],'35');
+																				$sub4forum['last_subject'] = $PowerBB->Powerparse->censor_words($sub4forum['last_subject']);
+																				$forum['last_subject_title'] =  $sub4forum['last_subject'];
+																				$forum['last_subject'] =  $sub['prefix_subject']." ".$PowerBB->functions->pbb_stripslashes($PowerBB->Powerparse->_wordwrap($sub4forum['last_subject'],'35'));
 																				$forum['last_post_date'] = $PowerBB->sys_functions->_date($forum_last_time1);
 											                                    $forum['l_date'] = $forum_last_time1;
 																				$forum['last_date'] = $PowerBB->sys_functions->time_ago($forum_last_time1);
@@ -262,17 +312,17 @@ class PowerBBFunctions
 																				$forum['last_date_ago'] = $PowerBB->sys_functions->_time($forum_last_time1);
 																				$forum['last_subjectid'] = $sub4forum['last_subjectid'];
 																				$forum['last_time'] = $sub4forum['last_time'];
-																				$forum['last_reply'] = $sub4forum['last_reply'];
+																				$forum['last_reply'] = isset($sub4forum['last_reply']) ? $sub4forum['last_reply'] : 0;
 																				$forum['icon'] = $sub4forum['icon'];
 																				$forum['review_subject'] = $sub4forum['review_subject'];
-																				$forum['last_berpage_nm'] = $sub4forum['last_berpage_nm'];
 																				$forum['last_writer']= $sub4forum['last_writer'];
 		                                       							        $forum['username_style_cache'] = $sub4forum['username_style_cache'];
 		                                       							        $forum['writer_photo']= $sub4forum['writer_photo'];
 		                                       							        $forum['avater_path']= $sub4forum['avater_path'];
-															                    $forum['last_subject'] =  $sub4forum['prefix_subject']." ".$PowerBB->functions->pbb_stripslashes($sub4forum['last_subject']);
 															                    $forum['sec_section']= $sub4forum['sec_section'];
 															                    $forum['last_writer_id']= $sub4forum['last_writer_id'];
+															                    $forum['real_last_page'] = $sub4forum['last_berpage_nm'];
+															                    $forum['total_posts_count']= $sub4forum['total_posts_count'];
 			                                                                   }
 
 						                                                 }
@@ -306,9 +356,9 @@ class PowerBBFunctions
 																				           if ($sub5forum['last_time'] > $sub['last_time'] and $sub5forum['last_time'] > $subforum['last_time'] and $sub5forum['last_time'] > $forum['last_time'])
 																				           {
 											                                             	$forum_last_time1 = $sub5forum['last_date'];
-																							$forum['last_subject'] = $PowerBB->Powerparse->censor_words($sub5forum['last_subject']);
-																							$forum['last_subject_title'] =  $forum['last_subject'];
-																							$forum['last_subject'] =  $PowerBB->Powerparse->_wordwrap($sub5forum['last_subject'],'35');
+																							$sub5forum['last_subject'] = $PowerBB->Powerparse->censor_words($sub5forum['last_subject']);
+																							$forum['last_subject_title'] =  $sub5forum['last_subject'];
+																							$forum['last_subject'] =  $sub['prefix_subject']." ".$PowerBB->functions->pbb_stripslashes($PowerBB->Powerparse->_wordwrap($sub5forum['last_subject'],'35'));
 																							$forum['last_post_date'] = $PowerBB->sys_functions->_date($forum_last_time1);
 														                                    $forum['l_date'] = $forum_last_time1;
 																							$forum['last_date'] = $PowerBB->sys_functions->time_ago($forum_last_time1);
@@ -316,17 +366,17 @@ class PowerBBFunctions
 																							$forum['last_date_ago'] = $PowerBB->sys_functions->_time($forum_last_time1);
 																							$forum['last_subjectid'] = $sub5forum['last_subjectid'];
 																							$forum['last_time'] = $sub5forum['last_time'];
-																							$forum['last_reply'] = $sub5forum['last_reply'];
+																							$forum['last_reply'] = isset($sub5forum['last_reply']) ? $sub5forum['last_reply'] : 0;
 																							$forum['icon'] = $sub5forum['icon'];
 																							$forum['review_subject'] = $sub5forum['review_subject'];
-																							$forum['last_berpage_nm'] = $sub5forum['last_berpage_nm'];
 																							$forum['last_writer']= $sub5forum['last_writer'];
 					                                       							        $forum['username_style_cache'] = $sub5forum['username_style_cache'];
 					                                       							        $forum['writer_photo']= $sub5forum['writer_photo'];
 					                                       							        $forum['avater_path']= $sub5forum['avater_path'];
-																		                    $forum['last_subject'] =  $sub5forum['prefix_subject']." ".$PowerBB->functions->pbb_stripslashes($sub5forum['last_subject']);
 																		                    $forum['sec_section']= $sub5forum['sec_section'];
 																		                    $forum['last_writer_id']= $sub5forum['last_writer_id'];
+																		                    $forum['real_last_page'] = $sub5forum['last_berpage_nm'];
+																		                    $forum['total_posts_count']= $sub5forum['total_posts_count'];
 						                                                                   }
 
 									                                                 }
@@ -360,9 +410,9 @@ class PowerBBFunctions
 																								           if ($sub6forum['last_time'] > $sub['last_time'] and $sub6forum['last_time'] > $subforum['last_time'] and $sub6forum['last_time'] > $forum['last_time'])
 																								           {
 															                                             	$forum_last_time1 = $sub6forum['last_date'];
-																											$forum['last_subject'] = $PowerBB->Powerparse->censor_words($sub6forum['last_subject']);
-																											$forum['last_subject_title'] =  $forum['last_subject'];
-																											$forum['last_subject'] =  $PowerBB->Powerparse->_wordwrap($sub6forum['last_subject'],'35');
+																											$sub6forum['last_subject'] = $PowerBB->Powerparse->censor_words($sub6forum['last_subject']);
+																											$forum['last_subject_title'] =  $sub6forum['last_subject'];
+																											$forum['last_subject'] =  $sub['prefix_subject']." ".$PowerBB->functions->pbb_stripslashes($PowerBB->Powerparse->_wordwrap($sub6forum['last_subject'],'35'));
 																											$forum['last_post_date'] = $PowerBB->sys_functions->_date($forum_last_time1);
 																		                                    $forum['l_date'] = $forum_last_time1;
 																											$forum['last_date'] = $PowerBB->sys_functions->time_ago($forum_last_time1);
@@ -370,17 +420,17 @@ class PowerBBFunctions
 																											$forum['last_date_ago'] = $PowerBB->sys_functions->_time($forum_last_time1);
 																											$forum['last_subjectid'] = $sub6forum['last_subjectid'];
 																											$forum['last_time'] = $sub6forum['last_time'];
-																											$forum['last_reply'] = $sub6forum['last_reply'];
+																											$forum['last_reply'] = isset($sub6forum['last_reply']) ? $sub6forum['last_reply'] : 0;
 																											$forum['icon'] = $sub6forum['icon'];
 																											$forum['review_subject'] = $sub6forum['review_subject'];
-																											$forum['last_berpage_nm'] = $sub6forum['last_berpage_nm'];
 																											$forum['last_writer']= $sub6forum['last_writer'];
 									                                       							        $forum['username_style_cache'] = $sub6forum['username_style_cache'];
 									                                       							        $forum['writer_photo']= $sub6forum['writer_photo'];
 									                                       							        $forum['avater_path']= $sub6forum['avater_path'];
-																						                    $forum['last_subject'] =  $sub6forum['prefix_subject']." ".$PowerBB->functions->pbb_stripslashes($sub6forum['last_subject']);
 																						                    $forum['sec_section']= $sub6forum['sec_section'];
 																						                    $forum['last_writer_id']= $sub6forum['last_writer_id'];
+																						                    $forum['real_last_page'] = $sub6forum['last_berpage_nm'];
+																						                    $forum['total_posts_count']= $sub6forum['total_posts_count'];
 										                                                                   }
 
 													                                                 }
@@ -514,12 +564,18 @@ class PowerBBFunctions
 	                          //
 						  // Get the moderators list as a _link_ and store it in $forum['moderators_list']
 		                   if ($PowerBB->_CONF['info_row']['no_moderators'])
-						   {
+						   {    $forum['ModeratorCheck'] = 1;
+                                $forum['IsModeratorCheck'] = 0;
 								$forum['is_moderators'] 		= 	0;
 								$forum['moderators_list']		=	'';
-								if (!empty($forum['moderators']))
+								if (isset($forum['moderators']))
 								{
-									$moderators = json_decode($forum['moderators'], true);
+
+									if ($PowerBB->functions->is_json($forum['moderators'])) {
+									    $moderators = json_decode($forum['moderators'], true);
+									} else {
+									    $moderators = $forum['moderators'];
+									}
 									if (is_array($moderators))
 									{
 		                               foreach($moderators as $moderator)
@@ -532,6 +588,8 @@ class PowerBBFunctions
 											or $PowerBB->_CONF['group_info']['vice']
 											or $PowerBB->_CONF['member_row']['usergroup'] == '1')
 											{
+					                              $forum['ModeratorCheck'] = 0;
+					                              $forum['IsModeratorCheck'] = 1;
 								               if ($forum['subjects_review_num']>0)
 												{
 												$forum['num_subjects_awaiting_approval'] =	$PowerBB->functions->with_comma($forum['subjects_review_num']);
@@ -543,11 +601,11 @@ class PowerBBFunctions
 											}
 							               if ($PowerBB->_CONF['info_row']['rewriterule'] == '1')
 											{
-											$forum['moderators_list'] .= '<a href="u' . $moderator['member_id'] . '.html">' . $PowerBB->functions->GetUsernameStyle($moderator['username']) . '</a> , ';
+											$forum['moderators_list'] .= '<a href="u' . $moderator['member_id'] . '">' . $moderator['username_style_cache']. '</a> , ';
 											}
 											else
 											{
-								            $forum['moderators_list'] .= '<a href="index.php?page=profile&amp;show=1&amp;id=' . $moderator['member_id'] . '">' . $PowerBB->functions->GetUsernameStyle($moderator['username']) .'</a> , ';
+								            $forum['moderators_list'] .= '<a href="index.php?page=profile&amp;show=1&amp;id=' . $moderator['member_id'] . '">' .$moderator['username_style_cache'].'</a> , ';
 											}
 										}
 									}
@@ -557,16 +615,16 @@ class PowerBBFunctions
 							// Get online forums
 							if ($PowerBB->_CONF['info_row']['active_forum_online_number'])
 							{
-							  $Forum_online_number = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['online'] . " WHERE section_id='" . $forum['id'] . "' LIMIT 1"));
-							  if ($forum['is_sub'])
-							  {
-							  $Forum_online_number_sub = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['online'] . " WHERE subject_show ='" . $forum['id'] . "' LIMIT 1"));
-							  $forum['forum_online'] = $Forum_online_number+$Forum_online_number_sub;
-							  }
-							  else
-							  {
-							   $forum['forum_online'] = $Forum_online_number;
-							  }
+
+                              $forum_online = isset($online_counts[$forum['id']]) ? (int)$online_counts[$forum['id']] : 0;
+                                  $forum_online_sub = 0;
+
+								foreach ($subs_ids as $sid) {
+                                 $forum_online_sub += $online_counts[$sid] ?? 0;
+								}
+
+							   $forum['forum_online'] = $forum_online+$forum_online_sub;
+
 							}
 							if ($forum['forum_title_color'] !='')
 					         {
@@ -596,24 +654,31 @@ class PowerBBFunctions
 								  $forum['forum_icon_alt'] = $PowerBB->_CONF['template']['_CONF']['lang']['no_new_posts'];
 								}
                              }
-                             if($PowerBB->functions->ModeratorCheck($forum['moderators']))
-                             {
-                              $forum['ModeratorCheck'] = 0;
-                              $forum['IsModeratorCheck'] = 1;
-                             }
-                             else
-                             {
-                              $forum['ModeratorCheck'] = 1;
-                              $forum['IsModeratorCheck'] = 0;
-                             }
+
 
                          if ($forum['review_subject'])
 						 {
 						   $forum['hide_subject']	= '1';
                          }
 
+							// Get the number of posts per page from the forum general settings
+							$posts_per_page = $PowerBB->_CONF['info_row']['perpage'];
+							// Ensure the value exists; if not, assume the topic is on the first page
+							if (isset($forum['total_posts_count']) && $forum['total_posts_count'] > 0) {
+                               // Formula: round up (number of posts before the current reply / posts per page)
+							    $forum['real_last_page'] = ceil($forum['total_posts_count'] / $posts_per_page);
+							} else {
+							    $forum['real_last_page'] = 0;
+							}
+
+                            $forum['subject_num']= $PowerBB->functions->with_comma($forum['subject_num']);
+							$forum['reply_num']  = $PowerBB->functions->with_comma($forum['reply_num']);
 
 							$PowerBB->_CONF['template']['foreach']['forums_list'][$forum['id'] . '_f'] = $forum;
+							 if($forum and $section_id)
+							 {
+							 $PowerBB->template->assign('SHOW_SUB_SECTIONS', true);
+				             }
 							unset($groups);
 						}// end view forums
 
@@ -630,756 +695,236 @@ class PowerBBFunctions
 		} // end foreach ($cats)
 		//////////
 
+			$is_admin = ($PowerBB->_CONF['group_info']['vice'] || $PowerBB->_CONF['member_row']['usergroup'] == '1');
+
+			if ($is_cache === false && $is_admin) {
+			    printf('
+				<div style="font-family: \'Droid Arabic Kufi\', Tahoma, sans-serif; background: #fffcf5; border: 1px solid #fce8c3; border-right: 5px solid #f59e0b; color: #92400e; padding: 12px 15px; margin: 15px 0; border-radius: 6px; font-size: 13px; direction: rtl; line-height: 1.8; position: relative;">
+
+				        <div style="margin-bottom: 5px;">
+				            <i class="fa fa-lock" style="margin-left: 5px; color: #f59e0b;"></i>
+				            <small style="font-size: 11px; opacity: 0.8;">تنبيه إداري خاص (يظهر لك فقط كمدير):</small>
+				        </div>
+
+				        <div style="display: flex; align-items: center; gap: 8px;">
+				            <i class="fa fa-refresh" style="font-size: 16px;"></i>
+				            <span>يُنصح بتحديث كاش الأقسام:
+				<code style="font-family: \'Droid Arabic Kufi\', Tahoma, sans-serif;background: rgba(255,255,255,0.6);padding: 2px 8px;border-radius: 4px;border: 1px solid #fce8c3;color: #b45309;font-size: 11px;margin-right: 5px;">
+				                    الصيانة <i class="fa fa-angle-left"></i> تحديث العدادات <i class="fa fa-angle-left"></i> تحديث كافة الأقسام دفعة واحدة
+				                </code>
+				            </span>
+				        </div>
+				    </div>'
+				    );
+			}
+
+
 	}
+
 
 	/**
-	 * Get sections list.
+	 * Get sections list - Infinite tree + limited main view (level 2)
 	 */
-	function _GetSections_direct()
+	function _GetSections_direct($section_id = null)
 	{
-		global $PowerBB;
-		$SecArr 						= 	array();
-		$SecArr['get_from']				=	'db';
-		$SecArr['proc'] 				= 	array();
-		$SecArr['proc']['*'] 			= 	array('method'=>'clean','param'=>'html');
-		$SecArr['order']				=	array();
-		$SecArr['order']['field']		=	'sort';
-		$SecArr['order']['type']		=	'ASC';
-		$SecArr['where']				=	array();
-		$SecArr['where'][0]['name']		= 	'parent';
-		$SecArr['where'][0]['oper']		= 	'=';
-		$SecArr['where'][0]['value']	= 	'0';
-		// Get main sections
-		$cats = $PowerBB->core->GetList($SecArr,'section');
-        if($cats)
-        {
-	 		////////////
-			// Loop to read the information of main sections
-			foreach($cats as $cat)
-			{
-
-				if($PowerBB->_CONF['files_forums_Cache'])
-				{
-				@include("cache/forums_cache/forums_cache_".$cat['id'].".php");
-				}
-				elseif($PowerBB->_CONF['forums_parent_direct'])
-				{
-				$forums_cache = $PowerBB->functions->get_forum_cache($cat['id'],$cat['forums_cache']);
-				}
-
-			 if (!empty($forums_cache))
-			 {
-
-				  $cache = $PowerBB->functions->decode_forum_cache($forums_cache);
-				   $x = 0;
-
-			   if ($PowerBB->functions->section_group_permission($cat['id'],$PowerBB->_CONF['group_info']['id'],'view_section',$cat['sectiongroup_cache']))
-		      	{
-	               // foreach main sections
-				   $PowerBB->_CONF['template']['foreach']['forums_list'][$cat['id'] . '_m'] = $cat;
-
-	               	$ForumArr 						= 	array();
-					$ForumArr['get_from']				=	'db';
-					$ForumArr['proc'] 				= 	array();
-					$ForumArr['proc']['*'] 			= 	array('method'=>'clean','param'=>'html');
-					$ForumArr['order']				=	array();
-					$ForumArr['order']['field']		=	'sort';
-					$ForumArr['order']['type']		=	'ASC';
-					$ForumArr['where']				=	array();
-					$ForumArr['where'][0]['name']		= 	'parent';
-					$ForumArr['where'][0]['oper']		= 	'=';
-					$ForumArr['where'][0]['value']	= 	$cat['id'];
-					// Get main sections
-					$forums = $PowerBB->core->GetList($ForumArr,'section');
-
-						foreach($forums as $forum)
-						{
-
-							if ($PowerBB->_CONF['group_info']['vice']
-							or $PowerBB->_CONF['member_row']['usergroup'] == '1')
-							{
-				               if ($forum['subjects_review_num']>0)
-								{
-								$forum['num_subjects_awaiting_approval'] =	$PowerBB->functions->with_comma($forum['subjects_review_num']);
-								}
-	                           if ($forum['replys_review_num']>0)
-								{
-								$forum['num_replys_awaiting_approval'] =	$PowerBB->functions->with_comma($forum['replys_review_num']);
-								}
-							}
-							//////////////////////////
-			                if ($PowerBB->functions->section_group_permission($forum['id'],$PowerBB->_CONF['group_info']['id'],'view_section',$forum['sectiongroup_cache']))
-							{
-	                         if ($PowerBB->functions->section_group_permission($forum['id'],$PowerBB->_CONF['group_info']['id'],'view_subject',$forum['sectiongroup_cache'])  == '0')
-							 {
-							   $forum['hide_subject']	= '1';
-	                         }
-	                           if (!empty($forum['last_date']))
-	                           {
-								$forum_last_time1 = $forum['last_date'];
-								$forum['last_subject'] = $PowerBB->Powerparse->censor_words($forum['last_subject']);
-								$forum['last_subject_title'] =  $forum['last_subject'];
-								$forum['last_subject'] =  $PowerBB->Powerparse->_wordwrap($forum['last_subject'],'35');
-								$forum['last_post_date'] = $PowerBB->sys_functions->_date($forum['last_time']);
-								$forum['l_date'] = $forum_last_time1;
-								$forum['last_date'] = $PowerBB->sys_functions->time_ago($forum_last_time1);
-								$forum['last_time_ago'] = $PowerBB->sys_functions->time_ago($forum_last_time1);
-								$forum['last_date_ago'] = $PowerBB->sys_functions->_time($forum_last_time1);
-								$forum['last_subjectid'] = $forum['last_subjectid'];
-								$forum['last_time'] = $forum['last_time'];
-								$forum['last_reply'] = $forum['last_reply'];
-								$forum['icon'] = $forum['icon'];
-								$forum['review_subject'] = $forum['review_subject'];
-								$forum['last_berpage_nm'] = $forum['last_berpage_nm'];
-								$forum['last_writer']= $forum['last_writer'];
-
-	                            $forum['last_writer_id']= $cache[$x]['last_writer_id'];
-								$forum['username_style_cache'] = $cache[$x]['username_style_cache'];
-								$forum['avater_path']= $cache[$x]['avater_path'];
-								$forum['prefix_subject']= $cache[$x]['prefix_subject'];
-								$forum['last_subject'] =  $forum['prefix_subject']." ".$PowerBB->functions->pbb_stripslashes($forum['last_subject']);
-
-	                            $forum['sec_section']= $forum['sec_section'];
-	                           }
-
-	                            $kay =$cat['id'];
-	                            if (isset($PowerBB->_COOKIE["pbboard_collapse_forumid_$kay"]))
-	                            {
-								$forum['collapse']= $PowerBB->_COOKIE["pbboard_collapse_forumid_$kay"];
-								}
-										$forum['is_sub'] 	= 	0;
-										$forum['sub']		=	'';
-										$t_sub=0;
-									if($PowerBB->_CONF['files_forums_Cache'])
-									{
-									@include("cache/forums_cache/forums_cache_".$forum['id'].".php");
-									}
-									elseif($PowerBB->_CONF['forums_parent_direct'])
-									{
-									$forums_cache = $PowerBB->functions->get_forum_cache($forum['id'],$forum['forums_cache']);
-									}
-
-	                                    if (!empty($forums_cache))
-			                           {
-									    $cache1 = $PowerBB->functions->decode_forum_cache($forums_cache);
-									    $xs = 0;
-						               	$SubArr 						= 	array();
-										$SubArr['get_from']				=	'db';
-										$SubArr['proc'] 				= 	array();
-										$SubArr['proc']['*'] 			= 	array('method'=>'clean','param'=>'html');
-										$SubArr['order']				=	array();
-										$SubArr['order']['field']		=	'sort';
-										$SubArr['order']['type']		=	'ASC';
-										$SubArr['where']				=	array();
-										$SubArr['where'][0]['name']		= 	'parent';
-										$SubArr['where'][0]['oper']		= 	'=';
-										$SubArr['where'][0]['value']	= 	$forum['id'];
-										// Get sub sections
-										$subs = $PowerBB->core->GetList($SubArr,'section');
-
-			                               foreach($subs as $sub)
-											{
-
-											   if ($forum['id'] == $sub['parent'])
-			                                    {
-											        if (!empty($sub['last_date']))
-											         {
-
-											          $forum['subject_num'] += $sub['subject_num'];
-											          $forum['reply_num'] += $sub['reply_num'];
-											          $forum['num_subjects_awaiting_approval'] += $sub['subjects_review_num'];
-											          $forum['num_replys_awaiting_approval'] += $sub['replys_review_num'];
-
-											           if ($sub['last_time'] > $forum['last_time'])
-											           {
-		                                             	$forum_last_time1 = $sub['last_date'];
-														$forum['last_subject'] = $PowerBB->Powerparse->censor_words($sub['last_subject']);
-	                                                   	$forum['last_subject_title'] =  $forum['last_subject'];
-														$forum['last_subject'] =  $PowerBB->Powerparse->_wordwrap($sub['last_subject'],'35');
-														$forum['last_post_date'] = $PowerBB->sys_functions->_date($forum_last_time1);
-					                                     $forum['l_date'] = $forum_last_time1;
-														 $forum['last_date'] = $PowerBB->sys_functions->time_ago($forum_last_time1);
-														 $forum['last_time_ago'] = $PowerBB->sys_functions->time_ago($forum_last_time1);
-														 $forum['last_date_ago'] = $PowerBB->sys_functions->_time($forum_last_time1);
-														$forum['last_subjectid'] = $sub['last_subjectid'];
-														$forum['last_time'] = $sub['last_time'];
-														$forum['last_reply'] = $sub['last_reply'];
-														$forum['icon'] = $sub['icon'];
-														$forum['review_subject'] = $sub['review_subject'];
-														$forum['last_berpage_nm'] = $sub['last_berpage_nm'];
-														$forum['last_writer']= $sub['last_writer'];
-
-							                            $forum['last_writer_id']= $cache1[$xs]['last_writer_id'];
-														$forum['username_style_cache'] = $cache1[$xs]['username_style_cache'];
-														$forum['avater_path']= $cache1[$xs]['avater_path'];
-														$forum['prefix_subject']= $cache1[$xs]['prefix_subject'];
-
-	                       							 	$forum['last_subject'] =  $forum['prefix_subject']." ".$PowerBB->functions->pbb_stripslashes($sub['last_subject']);
-									                    $forum['sec_section']= $sub['sec_section'];
-									                  }
-	                                               }
-
-													  if ($PowerBB->functions->section_group_permission($sub['id'],$PowerBB->_CONF['group_info']['id'],'view_section',$sub['sectiongroup_cache']))
-													   {
-													        if ($sub['forum_title_color'] !='')
-													         {
-															    $forum_title_color = $sub['forum_title_color'];
-															    $sub['title'] = "<span style=color:".$forum_title_color.">".$PowerBB->functions->pbb_stripslashes($sub['title'])."</span>";
-															 }
-															if ($sub['id'])
-															{
-															$forum['is_sub'] = 1;
-															}
-															if($t_sub== $PowerBB->_CONF['info_row']['sub_columns_number']){
-															$t_sub=0;
-															$forum['sub'] .='</ol><br /><ol class="home-sub-forums-columns-2">';
-															}
-															$forum_url = "index.php?page=forum&amp;show=1&amp;id=";
-															$forum['sub'] .= '<li class="home-sub-forums">';
-															$forum['sub'] .= ' <a class="sub-forums-title" style="padding-right:11px;" href="'.$PowerBB->functions->rewriterule($forum_url).$sub['id'].'"> '.$sub['title'].'</a>';
-															$forum['sub'] .= "</li>";
-															$t_sub=$t_sub+1;
-												        }
-	                                                   // subs forum ++
-														if($PowerBB->_CONF['files_forums_Cache'])
-														{
-														@include("cache/forums_cache/forums_cache_".$sub['id'].".php");
-														}
-														elseif($PowerBB->_CONF['forums_parent_direct'])
-														{
-														$forums_cache = $PowerBB->functions->get_forum_cache($sub['id'],$sub['forums_cache']);
-														}
-
-	 				                                   if (!empty($forums_cache))
-							                           {
-														 $cache2 = $PowerBB->functions->decode_forum_cache($forums_cache);
-														 $xsu = 0;
-
-											               	$SubsArr 						= 	array();
-															$SubsArr['get_from']				=	'db';
-															$SubsArr['proc'] 				= 	array();
-															$SubsArr['proc']['*'] 			= 	array('method'=>'clean','param'=>'html');
-															$SubsArr['order']				=	array();
-															$SubsArr['order']['field']		=	'sort';
-															$SubsArr['order']['type']		=	'ASC';
-															$SubsArr['where']				=	array();
-															$SubsArr['where'][0]['name']		= 	'parent';
-															$SubsArr['where'][0]['oper']		= 	'=';
-															$SubsArr['where'][0]['value']	= 	$sub['id'];
-															$subsforum = $PowerBB->core->GetList($SubsArr,'section');
-
-							                               foreach($subsforum as $subforum)
-															{
-
-															    if ($sub['id'] == $subforum['parent'])
-															    {
-															        if (!empty($subforum['last_date']))
-															         {
-
-															           $forum['subject_num'] += $subforum['subject_num'];
-											                           $forum['reply_num'] += $subforum['reply_num'];
-															           $forum['num_subjects_awaiting_approval'] += $subforum['subjects_review_num'];
-															           $forum['num_replys_awaiting_approval'] += $subforum['replys_review_num'];
-
-																           if ($subforum['last_time'] > $sub['last_time'] and $subforum['last_time'] > $forum['last_time'])
-																           {
-							                                             	$forum_last_time1 = $subforum['last_date'];
-																			$forum['last_subject'] = $PowerBB->Powerparse->censor_words($subforum['last_subject']);
-																			$forum['last_subject_title'] =  $forum['last_subject'];
-																			$forum['last_subject'] =  $PowerBB->Powerparse->_wordwrap($subforum['last_subject'],'35');
-																			$forum['last_post_date'] = $PowerBB->sys_functions->_date($forum_last_time1);
-										                                    $forum['l_date'] = $forum_last_time1;
-																			$forum['last_date'] = $PowerBB->sys_functions->time_ago($forum_last_time1);
-																			$forum['last_time_ago'] = $PowerBB->sys_functions->time_ago($forum_last_time1);
-																			$forum['last_date_ago'] = $PowerBB->sys_functions->_time($forum_last_time1);
-																			$forum['last_subjectid'] = $subforum['last_subjectid'];
-																			$forum['last_time'] = $subforum['last_time'];
-																			$forum['last_reply'] = $subforum['last_reply'];
-																			$forum['icon'] = $subforum['icon'];
-																			$forum['review_subject'] = $subforum['review_subject'];
-																			$forum['last_berpage_nm'] = $subforum['last_berpage_nm'];
-																			$forum['last_writer']= $subforum['last_writer'];
-
-
-													                        $forum['last_writer_id'] = $cache2[$xsu]['last_writer_id'];
-													                        $forum['avater_path'] = $cache2[$xsu]['avater_path'];
-													                        $forum['username_style_cache'] = $cache2[$xsu]['username_style_cache'];
-													                        $forum['prefix_subject'] = $cache2[$xsu]['prefix_subject'];
-
-														                    $forum['last_subject'] =  $forum['prefix_subject']." ".$PowerBB->functions->pbb_stripslashes($subforum['last_subject']);
-														                    $forum['sec_section']= $subforum['sec_section'];
-		                                                                   }
-					                                                 }
-
-	                                                            }
-
-	                                                              // subs forum +++
-																	if($PowerBB->_CONF['files_forums_Cache'])
-																	{
-																	@include("cache/forums_cache/forums_cache_".$subforum['id'].".php");
-																	}
-																	elseif($PowerBB->_CONF['forums_parent_direct'])
-																	{
-																	$forums_cache = $PowerBB->functions->get_forum_cache($subforum['id'],$subforum['forums_cache']);
-																	}
-
-	 						                                   if (!empty($forums_cache))
-									                           {
-																	$cache3 = $PowerBB->functions->decode_forum_cache($forums_cache);
-																	 $xsub = 0;
-													               	$Subs4Arr 						= 	array();
-																	$Subs4Arr['get_from']				=	'db';
-																	$Subs4Arr['proc'] 				= 	array();
-																	$Subs4Arr['proc']['*'] 			= 	array('method'=>'clean','param'=>'html');
-																	$Subs4Arr['order']				=	array();
-																	$Subs4Arr['order']['field']		=	'sort';
-																	$Subs4Arr['order']['type']		=	'ASC';
-																	$Subs4Arr['where']				=	array();
-																	$Subs4Arr['where'][0]['name']		= 	'parent';
-																	$Subs4Arr['where'][0]['oper']		= 	'=';
-																	$Subs4Arr['where'][0]['value']	= 	$subforum['id'];
-																	$subs4forum = $PowerBB->core->GetList($Subs4Arr,'section');
-
-									                               foreach($subs4forum  as $sub4forum)
-																	{
-
-																	    if ($subforum['id'] == $sub4forum['parent'])
-																	    {
-																	        if (!empty($sub4forum['last_date']))
-																	         {
-																	            $forum['subject_num'] += $sub4forum['subject_num'];
-											                                    $forum['reply_num'] += $sub4forum['reply_num'];
-	            														        $forum['num_subjects_awaiting_approval'] += $sub4forum['subjects_review_num'];
-															                    $forum['num_replys_awaiting_approval'] += $sub4forum['replys_review_num'];
-
-																		           if ($sub4forum['last_time'] > $sub['last_time'] and $sub4forum['last_time'] > $subforum['last_time'] and $sub4forum['last_time'] > $forum['last_time'])
-																		           {
-									                                             	$forum_last_time1 = $sub4forum['last_date'];
-																					$forum['last_subject'] = $PowerBB->Powerparse->censor_words($sub4forum['last_subject']);
-																					$forum['last_subject_title'] =  $forum['last_subject'];
-																					$forum['last_subject'] =  $PowerBB->Powerparse->_wordwrap($sub4forum['last_subject'],'35');
-																					$forum['last_post_date'] = $PowerBB->sys_functions->_date($forum_last_time1);
-												                                    $forum['l_date'] = $forum_last_time1;
-																					$forum['last_date'] = $PowerBB->sys_functions->time_ago($forum_last_time1);
-																					$forum['last_time_ago'] = $PowerBB->sys_functions->time_ago($forum_last_time1);
-																					$forum['last_date_ago'] = $PowerBB->sys_functions->_time($forum_last_time1);
-																					$forum['last_subjectid'] = $sub4forum['last_subjectid'];
-																					$forum['last_time'] = $sub4forum['last_time'];
-																					$forum['last_reply'] = $sub4forum['last_reply'];
-																					$forum['icon'] = $sub4forum['icon'];
-																					$forum['review_subject'] = $sub4forum['review_subject'];
-																					$forum['last_berpage_nm'] = $sub4forum['last_berpage_nm'];
-																					$forum['last_writer']= $sub4forum['last_writer'];
-
-															                        $forum['last_writer_id'] = $cache3[$xsub]['last_writer_id'];
-															                        $forum['avater_path'] = $cache3[$xsub]['avater_path'];
-															                        $forum['username_style_cache'] = $cache3[$xsub]['username_style_cache'];
-															                        $forum['prefix_subject'] = $cache3[$xsub]['prefix_subject'];
-
-																                    $forum['last_subject'] =  $forum['prefix_subject']." ".$PowerBB->functions->pbb_stripslashes($sub4forum['last_subject']);
-																                    $forum['sec_section']= $sub4forum['sec_section'];
-
-				                                                                   }
-
-							                                                 }
-
-			                                                            }
-
-
-																		   // subs forum ++++
-																			if($PowerBB->_CONF['files_forums_Cache'])
-																			{
-																			@include("cache/forums_cache/forums_cache_".$sub4forum['id'].".php");
-																			}
-																			elseif($PowerBB->_CONF['forums_parent_direct'])
-																			{
-																			$forums_cache = $PowerBB->functions->get_forum_cache($sub4forum['id'],$sub4forum['forums_cache']);
-																			}
-
-				 						                                   if (!empty($forums_cache))
-												                           {
-																			 $cache4 = $PowerBB->functions->decode_forum_cache($forums_cache);
-																			  $xsub5 = 0;
-											                                    $Subs5Arr 						= 	array();
-																				$Subs5Arr['get_from']				=	'db';
-																				$Subs5Arr['proc'] 				= 	array();
-																				$Subs5Arr['proc']['*'] 			= 	array('method'=>'clean','param'=>'html');
-																				$Subs5Arr['order']				=	array();
-																				$Subs5Arr['order']['field']		=	'sort';
-																				$Subs5Arr['order']['type']		=	'ASC';
-																				$Subs5Arr['where']				=	array();
-																				$Subs5Arr['where'][0]['name']		= 	'parent';
-																				$Subs5Arr['where'][0]['oper']		= 	'=';
-																				$Subs5Arr['where'][0]['value']	= 	$sub4forum['id'];
-																				$subs5forum = $PowerBB->core->GetList($Subs5Arr,'section');
-												                               foreach($subs5forum  as $sub5forum)
-																				{
-
-																				    if ($sub4forum['id'] == $sub5forum['parent'])
-																				    {
-																				        if (!empty($sub5forum['last_date']))
-																				         {
-																				            $forum['subject_num'] += $sub5forum['subject_num'];
-														                                    $forum['reply_num'] += $sub5forum['reply_num'];
-				            														        $forum['num_subjects_awaiting_approval'] += $sub5forum['subjects_review_num'];
-																		                    $forum['num_replys_awaiting_approval'] += $sub5forum['replys_review_num'];
-
-																					           if ($sub5forum['last_time'] > $sub['last_time'] and $sub5forum['last_time'] > $subforum['last_time'] and $sub5forum['last_time'] > $forum['last_time'])
-																					           {
-												                                             	$forum_last_time1 = $sub5forum['last_date'];
-																								$forum['last_subject'] = $PowerBB->Powerparse->censor_words($sub5forum['last_subject']);
-																								$forum['last_subject_title'] =  $forum['last_subject'];
-																								$forum['last_subject'] =  $PowerBB->Powerparse->_wordwrap($sub5forum['last_subject'],'35');
-																								$forum['last_post_date'] = $PowerBB->sys_functions->_date($forum_last_time1);
-															                                    $forum['l_date'] = $forum_last_time1;
-																								$forum['last_date'] = $PowerBB->sys_functions->time_ago($forum_last_time1);
-																								$forum['last_time_ago'] = $PowerBB->sys_functions->time_ago($forum_last_time1);
-																								$forum['last_date_ago'] = $PowerBB->sys_functions->_time($forum_last_time1);
-																								$forum['last_subjectid'] = $sub5forum['last_subjectid'];
-																								$forum['last_time'] = $sub5forum['last_time'];
-																								$forum['last_reply'] = $sub5forum['last_reply'];
-																								$forum['icon'] = $sub5forum['icon'];
-																								$forum['review_subject'] = $sub5forum['review_subject'];
-																								$forum['last_berpage_nm'] = $sub5forum['last_berpage_nm'];
-																								$forum['last_writer']= $sub5forum['last_writer'];
-
-																		                        $forum['last_writer_id'] = $cache4[$xsub5]['last_writer_id'];
-																		                        $forum['avater_path'] = $cache4[$xsub5]['avater_path'];
-																		                        $forum['username_style_cache'] = $cache4[$xsub5]['username_style_cache'];
-																		                        $forum['prefix_subject'] = $cache4[$xsub5]['prefix_subject'];
-
-																			                    $forum['last_subject'] =  $sub5forum['prefix_subject']." ".$PowerBB->functions->pbb_stripslashes($sub5forum['last_subject']);
-																			                    $forum['sec_section']= $sub5forum['sec_section'];
-
-							                                                                   }
-
-										                                                 }
-
-						                                                            }
-
-
-	                                                                                       // subs forum +++++
-																							if($PowerBB->_CONF['files_forums_Cache'])
-																							{
-																							@include("cache/forums_cache/forums_cache_".$sub5forum['id'].".php");
-																							}
-																							elseif($PowerBB->_CONF['forums_parent_direct'])
-																							{
-																							$forums_cache = $PowerBB->functions->get_forum_cache($sub5forum['id'],$sub5forum['forums_cache']);
-																							}
-
-								 						                                   if (!empty($forums_cache))
-																                           {
-																							 $cache5 = $PowerBB->functions->decode_forum_cache($forums_cache);
-																							 $xsub6 = 0;
-
-																			               	$Subs6Arr 						= 	array();
-																							$Subs6Arr['get_from']				=	'db';
-																							$Subs6Arr['proc'] 				= 	array();
-																							$Subs6Arr['proc']['*'] 			= 	array('method'=>'clean','param'=>'html');
-																							$Subs6Arr['order']				=	array();
-																							$Subs6Arr['order']['field']		=	'sort';
-																							$Subs6Arr['order']['type']		=	'ASC';
-																							$Subs6Arr['where']				=	array();
-																							$Subs6Arr['where'][0]['name']		= 	'parent';
-																							$Subs6Arr['where'][0]['oper']		= 	'=';
-																							$Subs6Arr['where'][0]['value']	= 	$sub5forum['id'];
-																							$subs = $PowerBB->core->GetList($Subs6Arr,'section');
-																                               foreach($subs6forum  as $sub6forum)
-																								{
-
-																								    if ($subforum['id'] == $sub6forum['parent'])
-																								    {
-																								        if (!empty($sub6forum['last_date']))
-																								         {
-																								            $forum['subject_num'] += $sub6forum['subject_num'];
-																		                                    $forum['reply_num'] += $sub6forum['reply_num'];
-								            														        $forum['num_subjects_awaiting_approval'] += $sub6forum['subjects_review_num'];
-																						                    $forum['num_replys_awaiting_approval'] += $sub6forum['replys_review_num'];
-
-																									           if ($sub6forum['last_time'] > $sub['last_time'] and $sub6forum['last_time'] > $subforum['last_time'] and $sub6forum['last_time'] > $forum['last_time'])
-																									           {
-																                                             	$forum_last_time1 = $sub6forum['last_date'];
-																												$forum['last_subject'] = $PowerBB->Powerparse->censor_words($sub6forum['last_subject']);
-																												$forum['last_subject_title'] =  $forum['last_subject'];
-																												$forum['last_subject'] =  $PowerBB->Powerparse->_wordwrap($sub6forum['last_subject'],'35');
-																												$forum['last_post_date'] = $PowerBB->sys_functions->_date($forum_last_time1);
-																			                                    $forum['l_date'] = $forum_last_time1;
-																												$forum['last_date'] = $PowerBB->sys_functions->time_ago($forum_last_time1);
-																												$forum['last_time_ago'] = $PowerBB->sys_functions->time_ago($forum_last_time1);
-																												$forum['last_date_ago'] = $PowerBB->sys_functions->_time($forum_last_time1);
-																												$forum['last_subjectid'] = $sub6forum['last_subjectid'];
-																												$forum['last_time'] = $sub6forum['last_time'];
-																												$forum['last_reply'] = $sub6forum['last_reply'];
-																												$forum['icon'] = $sub6forum['icon'];
-																												$forum['review_subject'] = $sub6forum['review_subject'];
-																												$forum['last_berpage_nm'] = $sub6forum['last_berpage_nm'];
-																												$forum['last_writer']= $sub6forum['last_writer'];
-	                                                                                                           	$forum['last_writer_id'] = $cache5[$xsub6]['last_writer_id'];
-																						                        $forum['avater_path'] = $cache5[$xsub56]['avater_path'];
-																						                        $forum['username_style_cache'] = $cache5[$xsub6]['username_style_cache'];
-																						                        $forum['prefix_subject'] = $cache5[$xsub6]['prefix_subject'];
-
-																							                    $forum['last_subject'] =  $forum['prefix_subject']." ".$PowerBB->functions->pbb_stripslashes($sub6forum['last_subject']);
-																							                    $forum['sec_section']= $sub6forum['sec_section'];
-											                                                                   }
-
-														                                                 }
-
-										                                                            }
-	                                                                                             $xsu6 += 1;
-																								}
-														                                   }
-
-
-	                                                                             $xsub5 += 1;
-																				}
-										                                   }
-	                                                                 $xsub += 1;
-																	}
-							                                   }
-
-	                                                          $xsu += 1;
-
-															}
-					                                   }
-	                                                   //
-
-	                                               }
-
-
-	                                            $xs += 1;
-
-											 }
-			                                    if ($PowerBB->_CONF['info_row']['no_sub'] == 0)
-			                                     {
-			                                       $forum['sub'] ='0';
-			                                     }
-									   }
-
-
-	                            /*
-								if($sub['reply_num'] > 0)
-								{
-								$sub['reply_num']   = $sub['reply_num']-1;
-								}
-								if($forum['subject_num'] > 0)
-								{
-								$forum['subject_num']   = $forum['subject_num']-1;
-								}
-								*/
-							   //////////
-								// get writer username style cache And  writer photo
-								$username = $forum['last_writer'];
-		                         $forum['username'] = $forum['last_writer'];
-		                         $forum['writer_photo'] = $forum['avater_path'];
-
-	                             $user_id =  $forum['last_writer_id'];
-		                        if ($forum['last_writer'] == $PowerBB->_CONF['template']['_CONF']['lang']['Guestp']
-		                         or $forum['last_writer'] == 'Guest')
-								{
-								   if ($PowerBB->_CONF['info_row']['allow_avatar'])
-								    {
-									 $forum['writer_photo'] = $this->GetForumAdress().$PowerBB->_CONF['template']['image_path'].'/'.$PowerBB->_CONF['info_row']['default_avatar'];
-									}
-									 $forum['username'] = $PowerBB->_CONF['template']['_CONF']['lang']['Guest_'];
-									 $forum['last_writer'] = $PowerBB->_CONF['template']['_CONF']['lang']['Guest_'];
-								}
-								else
-								{
-								   if ($PowerBB->_CONF['info_row']['allow_avatar'])
-								    {
-		                               if (empty($forum['writer_photo']))
-		                               {
-										$forum['writer_photo'] = $this->GetForumAdress().$PowerBB->_CONF['template']['image_path'].'/'.$PowerBB->_CONF['info_row']['default_avatar'];
-									   }
-									   else
-		                               {
-									     $forum['writer_photo'] = $forum['avater_path'];
-									   }
-	                                }
-							    if ($PowerBB->_CONF['info_row']['get_group_username_style'])
-							      {
-		                               if (empty($forum['last_writer_id']))
-		                               {
-										$username_style_cache = '<a href="index.php?page=profile&amp;show=1&amp;username=' . $username . '">' . $forum['username_style_cache'] . '</a> ';
-									   }
-									   else
-		                               {
-										$username_style_cache = '<a href="index.php?page=profile&amp;show=1&amp;id=' . $forum['last_writer_id'] . '">' . $forum['username_style_cache'] . '</a> ';
-									   }
-	      	                        $forum['last_writer'] = $PowerBB->functions->rewriterule($username_style_cache);
-							      }
-							      else
-							      {
-		                               if (empty($forum['last_writer_id']))
-		                               {
-										$username_style = '<a href="index.php?page=profile&amp;show=1&amp;username=' . $username . '">' . $forum['last_writer'] . '</a> ';
-									   }
-									   else
-		                               {
-										$username_style = '<a href="index.php?page=profile&amp;show=1&amp;id=' . $forum['last_writer_id'] . '">' . $forum['last_writer'] . '</a> ';
-									   }
-	      	                        $forum['last_writer'] = $PowerBB->functions->rewriterule($username_style);
-							      }
-								}
-
-
-									if (!@strstr($forum['writer_photo'],'http')
-										or !strstr($forum['writer_photo'],'www.'))
-									{
-										if (@strstr($forum['writer_photo'],'download/avatar/')
-										or @strstr($forum['writer_photo'],'look/images/avatar/'))
-										{
-										 $forum['writer_photo'] = $this->GetForumAdress().$forum['writer_photo'];
-										}
-									}
-
-	                            if ($this->GetServerProtocol() == 'https://')
-								 {
-	                              $https_  = "https://".$PowerBB->_SERVER['HTTP_HOST'];
-	                              $httpswww_  = "https://www.".$PowerBB->_SERVER['HTTP_HOST'];
-	                              $http_  = "http://".$PowerBB->_SERVER['HTTP_HOST'];
-	                              $http_www_  = "http://www.".$PowerBB->_SERVER['HTTP_HOST'];
-
-		       					  $forum['writer_photo'] = str_replace($http_, $https_, $forum['writer_photo']);
-								  $forum['writer_photo'] = @str_ireplace($http_, $https_, $forum['writer_photo']);
-		       					  $forum['writer_photo'] = str_replace($http_www_, $httpswww_, $forum['writer_photo']);
-								  $forum['writer_photo'] = @str_ireplace($http_www_, $httpswww_, $forum['writer_photo']);
-	                             }
-
-	                             $forum['writer_photo'] = str_replace($this->GetForumAdress().$this->GetForumAdress(), $this->GetForumAdress(), $forum['writer_photo']);
-		                          //
-							  // Get the moderators list as a _link_ and store it in $forum['moderators_list']
-			                   if ($PowerBB->_CONF['info_row']['no_moderators'])
-							   {
-									$forum['is_moderators'] 		= 	0;
-									$forum['moderators_list']		=	'';
-									if (!empty($forum['moderators']))
-									{
-										$moderators = json_decode($forum['moderators'], true);
-										if (is_array($moderators))
-										{
-			                               foreach($moderators as $moderator)
-											{
-												if (!$forum['is_moderators'])
-												{
-													$forum['is_moderators'] = 1;
-												}
-												if ($moderator['username'] == $PowerBB->_CONF['member_row']['username']
-												or $PowerBB->_CONF['group_info']['vice']
-												or $PowerBB->_CONF['member_row']['usergroup'] == '1')
-												{
-									               if ($forum['subjects_review_num']>0)
-													{
-													$forum['num_subjects_awaiting_approval'] =	$PowerBB->functions->with_comma($forum['subjects_review_num']);
-													}
-						                           if ($forum['replys_review_num']>0)
-													{
-														$forum['num_replys_awaiting_approval'] =	$PowerBB->functions->with_comma($forum['replys_review_num']);
-													}
-												}
-								               if ($PowerBB->_CONF['info_row']['rewriterule'] == '1')
-												{
-												$forum['moderators_list'] .= '<a href="u' . $moderator['member_id'] . '.html">' . $PowerBB->functions->GetUsernameStyle($moderator['username']) . '</a> , ';
-												}
-												else
-												{
-									            $forum['moderators_list'] .= '<a href="index.php?page=profile&amp;show=1&amp;id=' . $moderator['member_id'] . '">' . $PowerBB->functions->GetUsernameStyle($moderator['username']) .'</a> , ';
-												}
-											}
-										}
-									}
-			                    }
-								//////////
-								// Get online forums
-								if ($PowerBB->_CONF['info_row']['active_forum_online_number'])
-								{
-								  $Forum_online_number = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['online'] . " WHERE section_id='" . $forum['id'] . "' LIMIT 1"));
-								  if ($forum['is_sub'])
-								  {
-								  $Forum_online_number_sub = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['online'] . " WHERE subject_show ='" . $forum['id'] . "' LIMIT 1"));
-								  $forum['forum_online'] = $Forum_online_number+$Forum_online_number_sub;
-								  }
-								  else
-								  {
-								   $forum['forum_online'] = $Forum_online_number;
-								  }
-								}
-								if ($forum['forum_title_color'] !='')
-						         {
-								    $forum_title_color = $forum['forum_title_color'];
-								    $forum['title'] = "<span style=color:".$forum_title_color.">".$forum['title']."</span>";
-								 }
-	                            if ($forum['linksection'])
-								{
-								  $forum['forum_icon'] = "f_redirect";
-								  $forum['forum_icon_alt'] = $PowerBB->_CONF['template']['_CONF']['lang']['Guidance_re'];
-								}
-								else
-								{
-									if ($PowerBB->_CONF['group_info']['write_subject'] == 0)
-									{
-									  $forum['forum_icon'] = "f_pass_unread";
-									  $forum['forum_icon_alt'] = $PowerBB->_CONF['template']['_CONF']['lang']['no_write_subject'];
-									}
-									elseif ($forum['last_time'] > $PowerBB->_CONF['member_row']['lastvisit'])
-									{
-									  $forum['forum_icon'] = "f_unread";
-									  $forum['forum_icon_alt'] = $PowerBB->_CONF['template']['_CONF']['lang']['new_posts'];
-									}
-									else
-									{
-									  $forum['forum_icon'] = "f_read";
-									  $forum['forum_icon_alt'] = $PowerBB->_CONF['template']['_CONF']['lang']['no_new_posts'];
-									}
-	                             }
-	                             if($PowerBB->functions->ModeratorCheck($forum['moderators']))
-	                             {
-	                              $forum['ModeratorCheck'] = 0;
-	                              $forum['IsModeratorCheck'] = 1;
-	                             }
-	                             else
-	                             {
-	                              $forum['ModeratorCheck'] = 1;
-	                              $forum['IsModeratorCheck'] = 0;
-	                             }
-
-	                         if ($forum['review_subject'])
-							 {
-							   $forum['hide_subject']	= '1';
-	                         }
-
-	                          $PowerBB->_CONF['template']['foreach']['forums_list'][$forum['id'] . '_f'] = $forum;
-
-							}// end view forums
-
-							$x += 1;
-			            } // end foreach ($forums)
-
-
-				  } // end !empty($forums_cache)
-
-			   }
-
-			    // end view section
-			} // end foreach ($cats)
-			//////////
-					unset($SecArr);
-					unset($cat);
-					unset($forum);
-					unset($sub);
-					unset($subforum);
-					unset($sub4forum);
-					unset($sub5forum);
-					unset($sub6forum);
-					unset($moderator);
-		}
-		else
-		{
-		echo '<div style="display: inline-block;width:73%;">';
-		}
+	    global $PowerBB;
+
+	    $user_group = (int)$PowerBB->_CONF['group_info']['id'];
+	    $is_admin   = ($PowerBB->_CONF['group_info']['vice'] or $user_group == 1);
+	    $member_id  = isset($PowerBB->_CONF['member_row']['id']) ? (int)$PowerBB->_CONF['member_row']['id'] : 0;
+
+	    $default_avatar = $this->GetForumAdress()
+	        .$PowerBB->_CONF['template']['image_path'].'/'
+	        .$PowerBB->_CONF['info_row']['default_avatar'];
+
+	    $posts_per_page = (int)$PowerBB->_CONF['info_row']['perpage'] ?: 10;
+
+	    /* --------------------------------------------------
+	     * 1) Get online users (outside the loop for performance)
+	     * -------------------------------------------------- */
+	    $online_counts = array();
+	    $res_online = $PowerBB->DB->sql_query("SELECT section_id, COUNT(*) as total FROM {$PowerBB->table['online']} GROUP BY section_id");
+	    while ($on_row = $PowerBB->DB->sql_fetch_array($res_online)) {
+	        $online_counts[$on_row['section_id']] = $on_row['total'];
+	    }
+
+	    /* --------------------------------------------------
+	     * 2) Main query (Subqueries removed for massive performance gain)
+	     * -------------------------------------------------- */
+	$sql = "
+	SELECT
+	    s.*,
+	    m.username_style_cache AS last_writer_style,
+	    m.avater_path AS writer_avatar_field,
+	    m.id AS writer_user_id,
+	    sub.prefix_subject,
+	    sub.reply_number AS topic_replies,
+	    sub.id AS last_topic_id
+	FROM {$PowerBB->table['section']} AS s
+	LEFT JOIN {$PowerBB->table['member']} AS m ON m.username = s.last_writer
+	LEFT JOIN {$PowerBB->table['subject']} AS sub ON sub.id = s.last_subjectid
+	ORDER BY s.parent ASC, s.sort ASC
+	";
+
+	    $result = $PowerBB->DB->sql_query($sql);
+	    $all_forums = [];
+
+	    while ($row = $PowerBB->DB->sql_fetch_array($result)) {
+
+	        if (!$PowerBB->functions->section_group_permission($row['id'], $user_group, 'view_section', $row['sectiongroup_cache'])) {
+	            continue;
+	        }
+
+	        /* ---- Statistics and processing ---- */
+	        $row['num_subjects_awaiting_approval'] = $row['subjects_review_num'];
+	        $row['num_replys_awaiting_approval']   = $row['replys_review_num'];
+	        $row['IsModeratorCheck']                = $is_admin;
+
+	        // Calculate online users count
+	        $row['forum_online'] = isset($online_counts[$row['id']]) ? (int)$online_counts[$row['id']] : 0;
+
+	        // Replies count from subjects table + 1 (the topic itself)
+	        $total_posts_count = (int)$row['topic_replies'] + 1;
+
+	        // Calculation required by the template to display &count=
+	        if ($total_posts_count > $posts_per_page) {
+	            $row['real_last_page'] = ceil($total_posts_count / $posts_per_page);
+	        } else {
+	            $row['real_last_page'] = 0;
+	        }
+
+	        // Fallback: in case the template expects the old total_posts_count key
+	        $row['total_posts_count'] = $total_posts_count;
+
+	        // Other formatting (collapse state, moderators, colors)
+	        $row['collapse'] = $PowerBB->_COOKIE["pbboard_collapse_forumid_".$row['id']] ?? 'block';
+	        $row['collapse_icon'] = ($row['collapse'] == 'none') ? 'plus' : 'minus';
+
+	        $row['moderators_array'] = [];
+	        if (!empty($row['moderators'])) {
+	            $decoded = json_decode(preg_replace('/[[:cntrl:]]/', '', $row['moderators']), true);
+	            if (is_array($decoded)) {
+	                foreach ($decoded as $mod) {
+	                    if ($member_id > 0 && $mod['member_id'] == $member_id) $row['IsModeratorCheck'] = 1;
+	                    $row['moderators_array'][] = [
+	                        'id' => $mod['member_id'],
+	                        'name' => $mod['username'],
+	                        'style' => $mod['username_style_cache'] ?: $mod['username']
+	                    ];
+	                }
+	            }
+	        }
+
+	        $row['title'] = !empty($row['forum_title_color'])
+	            ? "<span style='color:{$row['forum_title_color']}'>".$PowerBB->functions->pbb_stripslashes($row['title'])."</span>"
+	            : $row['title'];
+
+	        $row['is_redirect'] = ($row['linksection'] == 1 && !empty($row['linksite']));
+	        $row['last_date_formatted'] = $PowerBB->sys_functions->_date($row['last_date']);
+	        $row['writer_photo'] = !empty($row['writer_avatar_field']) ? $row['writer_avatar_field'] : $default_avatar;
+	        $row['last_writer_id'] = (int)$row['writer_user_id'];
+	        $row['last_writer'] = $row['last_writer_style'] ?: $PowerBB->_CONF['template']['_CONF']['lang']['Guestp'];
+	        $row['last_subject_full'] = $PowerBB->functions->pbb_stripslashes($row['last_subject']);
+	        $row['last_subject'] = $PowerBB->Powerparse->_wordwrap($row['last_subject'], '35');
+
+	        $all_forums[$row['id']] = $row;
+	    }
+
+	    /* ---- Build the tree and render using the original logic ---- */
+	    $tree = $this->pbb_build_forum_tree($all_forums);
+	    foreach ($tree as &$root) { $this->pbb_aggregate_forum_stats($root); }
+
+	    if ($section_id !== null && isset($all_forums[$section_id])) {
+	        $single_root = $all_forums[$section_id];
+	        $this->pbb_aggregate_forum_stats($single_root);
+	        $final_tree = $this->pbb_prepare_main_view([$section_id => $single_root]);
+	    } else {
+	        $final_tree = $this->pbb_prepare_main_view($tree);
+	    }
+
+	    $PowerBB->_CONF['template']['foreach']['main_forums'] = $final_tree;
+	    return !empty($final_tree);
 	}
+
+
+
+
+/**
+ * Build infinite forum tree based on parent field
+ */
+function pbb_build_forum_tree(array &$items)
+{
+    $tree = [];
+
+    foreach ($items as $id => &$item) {
+        $item['children'] = [];
+    }
+
+    foreach ($items as $id => &$item) {
+        if ($item['parent'] == 0) {
+            $tree[$id] = &$item;
+        } elseif (isset($items[$item['parent']])) {
+            $items[$item['parent']]['children'][$id] = &$item;
+        }
+    }
+
+    return $tree;
+}
+
+/**
+ * Aggregate statistics upward (recursive, infinite depth)
+ */
+function pbb_aggregate_forum_stats(array &$node)
+{
+global $PowerBB;
+    foreach ($node['children'] as &$child) {
+        $this->pbb_aggregate_forum_stats($child);
+
+        $node['subject_num'] += (int)$child['subject_num'];
+        $node['reply_num']  += (int)$child['reply_num'];
+
+        if ($child['last_date'] > $node['last_date']) {
+            $node['last_date']           = $child['last_date'];
+            $node['last_date_formatted'] = $child['last_date_formatted'];
+            $node['last_subject']        = $child['last_subject'];
+            $node['last_subject_full']   = $child['last_subject_full'];
+            $node['last_subjectid']      = $child['last_subjectid'];
+            $node['last_writer']         = $child['last_writer'];
+            $node['last_writer_id']      = $child['last_writer_id'];
+            $node['writer_photo']        = $child['writer_photo'];
+        }
+    }
+}
+
+/**
+ * Prepare main forum view (only 2 levels for template)
+ */
+function pbb_prepare_main_view(array $tree)
+{
+    $final = [];
+
+    foreach ($tree as $catId => $cat) {
+        $cat['sub_data'] = [];
+
+        foreach ($cat['children'] as $forumId => $forum) {
+            $forum['sub_of_sub'] = [];
+
+            foreach ($forum['children'] as $child) {
+                $forum['sub_of_sub'][] = $child;
+            }
+
+            $cat['sub_data'][$forumId] = $forum;
+        }
+
+        $final[$catId] = $cat;
+    }
+
+    return $final;
+}
+
+
+
+
 
 	function get_forum_cache($forum_id,$section_forum_cache)
 	{
@@ -1414,9 +959,8 @@ class PowerBBFunctions
 
 	function decode_forum_cache($forums_cache)
 	{
-	   global $PowerBB;
 	    $cache = json_decode($forums_cache, true);
-        return $cache;
+	    return is_array($cache) ? $cache : [];
 	}
 
 	/**
@@ -1771,6 +1315,10 @@ class PowerBBFunctions
  	function ShowHeader($title = null)
  	{
  		global $PowerBB;
+		if (isset($PowerBB->DB->_mysqli_err_no) && $PowerBB->DB->_mysqli_err_no != 0)
+		{
+		   return false;
+		}
  		$num = '150';
 		$titlenum = '90';
 		// visito today number  today_cookie
@@ -2055,8 +1603,14 @@ class PowerBBFunctions
  		}
 		elseif ($page == 'tags')
 		{
-
+        if ($PowerBB->_GET['show'])
+		{
 		$page_address['tags'] 			= 	$PowerBB->_GET['tag'];
+		}
+		else
+		{
+		$page_address['index'] 		= 	$title;
+		}
         $PowerBB->template->assign('description',$PowerBB->functions->CleanText($PowerBB->_GET['tag']));
 		$PowerBB->template->assign('keywords',$PowerBB->functions->Getkeywords($PowerBB->_GET['tag']).$title_keywords);
         $PowerBB->template->assign('index',1);
@@ -2890,6 +2444,18 @@ return preg_replace($pattern, $replacement, $email);
 		 return $username = $PowerBB->functions->rewriterule($username);
       }
 	}
+
+	function get_username_style_cache($username)
+	{
+		global $PowerBB;
+   		// Get username style of last_writer
+		$MemberArr 			= 	array();
+		$MemberArr['where'] 	= 	array('username',$username);
+		$StyleMemberInfo = $PowerBB->core->GetInfo($MemberArr,'member');
+		$username = $StyleMemberInfo['username_style_cache'];
+      return $username;
+	}
+
 	function GetUsernameStyle($username)
 	{
 		global $PowerBB;
@@ -3257,20 +2823,22 @@ function UpdateSectionCache($SectionCache)
 			$this->SectionInfo = $PowerBB->core->GetInfo($SecArr,'section');
 
 			// The number of section's replys number
-			$reply_num = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(id) FROM " . $PowerBB->table['reply'] . " WHERE section = '$SectionCache' LIMIT 1"));
+			$reply_num = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(*) FROM " . $PowerBB->table['reply'] . " WHERE section = '$SectionCache' AND delete_topic='0'"));
 			// The number of section's subjects number
-			$subject_nm = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(id) FROM " . $PowerBB->table['subject'] . " WHERE section = '$SectionCache' AND delete_topic='0' LIMIT 1"));
+			$subject_nm = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(*) FROM " . $PowerBB->table['subject'] . " WHERE section = '$SectionCache' AND delete_topic='0'"));
 
 
 			if($reply_num)
 			{
-			$GetLastqueryReplyForm = $PowerBB->DB->sql_query("SELECT write_time,subject_id FROM " . $PowerBB->table['reply'] . " WHERE section = '$SectionCache' AND delete_topic='0' AND review_reply='0' ORDER by write_time DESC");
+			$GetLastqueryReplyForm = $PowerBB->DB->sql_query("SELECT id,write_time,subject_id FROM " . $PowerBB->table['reply'] . " WHERE section = '$SectionCache' AND delete_topic='0' AND review_reply='0' ORDER by write_time DESC LIMIT 1");
 			$GetLastReplyForm = $PowerBB->DB->sql_fetch_array($GetLastqueryReplyForm);
+			$real_last_reply_id = $GetLastReplyForm['id'];
 			}
 			if($subject_nm)
 			{
-			$GetLastSubjectInfoQuery = $PowerBB->DB->sql_query("SELECT id,icon,writer,title,native_write_time,write_time,reply_number FROM " . $PowerBB->table['subject'] . " WHERE section = '$SectionCache' AND delete_topic='0' AND review_subject='0' ORDER by native_write_time DESC");
+			$GetLastSubjectInfoQuery = $PowerBB->DB->sql_query("SELECT id,icon,writer,title,native_write_time,write_time,reply_number FROM " . $PowerBB->table['subject'] . " WHERE section = '$SectionCache' AND delete_topic='0' AND review_subject='0' ORDER by native_write_time DESC LIMIT 1");
 			$GetLastSubjectInf = $PowerBB->DB->sql_fetch_array($GetLastSubjectInfoQuery);
+			$real_reply_number = $GetLastSubjectInf['reply_number'];
 			}
 
 
@@ -3296,7 +2864,7 @@ function UpdateSectionCache($SectionCache)
 
 				if($GetLastReplyForm['write_time'] >= $GetLastSubjectInf['native_write_time'])
 				{
-				$GetSubjectInfoQuery = $PowerBB->DB->sql_query("SELECT id,title,reply_number,icon,last_replier,native_write_time,write_time FROM " . $PowerBB->table['subject'] . " WHERE id = '".$GetLastReplyForm['subject_id']."' AND delete_topic='0' AND review_subject='0' ");
+				$GetSubjectInfoQuery = $PowerBB->DB->sql_query("SELECT id,title,reply_number,icon,last_replier,native_write_time,write_time FROM " . $PowerBB->table['subject'] . " WHERE id = '".$GetLastReplyForm['subject_id']."' AND delete_topic='0' AND review_subject='0' LIMIT 1");
 
 				$SubjectInf = $PowerBB->DB->sql_fetch_array($GetSubjectInfoQuery);
 				// Get info Reply
@@ -3304,6 +2872,7 @@ function UpdateSectionCache($SectionCache)
 				$last_subjectid = $SubjectInf['id'];
 				$icon = $SubjectInf['icon'];
 				$last_berpage_nm = $countpage;
+				$last_reply_number = $countpage;
 				$last_writer = $SubjectInf['last_replier'];
 				$title = $SubjectInf['title'];
 				$last_date = $SubjectInf['write_time'];
@@ -3314,7 +2883,12 @@ function UpdateSectionCache($SectionCache)
 				$countpage = $PowerBB->functions->get_count_perpage($GetLastSubjectInf['reply_number'],$PowerBB->_CONF['info_row']['perpage']);
 				$last_subjectid = $GetLastSubjectInf['id'];
 				$icon = $GetLastSubjectInf['icon'];
-				$last_reply = $GetLastSubjectInf['last_reply'];
+				$last_reply_id = 0;
+				if (!empty($GetLastSubjectInf['lastreply_cache'])) {
+				    $cache_data = @unserialize($GetLastSubjectInf['lastreply_cache']);
+				    $last_reply_id = $cache_data[6]['last_reply_id'] ?? 0;
+				}
+				$last_reply = (int)($last_reply_id ?? 0);
 				$last_berpage_nm = $countpage;
 				$last_writer = $GetLastSubjectInf['writer'];
 				$title = $GetLastSubjectInf['title'];
@@ -3325,7 +2899,7 @@ function UpdateSectionCache($SectionCache)
 			if ($subject_nm == '0')
 			{
 				// Get Section Info
-				$SecParenreplytArr = $PowerBB->DB->sql_query("SELECT last_writer,last_subject,last_subjectid,last_date,last_time,icon,last_reply,last_berpage_nm,replys_review_num,subjects_review_num FROM " . $PowerBB->table['section'] . " WHERE parent='$SectionCache' AND review_subject='0' ORDER by last_time DESC");
+				$SecParenreplytArr = $PowerBB->DB->sql_query("SELECT last_writer,last_subject,last_subjectid,last_date,last_time,icon,last_reply,last_berpage_nm,replys_review_num,subjects_review_num FROM " . $PowerBB->table['section'] . " WHERE parent='$SectionCache' AND review_subject='0' ORDER by last_time DESC LIMIT 1");
 				$this->ParentsInfo = $PowerBB->DB->sql_fetch_array($SecParenreplytArr);
 				$CacheArr 			= 	array();
 				$CacheArr['where'] 	= 	array('section_id',$SectionCache);
@@ -3388,7 +2962,13 @@ function UpdateSectionCache($SectionCache)
 				$UpdateLastFormSecArr['field']['last_time'] 	= 	$last_date;
 				$UpdateLastFormSecArr['field']['icon'] 		    = 	$icon;
 				$UpdateLastFormSecArr['field']['moderators'] 		    = 	$cache;
-				$UpdateLastFormSecArr['field']['last_reply'] 	= 	$last_reply;
+				// force correct last_reply if needed
+				if ($real_reply_number) {
+				$UpdateLastFormSecArr['field']['last_reply'] = $real_last_reply_id;
+				}
+				else {
+				$UpdateLastFormSecArr['field']['last_reply'] = '0';
+				}
 				$UpdateLastFormSecArr['field']['last_berpage_nm']  = 	$last_berpage_nm;
 				$UpdateLastFormSecArr['field']['replys_review_num']  = 	$review_replyNumArr;
 				$UpdateLastFormSecArr['field']['subjects_review_num']  = 	$review_subjectNumArr;
@@ -3722,8 +3302,7 @@ function UpdateSectionCache($SectionCache)
 					$auto_url_titles_array[4] = $this->strip_auto_url_titles($find_title_end);
 					}
 					else
-					{
-					$auto_url_titles_array[4] = $this->strip_auto_url_titles($auto_url_titles_array[4]);
+					{					$auto_url_titles_array[4] = $this->strip_auto_url_titles($auto_url_titles_array[4]);
 					}
                    }
 					else
@@ -4465,6 +4044,13 @@ function my_strlen($string)
 		        if (file_exists($dir))
 		        {
 					@include($dir);
+
+		            if (!isset($sectiongroup_cache) || empty($sectiongroup_cache))
+		            {
+		                $permission = $PowerBB->functions->_MeterGroupsStart();
+		                return ($permission) ? true : false;
+		            }
+
 					$groups = unserialize($sectiongroup_cache);
 					if (!empty($sectiongroup_cache))
 					{
@@ -4570,6 +4156,7 @@ function my_strlen($string)
 	     }
 
 	}
+
 
     //Check internet connection
 	function is_connected()
@@ -5330,5 +4917,62 @@ function dec_to_utf8($src)
 		return ($title);
 	}
 
+	function ShowDebugInfo()
+	{
+	    global $PowerBB;
+
+	    $user_group = (int)$PowerBB->_CONF['group_info']['id'];
+	    $is_admin   = ($PowerBB->_CONF['group_info']['vice'] or $user_group == 1);
+		if ($is_admin and $PowerBB->_CONF['info_row']['show_debug_info'])
+		{
+	    $endtime = microtime(true);
+	    if (isset($PowerBB->_SERVER["REQUEST_TIME_FLOAT"])) {
+	        $start = $PowerBB->_SERVER["REQUEST_TIME_FLOAT"];
+	    } else {
+	        $start = $endtime;
+	    }
+	    $total_time = number_format(($endtime - $start), 4);
+
+	    // 1. عدد الملفات المستدعاة
+	    $included_files = count(get_included_files());
+
+	    // 2. عدد الاستعلامات
+	    $queries = $PowerBB->DB->query_count;
+
+	    // 3. إضافة حساب استهلاك الذاكرة (الجديد)
+	    $memory = round(memory_get_usage() / 1024 / 1024, 2);
+
+	    echo '<div class="row2 center_text_align" style="direction:ltr;padding:10px; font-family:tahoma; font-size:11px; border-top:1px solid #eee;">';
+	    // قمنا بإضافة Memory هنا
+	    echo "Queries: [ $queries ] - Files: [ $included_files ] - Memory: [ $memory MB ] - Page Time: [ $total_time sec ]";
+	    echo '</div>';
+	   }
+	}
+
+	function is_json($string) {
+	    if (!is_string($string)) return false;
+	    json_decode($string);
+	    return (json_last_error() === JSON_ERROR_NONE);
+	}
+
+	function clearForumsCacheFiles() {
+	  global $PowerBB;
+		$folderPath= $PowerBB->functions->GetMianDir()."cache/forums_cache/";
+
+	    if (!is_dir($folderPath)) {
+	        return 0;
+	    }
+        $pattern = 'forums_cache_*.php';
+	    $files = glob(rtrim($folderPath, '/\\') . '/' . $pattern);
+	    $deletedCount = 0;
+
+	    foreach ($files as $file) {
+	        if (is_file($file) && unlink($file)) {
+	            $deletedCount++;
+	        }
+	    }
+
+	    return $deletedCount;
+	}
  }
 ?>

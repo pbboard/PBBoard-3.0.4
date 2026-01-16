@@ -194,8 +194,7 @@ or $PowerBB->_CONF['template']['while']['SubjectAttachList'][$this->x_loop]['ext
 </li>
 
 {/Des::while}
-</ul>
-]]></add_attach_reply>
+</ul>]]></add_attach_reply>
 <add_attach_subject><![CDATA[<html dir="{$_CONF['info_row']['content_dir']}" xmlns="http://www.w3.org/1999/xhtml" xml:lang="{$_CONF['info_row']['content_language']}" lang="{$_CONF['info_row']['content_language']}"><head>
 <meta http-equiv="Content-Type" content="text/html; charset={$_CONF['info_row']['charset']}" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -352,44 +351,33 @@ src="index.php?page=download&amp;attach=1&amp;id={$SubjectAttachList['id']}" tit
 {/if}
 </table>
 ]]></add_attach_table>
-<add_chat_message><![CDATA[<div id="chat-content">
-<script type="text/javascript" src="{$ForumAdress}includes/js/wseditor.js"></script>
-<div class="row_sidebar">
-{if {$_CONF['member_permission']}}
-{if {$num_mem_posts}}
-{$lang['chat_num_mem_posts']}
-{else}
-{template}editor_simple{/template}
-{if {$_CONF['info_row']['chat_hide_country']} == 99}
-{$lang['chat_country']}
-<input name="country" type="text" />
-{/if}
-<div class="tablebox d-flex light" style="width: 99%; height: 42px; padding: 4px; flex: 0 0 auto;direction: ltr;">
-<div id="smiles-trigger"><img role="button" alt="{$lang['smiles']}" class="fl nosel emobox" style="padding:5px;width:34px;height: 34px;" src="look/images/emoii.gif"></div>
-<div id="smile_menu">
-{Des::while}{SmlList}
-<img src="{$SmlList['smile_path']}" OnClick="AddSmileyIcon(' {$SmlList['smile_short']} ');" alt="{$SmlList['smile_path']}" style="max-width: 25px !important;max-height: 25px !important;" class="brd0" alt="" />
-{/Des::while}
+<add_chat_message><![CDATA[<div class="chat-input-area" dir="{$_CONF['info_row']['content_dir']}" style="background: #fff; padding: 10px; border: 1px solid #ccc; border-top: 1px solid #eee; margin-bottom: 20px;">
+    <div style="display: flex; gap: 8px; align-items: center;">
+        
+        <div style="position: relative;">
+            <img src="look/images/emoii.gif" onclick="$('#smile_box').toggleClass('active')" style="width: 28px; cursor: pointer;" title="{$lang['smiles']}">
+            <div id="smile_box" class="border shadow" style="position: absolute; bottom: 45px; <?php echo ($PowerBB->_CONF['info_row']['content_dir'] == 'rtl') ? 'right: 0;' : 'left: 0;'; ?> background: #fff; border: 1px solid #ccc; width: 260px; padding: 5px; z-index: 999; grid-template-columns: repeat(8, 1fr); gap: 2px;">
+                {Des::while}{SmlList}
+                <img src="{$SmlList['smile_path']}" onclick="AddSmileyIcon(' {$SmlList['smile_short']} '); $('#smile_box').removeClass('active');" style="width: 22px; cursor: pointer; padding: 2px;" class="brd0">
+                {/Des::while}
+            </div>
+        </div>
+
+        <textarea id="box_text" placeholder="{$lang['add_chat_message1']}" style="flex: 1; height: 38px; padding: 8px; border: 1px solid #ddd; resize: none; font-size: 13px; border-radius: 4px; outline: none; background: #fafafa;"></textarea>
+
+        <button type="button" onclick="AjaxInsertChat();" style="background: #185886; color: #fff; border: none; padding: 0 15px; height: 38px; cursor: pointer; border-radius: 4px; font-weight: bold; display: flex; align-items: center; gap: 5px;">
+            <i class="fa fa-paper-plane"></i> {$lang['insert_chat_message']}
+        </button>
+    </div>
 </div>
-<form id="form-chat-id">
-<textarea name="textc" id="box_text" placeholder="{$lang['add_chat_message1']}" class="fl tbox flex-fill"
-dir="{$_CONF['info_row']['content_dir']}"></textarea>
-</form>
+
 <script type="text/javascript">
-comm._toggle();
-comm._toggle();</script>
-<button  OnClick="AjaxInsertChat()" name="insert" id="chat_id" style=" margin-left:2px;" class="fa fa-send fl btn btn-primary">{$lang['insert_chat_message']}</button>
-</div>
-<br />
-{/if}
-{else}
-<div class="link-wrapper">{$lang['visitors_are_not_allowed_to_add_go_please_register']}</div>
-<br />
-{/if}
-
-</div>
-
-</div>]]></add_chat_message>
+function AddSmileyIcon(icon) {
+    var input = document.getElementById('box_text');
+    input.value += icon;
+    input.focus();
+}
+</script>]]></add_chat_message>
 <add_edit_attach_reply><![CDATA[<!doctype html>
 <html dir="{$_CONF['info_row']['content_dir']}" lang="{$_CONF['info_row']['content_language']}">
 <head>
@@ -1460,198 +1448,211 @@ showButtonPanel: true
 </table></div><br />
 <br />]]></board_close>
 <chat><![CDATA[{if {$chatout}}
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" dir="{$_CONF['info_row']['content_dir']}" lang="{$_CONF['info_row']['content_language']}">
+<!DOCTYPE html>
+<html dir="{$_CONF['info_row']['content_dir']}" lang="{$_CONF['info_row']['content_language']}">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset={$_CONF['info_row']['charset']}" />
-<meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<?php
-$PowerBB->_CONF['template']['keywords'] = $PowerBB->_CONF['template']['_CONF']['lang']['chat_message'];
-$PowerBB->_CONF['template']['description'] = $PowerBB->_CONF['template']['_CONF']['lang']['chat_message']." الدردشة";
-$PowerBB->_CONF['template']['ForumAdress'] = $PowerBB->functions->GetForumAdress();
-$PowerBB->_CONF['template']['GetPageUrl'] = $PowerBB->functions->GetPageUrl();
-$PowerBB->_CONF['template']['title'] = $PowerBB->_CONF['template']['_CONF']['lang']['chat_message'];
-?>
-<meta name="keywords" content="{$keywords}" />
-<meta name="description" content="{$description}" />
-<meta itemprop="image" content="{$ForumAdress}look/images/pbboard-icon.png" />
-<link rel="shortcut icon" href="{$ForumAdress}favicon.ico" type="image/x-icon" />
+    <meta http-equiv="Content-Type" content="text/html; charset={$_CONF['info_row']['charset']}" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <link rel="apple-touch-icon" href="{$ForumAdress}look/images/pbboard-icon.png" />
+    <title>{$lang['chat_message']}</title>
+    
+    <script type="text/javascript" src="{$ForumAdress}includes/js/jquery-1.10.2.js"></script>
+    <link rel="stylesheet" href="{$ForumAdress}look/fonts/font-awesome.min.css" />
+    <link rel="stylesheet" href="{$ForumAdress}look/fonts/fonts.css" />
+    <link rel="stylesheet" href="{$ForumAdress}{$style_path}" />
+    <style>
+        /* الحاوية الرئيسية بنمط DigiChat */
+        .digi-container {
+            display: flex;
+            /* تحديد الاتجاه بناءً على لغة الموقع */
+            flex-direction: <?php echo ($PowerBB->_CONF['info_row']['content_dir'] == 'rtl') ? 'row' : 'row-reverse'; ?>;
+            height: 550px; 
+            border: 1px solid #ccc; 
+            background: #fff; 
+            margin: auto;
+            width: 98%;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
 
-<!-- Start Social Media Meta Tags -->
-<link rel="canonical" href="{$GetPageUrl}" />
-<meta name="theme-color" content="#185886" />
-<meta name="mobile-web-app-capable" content="yes" />
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black" />
-<meta name="apple-mobile-web-app-title" content="{$title}" />
-<link rel="apple-touch-icon" href="{$ForumAdress}look/images/pbboard-icon.png" />
+        /* منطقة الرسائل */
+        .digi-main { 
+            flex: 1; 
+            display: flex; 
+            flex-direction: column; 
+            min-width: 0; 
+        }
 
-<meta property="og:description" content="{$description}" />
-<meta property="og:url" content="{$GetPageUrl}" />
-<meta property="og:site_name" content="{$_CONF['info_row']['title']}" />
-<meta property="og:type" content="website" />
-<meta property="og:title" content="{$title}" />
-<meta property="og:image" content="{$ForumAdress}look/images/pbboard-icon.png" />
+        /* منطقة المتواجدين */
+        .digi-sidebar { 
+            width: 220px; 
+            background: #f7f9fb; 
+            overflow-y: auto; 
+            border-<?php echo ($PowerBB->_CONF['info_row']['content_dir'] == 'rtl') ? 'left' : 'right'; ?>: 1px solid #ddd;
+        }
 
-<meta property="twitter:title" content="{$title}" />
-<meta property="twitter:description" content="{$description}" />
-<meta property="twitter:image" content="{$ForumAdress}look/images/pbboard-icon.png" />
-<meta property="twitter:card" content="summary" />
+        .digi-header { 
+            background: #185886; 
+            color: #fff; 
+            padding: 10px; 
+            font-family: "Droid Arabic Kufi", "tahoma", sans-serif;
+            font-size: 11px; 
+            font-weight: bold; 
+        }
 
-<!-- End Social Media Meta Tags -->
-<title>{$lang['chat_message']}</title>
-<link rel="stylesheet" href="{$ForumAdress}look/fonts/font-awesome.min.css" />
-<link rel="stylesheet" href="{$ForumAdress}look/fonts/fonts.css" />
-<link rel="stylesheet" href="{$ForumAdress}{$style_path}" />
-<link rel="stylesheet" href="{$ForumAdress}applications/core/colorbox-master/colorbox.css" />
-<!-- CSS Stylesheet -->
-<link rel="alternate" type="application/rss+xml" title="{$lang['rss_subject']}" href="
-{$ForumAdress}index.php?page=rss&subject=1" />
-<script type="text/javascript" src="{$ForumAdress}includes/js/jquery-1.10.2.js"></script>
-<script type="text/javascript" src="{$ForumAdress}includes/js/jquery-ui.js"></script>
-<script type="text/javascript" src="{$ForumAdress}includes/js/pbboard_toggle.js"></script>
+        .chat_ee { 
+            flex: 1; 
+            overflow-y: auto; 
+            padding: 10px; 
+            background: #fff; 
+            max-height:none;
+           font-family: "Droid Arabic Kufi", "tahoma", sans-serif;
+        }
 
+        #smile_box { display: none !important; }
+        #smile_box.active { display: grid !important; }
+
+        @media (max-width: 768px) {
+            .digi-container { 
+                flex-direction: column !important; 
+                height: auto; 
+            }
+            .digi-sidebar { 
+                width: 100%; 
+                height: 180px; 
+                order: 2; 
+                border: none;
+                border-top: 2px solid #185886;
+            }
+            .chat_ee { height: 350px; }
+        }
+    </style>
 </head>
 <body>
-<style>
-.chat_ee{
-max-height:463px;
-}
-#content_online{
-background-color: #FFF;
-overflow: auto;
-word-wrap: break-word;
-overflow-x: hidden;
-overflow-wrap: break-word;
-}
-.chat{
-height: 494px;
-background-color: #fff;
-}
-#chat-content {
-    width: 98.8%;
-    margin-right: 5px;
-}
-.row_sidebar.user {
-margin-right: 5px;
-}
-.row_sidebar a {
-margin-right: 7px;
-}
-</style>
-
-<br />
+<audio id="chatAudio">
+   <source src="https://www.soundjay.com/buttons/beep-07a.mp3" type="audio/mpeg">
+</audio>
 {template}address_bar_part1{/template}
 <a href="index.php?page=chat_message&amp;chatout=1">{$lang['mange_chat']} </a>
 {template}address_bar_part2{/template}
 
+<div class="digi-container">
+    <div class="digi-sidebar">
+        <div class="digi-header"><i class="fa fa-users"></i> {$lang['online_naw']}</div>
+        <div id="content_online"></div>
+    </div>
 
-<?php
- $PowerBB->_CONF['template']['GetPageUrl'] = $PowerBB->functions->GetPageUrl();
-
-?>
-<style>
-#litargetood{display:none}
-</style>
-<div class="border chat chat-users">
-<ul class="rUlRow">
-<li class="thead1">
-<i id="chat_users" class="fa fa-users" aria-hidden="true"></i> {$lang['online_naw']}
-</li>
-<div id="content_online"></div>
-</ul>
+    <div class="digi-main">
+        <div class="digi-header">
+            <i class="fa fa-comments"></i> {$lang['chat_message']}
+            {if {$_CONF['rows']['group_info']['admincp_allow']}}
+                <a href="index.php?page=chat_message&control=1&amp;main=1" style="float:<?php echo ($PowerBB->_CONF['info_row']['content_dir'] == 'rtl') ? 'left' : 'right'; ?>; color:#fff;">
+                    <i class="fa fa-cog"></i>
+                </a>
+            {/if}
+        </div>
+        <div class="chat_ee" id="main_chat_scroll">
+            <div id="content_div_id"></div>
+        </div>
+    </div>
 </div>
-
-<div class="border chat">
-<ul class="rUlRow">
-<li class="thead1">
-<i class="comments-icon fa fa-comments" aria-hidden="true"></i> {$lang['chat_message']}
-{if {$_CONF['rows']['group_info']['admincp_allow']}}
-<span class="l-left"> <a href="index.php?page=chat_message&amp;control=1&amp;main=1"><u>{$lang['show_chat_message']}</u> <i class="comments-icon fa fa-cogs" aria-hidden="true"> </i></a> </span>
-{/if}
-</li>
-</ul>
-<ul class="rUlRow">
-<li class="row_sidebar">
-<div class="chat_ee">
-<div id="content_div_id"></div>
+<div class="add_chat_message" style="margin: auto; margin-top: -1px; width: 98.1%; position: relative; z-index: 10;">
+    {template}add_chat_message{/template}
 </div>
-</li>
-<li class="row_sidebar">
-
-</li>
-</ul>
-</div>
-<div id="message"></div>
-<div class="add_chat_message">
-{template}add_chat_message{/template}
-</div>
-<br />
-<br />
-<br />
 
 <script type="text/javascript">
-var waittime = 5000; /* time between chat refreshes (ms) */
-var myTimeout = window.setTimeout("read_cont();", waittime);
-var myTimeout = window.setTimeout("read_users();", waittime);
+    var waittime = 5000; // تحديث الرسائل كل 5 ثواني
+    var lastChatContent = "";
+    var isAudioAllowed = false; // متغير للتحقق من سماح المتصفح بالصوت
 
-//$("#form-chat-id").click(function(){var myTimeout = utoUpdate();})
+    // دالة لتشغيل التنبيه مع معالجة قيود المتصفح
+    function playNotificationSound() {
+        var chatAudio = document.getElementById('chatAudio');
+        if (chatAudio && isAudioAllowed) {
+            chatAudio.play().catch(function(error) {
+                console.log("تعذر تشغيل الصوت: ", error);
+            });
+        }
+    }
 
-  function AjaxInsertChat()
-  {
-  clearTimeout(myTimeout);
-  var txt = document.getElementById('box_text');
-  $.post("index.php?page=chat_message&start=1", {textc: txt.value, ajax: 1}, function(result){
-    txt.value = "";
-    $("#message").html(result);
-  });
-  var waittimed = 1000;
-  var myTimeout = window.setTimeout("read_cont();", waittimed);
-  }
+// دالة جلب الرسائل المحسنة
+    function read_cont() {
+        $.get("index.php?page=chat_message&chat_w=1&t=" + Math.random(), function(data) {
+            if(data.trim() !== "") {
+                var objDiv = document.getElementById("main_chat_scroll");
+                
+                // 1. حساب المسافة قبل التحديث: هل المستخدم في القاع؟
+                // نترك هامش بسيط (50 بكسل) للتأكد من رغبة المستخدم في البقاء بالأسفل
+                var isAtBottom = (objDiv.scrollHeight - objDiv.clientHeight - objDiv.scrollTop < 50);
 
-function utoUpdate(url) {
-  $.get(url, function(utodata) {
-    $("#content_div_id").html(utodata);
-    var myTimeout = window.setTimeout("read_cont();", waittime);
-  });
+                // 2. تفعيل التنبيه الصوتي عند وصول محتوى جديد
+                if (lastChatContent !== "" && data.trim() !== lastChatContent) {
+                    playNotificationSound();
+                }
+                
+                lastChatContent = data.trim();
+                $("#content_div_id").html(data);
+                
+                // 3. النزول لأسفل فقط إذا كان المستخدم أصلاً في القاع
+                if(objDiv && isAtBottom) {
+                    objDiv.scrollTop = objDiv.scrollHeight;
+                }
+            }
+        });
+    }
 
-}
+    // دالة جلب المتواجدين
+    function read_users() {
+        $.get("index.php?page=chat_message&chat_users=1&t=" + Math.random(), function(data) {
+            $("#content_online").html(data);
+        });
+    }
 
-function utoUpdateusers(url) {
-  $.get(url, function(utodata) {
-    $("#content_online").html(utodata);
-    var myTimeout = window.setTimeout("read_users();", waittime);
-  });
+    // دالة الإرسال عبر Ajax
+    function AjaxInsertChat() {
+        var msgText = $("#box_text").val();
+        if(msgText.trim() == "") return;
 
-}
-function read_users() {
-	zeit = new Date();
-	ms = (zeit.getHours() * 24 * 60 * 1000) + (zeit.getMinutes() * 60 * 1000) + (zeit.getSeconds() * 5000) + zeit.getMilliseconds();
-	utoUpdateusers("index.php?page=chat_message&chat_users=1&x=" + ms);
-}
-function read_cont() {
-	zeit = new Date();
-	ms = (zeit.getHours() * 24 * 240 * 1000) + (zeit.getMinutes() * 60 * 1000) + (zeit.getSeconds() * 5000) + zeit.getMilliseconds();
-	utoUpdate("index.php?page=chat_message&chat_w=1&x=" + ms);
-}
+        $.post("index.php?page=chat_message&start=1", { textc: msgText, ajax: 1 }, function() {
+            $("#box_text").val(""); 
+            read_cont(); 
+        });
+    }
 
-$("#form-chat-id").on("keypress", function (event) {
-            console.log("aaya");
-            var keyPressed = event.keyCode || event.which;
-            if (keyPressed === 13) {
-                AjaxInsertChat();
-                event.preventDefault();
-                return false;
+    $(document).ready(function() {
+        // البدء الفوري
+        read_cont();
+        read_users();
+
+        // ضبط التوقيت الدوري
+        setInterval(read_cont, waittime);
+        setInterval(read_users, 15000);
+
+        // تفعيل الإذن بالصوت عند أول نقرة في الصفحة أو عند محاولة الكتابة
+        // هذا يحل مشكلة قيود المتصفحات الحديثة (Autoplay Policy)
+        $(document).one('click keypress', function() {
+            var chatAudio = document.getElementById('chatAudio');
+            if (chatAudio) {
+                chatAudio.muted = true; // تشغيل صامت أولاً لتهيئة المتصفح
+                chatAudio.play().then(function() {
+                    chatAudio.pause();
+                    chatAudio.muted = false;
+                    isAudioAllowed = true; // الآن أصبح الصوت مسموحاً به
+                });
             }
         });
 
-
+        // تفعيل الإرسال عبر Enter
+        $("#box_text").on('keypress', function(e) {
+            if(e.which == 13 && !e.shiftKey) {
+                AjaxInsertChat();
+                e.preventDefault();
+            }
+        });
+    });
 </script>
 
 </body>
 </html>
-
 {/if}]]></chat>
 <editor_js><![CDATA[<link rel="stylesheet" href="{$ForumAdress}look/sceditor/minified/themes/default.min.css" id="theme-style" />
 <script src="{$ForumAdress}look/sceditor/minified/formats/bbcode.js"></script>
@@ -2759,7 +2760,8 @@ alt="{$lang['s_special']}" class="f_special brd0" /> </span>
 <span class="smallfont">{$review_subject_list['subject_describe']}</span>
 {/if}
 <br />
-<?php echo $PowerBB->functions->GetUsernameStyleAndUserId($PowerBB->_CONF['template']['while']['review_subject_list'][$this->x_loop]['writer']);?>
+{$lang['last_writer']}
+ <a href="index.php?page=profile&amp;show=1&amp;id={$review_subject_list['writer_id']}">{$review_subject_list['username_style_cache']}</a>
 <div class="forum_resp">
 <div class="forum_sub_n_rep">
 {$lang['reply_num']} : {$review_subject_list['reply_number']}
@@ -2772,11 +2774,12 @@ alt="{$lang['s_special']}" class="f_special brd0" /> </span>
 <span class="n_lasts_guest">
 {$lang['write_date']} :
 {if {$review_subject_list['last_replier']} == 'Guest'}
-{$lang['Guest_']} ,
+{$lang['Guest_']}
 </span>
 {else}
 <span class="n_lasts-rep">
-<?php echo $PowerBB->functions->GetUsernameStyleAndUserId($PowerBB->_CONF['template']['while']['review_subject_list'][$this->x_loop]['last_replier']);?> ,
+{$lang['last_writer']}
+ <a href="index.php?page=profile&amp;show=1&amp;id={$review_subject_list['last_replier_id']}">{$review_subject_list['last_replier_style']}</a>
 </span>
 {/if}
 <span class="n_lasts_date">
@@ -2800,13 +2803,15 @@ alt="{$lang['s_special']}" class="f_special brd0" /> </span>
 <td class="row2 forum_sub_lasts wd20 a-center">
 {if {$review_subject_list['reply_number']} <= 0}
 {$lang['last_writer']}
- <?php echo $PowerBB->functions->GetUsernameStyleAndUserId($PowerBB->_CONF['template']['while']['review_subject_list'][$this->x_loop]['writer']);?>
+ <a href="index.php?page=profile&amp;show=1&amp;id={$review_subject_list['writer_id']}">{$review_subject_list['username_style_cache']}</a>
 <br />
 <span class="smallfont">
 {$review_subject_list['reply_date']}
 </span>
 {else}
-<?php echo $PowerBB->functions->GetUsernameStyleAndUserId($PowerBB->_CONF['template']['while']['review_subject_list'][$this->x_loop]['last_replier']);?>			<br />
+{$lang['last_writer']}
+ <a href="index.php?page=profile&amp;show=1&amp;id={$review_subject_list['last_replier_id']}">{$review_subject_list['last_replier_style']}</a>
+<br />
 <span class="smallfont">
 {$review_subject_list['reply_date']}
 </span >
@@ -2900,7 +2905,8 @@ alt="{$lang['s_special']}" class="f_special brd0" /> </span>
 <span class="smallfont">{$stick_subject_list['subject_describe']}</span>
 {/if}
 <br />
-<?php echo $PowerBB->functions->GetUsernameStyleAndUserId($PowerBB->_CONF['template']['while']['stick_subject_list'][$this->x_loop]['writer']);?>
+{$lang['last_writer']}
+ <a href="index.php?page=profile&amp;show=1&amp;id={$stick_subject_list['writer_id']}">{$stick_subject_list['username_style_cache']}</a>
 <div class="forum_resp">
 <div class="forum_sub_n_rep">
 {$lang['reply_num']} : {$stick_subject_list['reply_number']}
@@ -2913,11 +2919,12 @@ alt="{$lang['s_special']}" class="f_special brd0" /> </span>
 <span class="n_lasts_guest">
 {$lang['write_date']} :
 {if {$stick_subject_list['last_replier']} == 'Guest'}
-{$lang['Guest_']} ,
+{$lang['Guest_']}
 </span>
 {else}
+{$lang['last_writer']}
 <span class="n_lasts-rep">
-<?php echo $PowerBB->functions->GetUsernameStyleAndUserId($PowerBB->_CONF['template']['while']['stick_subject_list'][$this->x_loop]['last_replier']);?> ,
+ <a href="index.php?page=profile&amp;show=1&amp;id={$stick_subject_list['last_replier_id']}">{$stick_subject_list['last_replier_style']}</a>
 </span>
 {/if}
 <span class="n_lasts_date">
@@ -2941,13 +2948,14 @@ alt="{$lang['s_special']}" class="f_special brd0" /> </span>
 <td class="row2 forum_sub_lasts wd20 a-center">
 {if {$stick_subject_list['reply_number']} <= 0}
 {$lang['last_writer']}
- <?php echo $PowerBB->functions->GetUsernameStyleAndUserId($PowerBB->_CONF['template']['while']['stick_subject_list'][$this->x_loop]['writer']);?>
+ <a href="index.php?page=profile&amp;show=1&amp;id={$stick_subject_list['writer_id']}">{$stick_subject_list['username_style_cache']}</a>
 <br />
 <span class="smallfont">
 {$stick_subject_list['reply_date']}
 </span>
 {else}
-<?php echo $PowerBB->functions->GetUsernameStyleAndUserId($PowerBB->_CONF['template']['while']['stick_subject_list'][$this->x_loop]['last_replier']);?>
+ {$lang['last_writer']}
+<a href="index.php?page=profile&amp;show=1&amp;id={$stick_subject_list['last_replier_id']}">{$stick_subject_list['last_replier_style']}</a>
 <br />
 <span class="smallfont">
 {$stick_subject_list['reply_date']}
@@ -3073,7 +3081,8 @@ alt="{$lang['s_special']}" /> </span>
 {if {$subject_list['writer']} == 'Guest'}
 {$lang['Guest_']}
 {else}
-<?php echo $PowerBB->functions->GetUsernameStyleAndUserId($PowerBB->_CONF['template']['while']['subject_list'][$this->x_loop]['writer']);?>
+{$lang['last_writer']}
+ <a href="index.php?page=profile&amp;show=1&amp;id={$subject_list['writer_id']}">{$subject_list['username_style_cache']}</a>
 {/if}
 <div class="forum_resp">
 <div class="forum_sub_n_rep">
@@ -3087,11 +3096,12 @@ alt="{$lang['s_special']}" /> </span>
 <span class="n_lasts_guest">
 {$lang['write_date']} :
 {if {$subject_list['last_replier']} == 'Guest'}
-{$lang['Guest_']} ,
+{$lang['Guest_']}
 </span>
 {else}
 <span class="n_lasts-rep">
-<?php echo $PowerBB->functions->GetUsernameStyleAndUserId($PowerBB->_CONF['template']['while']['subject_list'][$this->x_loop]['last_replier']);?> ,
+{$lang['last_writer']}
+ <a href="index.php?page=profile&amp;show=1&amp;id={$subject_list['last_replier_id']}">{$subject_list['last_replier_style']}</a>
 </span>
 {/if}
 <span class="n_lasts_date">
@@ -3115,13 +3125,17 @@ alt="{$lang['s_special']}" /> </span>
 <td class="row2 forum_sub_lasts wd20 a-center">
 {if {$subject_list['reply_number']} <= 0}
 {$lang['last_writer']}
- <?php echo $PowerBB->functions->GetUsernameStyleAndUserId($PowerBB->_CONF['template']['while']['subject_list'][$this->x_loop]['writer']);?>
+{if {$subject_list['writer']} == 'Guest'}
+ {$lang['Guest_']}
+{else}
+ <a href="index.php?page=profile&amp;show=1&amp;id={$subject_list['writer_id']}">{$subject_list['username_style_cache']}</a>
+ {/if}
  <br />
 <span class="smallfont">
 {$subject_list['reply_date']}
 </span>
 {else}
-{if {$subject_list['last_replier']} == 'Guest'}
+{if {$subject_list['last_replier_style']} == 'Guest'}
 {$lang['last_writer']}
  {$lang['Guest_']}
  <br />
@@ -3129,7 +3143,8 @@ alt="{$lang['s_special']}" /> </span>
 {$subject_list['reply_date']}
 </span>
 {else}
-<?php echo $PowerBB->functions->GetUsernameStyleAndUserId($PowerBB->_CONF['template']['while']['subject_list'][$this->x_loop]['last_replier']);?>
+{$lang['last_writer']}
+ <a href="index.php?page=profile&amp;show=1&amp;id={$subject_list['last_replier_id']}">{$subject_list['last_replier_style']}</a>
 <br />
 <span class="smallfont">
 {$subject_list['reply_date']}
@@ -3789,7 +3804,6 @@ $(document).ready(function(){
 <link rel="stylesheet" href="{$ForumAdress}{$style_path}" />
 <link rel="stylesheet" href="{$ForumAdress}look/fonts/font-awesome.min.css" />
 <link rel="stylesheet" href="{$ForumAdress}look/fonts/fonts.css" />
-<link rel="stylesheet" href="{$ForumAdress}applications/core/colorbox-master/colorbox.css" />
 <!-- CSS Stylesheet -->
 <link rel="alternate" type="application/rss+xml" title="{$lang['rss_subject']}" href="
 {$ForumAdress}index.php?page=rss&subject=1" />
@@ -3797,7 +3811,6 @@ $(document).ready(function(){
 <script type="text/javascript" src="{$ForumAdress}includes/js/jquery-ui.js"></script>
 
 <script type="text/javascript" src="{$ForumAdress}includes/js/jquery.save.js"></script>
-<script type="text/javascript" src="{$ForumAdress}applications/core/colorbox-master/jquery.colorbox.js"></script>
 {if {$_CONF['info_row']['resize_imagesAllow']} == 1}
 {template}imgs_resize{/template}
 {/if}
@@ -3853,22 +3866,32 @@ echo "</tr><tr>";
 </fieldset>
 ]]></iconbox>
 <imgs_resize><![CDATA[{if {$_CONF['info_row']['resize_imagesAllow']} == 1}
-<script type="text/javascript" src="applications/core/colorbox-master/i18n/jquery.colorbox-{$_CONF['info_row']['content_language']}.js"></script>
+<link rel="stylesheet" href="{$ForumAdress}applications/core/fancybox/fancybox.css" type="text/css" />
+
+<style type="text/css">
+    img[data-src]:not(.no-fancybox img) {
+        cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="filter: drop-shadow(0px 0px 1px black);"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line><line x1="11" y1="8" x2="11" y2="14"></line><line x1="8" y1="11" x2="14" y2="11"></line></svg>') 12 12, zoom-in !important;
+    }
+    a.no-fancybox img {
+        cursor: pointer !important;
+    }
+</style>
+
+<script type="text/javascript" src="{$ForumAdress}applications/core/fancybox/fancybox.umd.js"></script>
 <script type="text/javascript">
 $(document).ready(function(){
-$(".resize_img").colorbox({rel:'resize_img', width:"80%", height:"85%", scrolling:true});
-$("#colorbox").draggable(true);
+    if (typeof Fancybox !== "undefined") {
+        Fancybox.bind('img[data-src]:not(.no-fancybox img)', {
+            Hash: false,
+            Thumbs: {
+                autoStart: false
+            }
+        });
+    }
 });
 </script>
-<script type="text/javascript">
-<?php
-echo "lang_Resize='".$PowerBB->_CONF['template']['lang']['resize_image_w_h']."';
-";
-?>
-</script>
 <script type="text/javascript" src="{$ForumAdress}includes/js/resize_images.js"></script>
-{/if}
-]]></imgs_resize>
+{/if}]]></imgs_resize>
 <info_bar><![CDATA[{get_hook}header{/get_hook}
 {if {$_CONF['info_row']['show_ads']}}
 {template}ads{/template}
@@ -9321,7 +9344,13 @@ imgChange.className = "collapsed";
 <div class="Info_last_post">
 <div class="Info_last_Reply">
 <span class="icon_last_Reply"><img src="{$ForumAdress}{$forum['icon']}" alt="last post icon" /></span>
- <a href="index.php?page=topic&amp;show=1&amp;id={$forum['last_subjectid']}" title="{$forum['last_subject_title']}">{$forum['last_subject']}</a></div>
+<a href="index.php?page=topic&show=1&id={$forum['last_subjectid']}
+{if {$forum['real_last_page']} > 1}
+&count={$forum['real_last_page']}
+{/if}#
+{$forum['last_reply']}" title="{$forum['last_subject_title']}">
+{$forum['last_subject']}
+</a>
 <ul class="NewsTime"><li class="News_User">{$forum['last_writer']}</li> <li class="News_Time">{$forum['last_post_date']}</li></ul>
 </div>
 {else}
@@ -9337,9 +9366,7 @@ imgChange.className = "collapsed";
 {/if}
 <!-- End_All-categorys -->
 </div>
-<br />
-
-]]></sections_list>
+<br />]]></sections_list>
 <send_active_code><![CDATA[<title>{$lang['send_active_code']}
 {if {$_CONF['info_row']['allowed_powered']} == 1}
 - {$lang['send_active_code']}
@@ -9932,7 +9959,7 @@ Z</a></dd>
 </div><!-- /table -->
 <br />
 <!-- table -->
-<div style="width:98%; border-collapse: collapse;" class="table mrgTable border">
+<div style="width:98%; border-collapse: collapse;background-color: unset;" class="table mrgTable border">
 <dl>
 <dt></dt>
 <dd class="right_text_align">
@@ -9964,7 +9991,7 @@ Z</a></dd>
 {Des::while}{MemberList}
 <dl class="center_text_align">
 <dt></dt>
-<dd class="row1 wd20">
+<dd class="row1 center_text_align wd20">
 <a href="index.php?page=profile&amp;show=1&amp;id={$MemberList['id']}">
 {$MemberList['username_style_cache']}</a>
 <div class="member-list-hide">
@@ -9992,18 +10019,13 @@ $user_titles = $titles[1]['usertitle'];
 break;
 }
 }
- $PowerBB->template->assign('Usertitle',$user_titles);
-
-$GrpArr 			= 	array();
-$GrpArr['where'] 	= 	array('id',$PowerBB->_CONF['template']['while']['MemberList'][$this->x_loop]['usergroup']);
-$GroupInfo = $PowerBB->core->GetInfo($GrpArr,'group');
-$PowerBB->template->assign('GroupInfo',$GroupInfo);
+$PowerBB->_CONF['template']['Usertitle'] = $user_titles;
 ?>
-{if {$GroupInfo['usertitle_change']} == 1}
+{if {$MemberList['group_usertitle_change']} == 1}
 {$Usertitle}
 {else}
 {if !{$MemberList['user_title']}}
-{$GroupInfo['user_title']}
+{$MemberList['group_user_title']}
 {else}
 {$MemberList['user_title']}
 {/if}
@@ -10019,21 +10041,21 @@ $PowerBB->template->assign('GroupInfo',$GroupInfo);
 </span>
 </div>
 </dd>
-<dd class="row1 resp-susp wd20">
-{if {$GroupInfo['usertitle_change']} == 1}
+<dd class="row1 center_text_align resp-susp wd20">
+{if {$MemberList['group_usertitle_change']} == 1}
 {$Usertitle}
 {else}
 {if !{$MemberList['user_title']}}
-{$GroupInfo['user_title']}
+{$MemberList['group_user_title']}
 {else}
 {$MemberList['user_title']}
 {/if}
 {/if}
 </dd>
-<dd class="row1 resp-susp wd10">
+<dd class="row1 center_text_align resp-susp wd10">
 {$MemberList['posts']}
 </dd>
-<dd class="row1 resp-susp wd10">
+<dd class="row1 center_text_align resp-susp wd10">
 {$MemberList['visitor']}
 </dd>
 <dd class="row1 wd15">
@@ -11122,35 +11144,70 @@ title="{$lang['Cancel']}
 </dl>
 </div>
 <!-- /table14 -->]]></show_subject_information>
-<show_tags_topic><![CDATA[<table class="border wd98 brd1 clpc0 a-center">
-<tr>
-<td class="thead1 right_text_align wd98">
-<div class="r-right">{$lang['tags']}</div>
-<?php
- if(!$PowerBB->_CONF['template']['mod_toolbar']
- or $PowerBB->_CONF['member_row']['username'] == $PowerBB->_CONF['template']['SubjectInfo']['writer'])
- {
-?>
-<div class="l-left">
-<a href="index.php?page=tags&amp;edit=1&amp;id={$subject_id}">
-{$lang['edit_tags']}</a>
-</div>
-{/if}
-</td>
-</tr>
-<tr>
-<td class="row1 right_text_align wd98">
-{if {$STOP_TAGS_TEMPLATE}}
-{$lang['no_tags']}
-{else}
-{Des::while}{tags}
-<a href="index.php?page=tags&amp;show=1&amp;tag={$tags['tag']}">{$tags['tag']}</a> ،
-{/Des::while}
-{/if}
-</td>
-</tr>
-</table>
-]]></show_tags_topic>
+<show_tags_topic><![CDATA[<style>
+    .tags-container-box {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        padding: 5px 0;
+    }
+    .tag-badge {
+        display: inline-block;
+        background-color: #f2f2f2;
+        color: #444;
+        padding: 4px 12px;
+        border-radius: 20px;
+        border: 1px solid #dcdcdc;
+        text-decoration: none;
+        font-size: 12px;
+        transition: all 0.3s ease;
+    }
+    .tag-badge:hover {
+        background-color: #3498db;
+        color: #fff;
+        border-color: #2980b9;
+        text-decoration: none;
+    }
+    .edit-tags-link {
+        font-size: 11px;
+        color: #fff;
+        text-decoration: underline;
+    }
+</style>
+
+<table class="border wd98 brd1 clpc0 a-center">
+    <tr>
+        <td class="thead1 right_text_align wd98">
+            <div class="r-right"><i class="fa fa-tags"></i> {$lang['tags']}</div>
+            <?php
+            if(!$PowerBB->_CONF['template']['mod_toolbar']
+            or $PowerBB->_CONF['member_row']['username'] == $PowerBB->_CONF['template']['SubjectInfo']['writer'])
+            {
+            ?>
+            <div class="l-left">
+                <a href="index.php?page=tags&amp;edit=1&amp;id={$subject_id}" class="edit-tags-link">
+                    <i class="fa fa-edit"></i> {$lang['edit_tags']}
+                </a>
+            </div>
+            <?php } ?>
+        </td>
+    </tr>
+    <tr>
+        <td class="row1 right_text_align wd98" style="padding: 10px;">
+            <div class="tags-container-box">
+                {if {$STOP_TAGS_TEMPLATE}}
+                    <span style="color: #999; font-style: italic;">{$lang['no_tags']}</span>
+                {else}
+                    {Des::while}{tags}
+                        <a href="index.php?page=tags&amp;show=1&amp;tag={$tags['tag']}" class="tag-badge">
+                            {$tags['tag']}
+                        </a>
+                    {/Des::while}
+                {/if}
+            </div>
+        </td>
+    </tr>
+</table>]]></show_tags_topic>
 <show_votes><![CDATA[<tr class="center_text_align va-t">
 <td class="row1 wd10">{$answers}</td>
 <td class="row1 wd15">
@@ -11637,415 +11694,215 @@ itemtype="https://schema.org/ListItem">
 ]]></static>
 <statistics_list><![CDATA[{if {$_CONF['info_row']['activate_last_static_list']} == 1}
 <div id="activate_last_static_list">
-<br />
-<div class="border_radius">
-<ul class="rUlRow">
-<li class="tcat">
-<i id="heading_up_statistics_list" class="CollapseIcon">
-<img src="{$image_path}/expanded.png" alt="" />
-</i>
-<i id="heading_down_statistics_list" class="CollapseIcon">
-<img src="{$image_path}/collapsed.png" alt="" />
-</i>
-<a title="{$lang['mor_static']}" href="index.php?page=static&amp;index=1">
-<span>{$lang['last_static_num']}</span>
-</a>
-</li>
-</ul>
-</div>
-<div class="Ajax-static" id="active_statistics_list">
-<div class="right-mainbox">
-<div style="margin: 2px;">
-<option value="pp-topparticipants" id='pp-topparticipants'>{$lang['Top_participants']}</option>
-<option value="pp-reputation" id='pp-reputation'>{$lang['strongest_reputation']}</option>
-<option value="pp-register" id='pp-register'>{$lang['New_members']}</option>
-<option value="pp-invite" id='pp-invite'>{$lang['TopMemberInvite']}</option>
-</div>
-<div id='topparticipants_table'>
-<table class="wd100 brd0 clp0" style="border-collapse: collapse">
-{if {$TopMemberListNum} > 0}
-<tr style="vertical-align: top;">
-<td class="thead1 right_text_align">
-{$lang['user_name']}</td>
-<td class="thead1 right_text_align">
-&nbsp;{$lang['posts']}</td>
-</tr>
-{Des::while}{TopMemberList}
-<tr style="vertical-align: top;">
-<td class="row2 right_text_align">
-<span class="smallfont">
-<a href="index.php?page=profile&amp;show=1&amp;id={$TopMemberList['id']}">{$TopMemberList['username']}</a>
-</span>
-</td>
-<td class="row2 center_text_align wd1" title="{$lang['posts']}">
-{$TopMemberList['posts']}</td>
-</tr>
-{/Des::while}
-{else}
-{$lang['No_Posts']}
-{/if}
-</table>
-</div>
-<div id='reputation_table'>
-<table class="wd100 brd0 clp0" style="border-collapse: collapse">
-{if {$MemberReputationNum} > 0}
-<tr style="vertical-align: top;">
-<td class="thead1 right_text_align">
-{$lang['user_name']}</td>
-<td class="thead1 right_text_align">
-&nbsp;{$lang['usercp_reputations']}</td>
-</tr>
-{Des::while}{TopMemberReputation}
-<tr style="vertical-align: top;">
-<td class="row2 right_text_align">
-<span class="smallfont">
-<a href="index.php?page=profile&amp;show=1&amp;id={$TopMemberReputation['id']}">
-<?php
-$num ='35';
-$text = $PowerBB->_CONF['template']['while']['TopMemberReputation'][$this->x_loop]['username'];
-echo $PowerBB->Powerparse->_wordwrap($text,$num);
-?>
-</a>
-</span>
-</td>
-<td class="row2 center_text_align wd1" title="{$lang['Reputable']}">
-{$TopMemberReputation['reputation']}</td>
-</tr>
-{/Des::while}
-{else}
-<td class="thead1 right_text_align">
-{$lang['No_Reputaions']}</td>
-{/if}
-</table>
-</div>
-<div id='register_table'>
-<table class="wd100 brd0 clp0" style="border-collapse: collapse">
-<tr style="vertical-align: top;">
-<td class="thead1 right_text_align wd50">
-{$lang['user_name']}</td>
-<td class="thead1 left_text_align wd50">
-&nbsp;{$lang['date_register']}</td>
-</tr>
-</tr>
-{Des::while}{latest_registered}
-<tr style="vertical-align: top;">
-<td class="row2 right_text_align wd50">
-<span class="smallfont">
-<a href="index.php?page=profile&amp;show=1&amp;id={$latest_registered['id']}" title="{$latest_registered['register_date']}">
-<?php
-$num ='35';
-$text = $PowerBB->_CONF['template']['while']['latest_registered'][$this->x_loop]['username'];
-echo $PowerBB->Powerparse->_wordwrap($text,$num);
-?>
-</a>
-</span>
-</td>
-<td class="row2 left_text_align wd50" title="{$lang['date_register']}">
-&nbsp;<span class="smallfont">{$latest_registered['register_date']}</span></td>
-</tr>
-{/Des::while}
-</table>
-</div>
-<div id='invite_table'>
-<table class="wd100 brd0 clp0" style="border-collapse: collapse">
-{if {$TopMemberInviteNum} > 0}
-<tr style="vertical-align: top;">
-<td class="thead1 right_text_align">
-{$lang['user_name']}</td>
-<td class="thead1 right_text_align">
-&nbsp;{$lang['Invites']}</td>
-</tr>
-{Des::while}{TopMemberInvite}
-<tr style="vertical-align: top;">
-<td class="row2 right_text_align">
-<a href="index.php?page=profile&amp;show=1&amp;id={$TopMemberInvite['id']}">
-<span class="smallfont">
-<?php
-$num ='35';
-$text = $PowerBB->_CONF['template']['while']['TopMemberInvite'][$this->x_loop]['username'];
-echo $PowerBB->Powerparse->_wordwrap($text,$num);
-?>
-</span>
-</a>
-</td>
-<td class="row2 left_text_align wd1" title="{$lang['Invites']}">
-{$TopMemberInvite['invite_num']}</td>
-</tr>
-{/Des::while}
-{else}
-<tr>
-<td class="row2 right_text_align">
-{$lang['No_Invits']}</td>
-</tr>
-{/if}
-</table>
-</div>
-</div>
-<div class="left-mainbox">
-<ul class="rUlRow">
-<li class="pp-tab">
-<div class='pp-taboff3' id='pp-lastsubject'>{$lang['LastSubject']}</div>
-<div class='pp-taboff3' id='pp-topsubjects'>{$lang['TopSubjectVisitor']}</div>
-<div class='pp-taboff3' id='pp-topsections'>{$lang['most_popular_forums']}</div>
-</li>
-</ul>
-<div id='lastsubject_table'>
-<table class="wd100 brd0 clp0" style="border-collapse: collapse">
-<tr style="vertical-align: top;">
-<td class="thead1 right_text_align">
-{$lang['Subject']}</td>
-<td class="thead1 right_text_align">
-{$lang['By_']}</td>
-<td class="thead1 right_text_align">
-&nbsp;&nbsp;{$lang['date']}</td>
-</tr>
-{Des::while}{lastStaticPostsList}
-{if {$lastStaticPostsList['title']} !=''}
-<tr class="va-t">
-<td class="row2 right_text_align" title="{$lastStaticPostsList['title']}">
-<i class="fa fa-sticky-note"></i>&nbsp;
-<a href="index.php?page=topic&amp;show=1&amp;id={$lastStaticPostsList['id']}" title="{$lastStaticPostsList['title']}">
-<span class="smallfont">
-<?php
-$num ='35';
-$text = $PowerBB->_CONF['template']['while']['lastStaticPostsList'][$this->x_loop]['title'];
-echo $PowerBB->Powerparse->_wordwrap($text,$num);
-?>
-</span>
-</a>
-</td>
-<td class="row2 lastP_user right_text_align" title="{$lastStaticPostsList['last_replier']}">
-<span class="smallfont">
-{if {$lastStaticPostsList['last_replier']} !=''}
-<a href="index.php?page=profile&amp;show=1&amp;username={$lastStaticPostsList['last_replier']}">
-{$lastStaticPostsList['last_replier']}
-</a>
-{else}
-<a href="index.php?page=profile&amp;show=1&amp;username={$lastStaticPostsList['writer']}">
-{$lastStaticPostsList['writer']}
-</a>
-{/if}
-</span>
-</td>
-<td class="row2 lastP_date right_text_align" title="{$lastStaticPostsList['reply_date']}">
-&nbsp;<span class="smallfont">
-<?php echo $PowerBB->functions->time_ago($PowerBB->_CONF['template']['while']['lastStaticPostsList'][$this->x_loop]['write_time']); ?>
-</span>
-</td>
-</tr>
-{/if}
-{/Des::while}
-</table>
-</div>		<div id='topsubjects_table'>
-<table class="wd100 brd0 clp0" style="border-collapse: collapse">
-{if {$TopSubjectVisitorNum} > 0}
-<tr style="vertical-align: top;">
-<td class="thead1 right_text_align">
-{$lang['Subject']}</td>
-<td class="thead1 right_text_align">
-&nbsp;&nbsp;{$lang['subject_visitor']}&nbsp;&nbsp;</td>
-</tr>
-{Des::while}{TopSubjectVisitor}
-<tr style="vertical-align: top;">
-<td class="row2 right_text_align">
-<i class="fa fa-sticky-note"></i>&nbsp;
-<a href="index.php?page=topic&amp;show=1&amp;id={$TopSubjectVisitor['id']}">
-<span class="smallfont">
-<?php
-$num ='35';
-$text = $PowerBB->_CONF['template']['while']['TopSubjectVisitor'][$this->x_loop]['title'];
-echo $PowerBB->Powerparse->_wordwrap($text,$num);
-?>
-</span>
-</a>
-</td>
-<td class="row2 center_text_align wd1" title="{$lang['SubjectVisitor']}">
-{$TopSubjectVisitor['visitor']}</td>
-</tr>
-{/Des::while}
-{else}
-{$lang['No_Visits']}
-{/if}
-</table>
-</div>
-<div id='topsections_table'>
-<table class="wd100 brd0 clp0" style="border-collapse: collapse">
-{if {$TopSectionListNum} >0}
-<tr style="vertical-align: top;">
-<td class="thead1 right_text_align">
-{$lang['forum']}</td>
-<td class="thead1 right_text_align">
-&nbsp;&nbsp;{$lang['reply_num']}&nbsp;&nbsp;</td>
-</tr>
-{Des::while}{TopSectionsList}
-<tr style="vertical-align: top;">
-<td class="row2 right_text_align" title="{$TopSectionsList['title']}">
-<span class="smallfont">
-<a href="index.php?page=forum&amp;show=1&amp;id={$TopSectionsList['id']}">
-<?php
-$num ='35';
-$text = $PowerBB->_CONF['template']['while']['TopSectionsList'][$this->x_loop]['title'];
-echo $PowerBB->Powerparse->_wordwrap($text,$num);
-?>
-</a>
-</span>
-</td>
-<td class="row2 center_text_align wd1" title="{$lang['reply_num']}">
-{$TopSectionsList['reply_num']}</td>
-</tr>
-{/Des::while}
-{else}
-{$lang['No_Posts']}
-{/if}
-</table>
-</div>
-</div>
-<div style="clear:both;"></div>
-</div>
-<script type='text/javascript'>
-$("#pp-topparticipants").attr('style', 'background-color:white;');
-function ShowTopParticipantsTable()
-{
+    <br />
+    <div class="border_radius">
+        <ul class="rUlRow">
+            <li class="tcat">
+                <i id="heading_up_statistics_list" class="CollapseIcon"><img src="{$image_path}/expanded.png" alt="" /></i>
+                <a title="{$lang['mor_static']}" href="index.php?page=static&amp;index=1"><span>{$lang['last_static_num']}</span></a>
+            </li>
+        </ul>
+    </div>
 
-if ($("#pp-topparticipants").click)
+    <div class="Ajax-static" id="active_statistics_list">
+        <div class="right-mainbox">
+            <div style="margin: 2px;">
+                <option value="pp-topparticipants" id='pp-topparticipants'>{$lang['Top_participants']}</option>
+                <option value="pp-reputation" id='pp-reputation'>{$lang['strongest_reputation']}</option>
+                <option value="pp-register" id='pp-register'>{$lang['New_members']}</option>
+                <option value="pp-invite" id='pp-invite'>{$lang['TopMemberInvite']}</option>
+            </div>
+
+            <div id='topparticipants_table'>
+                <table class="wd100 brd0 clp0">
+                    {Des::while}{TopMemberList}
+                    <tr>
+                        <td class="row2 right_text_align">
+                            {if {$TopMemberList['avatar']}}
+                                <img src="{$TopMemberList['avatar']}" width="20" height="20" style="vertical-align:middle; border-radius:3px;" />
+                            {else}
+                                <img src="{$image_path}/
+{$_CONF['info_row']['default_avatar']}" width="20" height="20" style="vertical-align:middle;" />
+                            {/if}
+                            <a href="index.php?page=profile&amp;show=1&amp;id={$TopMemberList['id']}">{$TopMemberList['user_style']}</a>
+                        </td>
+                        <td class="row2 center_text_align wd1">{$TopMemberList['posts']}</td>
+                    </tr>
+                    {/Des::while}
+                </table>
+            </div>
+            
+            <div id='reputation_table' style="display:none;">
+                <table class="wd100 brd0 clp0">
+                    {Des::while}{TopMemberReputation}
+                    <tr>
+                        <td class="row2 right_text_align">
+                            {if {$TopMemberReputation['avatar']}}
+                                <img src="{$TopMemberReputation['avatar']}" width="20" height="20" style="vertical-align:middle; border-radius:3px;" />
+                            {else}
+                                <img src="{$image_path}/
+{$_CONF['info_row']['default_avatar']}" width="20" height="20" style="vertical-align:middle;" />
+                            {/if}
+                            <a href="index.php?page=profile&amp;show=1&amp;id={$TopMemberReputation['id']}">{$TopMemberReputation['user_style']}</a>
+                        </td>
+                        <td class="row2 center_text_align wd1">{$TopMemberReputation['reputation']}</td>
+                    </tr>
+                    {/Des::while}
+                </table>
+            </div>
+
+            <div id='register_table' style="display:none;">
+                <table class="wd100 brd0 clp0">
+                    {Des::while}{latest_registered}
+                    <tr>
+                        <td class="row2 right_text_align">
+                            {if {$latest_registered['avatar']}}
+                                <img src="{$latest_registered['avatar']}" width="20" height="20" style="vertical-align:middle; border-radius:3px;" />
+                            {else}
+                                <img src="{$image_path}/
+{$_CONF['info_row']['default_avatar']}" width="20" height="20" style="vertical-align:middle;" />
+                            {/if}
+                            <a href="index.php?page=profile&amp;show=1&amp;id={$latest_registered['id']}">{$latest_registered['user_style']}</a>
+                        </td>
+                        <td class="row2 left_text_align"><span class="smallfont">{$latest_registered['register_date']}</span></td>
+                    </tr>
+                    {/Des::while}
+                </table>
+            </div>
+
+            <div id='invite_table' style="display:none;">
+                <table class="wd100 brd0 clp0">
+                    {Des::while}{TopMemberInvite}
+                    <tr>
+                        <td class="row2 right_text_align">
+                            {if {$TopMemberInvite['avatar']}}
+                                <img src="{$TopMemberInvite['avatar']}" width="20" height="20" style="vertical-align:middle; border-radius:3px;" />
+                            {else}
+                                <img src="{$image_path}/
+{$_CONF['info_row']['default_avatar']}" width="20" height="20" style="vertical-align:middle;" />
+                            {/if}
+                            <a href="index.php?page=profile&amp;show=1&amp;id={$TopMemberInvite['id']}">{$TopMemberInvite['user_style']}</a>
+                        </td>
+                        <td class="row2 center_text_align wd1">{$TopMemberInvite['invite_num']}</td>
+                    </tr>
+                    {/Des::while}
+                </table>
+            </div>
+        </div>
+
+        <div class="left-mainbox">
+            <ul class="rUlRow">
+                <li class="pp-tab">
+                    <div class='pp-tabon3' id='pp-lastsubject'>{$lang['LastSubject']}</div>
+                    <div class='pp-taboff3' id='pp-topsubjects'>{$lang['TopSubjectVisitor']}</div>
+                    <div class='pp-taboff3' id='pp-topsections'>{$lang['most_popular_forums']}</div>
+                </li>
+            </ul>
+
+		<div id='lastsubject_table'>
+		    <table class="wd100 brd0 clp0">
+		        {Des::while}{lastPostsList}
+		        <tr>
+		            <td class="row2 right_text_align">
+		                <i class="fa fa-sticky-note color_gray"></i> 
+		                <a href="index.php?page=topic&amp;show=1&amp;id={$lastPostsList['id']}">{$lastPostsList['title']}</a>
+		            </td>
+		            <td class="row2 center_text_align" style="white-space:nowrap; padding:5px;">
+<a title="{$lang['last_writer']}
+{$lastPostsList['writer']}" href="index.php?page=profile&amp;show=1&amp;id={$lastPostsList['last_writer_id']}">
+{if {$lastPostsList['avater_path']} != ''}
+<?php
+if (@!strstr($PowerBB->_CONF['template']['while']['lastPostsList'][$this->x_loop]['avater_path'],'http')
+	or @!strstr($PowerBB->_CONF['template']['while']['lastPostsList'][$this->x_loop]['avater_path'],'www.'))
 {
-$("#topparticipants_table").fadeIn();
-$("#reputation_table").hide();
-$("#register_table").hide();
-$("#invite_table").hide();
-$("#pp-topparticipants").attr('style', 'background-color:white;');
-$("#pp-reputation").attr('style', 'background-color:#d4f0f1;');
-$("#pp-register").attr('style', 'background-color:#d4f0f1;');
-$("#pp-invite").attr('style', 'background-color:#d4f0f1;');
+	if (@strstr($PowerBB->_CONF['template']['while']['lastPostsList'][$this->x_loop]['avater_path'],'download/avatar/')
+	or @strstr($PowerBB->_CONF['template']['while']['lastPostsList'][$this->x_loop]['avater_path'],'look/images/avatar/'))
+	{
+	$PowerBB->_CONF['template']['while']['lastPostsList'][$this->x_loop]['avater_path'] = $PowerBB->_CONF['template']['ForumAdress'].$PowerBB->_CONF['template']['while']['lastPostsList'][$this->x_loop]['avater_path'];
+    $PowerBB->_CONF['template']['while']['lastPostsList'][$this->x_loop]['avater_path'] = str_replace($PowerBB->_CONF['template']['ForumAdress'].$PowerBB->_CONF['template']['ForumAdress'], $PowerBB->_CONF['template']['ForumAdress'], $PowerBB->_CONF['template']['while']['lastPostsList'][$this->x_loop]['avater_path']);
+	}
 }
-else
+
+if ($PowerBB->functions->GetServerProtocol() == 'https://')
 {
-$("#topparticipants_table").fadeOut();
+$https_  = "https://".$PowerBB->_SERVER['HTTP_HOST'];
+$httpswww_  = "https://www.".$PowerBB->_SERVER['HTTP_HOST'];
+$http_  = "http://".$PowerBB->_SERVER['HTTP_HOST'];
+$http_www_  = "http://www.".$PowerBB->_SERVER['HTTP_HOST'];
+
+$PowerBB->_CONF['template']['while']['lastPostsList'][$this->x_loop]['avater_path'] = str_replace($http_, $https_, $PowerBB->_CONF['template']['while']['lastPostsList'][$this->x_loop]['avater_path']);
+$PowerBB->_CONF['template']['while']['lastPostsList'][$this->x_loop]['avater_path'] = @str_ireplace($http_, $https_, $PowerBB->_CONF['template']['while']['lastPostsList'][$this->x_loop]['avater_path']);
+$PowerBB->_CONF['template']['while']['lastPostsList'][$this->x_loop]['avater_path'] = str_replace($http_www_, $httpswww_, $PowerBB->_CONF['template']['while']['lastPostsList'][$this->x_loop]['avater_path']);
+$PowerBB->_CONF['template']['while']['lastPostsList'][$this->x_loop]['avater_path'] = @str_ireplace($http_www_, $httpswww_, $PowerBB->_CONF['template']['while']['lastPostsList'][$this->x_loop]['avater_path']);
 }
-}
-function ShowTopReputationTable()
-{		if ($("#pp-reputation").click)
-{
-$("#topparticipants_table").hide();
-$("#reputation_table").fadeIn();
-$("#register_table").hide();
-$("#invite_table").hide();
-$("#pp-topparticipants").attr('style', 'background-color:#d4f0f1;');
-$("#pp-reputation").attr('style', 'background-color:white;');
-$("#pp-register").attr('style', 'background-color:#d4f0f1;');
-$("#pp-invite").attr('style', 'background-color:#d4f0f1;');
-}
-else
-{
-$("#reputation_table").fadeOut();
-}
-}
-function ShowRegisterTable()
-{
-if ($("#pp-register").click)
-{
-$("#topparticipants_table").hide();
-$("#reputation_table").hide();
-$("#register_table").fadeIn();
-$("#invite_table").hide();
-$("#pp-topparticipants").attr('style', 'background-color:#d4f0f1;');
-$("#pp-reputation").attr('style', 'background-color:#d4f0f1;');
-$("#pp-register").attr('style', 'background-color:white;');
-$("#pp-invite").attr('style', 'background-color:#d4f0f1;');
-}
-else
-{
-$("#register_table").fadeOut();
-}
-}
-function ShowInviteTable()
-{
-if ($("#pp-invite").click)
-{
-$("#topparticipants_table").hide();
-$("#reputation_table").hide();
-$("#register_table").hide();
-$("#invite_table").fadeIn();
-$("#pp-topparticipants").attr('style', 'background-color:#d4f0f1;');
-$("#pp-reputation").attr('style', 'background-color:#d4f0f1;');
-$("#pp-register").attr('style', 'background-color:#d4f0f1;');
-$("#pp-invite").attr('style', 'background-color:white;');
-}
-else
-{
-$("#invite_table").fadeOut();
-}
-}
-function ShowLastsubjectTable()
-{
-if ($("#pp-lastsubject").click)
-{
-$("#lastsubject_table").fadeIn();
-$("#topsubjects_table").hide();
-$("#topsections_table").hide();
-document.getElementById('pp-lastsubject').className="pp-tabon3";
-document.getElementById('pp-topsubjects').className="pp-taboff3";
-document.getElementById('pp-topsections').className="pp-taboff3";
-}
-else
-{
-$("#lastsubject_table").fadeOut();
-}
-}
-function ShowTopsubjectsTable()
-{
-if ($("#pp-topsubjects").click)
-{
-$("#lastsubject_table").hide();
-$("#topsubjects_table").fadeIn();
-$("#topsections_table").hide();
-document.getElementById('pp-lastsubject').className="pp-taboff3";
-document.getElementById('pp-topsubjects').className="pp-tabon3";
-document.getElementById('pp-topsections').className="pp-taboff3";
-}
-else
-{
-$("#lastsubject_table").fadeOut();
-}
-}
-function ShowTopsectionsTable()
-{
-if ($("#pp-topsections").click)
-{
-$("#lastsubject_table").hide();
-$("#topsubjects_table").hide();
-$("#topsections_table").fadeIn();
-document.getElementById('pp-lastsubject').className="pp-taboff3";
-document.getElementById('pp-topsubjects').className="pp-taboff3";
-document.getElementById('pp-topsections').className="pp-tabon3";
-}
-else
-{
-$("#topsections_table").fadeOut();
-}
-}
-function Ready()
-{
-$("#pp-topparticipants").click(ShowTopParticipantsTable);
-$("#pp-reputation").click(ShowTopReputationTable);
-$("#reputation_table").hide();
-$("#pp-register").click(ShowRegisterTable);
-$("#register_table").hide();
-$("#pp-invite").click(ShowInviteTable);
-$("#invite_table").hide();
-$("#pp-lastsubject").click(ShowLastsubjectTable);
-document.getElementById('pp-lastsubject').className="pp-tabon3";
-$("#pp-topsubjects").click(ShowTopsubjectsTable);
-$("#topsubjects_table").hide();
-$("#pp-topsections").click(ShowTopsectionsTable);
-$("#topsections_table").hide();
-}
-$(document).ready(Ready);
-</script>
-</div>
-<br />
+?>
+<span class="brd0" style="width: 32px; height: 32px; background-image: url({$lastPostsList['avater_path']});width: 32px; height: 32px; background-position: center; background-repeat: no-repeat; background-size: 32px; display: inline-block; vertical-align: middle;"></span>
+{else}
+<span class="brd0" style="background-image: url(<?php echo $PowerBB->_CONF['template']['ForumAdress'].$PowerBB->_CONF['template']['image_path'];?>/{$_CONF['info_row']['default_avatar']}); width: 32px; height: 32px; background-position: center; background-repeat: no-repeat; background-size: 32px; display: inline-block; vertical-align: middle;"></span>
 {/if}
-]]></statistics_list>
+</a>
+		                <br/> 
+		                <span class="last_time_ago"><?php echo $PowerBB->functions->time_ago($PowerBB->_CONF['template']['while']['lastPostsList'][$this->x_loop]['write_time']); ?></span>
+		            </td>
+		        </tr>
+		        {/Des::while}
+		    </table>
+		</div>
+
+            <div id='topsubjects_table' style="display:none;">
+                <table class="wd100 brd0 clp0">
+                    {Des::while}{TopSubjectVisitor}
+                    <tr>
+                        <td class="row2 right_text_align">
+                            <i class="fa fa-eye color_gray"></i> 
+                            <a href="index.php?page=topic&amp;show=1&amp;id={$TopSubjectVisitor['id']}">{$TopSubjectVisitor['title']}</a>
+                        </td>
+                        <td class="row2 center_text_align wd1">{$TopSubjectVisitor['visitor']}</td>
+                    </tr>
+                    {/Des::while}
+                </table>
+            </div>
+
+            <div id='topsections_table' style="display:none;">
+                <table class="wd100 brd0 clp0">
+                    {Des::while}{TopSectionsList}
+                    <tr>
+                        <td class="row2 right_text_align">
+                            <a href="index.php?page=forum&amp;show=1&amp;id={$TopSectionsList['id']}">{$TopSectionsList['title']}</a>
+                        </td>
+                        <td class="row2 center_text_align wd1">{$TopSectionsList['reply_num']}</td>
+                    </tr>
+                    {/Des::while}
+                </table>
+            </div>
+        </div>
+        <div style="clear:both;"></div>
+    </div>
+</div>
+
+<script type="text/javascript">
+$(document).ready(function() {
+    $('#pp-topparticipants').css('background-color', '#e9ecef');
+
+    $('#pp-topparticipants, #pp-reputation, #pp-register, #pp-invite').click(function() {
+        var id = $(this).attr('id').replace('pp-', '');
+        $('#topparticipants_table, #reputation_table, #register_table, #invite_table').hide();
+        $('#' + id + '_table').show();
+
+        $('#pp-topparticipants, #pp-reputation, #pp-register, #pp-invite').css('background-color', ''); 
+        $(this).css('background-color', '#e9ecef'); 
+    });
+
+    $('#pp-lastsubject, #pp-topsubjects, #pp-topsections').click(function() {
+        var id = $(this).attr('id').replace('pp-', '');
+        $('#lastsubject_table, #topsubjects_table, #topsections_table').hide();
+        $('#' + id + '_table').show();
+        $('#pp-lastsubject, #pp-topsubjects, #pp-topsections').removeClass('pp-tabon3').addClass('pp-taboff3');
+        $(this).removeClass('pp-taboff3').addClass('pp-tabon3');
+    });
+});
+</script>
+{/if}]]></statistics_list>
 <stuff_profile><![CDATA[<table class="wd98 brd0 clpc0 a-center">
 <tr>
 <td class='va-t'>
@@ -12182,40 +12039,33 @@ echo "</tr><tr>";
 
 <td class="va-t">
 <div class="UserPhoto center_text_align" style="width: 50px;height: 50px; margin-left: 2px;margin-right: 2px; margin-bottom: 2px;">
-<?php
-$vuserid_friend_id = $PowerBB->_CONF['template']['while']['FriendsList'][$this->x_loop]['userid_friend'];
-
-$MemberIDArr = $PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['member'] . " WHERE id='$vuserid_friend_id'");
-$MemberIDInfo= $PowerBB->DB->sql_fetch_array($MemberIDArr);
-if ($MemberIDInfo['avater_path']){
-?>
+{if {$FriendsList['avater_path']}}
 <a href="index.php?page=profile&amp;show=1&amp;id={$FriendsList['userid_friend']}">
-<img src="<?php echo $MemberIDInfo['avater_path']?>" class="brd0" width="50" height="50" title="<?php echo $MemberIDInfo['user_info']?>"
+<img src="{$FriendsList['avater_path']}" class="brd0" width="50" height="50" title="{$FriendsList['user_info']}"
 alt="{$lang['Picture']}
-<?php echo $MemberIDInfo['username']?>
+{$FriendsList['username_friend']}
 {$lang['Personal']}" /></a>
 {else}
 <a href="index.php?page=profile&amp;show=1&amp;id={$FriendsList['userid_friend']}">
 <img src="{$image_path}/
 {$_CONF['info_row']['default_avatar']}" class="brd0" width="50" height="50"
 alt="{$lang['no_photo']}"
-title="<?php echo $MemberIDInfo['user_info']?>" />
+title="{$FriendsList['user_info']}" />
 </a>
 {/if}
 </div>
 </td>
 <td class="va-t">
 <a href="index.php?page=profile&amp;show=1&amp;id={$FriendsList['userid_friend']}">
-<?php echo $MemberIDInfo['username_style_cache']?></a> <br />
-<?php
-if($MemberIDInfo['user_gender'] == 'm'){?>
+{$FriendsList['username_style_cache']}</a> <br />
+{if {$FriendsList['user_gender']} == 'm'}
 <i title="{$lang['gender_m']}" class="fa fa-mars" aria-hidden="true"></i>
 {else}
 <i title="{$lang['gender_f']}" class="fa fa-venus" aria-hidden="true"></i>
 {/if}
 </span>
-<br /><span class="smallfont" style="color: rgb(150, 150, 150);"><?php echo $MemberIDInfo['user_title']?></span><br />
-<span class="smallfont" style="color: rgb(150, 150, 150);"><?php echo $MemberIDInfo['user_country']?></span><br />
+<br /><span class="smallfont" style="color: rgb(150, 150, 150);">{$FriendsList['user_title']}</span><br />
+<span class="smallfont" style="color: rgb(150, 150, 150);">{$FriendsList['user_country']}</span><br />
 </td>
 <?php $t=$t+1;?>
 {/Des::while}
@@ -12363,7 +12213,8 @@ if($MemberIDInfo['user_gender'] == 'm'){?>
 </tr>
 {/if}
 
-{if {$_CONF['group_info']['onlinepage_allow']} == 1}
+{if {$_CONF['group_info']['onlinepage_allow']}}
+{if {$_CONF['group_info']['show_hidden']}}
 {if {$Location['user_location']}}
 <tr>
 <td class="row1 right_text_align wd100">
@@ -12373,6 +12224,7 @@ if($MemberIDInfo['user_gender'] == 'm'){?>
 </b>
 </td>
 </tr>
+{/if}
 {/if}
 {/if}
 <tr>
@@ -12523,9 +12375,7 @@ $("#static_table").hide();
 
 }
 $(document).ready(Ready);
-</script>
-
-]]></stuff_profile>
+</script>]]></stuff_profile>
 <subjects_delete_index><![CDATA[{template}address_bar_part1{/template}
 {$lang['Management_Subjects']}
 <div class="btn-nav"></div>
@@ -13286,88 +13136,87 @@ itemtype="https://schema.org/ListItem">
 var addquotebutton     = "img-submit";
 var removequotebutton  = "img-quote-on";
 </script>]]></subject_top>
-<tags_edit_subject><![CDATA[<title>
-{$lang['tags']}
-{$lang['for_subject']}
-{$SubjectTitle}
-</title>{template}address_bar_part1{/template}
+<tags_edit_subject><![CDATA[
+{template}address_bar_part1{/template}
 <a href="index.php?page=forum&amp;show=1&amp;id={$Subjectinfo['section']}{$password}">
 {$SectionInfo['title']}
-</a> <div class="btn-nav"></div>
-{$lang['tags']}
-{$lang['for_subject']}
+</a>
+<div class="btn-nav"></div>
+{$lang['tags']} {$lang['for_subject']}
 <a href="index.php?page=topic&amp;show=1&amp;id={$Subjectinfo['id']}{$password}">
 {$SubjectTitle}
-</a>{template}address_bar_part2{/template}<script language="javascript">
-function ShowTagsTable()
-{
-if ($("#tag_id").is(":checked"))
-{
-$("#tags_table").fadeIn();
-}
-else
-{
-$("#tags_table").fadeOut();
-}
-}
-function AddMoreTags(x)
-{
-x += 1;	$(".more_tag_tr").hide();
-$("#add_tags_table").append('<tr class="center_text_align"><td class="row1">{$lang['tag']}' + x + '</td><td class="row1"><input name="tags[]" type="text" id="tag' + x + '" size="30" /></td></tr>');
-$("#add_tags_table").append('<tr class="more_tag_tr center_text_align"><td class="row1" colspan="2"><input type="button" name="more_tags" class="more_tags_class" value="{$lang['add_more_tag']}" /></td></tr>');	$("#tag" + x).focus();	$(".more_tags_class").click(function() { AddMoreTags(x) });	        if (function() { AddMoreTags(x) })
-{
-$(".more_tag_tr").stopPropagation();
-}
-}
-function Ready()
-{	$("#tags_table").hide();
-$("#tag_id").click(ShowTagsTable);
-$(".more_tags_class").click(function() {
-AddMoreTags({$SubjectTagNm}) });
-}
-$(document).ready(Ready);
+</a>
+{template}address_bar_part2{/template}
 
-</script>
-<br />
-<form method="post" action="index.php?page=tags&amp;start=1">
-<div class="center_text_align">
-<table class="border wd70 brd1 clpc0 a-center" id="add_tags_table">
-<tr class="center_text_align">
-<td class="thead1" colspan="2">
-{$lang['tags']}
-{$lang['for_subject']}
-{$SubjectTitle}
-</td>
-</tr>
-{Des::while}{TagSubjectList}
-<tr class="center_text_align">
-<td class="row1">
-{$lang['tag']}{$TagSubjectList['tag_id']}
-</td>
-<td class="row1">
-<input name="tags[]" type="text" value="{$TagSubjectList['tag']}" size="30" />
-<input name="del_tag[]" type="checkbox" value="{$TagSubjectList['id']}" />
-<input TYPE="hidden" name="id" value="{$TagSubjectList['id']}" />
-<input TYPE="hidden" name="subject_id" id="subject_id" value="{$TagSubjectList['subject_id']}" />
-<input TYPE="hidden" name="title" id="title_id" value="{$TagSubjectList['subject_title']}"/>
-<input TYPE="hidden" name="tag_id" id="tag_id_id" value="{$TagSubjectList['tag_id']}" />
-<input TYPE="hidden" name="TagNm" value="{$SubjectTagNm}" />		</td>
-</tr>
-{/Des::while}
-<tr class="more_tag_tr center_text_align">
-<td class="row1" colspan="2">
-<input type="button" name="more_tags" class="more_tags_class" value="{$lang['add_more_tag']}" />
-</td>
-</tr>
-</table>
-<br />
-<input TYPE="hidden" name="subjectid" value="{$subjectid}" />
-<input class="button button_b" name="insert" type="submit" value="{$lang['tags_edit_and_add']}" />
-<input class="button button_b" name="remove" type="submit" value="{$lang['tags_remove']}" /></div>
-</form>
-<br />
-<br />
-<br />]]></tags_edit_subject>
+<style>
+    .tags-manager-container { background: #fff; border: 1px solid #d1d1d1; border-radius: 8px; padding: 20px; margin: 20px auto; max-width: 800px; }
+    .tags-grid { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px; justify-content: center; }
+    .tag-item { background: #f9f9f9; border: 1px solid #e0e0e0; padding: 8px 12px; border-radius: 50px; display: flex; align-items: center; transition: all 0.3s; }
+    .tag-item:hover { border-color: #3498db; background: #ebf5fb; }
+    .tag-input-field { border: none; background: transparent; outline: none; font-size: 13px; color: #333; width: 120px; text-align: center; }
+    .tag-delete-label { margin-right: 8px; color: #e74c3c; cursor: pointer; font-size: 11px; display: flex; align-items: center; border-right: 1px solid #ddd; padding-right: 8px; }
+    .tag-delete-label input { margin-left: 4px; }
+    .add-tag-btn { background: #2ecc71; color: #fff; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; font-weight: bold; }
+    .add-tag-btn:hover { background: #27ae60; }
+    .actions-bar { margin-top: 20px; border-top: 1px solid #eee; padding-top: 15px; }
+</style>
+
+<div class="tags-manager-container">
+    <form method="post" action="index.php?page=tags&amp;start=1">
+        <div class="thead1" style="padding: 10px; margin-bottom: 15px; border-radius: 4px; text-align: center;">
+            {$lang['tags']} {$lang['for_subject']} {$SubjectTitle}
+        </div>
+
+        <div class="tags-grid" id="tags_container">
+            {Des::while}{TagSubjectList}
+            <div class="tag-item">
+                <label class="tag-delete-label" title="{$lang['delete']}">
+                    <input name="del_tag[]" type="checkbox" value="{$TagSubjectList['id']}" />
+                    {$lang['delete']}
+                </label>
+                <input name="tag_existing_ids[]" type="hidden" value="{$TagSubjectList['id']}" />
+                <input name="tags[]" type="text" value="{$TagSubjectList['tag']}" class="tag-input-field" placeholder="{$lang['tag']}" />
+            </div>
+            {/Des::while}
+        </div>
+
+        <div class="center_text_align">
+            <input type="button" class="add-tag-btn" onclick="AddNewTagField()" value="+ {$lang['add_more_tag']}" />
+        </div>
+
+        <div class="actions-bar center_text_align">
+            <input type="hidden" name="subjectid" value="{$subjectid}" />
+            <input class="button button_b" name="insert" type="submit" value="{$lang['tags_edit_and_add']}" />
+            <input class="button button_b" style="background:#c0392b" name="remove" type="submit" value="{$lang['tags_remove']}" />
+        </div>
+    </form>
+</div>
+
+<script type="text/javascript">
+function AddNewTagField() {
+    var container = document.getElementById('tags_container');
+    var div = document.createElement('div');
+    div.className = 'tag-item';
+    div.style.backgroundColor = '#fffef0';
+    div.style.borderColor = '#f1c40f';
+
+    div.innerHTML = `
+        <span style="font-size:11px; color:#f39c12; margin-left:8px;">★</span>
+        <input name="tags[]" type="text" class="tag-input-field" placeholder="{$lang['tag']}" onkeydown="handleEnter(event)" />
+    `;
+
+    container.appendChild(div);
+    div.querySelector('input').focus();
+}
+
+// Function to allow adding new tags using the Enter key
+function handleEnter(event) {
+    if (event.key === 'Enter') {
+        event.preventDefault(); // Prevent form submission
+        AddNewTagField(); // Add a new field
+    }
+}
+</script>]]></tags_edit_subject>
 <tags_show_subject><![CDATA[{template}address_bar_part1{/template}
 {$lang['subjects_titles_use_sem_tags']}:
 <b>{$tag}</b>
@@ -13441,7 +13290,7 @@ itemtype="https://schema.org/ListItem">
 {template}address_bar_part2{/template}
 <table class="border wd98 brd1 clpc0 a-center">
 <tr>
-<td class="tcat small_text wd40" colspan="2">
+<td class="tcat small_text wd35" colspan="2">
 {$lang['Subject']} / {$lang['sort_writer']}
 </td>
 <td class="tcat center_text_align wd15">
@@ -13453,7 +13302,7 @@ itemtype="https://schema.org/ListItem">
 <td class="tcat center_text_align resp-susp wd4">
 {$lang['subject_visitor']}
 </td>
-<td class="tcat center_text_align resp-susp wd15">
+<td class="tcat center_text_align resp-susp wd20">
 {$lang['forum']}
 </td>
 </tr>
@@ -13471,21 +13320,30 @@ itemtype="https://schema.org/ListItem">
 <td class="row2 center_text_align wd3">
 <img src="{$LastSubject['icon']}" alt="" />
 </td>
-<td class="row1 wd40">
-<?php $PowerBB->_CONF['template']['while']['LastSubject'][$this->x_loop]['title'] = $PowerBB->functions->CleanVariable($PowerBB->_CONF['template']['while']['LastSubject'][$this->x_loop]['title'],'html'); ?>
-<?php $PowerBB->_CONF['template']['while']['LastSubject'][$this->x_loop]['title'] = $PowerBB->Powerparse->censor_words($PowerBB->_CONF['template']['while']['LastSubject'][$this->x_loop]['title']); ?>			<a href="index.php?page=topic&amp;show=1&amp;id={$LastSubject['subject_id']}{$password}{$LastSubject['id']}">
+<td class="row1 wd35">
+<a href="index.php?page=topic&amp;show=1&amp;id={$LastSubject['id']}">
 {$LastSubject['title']}
 </a>
 <br />
-<?php echo $PowerBB->functions->GetUsernameStyleAndUserId($PowerBB->_CONF['template']['while']['LastSubject'][$this->x_loop]['writer']);?>
+<a href="index.php?page=profile&amp;show=1&amp;id={$LastSubject['writer_id']}">
+{$LastSubject['username_style_cache']}
+</a>
 </td>
 <td class="row1 center_text_align wd15">
-<a href="index.php?page=profile&amp;show=1&amp;username={$LastSubject['last_replier']}">
-{if {$LastSubject['last_replier']}}
-<?php echo $PowerBB->functions->GetUsernameStyleAndUserId($PowerBB->_CONF['template']['while']['LastSubject'][$this->x_loop]['last_replier']);?>
+{if {$LastSubject['last_replier']} !=''}
+<a href="index.php?page=profile&amp;show=1&amp;id={$LastSubject['last_replier_id']}">
+{$LastSubject['last_replier_style']}
+</a>
 {else}
-<?php echo $PowerBB->functions->GetUsernameStyleAndUserId($PowerBB->_CONF['template']['while']['LastSubject'][$this->x_loop]['writer']);?>
-{/if}<br />
+{if {$LastSubject['writer_id']}}
+<a href="index.php?page=profile&amp;show=1&amp;id={$LastSubject['writer_id']}">
+{$LastSubject['username_style_cache']}
+</a>
+{else}
+Guest
+{/if}
+{/if}
+<br />
 <span class="smallfont">
 {$LastSubject['reply_date']}
 </span>
@@ -13496,14 +13354,9 @@ itemtype="https://schema.org/ListItem">
 <td class="row1 center_text_align resp-susp wd4">
 {$LastSubject['visitor']}
 </td>
-<td class="row1 center_text_align resp-susp wd15">
-<?php      	$section_id = $PowerBB->_CONF['template']['while']['LastSubject'][$this->x_loop]['section'];
-$GetForum = $PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['section'] . " WHERE id = '$section_id'");
-$Forum = $PowerBB->DB->sql_fetch_array($GetForum);
-$Forum_title = $Forum['title'];
-$Forum_id = $Forum['id'];
-?>
-<a href="index.php?page=forum&amp;show=1&amp;id=<?php echo $Forum_id; ?>"><span class="smallfont"><?php echo $Forum_title; ?></span></a>
+<td class="row1 center_text_align resp-susp wd20">
+
+<a href="index.php?page=forum&amp;show=1&amp;id={$LastSubject['section_id']}" style="color: #004a77;">{$LastSubject['section_title']}</a>
 </td>
 </tr>
 {/Des::while}
@@ -13531,11 +13384,11 @@ itemtype="https://schema.org/ListItem">
 {template}address_bar_part2{/template}
 <table class="border wd98 brd1 clpc0 a-center">
 <tr>
-<td class="tcat center_text_align wd30" colspan="2">
-{$lang['subject_title']}
+<td class="tcat small_text wd35" colspan="2">
+{$lang['Subject']} / {$lang['sort_writer']}
 </td>
-<td class="tcat center_text_align wd20">
-{$lang['subject_writer']}
+<td class="tcat center_text_align wd15">
+{$lang['write_date']}
 </td>
 <td class="tcat center_text_align resp-susp wd4">
 {$lang['reply_num']}
@@ -13543,10 +13396,7 @@ itemtype="https://schema.org/ListItem">
 <td class="tcat center_text_align resp-susp wd4">
 {$lang['subject_visitor']}
 </td>
-<td class="tcat center_text_align resp-susp wd15">
-{$lang['write_date']}
-</td>
-<td class="tcat center_text_align resp-susp wd25">
+<td class="tcat center_text_align resp-susp wd20">
 {$lang['forum']}
 </td>
 </tr>
@@ -13554,73 +13404,62 @@ itemtype="https://schema.org/ListItem">
 </table>
 <table class="border wd98 brd1 clpc0 a-center">
 <tr>
-<td class="row1 center_text_align wd97" colspan="7">
+<td class="row1 center_text_align wd97" colspan="6">
 {$lang['no_subjects_today']}
 </td>
 </tr>
 {else}
 {Des::while}{subject_list}
 <tr>
-<td class="row1 center_text_align wd3">
+<td class="row2 center_text_align wd3">
 <img src="{$subject_list['icon']}" alt="" />
 </td>
-<td class="row2 wd30">
-<?php $PowerBB->_CONF['template']['while']['subject_list'][$this->x_loop]['title'] = $PowerBB->functions->CleanVariable($PowerBB->_CONF['template']['while']['subject_list'][$this->x_loop]['title'],'html'); ?>
-<?php $PowerBB->_CONF['template']['while']['subject_list'][$this->x_loop]['title'] = $PowerBB->Powerparse->censor_words($PowerBB->_CONF['template']['while']['subject_list'][$this->x_loop]['title']); ?>
-<a href="index.php?page=topic&amp;show=1&amp;id={$subject_list['id']}{$password}">
+<td class="row1 wd35">
+<a href="index.php?page=topic&amp;show=1&amp;id={$subject_list['id']}">
 {$subject_list['title']}
 </a>
-{if {$subject_list['close']}}
-{$lang['subject_close']}
-{/if}
 <br />
-<span class="small">{$subject_list['subject_describe']}</span>
+<a href="index.php?page=profile&amp;show=1&amp;id={$subject_list['writer_id']}">
+{$subject_list['username_style_cache']}
+</a>
 </td>
-<td class="row1 center_text_align wd20">
-<?php echo $PowerBB->functions->GetUsernameStyleAndUserId($PowerBB->_CONF['template']['while']['subject_list'][$this->x_loop]['writer']);?>
+<td class="row1 center_text_align wd15">
+{if {$subject_list['last_replier_style']}}
+<a href="index.php?page=profile&amp;show=1&amp;id={$subject_list['last_replier_id']}">
+{$subject_list['last_replier_style']}
+</a>
+{else}
+<a href="index.php?page=profile&amp;show=1&amp;id={$subject_list['writer_id']}">
+{$subject_list['username_style_cache']}
+</a>
+{$subject_list['writer']}
+{/if}
+
 <br />
 <span class="smallfont">
-{$subject_list['write_date']}
+{$subject_list['reply_date']}
 </span>
 </td>
-<td class="row2 center_text_align resp-susp wd4">
+<td class="row1 center_text_align resp-susp wd4">
 {$subject_list['reply_number']}
 </td>
 <td class="row1 center_text_align resp-susp wd4">
 {$subject_list['visitor']}
 </td>
-<td class="row2 center_text_align resp-susp wd15">
-{if {$subject_list['reply_number']} <= 0}
-{$lang['no_replys']}
-{else}
-{if {$subject_list['last_replier']} == ''}
-{$lang['Guest_']}
-{else}
-<?php echo $PowerBB->functions->GetUsernameStyleAndUserId($PowerBB->_CONF['template']['while']['subject_list'][$this->x_loop]['last_replier']);?>
-{/if}
-<br />
-<span class="smallfont">
-{$subject_list['reply_date']}
-</span>
-{/if}
-</td>
-<td class="row1 center_text_align resp-susp wd25">
-<?php      	$section_id = $PowerBB->_CONF['template']['while']['subject_list'][$this->x_loop]['section'];
-$GetForum = $PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['section'] . " WHERE id = '$section_id'");
-$Forum = $PowerBB->DB->sql_fetch_array($GetForum);
-$Forum_title = $Forum['title'];
-$Forum_id = $Forum['id'];
-?>
-<a href="index.php?page=forum&amp;show=1&amp;id=<?php echo $Forum_id; ?>"><?php echo $Forum_title; ?></a>
+<td class="row1 center_text_align resp-susp wd20">
+
+<a href="index.php?page=forum&amp;show=1&amp;id={$subject_list['section_id']}" style="color: #004a77;">{$subject_list['section_title']}</a>
 </td>
 </tr>
 {/Des::while}
-{/if}&nbsp;
 </table>
-<table class="wd95 brd1 clpc0" style="border-collapse: collapse">
+<table style="border-collapse: collapse" class="center_text_align wd98 brd0">
 <tr>
-<td class="left_text_align">{$pager}</td>
+<td class="center_text_align">
+{$pager}
+</td>
 </tr>
+{/if}
 </table>
 <br />
 {template}jump_forums_list{/template}
@@ -14861,228 +14700,165 @@ img.src = $('#url_input').val();
 </div>
 <br />
 <div class="center_text_align">
-<table class="border wd98 brd0 clpc0 a-center">
+<table class="border wd98 brd1 clpc0 a-center">
 <tr class="center_text_align">
-<td class="tcat" colspan="7">
+<td class="tcat" colspan="6">
 {$lang['Last_subject_that_you_type']}
 </td>
 </tr>
-</table></div>
-<div class="center_text_align">
-<table class="border wd98 brd1 clpc0 a-center">
 <tr>
-<td class="thead center_text_align wd60" colspan="3">
-{$lang['subject_title']}
+<td class="tcat small_text wd35" colspan="2">
+{$lang['Subject']} / {$lang['sort_writer']}
 </td>
-<td class="thead center_text_align wd15">
-{$lang['subject_writer']}
-</td>
-<td class="thead center_text_align wd4">
-{$lang['reply_num']}
-</td>
-<td class="thead center_text_align wd4">
-{$lang['subject_visitor']}
-</td>
-<td class="thead center_text_align wd15">
+<td class="tcat center_text_align wd10">
 {$lang['write_date']}
 </td>
-</tr>
-{if !{$No_Subjects}}
-{Des::while}{subject_list}
-<?php
-$subject_id = $PowerBB->_CONF['template']['while']['subject_list'][$this->x_loop]['id'];
-$GetReplyNumberSubject = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['reply'] . " WHERE subject_id = '$subject_id' LIMIT 1"));
-$GetlastReplySubject = $PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['reply'] . " WHERE subject_id = '$subject_id' ORDER BY write_time DESC");
-$LastReplySubject= $PowerBB->DB->sql_fetch_array($GetlastReplySubject);
-?>
-<tr>		<td class="row2 center_text_align wd3">
-<img alt="" src="{$image_path}/dot_folder.gif"
-title="{$lang['subject_personal']}" />
+<td class="tcat center_text_align resp-susp wd4">
+{$lang['reply_num']}
 </td>
-<td class="row1 center_text_align wd3">
+<td class="tcat center_text_align resp-susp wd4">
+{$lang['subject_visitor']}
+</td>
+<td class="tcat center_text_align resp-susp wd20">
+{$lang['forum']}
+</td>
+</tr>
+{if {$No_Subjects}}
+</table>
+<table class="border wd98 brd1 clpc0 a-center">
+<tr>
+<td class="row1 center_text_align wd97" colspan="6">
+{$lang['no_replies_today']}
+</td>
+</tr>
+{else}
+{Des::while}{subject_list}
+<tr>
+<td class="row2 center_text_align wd3">
 <img src="{$subject_list['icon']}" alt="" />
 </td>
-<td class="row2 wd35">
-<a target="_blank" href="index.php?page=topic&amp;show=1&amp;id={$subject_list['id']}{$password}">
-<img class="brd0" alt="{$lang['opin_subject']}"
-src="{$image_path}/open.gif" /></a>
-{if {$subject_list['poll_subject']} == 1}
-{$lang['poll_subject']}
-{/if}
-<?php $PowerBB->_CONF['template']['while']['subject_list'][$this->x_loop]['title'] = str_replace('&amp;','&',$PowerBB->_CONF['template']['while']['subject_list'][$this->x_loop]['title']); ?>
-<span class="title_font">
-<span dir="{$_CONF['info_row']['content_dir']}">
-<b>{$subject_list['prefix_subject']}</b>
-</span>
-<a href="index.php?page=topic&amp;show=1&amp;id={$subject_list['id']}{$password}">
-{$subject_list['title']}</a>
-</span>
-<?php if ($GetReplyNumberSubject > $PowerBB->_CONF['template']['_CONF']['info_row']['perpage']) {  ?>
-{template}forum_perpage_reply{/template}
-<img src="{$image_path}/multipage.gif"
-alt="{$lang['subject_multipage']}"
-title="{$lang['subject_multipage']}" class="left_text_align" />
-{/if}
-{if {$subject_list['attach_subject']} == 1}
-<img src="{$image_path}/attach.gif"
-alt="{$lang['subject_attach']}"
-title="{$lang['subject_attach']}" class="left_text_align" />
-{/if}
-{if {$subject_list['review_reply']}  > 0}
-<img alt="" src="{$image_path}/moderated_small.gif"
-alt="{$subject_list['review_reply']}
-{$lang['Posts_was_observed']}"
-title="{$subject_list['review_reply']}
-{$lang['Posts_was_observed']}" class="left_text_align" />
-{/if}
-{if {$subject_list['rating']} > {$_CONF['info_row']['show_rating_num_max']}}
-<img alt="" src="{$image_path}/rating/rating_5.gif"
-title="{$lang['Rate_Topic']}
-{$subject_list['rating']} " class="left_text_align" />
-{/if}			{if {$subject_list['close']}}
-{$lang['subject_close']}
-{/if}
-{if {$subject_list['delete_topic']}}
-{$lang['subject_delete']}
-{/if}
-{if {$subject_list['special']}}
-{$lang['subject_special']}
-<span class="l-left">
-<img class="brd0" src="{$image_path}/star.gif"
-alt="{$lang['s_special']}" /> </span>
-{/if}
-{if {$_CONF['info_row']['subject_describe_show']} == 1}
+<td class="row1 wd35">
+<a href="index.php?page=topic&amp;show=1&amp;id={$subject_list['id']}">
+{$subject_list['title']}
+</a>
 <br />
-<span class="smallfont">{$subject_list['subject_describe']}</span>
-{/if}
+<a href="index.php?page=profile&amp;show=1&amp;id={$subject_list['writer_id']}">
+{$subject_list['username_style_cache']}
+</a>
 </td>
-<td class="row1 center_text_align wd15">
-{if {$subject_list['writer']} == 'Guest'}
-<?php echo $PowerBB->_CONF['template']['while']['subject_list'][$this->x_loop]['writer'] = str_ireplace('Guest',$PowerBB->_CONF['template']['lang']['Guest_'],$PowerBB->_CONF['template']['while']['subject_list'][$this->x_loop]['writer']); ?>
+<td class="row1 center_text_align wd10">
+{if {$subject_list['last_replier_style']}}
+<a href="index.php?page=profile&amp;show=1&amp;id={$subject_list['last_replier_id']}">
+{$subject_list['last_replier_style']}
+</a>
 {else}
-<a href="index.php?page=profile&amp;show=1&amp;username={$subject_list['writer']}">
-{$subject_list['writer']}</a>
+<a href="index.php?page=profile&amp;show=1&amp;id={$subject_list['writer_id']}">
+{$subject_list['username_style_cache']}
+</a>
+{$subject_list['writer']}
 {/if}
+
 <br />
 <span class="smallfont">
-{$subject_list['write_date']}
+{$subject_list['reply_date']}
 </span>
 </td>
-<td class="row2 center_text_align wd4">
-<?php if ($GetReplyNumberSubject == '0'){ ?>
-<?php echo $GetReplyNumberSubject ?>
-{else}
-<a onclick="window.open('index.php?page=misc&amp;whoposted=1&amp;subject_id={$subject_list['id']}','mywindow','location=1,status=1,scrollbars=1,width=155,height=300')"><u><span style="color:#000080;"><?php echo $GetReplyNumberSubject ?></span></u></a>
-{/if}
+<td class="row1 center_text_align resp-susp wd4">
+{$subject_list['reply_number']}
 </td>
-<td class="row1 center_text_align wd4">
+<td class="row1 center_text_align resp-susp wd4">
 {$subject_list['visitor']}
 </td>
-<td class="row2 center_text_align wd15">
-<?php if ($GetReplyNumberSubject <= '0'){ ?>
-{$lang['no_replys']}
-{else}
-<?php if ($LastReplySubject['writer'] == 'Guest') {?>
-<?php echo $LastReplySubject['writer'] = str_ireplace('Guest',$PowerBB->_CONF['template']['lang']['Guest_'],$LastReplySubject['writer']); ?>
-{else}
-<a href="index.php?page=profile&amp;show=1&amp;username=<?php echo $LastReplySubject['writer'] ?>">
-<?php echo $LastReplySubject['writer'] ?></a>
-{/if}
-<br />
-<span class="smallfont">
-<?php echo $PowerBB->functions->_date($LastReplySubject['write_time']) ?>
-</span>
-{/if}
+<td class="row1 center_text_align resp-susp wd20">
+
+<a href="index.php?page=forum&amp;show=1&amp;id={$subject_list['section_id']}" style="color: #004a77;">{$subject_list['section_title']}</a>
 </td>
 </tr>
 {/Des::while}
-{else}
-<tr class="center_text_align">
-<td class="row1" colspan="7">
-{$lang['No_Subjects']}
-</td>
-</tr>
-{/if}
 </table>
+{/if}
 </div>
 <br />
-<div class="center_text_align">
-<table class="border wd98 brd0 clpc0 a-center">
+
+
+<table class="border wd98 brd1 clpc0 a-center">
 <tr class="center_text_align">
 <td class="tcat" colspan="6">
 {$lang['Last_post_that_you_type']}
 </td>
 </tr>
 <tr>
-<td class="thead small_text wd25" colspan="2">
+<td class="tcat small_text wd35" colspan="2">
 {$lang['Subject']} / {$lang['sort_writer']}
 </td>
-<td class="thead center_text_align wd15">
+<td class="tcat center_text_align wd10">
 {$lang['write_date']}
 </td>
-<td class="thead center_text_align wd4">
+<td class="tcat center_text_align resp-susp wd4">
 {$lang['reply_num']}
 </td>
-<td class="thead center_text_align wd4">
+<td class="tcat center_text_align resp-susp wd4">
 {$lang['subject_visitor']}
 </td>
-<td class="thead center_text_align wd15">
+<td class="tcat center_text_align resp-susp wd20">
 {$lang['forum']}
 </td>
 </tr>
+{if {$No_posts}}
+</table>
+<table class="border wd98 brd1 clpc0 a-center">
+<tr>
+<td class="row1 center_text_align wd97" colspan="6">
+{$lang['no_replies_today']}
+</td>
+</tr>
+{else}
 {Des::while}{ReplyList}
 <tr>
 <td class="row2 center_text_align wd3">
 <img src="{$ReplyList['icon']}" alt="" />
 </td>
-<td class="row1 wd25">
-<?php
-$subject_id = $PowerBB->_CONF['template']['while']['ReplyList'][$this->x_loop]['subject_id'];
-$GetSubject = $PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['subject'] . " WHERE id = '$subject_id'");
-$Subject = $PowerBB->DB->sql_fetch_array($GetSubject);
-?>
-<a href="index.php?page=topic&amp;show=1&amp;id={$ReplyList['subject_id']}">
+<td class="row1 wd35">
+<a href="index.php?page=topic&amp;show=1&amp;id={$ReplyList['id']}">
 {$ReplyList['title']}
 </a>
 <br />
-<?php echo $PowerBB->functions->GetUsernameStyleAndUserId($Subject['writer']);?>
+<a href="index.php?page=profile&amp;show=1&amp;id={$ReplyList['writer_id']}">
+{$ReplyList['username_style_cache']}
+</a>
 </td>
-<td class="row1 center_text_align wd15">
-<?php
-$section_id = $PowerBB->_CONF['template']['while']['ReplyList'][$this->x_loop]['section'];
-$GetForum = $PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['section'] . " WHERE id = '$section_id'");
-$Forum = $PowerBB->DB->sql_fetch_array($GetForum);
-$Forum_title = $Forum['title'];
-$Forum_id = $Forum['id'];
-?>
-<?php echo $PowerBB->functions->GetUsernameStyleAndUserId($Subject['last_replier']);?>
+<td class="row1 center_text_align wd10">
+{if {$ReplyList['last_replier_style']}}
+<a href="index.php?page=profile&amp;show=1&amp;id={$ReplyList['last_replier_id']}">
+{$ReplyList['last_replier_style']}
+</a>
+{else}
+<a href="index.php?page=profile&amp;show=1&amp;id={$ReplyList['writer_id']}">
+{$ReplyList['username_style_cache']}
+</a>
+{$ReplyList['writer']}
+{/if}
+
 <br />
 <span class="smallfont">
 {$ReplyList['reply_date']}
 </span>
 </td>
-<td class="row1 center_text_align wd4">
-<?php echo $Subject['reply_number']; ?>
+<td class="row1 center_text_align resp-susp wd4">
+{$ReplyList['reply_number']}
 </td>
-<td class="row1 center_text_align wd4">
-<?php echo $Subject['visitor']; ?>
+<td class="row1 center_text_align resp-susp wd4">
+{$ReplyList['visitor']}
 </td>
-<td class="row1 center_text_align wd15">
-<a href="index.php?page=forum&amp;show=1&amp;id={$ReplyList['section']}">
-<?php echo $Forum_title; ?>
-</a>
+<td class="row1 center_text_align resp-susp wd20">
+
+<a href="index.php?page=forum&amp;show=1&amp;id={$ReplyList['section_id']}" style="color: #004a77;">{$ReplyList['section_title']}</a>
 </td>
 </tr>
 {/Des::while}
-{if {$No_posts}}
-<tr>
-<td class="row1 center_text_align wd97" colspan="6">
-{$lang['no_post']}
-</td>
-</tr>
-{/if}
 </table>
-</div>
+{/if}
+
 
 </dd>
 <dd class="usercp_right">{template}usercp_menu{/template}</dd>
@@ -15625,18 +15401,13 @@ eval("form.elements[" + i + "].checked = form.elements[0].checked");
 <tr>
 <td class="va-t">
 {if {$VisitorMessageList['postusername']}}
-<?php
-$userid = $PowerBB->_CONF['template']['while']['VisitorMessageList'][$this->x_loop]['postuserid'];
-$GetAvatar = $PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['member'] . " WHERE id = '$userid'");
-$Avatar = $PowerBB->DB->sql_fetch_array($GetAvatar);
-$avater_path = $Avatar['avater_path'];
-?>
-<?php if ($avater_path){ ?>
+{if {$VisitorMessageList['postusername_avatar_path']}}
 <a class="UserPhotoLink" href="index.php?page=profile&amp;show=1&amp;id={$VisitorMessageList['postuserid']}">
-<img src='<?php echo $avater_path; ?>' alt="Photo" class="UserPhoto UserPhoto_mini" />
+<img src={$VisitorMessageList['postusername_avatar_path']} alt="Photo" class="UserPhoto UserPhoto_mini" />
 </a>
 {/if}
-<?php if ($avater_path ==''){ ?>
+
+{if {$VisitorMessageList['postusername_avatar_path']} ==''}
 <a class="UserPhotoLink" href="index.php?page=profile&amp;show=1&amp;id={$VisitorMessageList['postuserid']}">
 <img src="{$image_path}/
 {$_CONF['info_row']['default_avatar']}" alt="Photo" class="UserPhoto UserPhoto_mini brd0" />
@@ -15652,7 +15423,7 @@ $avater_path = $Avatar['avater_path'];
 <td class="va-t">
 {if {$VisitorMessageList['postusername']}}
 <a href="index.php?page=profile&amp;show=1&amp;id={$VisitorMessageList['postuserid']}">&nbsp;
-<?php echo $PowerBB->functions->GetwriterGroupStyle($PowerBB->_CONF['template']['while']['VisitorMessageList'][$this->x_loop]['postusername'],$Avatar['usergroup']);?></a>
+{$VisitorMessageList['postusername_style']}
 {else}
 {$lang['Guest_']}
 {/if}
@@ -15825,8 +15596,7 @@ doc.src = "includes/captcha.php" + "?act=" + clicks;
 
 {/if}
 {/if}
-{/if}
-]]></visitor_messag>
+{/if}]]></visitor_messag>
 <visitor_message_js><![CDATA[<link rel="stylesheet" href="{$ForumAdress}look/sceditor/minified/themes/default.min.css" id="theme-style" />
 <script src="{$ForumAdress}look/sceditor/minified/formats/bbcode.js"></script>
 <script src="{$ForumAdress}look/sceditor/minified/PBB_bbcode.js"></script>
@@ -17787,63 +17557,73 @@ $.post("index.php?page=usercp&options=1&mention=1&start=1",data,function Success
 <br />
 ]]></usercp_mentions>
 <chat_window><![CDATA[{Des::while}{Messages}
-<div class="row1" dir="{$_CONF['info_row']['content_dir']}" style="float: {$_CONF['info_row']['content_dir']};">
-<a target="_blank" href="index.php?page=profile&amp;show=1&amp;id={$Messages['user_id']}">
-{if {$_CONF['info_row']['allow_avatar']}}
-<div class="UserPhoto_chat">
-<?php
-if(empty($PowerBB->_CONF['template']['while']['Messages'][$this->x_loop]['avater_path']))
-{
-$PowerBB->_CONF['template']['while']['Messages'][$this->x_loop]['avater_path'] = $PowerBB->functions->GetForumAdress().$PowerBB->_CONF['template']['image_path'].'/'.$PowerBB->_CONF['info_row']['default_avatar'];
-}
-?>
-<img src="{$Messages['avater_path']}" srcset="{$Messages['avater_path']} 2x" alt="avater" class="avatar-u1-s" width="22" height="20" loading="lazy">
-</div>
-{/if}
-<div class="ln_chat">{$Messages['username_style_cache']}</div>
-</a>
-<div class="ln_chat">
-{if {$_CONF['info_row']['chat_hide_country']}}
-{if {$Messages['user_country']} !=''}
-<?php $PowerBB->_CONF['template']['while']['Messages'][$this->x_loop]['user_country'] = $PowerBB->Powerparse->feltr_words($PowerBB->_CONF['template']['while']['Messages'][$this->x_loop]['user_country']); ?>
-<span class="smallfont">{$lang['from_country']}
-{$Messages['user_country']} </span>
-{/if}
-{/if}
-:
-<?php $PowerBB->_CONF['template']['while']['Messages'][$this->x_loop]['message'] = $PowerBB->Powerparse->feltr_words($PowerBB->_CONF['template']['while']['Messages'][$this->x_loop]['message']); ?>
-<?php $PowerBB->_CONF['template']['while']['Messages'][$this->x_loop]['message'] = $PowerBB->Powerparse->bb_common($PowerBB->_CONF['template']['while']['Messages'][$this->x_loop]['message']); ?>
-<?php $PowerBB->_CONF['template']['while']['Messages'][$this->x_loop]['message'] = $PowerBB->Powerparse->Simplereplace($PowerBB->_CONF['template']['while']['Messages'][$this->x_loop]['message']); ?>
-<?php $PowerBB->Powerparse->replace_smiles($PowerBB->_CONF['template']['while']['Messages'][$this->x_loop]['message']); ?>
-<?php $PowerBB->_CONF['template']['while']['Messages'][$this->x_loop]['message'] = $PowerBB->Powerparse->censor_words($PowerBB->_CONF['template']['while']['Messages'][$this->x_loop]['message']); ?>
-{$Messages['message']}
-</div>
-</div>
-{/Des::while}]]></chat_window>
-<chat_online><![CDATA[<li class="row_sidebar row1">
-<i class="fa fa-users" aria-hidden="true"></i> {$lang['Number_Members']}: {$online_chat_number}
-<hr id="null">
-</li>
- <?php
-$x = 1;
-?>
-{Des::while}{ListonlineChat}
-<li class="row_sidebar row1 user">
-{if {$ListonlineChat['user_id']} == '-1'}
-{if {$ListonlineChat['is_bot']} == '1'}
-{$ListonlineChat['bot_name']}
-{else}
-<span class="fa fa-user"></span>
-<?php
-$PowerBB->_CONF['template']['while']['ListonlineChat'][$this->x_loop]['username_style'] = str_ireplace('Guest',$PowerBB->_CONF['template']['lang']['Guest_'],$PowerBB->_CONF['template']['while']['ListonlineChat'][$this->x_loop]['username_style']);
+<div style="padding: 5px 8px 2px 8px; vertical-align: top; font-size: 13px; clear: both;">
+    <span style="display: inline-flex; align-items: center; gap: 5px;">
+        {if {$_CONF['info_row']['allow_avatar']}}    
+        <?php
+        if(empty($PowerBB->_CONF['template']['while']['Messages'][$this->x_loop]['avater_path']))
+        {
+            $PowerBB->_CONF['template']['while']['Messages'][$this->x_loop]['avater_path'] = $PowerBB->functions->GetForumAdress().$PowerBB->_CONF['template']['image_path'].'/'.$PowerBB->_CONF['info_row']['default_avatar'];
+        }
+        ?>        
+            <img src="{$Messages['avater_path']}" style="width:20px; height:20px; border-radius:3px; vertical-align: middle;">
+        {/if}
+        <a target="_blank" href="index.php?page=profile&id={$Messages['user_id']}" style="font-weight: bold; text-decoration: none;">
+            {$Messages['username_style_cache']}
+        </a> 
+    </span>   
+</div>        
 
-echo $PowerBB->_CONF['template']['while']['ListonlineChat'][$this->x_loop]['username_style'].$x;
-$x += 1;
-?>
-{/if}
-{else}
-<span class="fa fa-user"></span><a target="_blank" href="index.php?page=profile&amp;show=1&amp;id={$ListonlineChat['user_id']}">{$ListonlineChat['username_style']}</a></td>
-{/if}
+<div style="padding: 2px 8px 8px 8px; font-size: 13px; border-bottom: 1px solid #f2f2f2; clear: both;">
+    <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 15px; width: 100%;">
+        
+        <span style="color: #333; word-wrap: break-word; overflow-wrap: break-word; max-width: 80%;">
+            <?php 
+                $msgContent = $PowerBB->_CONF['template']['while']['Messages'][$this->x_loop]['message'];
+                $msgContent = $PowerBB->Powerparse->feltr_words($msgContent);
+                $msgContent = $PowerBB->Powerparse->bb_common($msgContent);
+                $msgContent = $PowerBB->Powerparse->Simplereplace($msgContent);   
+                $PowerBB->Powerparse->replace_smiles($msgContent);
+                echo $msgContent;
+            ?>
+        </span> 
+
+        <span style="color: #999; white-space: nowrap; font-size: 11px; align-self: center;">
+            <small>
+                <?php echo $PowerBB->functions->time_ago($PowerBB->_CONF['template']['while']['Messages'][$this->x_loop]['date']); ?>
+            </small>
+        </span>
+
+    </div>    
+</div>  
+{/Des::while}]]></chat_window>
+<chat_online><![CDATA[<div style="padding: 8px; background: #eef2f5; border-bottom: 1px solid #ddd; font-weight: bold; font-size: 12px;">
+    <i class="fa fa-users"></i> {$lang['Number_Members']}: {$online_chat_number}
+</div>
+
+<ul style="list-style: none; padding: 0; margin: 0;">
+<?php $x = 1; ?>
+{Des::while}{ListonlineChat}
+<li style="padding: 4px 10px; border-bottom: 1px solid #f0f0f0; font-size: 13px; display: flex; align-items: center; gap: 8px;">
+    {if {$ListonlineChat['user_id']} == '-1'}
+        {if {$ListonlineChat['is_bot']} == '1'}
+            <i class="fa fa-android" style="color: #4caf50;"></i> <b>{$ListonlineChat['bot_name']}</b>
+        {else}
+            <i class="fa fa-user-secret" style="color: #999;"></i> 
+            <?php
+            $guestStyle = $PowerBB->_CONF['template']['while']['ListonlineChat'][$this->x_loop]['username_style'];
+            $guestStyle = str_ireplace('Guest', $PowerBB->_CONF['template']['lang']['Guest_'], $guestStyle);
+            echo $guestStyle . $x;
+            $x++;
+            ?>
+        {/if}
+    {else}
+        <i class="fa fa-user" style="color: #185886; font-size: 11px;"></i>
+        <a target="_blank" href="index.php?page=profile&id={$ListonlineChat['user_id']}" style="text-decoration: none; font-weight: 500;">
+            {$ListonlineChat['username_style']}
+        </a>
+    {/if}
 </li>
-{/Des::while}]]></chat_online>
+{/Des::while}
+</ul>]]></chat_online>
 </templategroup>

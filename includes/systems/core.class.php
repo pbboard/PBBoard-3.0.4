@@ -113,6 +113,25 @@ class PowerBBCore
 		return $rows;
   	 }
 
+	function GetListAdvanced($param,$table,$join_primary_letter)
+	{
+	    if (!isset($param) || !is_array($param)) {
+	        $param = array();
+	    }
+
+	    if (empty($param['select'])) {
+	        $param['select'] = ''.$join_primary_letter.'.*';
+	    }
+
+	    if (empty($param['from'])) {
+	        $param['from'] = $PowerBB->prefix.$table . ' AS '.$join_primary_letter.'';
+	    }
+
+        $rows = $this->Engine->records->GetList($param);
+
+	    return $rows;
+	}
+
 	/**
 	 * Set the correct Core for member or user
 	 *

@@ -1,4 +1,4 @@
-/*
+﻿/*
   jQuery Colorbox language configuration
 	language: Spanish (es)
 	translated by: migolo

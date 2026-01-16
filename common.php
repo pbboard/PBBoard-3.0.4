@@ -11,8 +11,7 @@ $page = empty($_GET['page']) ? 'index' : $_GET['page'];
 if ($_SERVER['REQUEST_METHOD'] == 'POST')
 {
 
-	if ($page != 'chat_message'
-	OR !defined('IN_ADMIN'))
+	if ($page != 'chat_message' AND $page != 'importer' AND !defined('IN_ADMIN') AND !defined('FAST_PROCESS'))
 	{
 	   // Stop Requests Flood
 		if($_SESSION['csrf_2'] > time() - 3)
@@ -183,7 +182,7 @@ require_once('pbboard.class.php');
 
 // The master object
 $PowerBB = new PowerBB;
-
+global $PowerBB;
 //////////
 	if (!defined('INSTALL'))
 	{
@@ -216,7 +215,6 @@ class PowerBBLocalCommon
  		$PowerBB->_CONF['template']['while']		=	array();
  		$PowerBB->_CONF['template']['foreach']	=	array();
  		$PowerBB->_CONF['user_session_login']	=	false;
-
  		//////////
  		// Make life easy for developers :)
  		//$PowerBB->DB->SetDebug(true);
@@ -238,4 +236,5 @@ $local_common->run();
 $common = new PowerBBCommon();
 $common->run();
 //////////
+
 ?>

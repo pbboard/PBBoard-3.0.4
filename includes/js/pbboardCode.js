@@ -1,3 +1,20 @@
+	function copyCode(button) {
+	    const container = button.closest('.codediv-wrapper');
+	    const codeElement = container.querySelector('code');
+	    const text = codeElement.innerText;
+	    navigator.clipboard.writeText(text).then(() => {
+	        const originalText = button.innerText;
+	        button.innerText = "تم النسخ!";
+	        button.classList.add('copied');
+	        setTimeout(() => {
+	            button.innerText = originalText;
+	            button.classList.remove('copied');
+	        }, 2000);
+	    }).catch(err => {
+	        console.error('فشل النسخ: ', err);
+	    });
+	}
+
 function set_smile(X)
 {var form=document.topic.text;form.value=form.value+" "+X+" ";form.focus();}
 function stopError(){return true;}

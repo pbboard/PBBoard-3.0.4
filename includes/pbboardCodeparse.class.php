@@ -90,19 +90,19 @@ class PowerBBCodeParse
 		$regexcode_css['[css]'] = '#\[css\](.*)\[/css\]#siU';
 		$string = preg_replace_callback($regexcode_css, function($matchescss) {
 		$matchescss[1] = str_replace("&amp;#39;", "'", $matchescss[1]);
-		return '<div class="maxy"></div><div class="codediv">CSS</div><pre><code class="language-css">'.$matchescss[1].'</code></pre><div class="maxy"></div>';
+		return '<div class="maxy"><div class="codediv-wrapper" style="position: relative; border: 1px solid #ddd; margin-bottom: 10px;"><div class="codediv">CSS <button class="copy-btn" style="float: '.$PowerBB->_CONF['info_row']['content_dir'].';background: #3090d0;color: white;border: none;padding: 1px 8px;font-family: '.'Droid Arabic Kufi'.';margin-left: 32px;margin-top: -2px;font-size: 9px;cursor: pointer;border-radius: 6px;transition: background 0.3s;" onclick="copyCode(this)">نسخ الكود</button></div><pre><code class="language-php">'.$matchescss[1].'</code></pre></div><div class="maxy"></div>';
 		}, $string);
 
 		$regexcode_xml['[xml]'] = '#\[xml\](.*)\[/xml\]#siU';
 		$string = preg_replace_callback($regexcode_xml, function($matchesxml) {
 		$matchesxml[1] = str_replace("&amp;#39;", "'", $matchesxml[1]);
-		return '<div class="maxy"></div><div class="codediv">XML</div><pre><code class="language-xml">'.$matchesxml[1].'</code></pre><div class="maxy"></div>';
+		return '<div class="maxy"><div class="codediv-wrapper" style="position: relative; border: 1px solid #ddd; margin-bottom: 10px;"><div class="codediv">XML <button class="copy-btn" style="float: '.$PowerBB->_CONF['info_row']['content_dir'].';background: #3090d0;color: white;border: none;padding: 1px 8px;font-family: '.'Droid Arabic Kufi'.';margin-left: 32px;margin-top: -2px;font-size: 9px;cursor: pointer;border-radius: 6px;transition: background 0.3s;" onclick="copyCode(this)">نسخ الكود</button></div><pre><code class="language-php">'.$matchesxml[1].'</code></pre></div><div class="maxy"></div>';
 		}, $string);
 
 		$regexcode_sql['[sql]'] = '#\[sql\](.*)\[/sql\]#siU';
 		$string = preg_replace_callback($regexcode_sql, function($matchessql) {
 		$matchessql[1] = str_replace("&amp;#39;", "'", $matchessql[1]);
-		return '<div class="maxy"></div><div class="codediv">SQL</div><pre><code class="language-sql">'.$matchessql[1].'</code></pre><div class="maxy"></div>';
+		return '<div class="maxy"><div class="codediv-wrapper" style="position: relative; border: 1px solid #ddd; margin-bottom: 10px;"><div class="codediv">SQL <button class="copy-btn" style="float: '.$PowerBB->_CONF['info_row']['content_dir'].';background: #3090d0;color: white;border: none;padding: 1px 8px;font-family: '.'Droid Arabic Kufi'.';margin-left: 32px;margin-top: -2px;font-size: 9px;cursor: pointer;border-radius: 6px;transition: background 0.3s;" onclick="copyCode(this)">نسخ الكود</button></div><pre><code class="language-php">'.$matchessql[1].'</code></pre></div><div class="maxy"></div>';
 		}, $string);
 
  		$brackets = (strpos($string,'[') !== false) and (strpos($string,']') !== false);
@@ -369,7 +369,7 @@ class PowerBBCodeParse
 					}
 				}
 
-			return '<div class="maxy"></div><div class="codediv">CODE</div><pre><code class="language-php">'.$matches[1].'</code></pre><div class="maxy"></div>';
+            return '<div class="maxy"><div class="codediv-wrapper" style="position: relative; border: 1px solid #ddd; margin-bottom: 10px;"><div class="codediv">CODE <button class="copy-btn" style="float: '.$PowerBB->_CONF['info_row']['content_dir'].';background: #3090d0;color: white;border: none;padding: 1px 8px;font-family: '.'Droid Arabic Kufi'.';margin-left: 32px;margin-top: -2px;font-size: 9px;cursor: pointer;border-radius: 6px;transition: background 0.3s;" onclick="copyCode(this)">نسخ الكود</button></div><pre><code class="language-php">'.$matches[1].'</code></pre></div><div class="maxy"></div>';
 			}, $string);
 
 			$regexcode['[php]'] = '#\[php\](.*)\[/php\]#siU';
@@ -377,7 +377,7 @@ class PowerBBCodeParse
 			$matches[1] = htmlspecialchars(base64_decode($matches[1]));
 			$matches[1] = $this->htmlspecialchars_uni($matches[1]);
            // $matches[1] = str_replace('&amp;', '&amp;amp;', $matches[1]);
-			return '<div class="maxy"></div><div class="codediv">PHP</div><pre><code class="language-php">'.$matches[1].'</code></pre><div class="maxy"></div>';
+            return '<div class="maxy"><div class="codediv-wrapper" style="position: relative; border: 1px solid #ddd; margin-bottom: 10px;"><div class="codediv">PHP <button class="copy-btn" style="float: '.$PowerBB->_CONF['info_row']['content_dir'].';background: #3090d0;color: white;border: none;padding: 1px 8px;font-family: '.'Droid Arabic Kufi'.';margin-left: 32px;margin-top: -2px;font-size: 9px;cursor: pointer;border-radius: 6px;transition: background 0.3s;" onclick="copyCode(this)">نسخ الكود</button></div><pre><code class="language-php">'.$matches[1].'</code></pre></div><div class="maxy"></div>';
 			}, $string);
 
 			$regexcode_html['[html]'] = '#\[html\](.*)\[/html\]#siU';
@@ -386,7 +386,7 @@ class PowerBBCodeParse
 			$matches[1] = $this->htmlspecialchars_uni($matches[1]);
 			$matches[1] = $this->Simplereplace($matches[1]);
             $matches[1] = str_replace('&amp;', '&amp;amp;', $matches[1]);
-			return '<div class="maxy"></div><div class="codediv">Html</div><pre><code class="language-html">'.$matches[1].'</code></pre><div class="maxy"></div>';
+			return '<div class="maxy"><div class="codediv-wrapper" style="position: relative; border: 1px solid #ddd; margin-bottom: 10px;"><div class="codediv">Html <button class="copy-btn" style="float: '.$PowerBB->_CONF['info_row']['content_dir'].';background: #3090d0;color: white;border: none;padding: 1px 8px;font-family: '.'Droid Arabic Kufi'.';margin-left: 32px;margin-top: -2px;font-size: 9px;cursor: pointer;border-radius: 6px;transition: background 0.3s;" onclick="copyCode(this)">نسخ الكود</button></div><pre><code class="language-php">'.$matches[1].'</code></pre></div><div class="maxy"></div>';
 			}, $string);
 
 			$regexcode_js['[js]'] = '#\[js\](.*)\[/js\]#siU';
@@ -395,11 +395,12 @@ class PowerBBCodeParse
 			$matches[1] = $this->fix_javascript($matches[1]);
 			$matches[1] = $this->htmlspecialchars_uni($matches[1]);
 			$matches[1] = $this->Simplereplace($matches[1]);
-			return '<div class="maxy"></div><div class="codediv">Java</div><pre><code class="language-java">'.$matches[1].'</code></pre><div class="maxy"></div>';
+			return '<div class="maxy"><div class="codediv-wrapper" style="position: relative; border: 1px solid #ddd; margin-bottom: 10px;"><div class="codediv">Java <button class="copy-btn" style="float: '.$PowerBB->_CONF['info_row']['content_dir'].';background: #3090d0;color: white;border: none;padding: 1px 8px;font-family: '.'Droid Arabic Kufi'.';margin-left: 32px;margin-top: -2px;font-size: 9px;cursor: pointer;border-radius: 6px;transition: background 0.3s;" onclick="copyCode(this)">نسخ الكود</button></div><pre><code class="language-php">'.$matches[1].'</code></pre></div><div class="maxy"></div>';
 			}, $string);
 
 		return $string;
  	}
+
 
 
  	function Simplereplace($string)
@@ -1197,25 +1198,14 @@ class PowerBBCodeParse
 			$text = str_replace("smiles//","smiles/", $text);
 		}
     }
+
     function resize_image($img)
     {
         global $PowerBB;
         $img = str_replace('\\"', '"', $img);
         $img = trim($img);
-        /*
-        $img = preg_replace('#&gt;(.*?)&lt;#i', "&gt;&lt;", $img);
-        $img = preg_replace('#<(.*?)>(.*?)#i', "", $img);
-        $img = preg_replace('#<(.*?)>#i', "", $img);
-        $img = preg_replace('#&lt;(.*?)&gt;(.*?)#i', "", $img);
-        $img = preg_replace("#&lt;(.*?)&gt;#i", "", $img);
-        $img = preg_replace('#>(.*?)<#i', "", $img);
-        $img = preg_replace("#&lt;(.*?)&gt;#i", "", $img);
-        $img = str_replace("<>", '',$img);
-        $img = str_replace("&gt;&lt;", '',$img);
-        $img = str_replace("&lt;&gt;", '',$img);
-        */
+
         $img = str_replace("&lt;br&gt;","<br>",$img);
-       // $img = str_replace("&lt;br /&gt;","<br>",$img);
         $img = str_ireplace("&amp;quot;", "", $img);
 		$img = str_ireplace("alt=", '', $img);
 		$img = str_ireplace("border=0", '', $img);
@@ -1225,17 +1215,7 @@ class PowerBBCodeParse
    		$img = str_replace('\s', '', $img);
    		$img = str_replace('\r', '', $img);
         $img = str_ireplace("&nbsp;", '',$img);
-        /*
-        //attach url img replace id
-        $Adress = $PowerBB->functions->GetForumAdress();
-        if(strstr($img,$PowerBB->_SERVER['HTTP_HOST']))
-        {
-        preg_match("/[^\/index.php?page=download&attach=1&id=]+$/", $img, $matches);
-		 if (is_numeric($matches[0])) {
-		  $img = $this->attach_url_img_replace($matches[0],$Adress);
-		 }
-        }
-        */
+
 		$fileParts = pathinfo($img);
 		if(isset($fileParts['filename']))
 		{
@@ -1246,7 +1226,9 @@ class PowerBBCodeParse
 		{
          $imagename= $img;
 		}
-		 $onload_resize_name ='ResizeIt(this,'.$PowerBB->_CONF['info_row']['default_imagesW'].','.$PowerBB->_CONF['info_row']['default_imagesH'].')';
+	    $maxW = (int)$PowerBB->_CONF['info_row']['default_imagesW'];
+	    $maxH = (int)$PowerBB->_CONF['info_row']['default_imagesH'];
+		 $onload_resize_name = 'ResizeIt(this,'.$PowerBB->_CONF['info_row']['default_imagesW'].','.$PowerBB->_CONF['info_row']['default_imagesH'].')';
          eval($PowerBB->functions->get_fetch_hooks('hook_resize_images'));
         if ($PowerBB->_CONF['info_row']['resize_imagesAllow']
          and!strstr($img,"smiles")
@@ -1254,13 +1236,14 @@ class PowerBBCodeParse
          and!isset($PowerBB->_GET['send'])
          and!isset($PowerBB->_GET['start']))
         {
-		 $img ='<img src="'.$img.'" border="0" alt="'.$imagename.'" onload="'.$onload_resize_name.'" />';
+        $img = '<img src="'.$img.'" alt="--SUBJECT_TITLE--" title="--SUBJECT_TITLE--" class="resize_img" data-src="'.$img.'" onload="'.$onload_resize_name.'" style="max-width:'.$maxW.'px; max-height:'.$maxH.'px; width:auto; height:auto; cursor:pointer;" />';
         }
 	    else
 	    {
-         $img = '<img src="'.$img.'" border="0" alt="'.$imagename.'" />';
-		}
-		return $img;
+       $img = '<img src="'.$img.'" alt="--SUBJECT_TITLE--" title="--SUBJECT_TITLE--" style="max-width:100%;" />';
+        }
+
+       return $img;
      }
 
     function resize_image_callback($width,$height, $img)
@@ -1273,27 +1256,18 @@ class PowerBBCodeParse
         $height = intval($height);
         $width = intval($width);
         $img = str_replace("&lt;br&gt;","<br>",$img);
-       // $img = str_replace("&lt;br /&gt;","<br>",$img);
         $img = str_ireplace("&amp;quot;", "", $img);
 		$img = str_ireplace("alt=", '', $img);
 		$img = str_ireplace("border=0", '', $img);
-   		//$img = str_ireplace('<br />', '', $img);
         $img = str_replace("<br>", '',$img);
    		$img = str_replace('\n', '', $img);
    		$img = str_replace('\s', '', $img);
    		$img = str_replace('\r', '', $img);
         $img = str_ireplace("&nbsp;", '',$img);
-         /*
-        //attach url img replace id
-        $Adress = $PowerBB->functions->GetForumAdress();
-        if(strstr($img,$PowerBB->_SERVER['HTTP_HOST']))
-        {
-        preg_match("/[^\/index.php?page=download&attach=1&id=]+$/", $img, $matches);
-		 if (is_numeric($matches[0])) {
-		  $img = $this->attach_url_img_replace($matches[0],$Adress);
-		 }
-        }
-        */
+
+	    $maxW = (int)$PowerBB->_CONF['info_row']['default_imagesW'];
+	    $maxH = (int)$PowerBB->_CONF['info_row']['default_imagesH'];
+
 		$fileParts = pathinfo($img);
 		if(isset($fileParts['filename']))
 		{
@@ -1312,14 +1286,12 @@ class PowerBBCodeParse
          and!isset($PowerBB->_GET['send'])
          and!isset($PowerBB->_GET['start']))
         {
-		 $img ='<img src="'.$img.'" border="0" alt="'.$imagename.'" width="'.$width.'" height="'.$height.'" onload="'.$onload_resize_name.'" />';
+        return '<img src="'.$img.'" alt="--SUBJECT_TITLE--" title="--SUBJECT_TITLE--" class="resize_img" data-src="'.$img.'" onload="'.$onload_resize_name.'" style="max-width:'.$maxW.'px; max-height:'.$maxH.'px; width:auto; height:auto; cursor:pointer;" />';
         }
-	    else
-	    {
-         $img = '<img src="'.$img.'" border="0" width="'.$width.'" height="'.$height.'" alt="'.$imagename.'" />';
-		}
-		return $img;
+
+       return '<img src="'.$img.'" alt="--SUBJECT_TITLE--" title="--SUBJECT_TITLE--" style="max-width:100%;" />';
      }
+
 
  	function attach_url_img_replace($string, $url)
  	{
@@ -1330,57 +1302,6 @@ class PowerBBCodeParse
 	    return $url.$Attachinfo['filepath'];
 	}
 
-	function content_search_highlight( $text, $highlight )
-	{
-        global $PowerBB;
-
-	 $text = str_replace($highlight, "[color=#ff0000]".$highlight."[/color]", $text );
-
-        /*
-		$highlight  = urldecode( $highlight );
-		$loosematch = strstr( $highlight, '*' ) ? 1 : 0;
-		$keywords   = str_replace( '*', '', str_replace( "+", " ", str_replace( "++", "+", str_replace( '-', '', trim($highlight) ) ) ) );
-		$word_array = array();
-		$endmatch   = "(.)?";
-		$beginmatch = "(.)?";
-		if ( $keywords )
-		{
-			if ( preg_match("/,(and|or),/i", $keywords) )
-			{
-				while ( preg_match("/,(and|or),/i", $keywords, $match) )
-				{
-					$word_array = explode( ",".$match[1].",", $keywords );
-					$keywords   = str_replace( $match[0], '' ,$keywords );
-				}
-			}
-			else if ( strstr( $keywords, ' ' ) )
-			{
-				$word_array = explode( ' ', str_replace( '  ', ' ', $keywords ) );
-			}
-			else
-			{
-				$word_array[] = $keywords;
-			}
-			if ( ! $loosematch )
-			{
-				$beginmatch = "(^|\s|\>|;)";
-				$endmatch   = "(\s|,|\.|!|<br|&|$)";
-			}
-			if ( is_array($word_array) )
-			{
-				foreach ( $word_array as $keywords )
-				{
-					preg_match_all( "/{$beginmatch}(".preg_quote($keywords, '/')."){$endmatch}/is", $text, $matches );
-					for ( $i = 0; $i < count($matches[0]); $i++ )
-					{
-						$text = str_replace( $matches[0][$i], $matches[1][$i]."[color=#ff0000]".$matches[2][$i]."[/color]".$matches[3][$i], $text );
-					}
-				}
-			}
-		}
-		*/
-		return $text;
-	}
 	function bb_common(&$string)
 	{
         global $PowerBB;

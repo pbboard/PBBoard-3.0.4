@@ -68,6 +68,24 @@ class PowerBBMember
 		return $rows;
 	}
 
+	function GetMemberListAdvanced($param)
+	{
+	    if (!isset($param) || !is_array($param)) {
+	        $param = array();
+	    }
+
+	    if (empty($param['select'])) {
+	        $param['select'] = 's.*';
+	    }
+
+	    if (empty($param['from'])) {
+	        $param['from'] = $this->Engine->table['member'] . ' AS s';
+	    }
+
+        $rows = $this->Engine->records->GetList($param);
+
+	    return $rows;
+	}
 	/**
 	 * Get member information
 	 *
@@ -278,14 +296,7 @@ class PowerBBMember
         $password_verify = $this->Engine->functions->verify_user_password($salt,$param['password']);
 
 		if($CheckMemberUsername and !empty($param['password']))
-		{			if(md5($param['password']) == $CheckMemberUsername['password']
-			or empty($CheckMemberUsername['active_number']))
-			{
-          	$UpdatePassword = $this->Engine->functions->update_password($CheckMemberUsername['id'], $param['password']);
-
-			 $CheckMember = $UpdatePassword;
-			}
-			elseif($password_verify['password'] == $CheckMemberUsername['password'])
+		{           if($password_verify['password'] == $CheckMemberUsername['password'])
 			{
              $CheckMember = true;
 

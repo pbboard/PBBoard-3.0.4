@@ -15,17 +15,16 @@ class PowerBBCoreMOD
 		// Show header with page title
 		if ($PowerBB->_GET['show'])
 		{
-		   $PowerBB->functions->ShowHeader($PowerBB->_CONF['template']['_CONF']['lang']['Atags']);
+		   $PowerBB->functions->ShowHeader($PowerBB->_CONF['template']['_CONF']['lang']['tags']);
 			$this->_Show();
 		}
 		elseif ($PowerBB->_GET['edit'])
 		{
-		   $PowerBB->functions->ShowHeader($PowerBB->_CONF['template']['_CONF']['lang']['Atags']);
 			$this->_edit();
 		}
 		elseif ($PowerBB->_GET['start'])
 		{
-		   $PowerBB->functions->ShowHeader($PowerBB->_CONF['template']['_CONF']['lang']['Atags']);
+		   $PowerBB->functions->ShowHeader($PowerBB->_CONF['template']['_CONF']['lang']['tags']);
 			$this->_StartEdit();
 		}
 		else
@@ -114,6 +113,7 @@ class PowerBBCoreMOD
 
       	if (empty($PowerBB->_GET['id']))
 		{
+		    $PowerBB->functions->ShowHeader($PowerBB->_CONF['template']['_CONF']['lang']['path_not_true']);
 			$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['path_not_true']);
 		}
 
@@ -122,6 +122,7 @@ class PowerBBCoreMOD
 		$SubjectinfArr['where'] = array('id',$PowerBB->_GET['id']);
 
 		$Subjectinfo = $PowerBB->core->GetInfo($SubjectinfArr,'subject');
+		$PowerBB->functions->ShowHeader($PowerBB->_CONF['template']['_CONF']['lang']['tags']." ".$PowerBB->_CONF['template']['_CONF']['lang']['for_subject']." ".$Subjectinfo['title']);
 
          $PowerBB->template->assign('SubjectTitle',$Subjectinfo['title']);
          $PowerBB->template->assign('Subjectinfo',$Subjectinfo);
@@ -163,8 +164,10 @@ class PowerBBCoreMOD
 		$PowerBB->_CONF['template']['while']['TagSubjectList'] = $PowerBB->tag_subject->GetSubjectList($TagSubjectArr);
 		$subject_id = $PowerBB->_GET['id'];
         $SubjectTagNm = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['tag_subject'] . " WHERE subject_id='$subject_id' LIMIT 1"));
-		 $PowerBB->template->assign('SubjectTagNm',$SubjectTagNm);
-		 $PowerBB->template->assign('subjectid',$PowerBB->_GET['id']);
+		$PowerBB->template->assign('SubjectTagNm',$SubjectTagNm);
+		$PowerBB->template->assign('subjectid',$PowerBB->_GET['id']);
+		$PowerBB->template->assign('tag_counter',0);
+
          $PowerBB->template->display('tags_edit_subject');
 	 }
    	else
@@ -176,98 +179,87 @@ class PowerBBCoreMOD
 
      }
 
- 	function _StartEdit()
-	 {
-		global $PowerBB;
+	function _StartEdit()
+	{
+	    global $PowerBB;
 
-		$SubjectinfArr = array();
-		$SubjectinfArr['where'] = array('id',$PowerBB->_POST['subjectid']);
+	    $subject_id = intval($PowerBB->_POST['subjectid']);
 
-		$Subjectinfo = $PowerBB->subject->GetSubjectInfo($SubjectinfArr);
+	    $SubjectinfArr = array();
+	    $SubjectinfArr['where'] = array('id', $subject_id);
+	    $Subjectinfo = $PowerBB->subject->GetSubjectInfo($SubjectinfArr);
 
-		if ($PowerBB->_POST['remove'])
-    		{
+	    if (isset($PowerBB->_POST['remove']) && $PowerBB->_POST['remove'])
+	    {
+	        $DelTags = $PowerBB->_POST['del_tag'];
 
-    		 $DelTags = $PowerBB->_POST['del_tag'];
+	        if (empty($DelTags)) {
+	            $PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['fill_in_tags_remove']);
+	        }
 
+	        foreach ($DelTags as $DelTags_x) {
+	            $DeleteSubjectArr = array();
+	            $DeleteSubjectArr['where'] = array('id', intval($DelTags_x));
+	            $PowerBB->tag_subject->DeleteSubject($DeleteSubjectArr);
+	        }
 
-		      	if (empty($DelTags))
-				{
-					$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['fill_in_tags_remove']);
-				}
-		      foreach ($DelTags as $DelTags_x)
-		      {
+	        $PowerBB->functions->msg($PowerBB->_CONF['template']['_CONF']['lang']['tags_delet_successfully']);
+	        $PowerBB->functions->redirect('index.php?page=tags&edit=1&id=' . $subject_id);
+	    }
+	    else
+	    {
+	        $tags = $PowerBB->_POST['tags'];
+	        $existing_ids = $PowerBB->_POST['tag_existing_ids'];
 
+	        if (is_array($tags) && count($tags) > 0)
+	        {
+	            foreach ($tags as $key => $tag_text)
+	            {
+				  // 1. Remove HTML tags entirely instead of converting them
+				    $tag_text = strip_tags($tag_text);
 
-				  $DeleteSubjectArr				=	array();
-		          $DeleteSubjectArr['where'] 	= 	array('id',intval($DelTags_x));
-				  $delSubject = $PowerBB->tag_subject->DeleteSubject($DeleteSubjectArr);
+				    // 2. Basic cleaning (trim and sql protection)
+				    $clean_tag = $PowerBB->functions->CleanVariable($tag_text, 'trim,sql');
 
-		      }
+				    if (empty($clean_tag)) continue;
 
-		    $PowerBB->functions->msg($PowerBB->_CONF['template']['_CONF']['lang']['tags_delet_successfully']);
-			$PowerBB->functions->redirect('index.php?page=tags&edit=1&id=' . $PowerBB->_POST['subject_id']);
+				    // 3. SEO Logic: Keep only letters, numbers, spaces, and hyphens
+				    $clean_tag = preg_replace('/[^\p{L}\p{N}\s\-]/u', '', $clean_tag);
 
-		   }
-		   else
-		   {
+				    // Convert spaces to hyphens
+				    $clean_tag = preg_replace('/[\s\-]+/u', '-', $clean_tag);
 
-		    		// Set tags for the subject
-		   		$tags_size = sizeof($PowerBB->_POST['tags']);
+				    $clean_tag = trim($clean_tag, '-');
 
-		   		if ($tags_size > 0
-		   			and strlen($PowerBB->_POST['tags'][0]) > 0)
-		   		{
-		   			foreach ($PowerBB->_POST['tags'] as $tag)
-		   			{
-		   			  if (!empty($tag))
-						{
-		   				$CheckArr 			= 	array();
-		   				$CheckArr['where'] 	= 	array('tag',$PowerBB->functions->CleanVariable($PowerBB->functions->CleanVariable($PowerBB->functions->CleanVariable($tag,'trim'),'html'),'sql'));
+				    if (empty($clean_tag)) continue;
 
-		   				$tag_id = 1;
+	                if (isset($existing_ids[$key]) && !empty($existing_ids[$key]))
+	                {
+	                    $UpdateArr = array();
+	                    $UpdateArr['field'] = array('tag' => $clean_tag);
+	                    $UpdateArr['where'] = array('id', intval($existing_ids[$key]));
 
-		   				$Tag = $PowerBB->tag_subject->GetSubjectInfo($CheckArr);
+	                    $PowerBB->tag_subject->UpdateSubject($UpdateArr);
+	                }
+	                else
+	                {
+	                    $InsertArr = array();
+	                    $InsertArr['field'] = array(
+	                        'tag_id'        => 1,
+	                        'subject_id'    => $subject_id,
+	                        'tag'           => $clean_tag,
+	                        'subject_title' => $PowerBB->functions->CleanVariable($Subjectinfo['title'], 'sql')
+	                    );
 
-		   				if ($Tag['subject_id'] != $PowerBB->_POST['subjectid'])
-		   				{
-		   				$InsertArr 						= 	array();
-		     	        $InsertArr['get_id']						=	true;
-		   				$InsertArr['field']				=	array();
+	                    $PowerBB->tag_subject->InsertSubject($InsertArr);
+	                }
+	            }
+	        }
 
-		   				$InsertArr['field']['tag_id'] 			= 	$tag_id;
-		   				$InsertArr['field']['subject_id'] 		=	$PowerBB->_POST['subjectid'];
-		   				$InsertArr['field']['tag'] 				= 	$PowerBB->functions->CleanVariable($PowerBB->functions->CleanVariable($PowerBB->functions->CleanVariable($tag,'trim'),'html'),'sql');
-		   				$InsertArr['field']['subject_title'] 	= 	$Subjectinfo['title'];
-
-		   				// Note, this function is from tag system not subject system
-		   				$insert = $PowerBB->tag_subject->InsertSubject($InsertArr);
-
-		   					unset($InsertArr);
-				        }
-				     	else
-				     	{
-		   					$UpdateArr 			= 	array();
-		   					$UpdateArr['field']	=	array();
-
-		   					$UpdateArr['field']['tag'] 	= 	$PowerBB->functions->CleanVariable($PowerBB->functions->CleanVariable($PowerBB->functions->CleanVariable($tag,'trim'),'html'),'sql');;
-		   					$UpdateArr['where']				=	array('id',$Tag['id']);
-
-		   					$update = $PowerBB->tag_subject->UpdateSubject($UpdateArr);
-
-		   					$tag_id = $Tag['id'];
-		   				}
-                      }
-		   			}
-		   		}
-
-
-
-
-   			$PowerBB->functions->msg($PowerBB->_CONF['template']['_CONF']['lang']['Updated_successfully']);
-			$PowerBB->functions->redirect('index.php?page=topic&show=1&id=' . $PowerBB->_POST['subjectid']);
-         }
-    }
+	        $PowerBB->functions->msg($PowerBB->_CONF['template']['_CONF']['lang']['Updated_successfully']);
+	        $PowerBB->functions->redirect('index.php?page=topic&show=1&id=' . $subject_id);
+	    }
+	}
 
 }
 

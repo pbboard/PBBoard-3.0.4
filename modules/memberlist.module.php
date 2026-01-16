@@ -12,7 +12,6 @@ class PowerBBMemberlistMOD
       $PowerBB->template->assign('member_list_page','primary_tabon');
 		$this->_GetJumpSectionsList();
         $PowerBB->functions->ShowHeader();
-   $PowerBB->_CONF['info_row']['perpage'] = "30";
 		if (!$PowerBB->_CONF['group_info']['memberlist_allow'])
 		{
           if (!$PowerBB->_CONF['member_permission'])
@@ -71,7 +70,7 @@ class PowerBBMemberlistMOD
 		}
 
 		$PowerBB->functions->GetFooter();
-	}
+	  }
 }
 
 	    /**
@@ -91,13 +90,30 @@ class PowerBBMemberlistMOD
 		$PowerBB->_GET['count'] = (!isset($PowerBB->_GET['count'])) ? 0 : $PowerBB->_GET['count'];
        $PowerBB->_GET['count'] = $PowerBB->functions->CleanVariable($PowerBB->_GET['count'],'intval');
 
-       $mn = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['member'] . ""));
+       $mn = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(*) FROM " . $PowerBB->table['member'] . ""));
 
 		$ListArr 						= 	array();
+		$ListArr['select'] = '
+		    m.*,
+		    g.id AS group_id,
+		    g.user_title AS group_user_title,
+		    g.usertitle_change AS group_usertitle_change';
+
+		$ListArr['from'] = $PowerBB->table['member'] . ' AS m';
+
+		// JOINs
+		$ListArr['join'] = array(
+		    array(
+		        'type'  => 'left',
+		        'from'  => $PowerBB->table['group'] . ' AS g',
+		        'where' => 'm.usergroup = g.id'
+		    ),
+
+		);
 
 		// Order data
 		$ListArr['order']				=	array();
-		$ListArr['order']['field']		=	'BINARY username';
+		$ListArr['order']['field']		=	'm.username';
 		$ListArr['order']['type']		=	'ASC';
 
 		$ListArr['limit']		        =	$PowerBB->_CONF['info_row']['perpage'];
@@ -113,7 +129,7 @@ class PowerBBMemberlistMOD
 		$ListArr['pager']['location'] 	= 	'index.php?page=member_list&amp;index=1&amp;show=1';
 		$ListArr['pager']['var'] 		= 	'count';
 
-		$GetMemberList = $PowerBB->core->GetList($ListArr,'member');
+		$GetMemberList = $PowerBB->member->GetMemberListAdvanced($ListArr);
 
 		$PowerBB->_CONF['template']['while']['MemberList'] = $GetMemberList;
 
@@ -132,17 +148,34 @@ class PowerBBMemberlistMOD
 	{
 		global $PowerBB;
 
-       $mn = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['member'] . ""));
+       $mn = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(*) FROM " . $PowerBB->table['member'] . ""));
 
 
 		$PowerBB->_GET['count'] = (!isset($PowerBB->_GET['count'])) ? 0 : $PowerBB->_GET['count'];
 		$PowerBB->_GET['count'] = $PowerBB->functions->CleanVariable($PowerBB->_GET['count'],'intval');
 
 		$ListArr 						= 	array();
+		$ListArr['select'] = '
+		    m.*,
+		    g.id AS group_id,
+		    g.user_title AS group_user_title,
+		    g.usertitle_change AS group_usertitle_change';
+
+		$ListArr['from'] = $PowerBB->table['member'] . ' AS m';
+
+		// JOINs
+		$ListArr['join'] = array(
+		    array(
+		        'type'  => 'left',
+		        'from'  => $PowerBB->table['group'] . ' AS g',
+		        'where' => 'm.usergroup = g.id'
+		    ),
+
+		);
 
 		// Order data
 		$ListArr['order']				=	array();
-		$ListArr['order']['field']		=	'posts';
+		$ListArr['order']['field']		=	'm.posts';
 		$ListArr['order']['type']		=	'DESC';
 
 		$ListArr['limit']		        =	$PowerBB->_CONF['info_row']['perpage'];
@@ -159,7 +192,7 @@ class PowerBBMemberlistMOD
 		$ListArr['pager']['location'] 	= 	'index.php?page=member_list&amp;index=1&amp;order=1&amp;order_type=DESC';
 		$ListArr['pager']['var'] 		= 	'count';
 
-		$GetMemberList = $PowerBB->core->GetList($ListArr,'member');
+		$GetMemberList = $PowerBB->member->GetMemberListAdvanced($ListArr);
 
 		$PowerBB->_CONF['template']['while']['MemberList'] = $GetMemberList;
 
@@ -176,17 +209,34 @@ class PowerBBMemberlistMOD
 	{
 		global $PowerBB;
 
-       $mn = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['member'] . ""));
+       $mn = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(*) FROM " . $PowerBB->table['member'] . ""));
 
 
 		$PowerBB->_GET['count'] = (!isset($PowerBB->_GET['count'])) ? 0 : $PowerBB->_GET['count'];
 		$PowerBB->_GET['count'] = $PowerBB->functions->CleanVariable($PowerBB->_GET['count'],'intval');
 
 		$ListArr 						= 	array();
+		$ListArr['select'] = '
+		    m.*,
+		    g.id AS group_id,
+		    g.user_title AS group_user_title,
+		    g.usertitle_change AS group_usertitle_change';
+
+		$ListArr['from'] = $PowerBB->table['member'] . ' AS m';
+
+		// JOINs
+		$ListArr['join'] = array(
+		    array(
+		        'type'  => 'left',
+		        'from'  => $PowerBB->table['group'] . ' AS g',
+		        'where' => 'm.usergroup = g.id'
+		    ),
+
+		);
 
 		// Order data
 		$ListArr['order']				=	array();
-		$ListArr['order']['field']		=	'id';
+		$ListArr['order']['field']		=	'm.id';
 		$ListArr['order']['type']		=	'ASC';
 
 		$ListArr['limit']		        =	$PowerBB->_CONF['info_row']['perpage'];
@@ -203,7 +253,7 @@ class PowerBBMemberlistMOD
 		$ListArr['pager']['location'] 	= 	'index.php?page=member_list&amp;index=1&amp;order=2&amp;order_type=DESC';
 		$ListArr['pager']['var'] 		= 	'count';
 
-		$GetMemberList = $PowerBB->core->GetList($ListArr,'member');
+		$GetMemberList = $PowerBB->member->GetMemberListAdvanced($ListArr);
 
 		$PowerBB->_CONF['template']['while']['MemberList'] = $GetMemberList;
 
@@ -220,17 +270,34 @@ class PowerBBMemberlistMOD
 	{
 		global $PowerBB;
 
-       $mn = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['member'] . ""));
+       $mn = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(*) FROM " . $PowerBB->table['member'] . ""));
 
 
 		$PowerBB->_GET['count'] = (!isset($PowerBB->_GET['count'])) ? 0 : $PowerBB->_GET['count'];
 		$PowerBB->_GET['count'] = $PowerBB->functions->CleanVariable($PowerBB->_GET['count'],'intval');
 
 		$ListArr 						= 	array();
+		$ListArr['select'] = '
+		    m.*,
+		    g.id AS group_id,
+		    g.user_title AS group_user_title,
+		    g.usertitle_change AS group_usertitle_change';
+
+		$ListArr['from'] = $PowerBB->table['member'] . ' AS m';
+
+		// JOINs
+		$ListArr['join'] = array(
+		    array(
+		        'type'  => 'left',
+		        'from'  => $PowerBB->table['group'] . ' AS g',
+		        'where' => 'm.usergroup = g.id'
+		    ),
+
+		);
 
 		// Order data
 		$ListArr['order']				=	array();
-		$ListArr['order']['field']		=	'visitor';
+		$ListArr['order']['field']		=	'm.visitor';
 		$ListArr['order']['type']		=	'DESC';
 
 		$ListArr['limit']		        =	$PowerBB->_CONF['info_row']['perpage'];
@@ -247,7 +314,7 @@ class PowerBBMemberlistMOD
 		$ListArr['pager']['location'] 	= 	'index.php?page=member_list&amp;index=1&amp;order=3&amp;order_type=DESC';
 		$ListArr['pager']['var'] 		= 	'count';
 
-		$GetMemberList = $PowerBB->core->GetList($ListArr,'member');
+		$GetMemberList = $PowerBB->member->GetMemberListAdvanced($ListArr);
 
 		$PowerBB->_CONF['template']['while']['MemberList'] = $GetMemberList;
 
@@ -294,17 +361,35 @@ class PowerBBMemberlistMOD
 			$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['path_not_true']);
 		}
   		$letr 	= 	$PowerBB->_GET['letr'] . "%";
-       $mn = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['member'] . " WHERE username LIKE '$letr' "));
+       $mn = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(*) FROM " . $PowerBB->table['member'] . " WHERE username LIKE '$letr' "));
+
 		$ListArr 						= 	array();
+		$ListArr['select'] = '
+		    m.*,
+		    g.id AS group_id,
+		    g.user_title AS group_user_title,
+		    g.usertitle_change AS group_usertitle_change';
+
+		$ListArr['from'] = $PowerBB->table['member'] . ' AS m';
+
+		// JOINs
+		$ListArr['join'] = array(
+		    array(
+		        'type'  => 'left',
+		        'from'  => $PowerBB->table['group'] . ' AS g',
+		        'where' => 'm.usergroup = g.id'
+		    ),
+
+		);
 
 		$ListArr['where'][0] 			= 	array();
-		$ListArr['where'][0]['name'] 	= 	'username';
+		$ListArr['where'][0]['name'] 	= 	'm.username';
 		$ListArr['where'][0]['oper'] 	= 	'LIKE';
 		$ListArr['where'][0]['value'] 	= 	$PowerBB->_GET['letr'] . "%";
 
 		// Order data
 		$ListArr['order']				=	array();
-		$ListArr['order']['field']		=	'BINARY username';
+		$ListArr['order']['field']		=	'm.username';
 		$ListArr['order']['type']		=	'ASC';
 
 		$ListArr['limit']		        =	$PowerBB->_CONF['info_row']['perpage'];
@@ -321,7 +406,7 @@ class PowerBBMemberlistMOD
 		$ListArr['pager']['location'] 	= 	'index.php?page=member_list&amp;index=1&amp;letr=' . $PowerBB->_GET['letr'] . '&amp;sort=username';
 		$ListArr['pager']['var'] 		= 	'count';
 
-		$GetMemberList = $PowerBB->core->GetList($ListArr,'member');
+		$GetMemberList = $PowerBB->member->GetMemberListAdvanced($ListArr);
 
 		$PowerBB->_CONF['template']['while']['MemberList'] = $GetMemberList;
 
@@ -370,19 +455,36 @@ class PowerBBMemberlistMOD
   		$oper 	= 	" LIKE";
   		}
 
-       $mn = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['member'] . " WHERE username " .$oper.$username. " "));
+       $mn = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(*) FROM " . $PowerBB->table['member'] . " WHERE username " .$oper.$username. " "));
 
 
 		$ListArr 						= 	array();
+		$ListArr['select'] = '
+		    m.*,
+		    g.id AS group_id,
+		    g.user_title AS group_user_title,
+		    g.usertitle_change AS group_usertitle_change';
+
+		$ListArr['from'] = $PowerBB->table['member'] . ' AS m';
+
+		// JOINs
+		$ListArr['join'] = array(
+		    array(
+		        'type'  => 'left',
+		        'from'  => $PowerBB->table['group'] . ' AS g',
+		        'where' => 'm.usergroup = g.id'
+		    ),
+
+		);
 
 		$ListArr['where'][0] 			= 	array();
-		$ListArr['where'][0]['name'] 	= 	'username';
+		$ListArr['where'][0]['name'] 	= 	'm.username';
 		$ListArr['where'][0]['oper'] 	= 	$oper;
 		$ListArr['where'][0]['value'] 	= 	$username1;
 
 		// Order data
 		$ListArr['order']				=	array();
-		$ListArr['order']['field']		=	'BINARY username';
+		$ListArr['order']['field']		=	'm.username';
 		$ListArr['order']['type']		=	'ASC';
 
 		$ListArr['limit']		        =	$PowerBB->_CONF['info_row']['perpage'];
@@ -399,7 +501,7 @@ class PowerBBMemberlistMOD
 		$ListArr['pager']['location'] 	= 	'index.php?page=member_list&amp;index=1&amp;search_by_username=1';
 		$ListArr['pager']['var'] 		= 	'count';
 
-		$GetMemberList = $PowerBB->core->GetList($ListArr,'member');
+		$GetMemberList = $PowerBB->member->GetMemberListAdvanced($ListArr);
 
 		$PowerBB->_CONF['template']['while']['MemberList'] = $GetMemberList;
 

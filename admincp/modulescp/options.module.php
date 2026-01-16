@@ -365,6 +365,7 @@ class PowerBBOptionsMOD
 	    $update[28] = $PowerBB->info->UpdateInfo(array('value'=>$PowerBB->_POST['active_static'],'var_name'=>'active_static'));
 	    $update[29] = $PowerBB->info->UpdateInfo(array('value'=>$PowerBB->_POST['active_team'],'var_name'=>'active_team'));
 	    $update[30] = $PowerBB->info->UpdateInfo(array('value'=>$PowerBB->_POST['active_rss'],'var_name'=>'active_rss'));
+	    $update[31] = $PowerBB->info->UpdateInfo(array('value'=>$PowerBB->_POST['show_debug_info'],'var_name'=>'show_debug_info'));
 
 		if ($update[0]
 		    and $update[1]
@@ -393,7 +394,8 @@ class PowerBBOptionsMOD
 			and $update[27]
 			and $update[28]
 			and $update[29]
-			and $update[30])
+			and $update[30]
+			and $update[31])
 		{
 			$PowerBB->functions->msg($PowerBB->_CONF['template']['_CONF']['lang']['updated_successfully_Please_wait']);
 			$PowerBB->functions->redirect('index.php?page=options&amp;general=1&amp;main=1');
@@ -1283,6 +1285,7 @@ class PowerBBOptionsMOD
 	    $update[28] = $PowerBB->info->UpdateInfo(array('value'=>$PowerBB->_POST['active_static'],'var_name'=>'active_static'));
 	    $update[29] = $PowerBB->info->UpdateInfo(array('value'=>$PowerBB->_POST['active_team'],'var_name'=>'active_team'));
 	    $update[30] = $PowerBB->info->UpdateInfo(array('value'=>$PowerBB->_POST['active_rss'],'var_name'=>'active_rss'));
+	    $update[31] = $PowerBB->info->UpdateInfo(array('value'=>$PowerBB->_POST['show_debug_info'],'var_name'=>'show_debug_info'));
 
 		$update = array();
 		$update[0] = $PowerBB->info->UpdateInfo(array('value'=>$PowerBB->_POST['captcha_o'],'var_name'=>'captcha_o'));

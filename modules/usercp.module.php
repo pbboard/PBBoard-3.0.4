@@ -260,28 +260,58 @@ class PowerBBCoreMOD
 
 		$PowerBB->functions->ShowHeader();
         // Get Member Subjects
-		$SubjectArr 								= 	array();
-		$SubjectArr['where'] 						= 	array();
+		$SubjectArr['select'] = '
+		    s.*,
+		    m.id AS writer_id,
+		    m.username_style_cache,
+		    sec.id AS section_id,
+		    sec.title AS section_title,
+		    lr.id AS last_replier_id,
+		    lr.username_style_cache AS last_replier_style';
 
-		$SubjectArr['where'][0] 					= 	array();
-		$SubjectArr['where'][0]['name'] 			= 	'writer';
-		$SubjectArr['where'][0]['oper'] 			= 	'=';
-		$SubjectArr['where'][0]['value'] 			= 	$PowerBB->_CONF['rows']['member_row']['username'];
+		// FROM
+		$SubjectArr['from'] = $PowerBB->table['subject'] . ' AS s';
 
-		// Clean data
-		$SubjectArr['proc'] 			        	= 	array();
-		$SubjectArr['proc']['*'] 		        	= 	array('method'=>'clean','param'=>'html');
-		$SubjectArr['proc']['native_write_time'] 	= 	array('method'=>'date','store'=>'write_date','type'=>$PowerBB->_CONF['info_row']['timesystem']);
-		$SubjectArr['proc']['write_time'] 			= 	array('method'=>'date','store'=>'reply_date','type'=>$PowerBB->_CONF['info_row']['timesystem']);
+		// JOINs
+		$SubjectArr['join'] = array(
+		    array(
+		        'type'  => 'left',
+		        'from'  => $PowerBB->table['member'] . ' AS m',
+		        'where' => 'm.username = s.writer'
+		    ),
+		    array(
+		        'type'  => 'left',
+		        'from'  => $PowerBB->table['section'] . ' AS sec',
+		        'where' => 'sec.id = s.section'
+		    ),
+		    array(
+		        'type'  => 'left',
+		        'from'  => $PowerBB->table['member'] . ' AS lr',
+		        'where' => 'lr.username = s.last_replier'
+		    )
+		);
 
-		$SubjectArr['order']			            =	array();
-		$SubjectArr['order']['field']	            =	'write_time';
-		$SubjectArr['order']['type']	            =	'DESC';
-		$SubjectArr['limit'] 		             	= 	'5';
+		// WHERE conditions
+		$SubjectArr['where'] = array();
+		$SubjectArr['where'][0] 				= 	array();
+		$SubjectArr['where'][0]['name'] 		= 	's.writer';
+		$SubjectArr['where'][0]['oper'] 		= 	'=';
+		$SubjectArr['where'][0]['value'] 		= 	$PowerBB->_CONF['rows']['member_row']['username'];
 
+		// ORDER
+		$SubjectArr['order'] = array(
+		    'field' => 's.write_time',
+		    'type'  => 'DESC'
+		);
 
-         $PowerBB->_CONF['template']['while']['subject_list'] = $PowerBB->core->GetList($SubjectArr,'subject');
+		$SubjectArr['limit'] 						= 	'5';
+		$SubjectArr['proc'] = array(
+		    '*' => array('method'=>'clean','param'=>'html'),
+		    'native_write_time' => array('method'=>'date','store'=>'write_date','type'=>$PowerBB->_CONF['info_row']['timesystem']),
+		    'write_time' => array('method'=>'date','store'=>'reply_date','type'=>$PowerBB->_CONF['info_row']['timesystem'])
+		);
 
+		$PowerBB->_CONF['template']['while']['subject_list'] = $PowerBB->subject->GetSubjectListAdvanced($SubjectArr);
 
 
 		if ($PowerBB->_CONF['template']['while']['subject_list'] == false)
@@ -294,26 +324,59 @@ class PowerBBCoreMOD
 		}
 
         // Get Member Replys
+		// SELECT fields
+		$ReplyArr['select'] = '
+		    s.*,
+		    m.id AS writer_id,
+		    m.username_style_cache,
+		    sec.id AS section_id,
+		    sec.title AS section_title,
+		    lr.id AS last_replier_id,
+		    lr.username_style_cache AS last_replier_style';
 
-     	$ReplyArr 								= 	array();
-		$ReplyArr['where'] 						= 	array();
-        $ReplyArr['select'] 	                = 	'DISTINCT subject_id,title,writer,icon,section';
+		// FROM
+		$ReplyArr['from'] = $PowerBB->table['subject'] . ' AS s';
 
-		$ReplyArr['where'][0] 					= 	array();
-		$ReplyArr['where'][0]['name'] 			= 	'writer';
-		$ReplyArr['where'][0]['oper'] 			= 	'=';
-		$ReplyArr['where'][0]['value'] 			= 	$PowerBB->_CONF['rows']['member_row']['username'];
+		// JOINs
+		$ReplyArr['join'] = array(
+		    array(
+		        'type'  => 'left',
+		        'from'  => $PowerBB->table['member'] . ' AS m',
+		        'where' => 'm.username = s.writer'
+		    ),
+		    array(
+		        'type'  => 'left',
+		        'from'  => $PowerBB->table['section'] . ' AS sec',
+		        'where' => 'sec.id = s.section'
+		    ),
+		    array(
+		        'type'  => 'left',
+		        'from'  => $PowerBB->table['member'] . ' AS lr',
+		        'where' => 'lr.username = s.last_replier'
+		    )
+		);
 
-		$ReplyArr['order'] 						=	 array();
-		$ReplyArr['order']['field'] 			= 	'write_time';
-		$ReplyArr['order']['type'] 				= 	'DESC';
+		// WHERE conditions
+		$ReplyArr['where'] = array();
+		$ReplyArr['where'][0] 				= 	array();
+		$ReplyArr['where'][0]['name'] 		= 	's.last_replier';
+		$ReplyArr['where'][0]['oper'] 		= 	'=';
+		$ReplyArr['where'][0]['value'] 		= 	$PowerBB->_CONF['rows']['member_row']['username'];
+
+		// ORDER
+		$ReplyArr['order'] = array(
+		    'field' => 's.write_time',
+		    'type'  => 'DESC'
+		);
 
 		$ReplyArr['limit'] 						= 	'10';
+		$ReplyArr['proc'] = array(
+		    '*' => array('method'=>'clean','param'=>'html'),
+		    'native_write_time' => array('method'=>'date','store'=>'write_date','type'=>$PowerBB->_CONF['info_row']['timesystem']),
+		    'write_time' => array('method'=>'date','store'=>'reply_date','type'=>$PowerBB->_CONF['info_row']['timesystem'])
+		);
 
-
-		$ReplyArr['proc']['write_time'] 		= 	array('method'=>'date','store'=>'reply_date','type'=>$PowerBB->_CONF['info_row']['timesystem']);
-
-		$PowerBB->_CONF['template']['while']['ReplyList'] = $PowerBB->reply->GetReplyList($ReplyArr);
+		$PowerBB->_CONF['template']['while']['ReplyList'] = $PowerBB->subject->GetSubjectListAdvanced($ReplyArr);
 
 
 		$PowerBB->functions->CleanVariable($PowerBB->_CONF['template']['while']['ReplyList'],'html');

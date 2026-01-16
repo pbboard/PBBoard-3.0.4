@@ -2225,25 +2225,122 @@ function upgrade_update_section_cache()
 				$x = 0;
 	 			while ($forums = $db->fetch_array($arr))
 	 			{
-                    $cache[$x] 							= 	array();
-					$last_writer 			= 	$forums['last_writer'];
-	                $MemberArr = $db->query("SELECT * FROM ".$config['db']['prefix']."member WHERE username = '$last_writer'");
-	                $rows = $db->fetch_array($MemberArr);
+					$cache[$x] 							= 	array();
+					$cache[$x]['last_writer'] 			= 	$forums['last_writer'];
+					$cache[$x]['id'] 					= 	$forums['id'];
+					$cache[$x]['title'] 				= 	$forums['title'];
+					$cache[$x]['section_describe'] 		= 	$forums['section_describe'];
+					$cache[$x]['parent'] 				= 	$forums['parent'];
+					$cache[$x]['sort'] 					= 	$forums['sort'];
+
+					$cache[$x]['section_picture'] 		= 	$forums['section_picture'];
+
+					$cache[$x]['sectionpicture_type'] 	= 	$forums['sectionpicture_type'];
+
+					$cache[$x]['use_section_picture'] 	= 	$forums['use_section_picture'];
+
+					$cache[$x]['linksection'] 			= 	$forums['linksection'];
+
+					$cache[$x]['linkvisitor'] 			= 	$forums['linkvisitor'];
+					$cache[$x]['last_subject'] 			= 	$forums['last_subject'];
+					$cache[$x]['last_subjectid'] 		= 	$forums['last_subjectid'];
+					$cache[$x]['last_date'] 			= 	$forums['last_date'];
+					$cache[$x]['last_time'] 			= 	$forums['last_time'];
+
+					$cache[$x]['subject_num'] 	        =  	$forums['subject_num'];
+					$cache[$x]['reply_num'] 	        =  	$forums['reply_num'];
+					$cache[$x]['icon'] 	        		=  	$forums['icon'];
+					$cache[$x]['hide_subject'] 	        =  	$forums['hide_subject'];
+					$cache[$x]['sec_section'] 	        =  	$forums['sec_section'];
+					$cache[$x]['section_password'] 	    =  	$forums['section_password'];
+					$cache[$x]['forum_title_color']     = 	$forums['forum_title_color'];
+
+					$cache[$x]['review_subject']        = 	$forums['review_subject'];
+					$cache[$x]['replys_review_num']        = 	$forums['replys_review_num'];
+					$cache[$x]['subjects_review_num']        = 	$forums['subjects_review_num'];
+
+					$MemberArr = $db->query("SELECT id,avater_path,username_style_cache FROM ".$config['db']['prefix']."member WHERE username = '$last_writer'");
+					$rows = $db->fetch_array($MemberArr);
 
 					$cache[$x]['last_writer_id'] 	    = 	$rows['id'];
 					$cache[$x]['avater_path'] 		    = 	$rows['avater_path'];
 					$cache[$x]['username_style_cache']  = 	$rows['username_style_cache'];
 
+					 $subjectArr = $db->query("SELECT * FROM ".$config['db']['prefix']."subject WHERE section = '".$forums['id']."' ORDER by write_time DESC" );
+
+					$lastreply_rows = $db->fetch_array($subjectArr);
+
+					/* extract last_reply_id from subject cache */
+					$total_posts_count = 0;
+					$last_reply_id = 0;
+					$last_berpage_nm = 0;
+
+					if (!empty($lastreply_rows['lastreply_cache'])) {
+					$cache_data = @unserialize($lastreply_rows['lastreply_cache']);
+					$total_posts_count = $cache_data[5]['total_posts_count'] ?? 0;
+					$last_reply_id = $cache_data[6]['last_reply_id'] ?? 0;
+					$last_berpage_nm = $cache_data[7]['last_berpage_nm'] ?? 0;
+					}
+					/* final value */
+					$cache[$x]['total_posts_count'] = $last_berpage_nm ?: $lastreply_rows['reply_number'];
+					$cache[$x]['last_reply'] = $last_reply_id ?: $forums['last_reply'];
+					$cache[$x]['last_berpage_nm'] = $last_berpage_nm ?: $forums['last_berpage_nm'];
+
+					$cache[$x]['prefix_subject']   = 	$rows['prefix_subject'];
+
 					$x += 1;
 	 			}
 
-				 $cache = json_encode($cache);
+				 $cache = json_encode($cache,JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
 
-				if ($cache)
-				{
-				    $update = $db->query("UPDATE " . $config['db']['prefix'] . "section SET forums_cache='".$cache."' WHERE id='".$Section['id']."'");
+                  $size = strlen($cache);
+                   if($size > $maxsize)
+                   {
+                   	$forums_cache = '[]';
+                   }
+                   else
+                   {
+                   	$forums_cache = $cache;
+                   }
 
-				}
+		            // get main dir
+					$file_forums_cache = PBB_ROOT."cache/forums_cache/forums_cache_".$Section['id'].".php";
+	                $file_forums_cache = str_ireplace("index.php/", '', $file_forums_cache);
+	                $file_forums_cache = str_replace("index.php/", '', $file_forums_cache);
+					$fp = fopen($file_forums_cache,'w');
+					$Ds = '$';
+					$forums_cache = "<?php \n".$Ds."forums_cache ='".$cache."';\n ?> ";
+
+					$fw = fwrite($fp,$forums_cache);
+			        fclose($fp);
+
+	 				if (!$fw)
+	 				{
+	 					$fail = true;
+	 				}
+	 				// add sectiongroup_cache files
+					$file_sectiongroup_cache_one = PBB_ROOT."cache/sectiongroup_cache/sectiongroup_cache_1.php";
+					$file_sectiongroup_cache_tow = PBB_ROOT."cache/sectiongroup_cache/sectiongroup_cache_2.php";
+					$fp1 = fopen($file_sectiongroup_cache_one,'w');
+					$fp2 = fopen($file_sectiongroup_cache_tow,'w');
+
+	              $sectiongroup_cache_one = 'a:8:{i:1;a:18:{s:2:"id";s:1:"1";s:10:"section_id";s:1:"1";s:8:"group_id";s:1:"1";s:12:"view_section";s:1:"1";s:12:"view_subject";s:1:"1";s:15:"download_attach";s:1:"1";s:13:"write_subject";s:1:"1";s:11:"write_reply";s:1:"1";s:13:"upload_attach";s:1:"1";s:16:"edit_own_subject";s:1:"1";s:14:"edit_own_reply";s:1:"1";s:15:"del_own_subject";s:1:"1";s:13:"del_own_reply";s:1:"1";s:10:"write_poll";s:1:"1";s:9:"vote_poll";s:1:"1";s:8:"no_posts";s:1:"1";s:12:"main_section";s:1:"1";s:10:"group_name";s:23:"مدير المنتدى";}i:2;a:18:{s:2:"id";s:1:"2";s:10:"section_id";s:1:"1";s:8:"group_id";s:1:"2";s:12:"view_section";s:1:"1";s:12:"view_subject";s:1:"1";s:15:"download_attach";s:1:"1";s:13:"write_subject";s:1:"1";s:11:"write_reply";s:1:"1";s:13:"upload_attach";s:1:"1";s:16:"edit_own_subject";s:1:"1";s:14:"edit_own_reply";s:1:"1";s:15:"del_own_subject";s:1:"1";s:13:"del_own_reply";s:1:"1";s:10:"write_poll";s:1:"1";s:9:"vote_poll";s:1:"1";s:8:"no_posts";s:1:"1";s:12:"main_section";s:1:"1";s:10:"group_name";s:25:"المراقب العام";}i:3;a:18:{s:2:"id";s:1:"3";s:10:"section_id";s:1:"1";s:8:"group_id";s:1:"3";s:12:"view_section";s:1:"1";s:12:"view_subject";s:1:"1";s:15:"download_attach";s:1:"1";s:13:"write_subject";s:1:"1";s:11:"write_reply";s:1:"1";s:13:"upload_attach";s:1:"1";s:16:"edit_own_subject";s:1:"1";s:14:"edit_own_reply";s:1:"1";s:15:"del_own_subject";s:1:"0";s:13:"del_own_reply";s:1:"0";s:10:"write_poll";s:1:"1";s:9:"vote_poll";s:1:"1";s:8:"no_posts";s:1:"1";s:12:"main_section";s:1:"1";s:10:"group_name";s:16:"المشرفين";}i:4;a:18:{s:2:"id";s:1:"4";s:10:"section_id";s:1:"1";s:8:"group_id";s:1:"4";s:12:"view_section";s:1:"1";s:12:"view_subject";s:1:"1";s:15:"download_attach";s:1:"1";s:13:"write_subject";s:1:"1";s:11:"write_reply";s:1:"1";s:13:"upload_attach";s:1:"1";s:16:"edit_own_subject";s:1:"1";s:14:"edit_own_reply";s:1:"1";s:15:"del_own_subject";s:1:"0";s:13:"del_own_reply";s:1:"0";s:10:"write_poll";s:1:"1";s:9:"vote_poll";s:1:"1";s:8:"no_posts";s:1:"1";s:12:"main_section";s:1:"1";s:10:"group_name";s:14:"الأعضاء";}i:5;a:18:{s:2:"id";s:1:"5";s:10:"section_id";s:1:"1";s:8:"group_id";s:1:"5";s:12:"view_section";s:1:"1";s:12:"view_subject";s:1:"1";s:15:"download_attach";s:1:"0";s:13:"write_subject";s:1:"0";s:11:"write_reply";s:1:"0";s:13:"upload_attach";s:1:"0";s:16:"edit_own_subject";s:1:"0";s:14:"edit_own_reply";s:1:"0";s:15:"del_own_subject";s:1:"0";s:13:"del_own_reply";s:1:"0";s:10:"write_poll";s:1:"0";s:9:"vote_poll";s:1:"0";s:8:"no_posts";s:1:"1";s:12:"main_section";s:1:"1";s:10:"group_name";s:38:"الأعضاء الغير مفعلين";}i:6;a:18:{s:2:"id";s:1:"6";s:10:"section_id";s:1:"1";s:8:"group_id";s:1:"6";s:12:"view_section";s:1:"0";s:12:"view_subject";s:1:"0";s:15:"download_attach";s:1:"0";s:13:"write_subject";s:1:"0";s:11:"write_reply";s:1:"0";s:13:"upload_attach";s:1:"0";s:16:"edit_own_subject";s:1:"0";s:14:"edit_own_reply";s:1:"0";s:15:"del_own_subject";s:1:"0";s:13:"del_own_reply";s:1:"0";s:10:"write_poll";s:1:"0";s:9:"vote_poll";s:1:"0";s:8:"no_posts";s:1:"0";s:12:"main_section";s:1:"1";s:10:"group_name";s:18:"الموقوفين";}i:7;a:18:{s:2:"id";s:1:"7";s:10:"section_id";s:1:"1";s:8:"group_id";s:1:"7";s:12:"view_section";s:1:"1";s:12:"view_subject";s:1:"1";s:15:"download_attach";s:1:"0";s:13:"write_subject";s:1:"0";s:11:"write_reply";s:1:"0";s:13:"upload_attach";s:1:"0";s:16:"edit_own_subject";s:1:"0";s:14:"edit_own_reply";s:1:"0";s:15:"del_own_subject";s:1:"0";s:13:"del_own_reply";s:1:"0";s:10:"write_poll";s:1:"0";s:9:"vote_poll";s:1:"0";s:8:"no_posts";s:1:"0";s:12:"main_section";s:1:"1";s:10:"group_name";s:12:"الزوار";}i:8;a:18:{s:2:"id";s:1:"8";s:10:"section_id";s:1:"1";s:8:"group_id";s:1:"8";s:12:"view_section";s:1:"1";s:12:"view_subject";s:1:"1";s:15:"download_attach";s:1:"1";s:13:"write_subject";s:1:"1";s:11:"write_reply";s:1:"1";s:13:"upload_attach";s:1:"1";s:16:"edit_own_subject";s:1:"1";s:14:"edit_own_reply";s:1:"1";s:15:"del_own_subject";s:1:"1";s:13:"del_own_reply";s:1:"1";s:10:"write_poll";s:1:"1";s:9:"vote_poll";s:1:"1";s:8:"no_posts";s:1:"1";s:12:"main_section";s:1:"1";s:10:"group_name";s:18:"المراقبين";}}';
+	              $sectiongroup_cache_tow = 'a:8:{i:1;a:18:{s:2:"id";s:1:"9";s:10:"section_id";s:1:"2";s:8:"group_id";s:1:"1";s:12:"view_section";s:1:"1";s:12:"view_subject";s:1:"1";s:15:"download_attach";s:1:"1";s:13:"write_subject";s:1:"1";s:11:"write_reply";s:1:"1";s:13:"upload_attach";s:1:"1";s:16:"edit_own_subject";s:1:"1";s:14:"edit_own_reply";s:1:"1";s:15:"del_own_subject";s:1:"1";s:13:"del_own_reply";s:1:"1";s:10:"write_poll";s:1:"1";s:9:"vote_poll";s:1:"1";s:8:"no_posts";s:1:"1";s:12:"main_section";s:1:"0";s:10:"group_name";s:23:"مدير المنتدى";}i:2;a:18:{s:2:"id";s:2:"10";s:10:"section_id";s:1:"2";s:8:"group_id";s:1:"2";s:12:"view_section";s:1:"1";s:12:"view_subject";s:1:"1";s:15:"download_attach";s:1:"1";s:13:"write_subject";s:1:"1";s:11:"write_reply";s:1:"1";s:13:"upload_attach";s:1:"1";s:16:"edit_own_subject";s:1:"1";s:14:"edit_own_reply";s:1:"1";s:15:"del_own_subject";s:1:"1";s:13:"del_own_reply";s:1:"1";s:10:"write_poll";s:1:"1";s:9:"vote_poll";s:1:"1";s:8:"no_posts";s:1:"1";s:12:"main_section";s:1:"0";s:10:"group_name";s:25:"المراقب العام";}i:3;a:18:{s:2:"id";s:2:"11";s:10:"section_id";s:1:"2";s:8:"group_id";s:1:"3";s:12:"view_section";s:1:"1";s:12:"view_subject";s:1:"1";s:15:"download_attach";s:1:"1";s:13:"write_subject";s:1:"1";s:11:"write_reply";s:1:"1";s:13:"upload_attach";s:1:"1";s:16:"edit_own_subject";s:1:"1";s:14:"edit_own_reply";s:1:"1";s:15:"del_own_subject";s:1:"0";s:13:"del_own_reply";s:1:"0";s:10:"write_poll";s:1:"1";s:9:"vote_poll";s:1:"1";s:8:"no_posts";s:1:"1";s:12:"main_section";s:1:"0";s:10:"group_name";s:16:"المشرفين";}i:4;a:18:{s:2:"id";s:2:"12";s:10:"section_id";s:1:"2";s:8:"group_id";s:1:"4";s:12:"view_section";s:1:"1";s:12:"view_subject";s:1:"1";s:15:"download_attach";s:1:"1";s:13:"write_subject";s:1:"1";s:11:"write_reply";s:1:"1";s:13:"upload_attach";s:1:"1";s:16:"edit_own_subject";s:1:"1";s:14:"edit_own_reply";s:1:"1";s:15:"del_own_subject";s:1:"0";s:13:"del_own_reply";s:1:"0";s:10:"write_poll";s:1:"1";s:9:"vote_poll";s:1:"1";s:8:"no_posts";s:1:"1";s:12:"main_section";s:1:"0";s:10:"group_name";s:14:"الأعضاء";}i:5;a:18:{s:2:"id";s:2:"13";s:10:"section_id";s:1:"2";s:8:"group_id";s:1:"5";s:12:"view_section";s:1:"1";s:12:"view_subject";s:1:"1";s:15:"download_attach";s:1:"0";s:13:"write_subject";s:1:"0";s:11:"write_reply";s:1:"0";s:13:"upload_attach";s:1:"0";s:16:"edit_own_subject";s:1:"0";s:14:"edit_own_reply";s:1:"0";s:15:"del_own_subject";s:1:"0";s:13:"del_own_reply";s:1:"0";s:10:"write_poll";s:1:"0";s:9:"vote_poll";s:1:"0";s:8:"no_posts";s:1:"1";s:12:"main_section";s:1:"0";s:10:"group_name";s:38:"الأعضاء الغير مفعلين";}i:6;a:18:{s:2:"id";s:2:"14";s:10:"section_id";s:1:"2";s:8:"group_id";s:1:"6";s:12:"view_section";s:1:"0";s:12:"view_subject";s:1:"0";s:15:"download_attach";s:1:"0";s:13:"write_subject";s:1:"0";s:11:"write_reply";s:1:"0";s:13:"upload_attach";s:1:"0";s:16:"edit_own_subject";s:1:"0";s:14:"edit_own_reply";s:1:"0";s:15:"del_own_subject";s:1:"0";s:13:"del_own_reply";s:1:"0";s:10:"write_poll";s:1:"0";s:9:"vote_poll";s:1:"0";s:8:"no_posts";s:1:"0";s:12:"main_section";s:1:"0";s:10:"group_name";s:18:"الموقوفين";}i:7;a:18:{s:2:"id";s:2:"15";s:10:"section_id";s:1:"2";s:8:"group_id";s:1:"7";s:12:"view_section";s:1:"1";s:12:"view_subject";s:1:"1";s:15:"download_attach";s:1:"0";s:13:"write_subject";s:1:"0";s:11:"write_reply";s:1:"0";s:13:"upload_attach";s:1:"0";s:16:"edit_own_subject";s:1:"0";s:14:"edit_own_reply";s:1:"0";s:15:"del_own_subject";s:1:"0";s:13:"del_own_reply";s:1:"0";s:10:"write_poll";s:1:"0";s:9:"vote_poll";s:1:"0";s:8:"no_posts";s:1:"0";s:12:"main_section";s:1:"0";s:10:"group_name";s:12:"الزوار";}i:8;a:18:{s:2:"id";s:2:"16";s:10:"section_id";s:1:"2";s:8:"group_id";s:1:"8";s:12:"view_section";s:1:"1";s:12:"view_subject";s:1:"1";s:15:"download_attach";s:1:"1";s:13:"write_subject";s:1:"1";s:11:"write_reply";s:1:"1";s:13:"upload_attach";s:1:"1";s:16:"edit_own_subject";s:1:"1";s:14:"edit_own_reply";s:1:"1";s:15:"del_own_subject";s:1:"1";s:13:"del_own_reply";s:1:"1";s:10:"write_poll";s:1:"1";s:9:"vote_poll";s:1:"1";s:8:"no_posts";s:1:"1";s:12:"main_section";s:1:"0";s:10:"group_name";s:18:"المراقبين";}}';
+
+					$secgroup_cache_one = "<?php \n".$Ds."sectiongroup_cache ='".$sectiongroup_cache_one."';\n ?> ";
+					$secgroup_cache_tow = "<?php \n".$Ds."sectiongroup_cache ='".$sectiongroup_cache_tow."';\n ?> ";
+
+					$fw1 = fwrite($fp1,$secgroup_cache_one);
+			        fclose($fp1);
+
+					$fw2 = fwrite($fp2,$secgroup_cache_tow);
+			        fclose($fp2);
+	 				if (!$fw)
+	 				{
+	 					$fail = true;
+	 				}
+
+                return ($fail) ? false : true;
 
  			}
 

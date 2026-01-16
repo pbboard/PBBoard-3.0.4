@@ -1670,7 +1670,7 @@ class PowerBBSearchEngineMOD
 		$PowerBB->template->display('search_results_tags');
 	}
 
- function _StartSearchReview_reply()
+  function _StartSearchReview_reply()
 	  {
 	   global $PowerBB;
 
@@ -1692,8 +1692,13 @@ class PowerBBSearchEngineMOD
 				$section	= 	$PowerBB->functions->CleanVariable($section,'sql');
 				$count	= 	$PowerBB->functions->CleanVariable($count,'sql');
 
-                 $review_reply_nm = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['reply'] . " WHERE section = '$section' and review_reply = '1' LIMIT 1"));
-
+	        $rev_q = $PowerBB->DB->sql_fetch_array($PowerBB->DB->sql_query("
+	            SELECT COUNT(R.id) as total
+	            FROM " . $PowerBB->table['reply'] . " R
+	            INNER JOIN " . $PowerBB->table['subject'] . " S ON R.subject_id = S.id
+	            WHERE S.section = '$section' AND R.review_reply = '1' AND R.delete_topic = '0'
+	        "));
+	        $review_reply_nm = (int)$rev_q['total'];
 				if ($review_reply_nm  == '0')
 				{
 				$stop = ($PowerBB->_CONF['info_row']['ajax_search'] and !$PowerBB->_POST['ajax']) ? false : true;
@@ -1715,6 +1720,12 @@ class PowerBBSearchEngineMOD
 				$MemReplyArr['where'][1]['name'] 	= 	'review_reply';
 				$MemReplyArr['where'][1]['oper'] 	= 	'=';
 				$MemReplyArr['where'][1]['value'] 	= 	'1';
+
+				$MemReplyArr['where'][2] 			= 	array();
+				$MemReplyArr['where'][2]['con']		=	'AND';
+				$MemReplyArr['where'][2]['name'] 	= 	'delete_topic';
+				$MemReplyArr['where'][2]['oper'] 	= 	'=';
+				$MemReplyArr['where'][2]['value'] 	= 	'0';
 
 				$MemReplyArr['order'] 			= 	array();
 				$MemReplyArr['order']['field'] 	= 	'id';

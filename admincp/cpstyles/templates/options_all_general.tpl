@@ -71,7 +71,7 @@
 </tr>
 	<tr>
 	<td class="row2">
-	{$lang['no_sub']}
+تفعيل مشاهدة اسماء المنتديات الفرعية المستوى الثاني اسفل الأباء
 	</td>
 	<td class="row2">
 		<select name="no_sub">
@@ -83,6 +83,14 @@
 			<option value="0" selected="selected">{$lang['no']}</option>
 		{/if}
 		</select>
+	</td>
+</tr>
+	<tr>
+	<td class="row2">
+	{$lang['sub_columns_number']}
+	</td>
+	<td class="row2">
+<input type="text" name="sub_columns_number" id="input_sub_columns_number" value="{$_CONF['info_row']['sub_columns_number']}" size="1" dir="ltr" size="1" min="1" max="5" v-model="form.availability" oninput="this.value = this.value.replace(/[^\d.-]+/g, '');" maxlength="3" />
 	</td>
 </tr>
 	<tr>
@@ -99,14 +107,6 @@
 			<option value="0" selected="selected">{$lang['no']}</option>
 		{/if}
 		</select>
-	</td>
-</tr>
-	<tr>
-	<td class="row2">
-	{$lang['sub_columns_number']}
-	</td>
-	<td class="row2">
-<input type="text" name="sub_columns_number" id="input_sub_columns_number" value="{$_CONF['info_row']['sub_columns_number']}" size="1" dir="ltr" size="1" min="1" max="5" v-model="form.availability" oninput="this.value = this.value.replace(/[^\d.-]+/g, '');" maxlength="3" />
 	</td>
 </tr>
 	<tr>
@@ -305,8 +305,6 @@
 <tr valign="top">
 			<td class="row1">
 تفعيل ظهور المنتديات في قائمة الإنتقال السريع في اسفل صفحات المنتدى
-<br />
-{$lang['server_resource_consumption']}
 			</td>
 <td class="row1">
 {if {$_CONF['info_row']['allowed_powered']}}
@@ -318,6 +316,26 @@
 {/if}
 </td>
 </tr>
+<tr valign="top">
+<td class="row1">
+إظهار إحصائيات الأداء (<b>Debug Info</b>)
+<br />
+<font size="1">عرض معلومات استهلاك الذاكرة، عدد الاستعلامات، ووقت تحميل الصفحات وعدد الملفات المستدعاة أسفل المنتدى
+<b>للمديرين فقط</b>.</font>
+<br />
+<small><u>يُنصح بتعطيله في المواقع الكبيرة لتقليل استهلاك الموارد، وتفعيله فقط عند الحاجة لمراقبة الأداء.</u></small>
+</td>
+<td class="row1">
+{if {$_CONF['info_row']['show_debug_info']}}
+<input name="show_debug_info" value="1" id="show_debug_info" type="radio" checked="checked">{$lang['yes']}
+&nbsp;&nbsp;<input name="show_debug_info" value="0" id="show_debug_info" type="radio">{$lang['no']}
+{else}
+<input name="show_debug_info" value="1" id="show_debug_info" type="radio">{$lang['yes']}
+&nbsp;&nbsp;<input name="show_debug_info" value="0" id="show_debug_info" type="radio" checked="checked">{$lang['no']}
+{/if}
+</td>
+</tr>
+
 <tr valign="top" align="center">
 <td class="main2" colspan="2">{$lang['description']}</td>
 </tr>

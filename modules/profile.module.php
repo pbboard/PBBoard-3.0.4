@@ -264,7 +264,7 @@ class PowerBBProfileMOD
 			$PowerBB->_CONF['template']['LastSubject'] = $PowerBB->subject->GetSubjectInfo($LastSubjectArr);
 
 			$PowerBB->functions->CleanVariable($PowerBB->_CONF['template']['LastSubject'],'html');
-          }
+
 
             $forum_not_1 = $PowerBB->_CONF['info_row']['last_subject_writer_not_in'];
 			$LastReplyArr 						= 	array();
@@ -301,67 +301,112 @@ class PowerBBProfileMOD
 
 				$PowerBB->functions->CleanVariable($PowerBB->_CONF['template']['LastReply'],'html');
 			}
+       }
 
 
-		$OnlineArr 				= 	array();
-        $OnlineArr['where'] 	= 	array('username',$PowerBB->_CONF['template']['MemberInfo']['username']);
-		$PowerBB->_CONF['template']['Location'] = $PowerBB->online->GetOnlineInfo($OnlineArr);
-        $PowerBB->_CONF['template']['Location']['path'] = $PowerBB->functions->rewriterule('index.php?'.$PowerBB->_CONF['template']['Location']['path']);
+			// 1. Initialize with default empty values to prevent Template "Undefined Index" errors
+			$PowerBB->_CONF['template']['Location'] = [
+			    'user_location' => '',
+			    'path'          => ''
+			];
 
+			// 2. Check if the online page and hidden status permissions are enabled
+			if (isset($PowerBB->_CONF['group_info']['onlinepage_allow']) AND isset($PowerBB->_CONF['group_info']['show_hidden']))
+			{
+			    // Safely get the username or set to null if not exists
+			    $username_s = $PowerBB->_CONF['template']['MemberInfo']['username'] ?? null;
+
+			    if ($username_s) {
+			        $OnlineArr          = array();
+			        $OnlineArr['where'] = array('username', $username_s);
+
+			        // Fetch data once and store it in a temporary variable to optimize performance
+			        $info = $PowerBB->online->GetOnlineInfo($OnlineArr);
+
+			        // 3. Verify that the location data is not empty before updating the template array
+			        if (!empty($info['user_location'])) {
+			            // Transfer fetched data to the main template array
+			            $PowerBB->_CONF['template']['Location'] = $info;
+
+			            // Process the URL using the rewriterule function
+			            $PowerBB->_CONF['template']['Location']['path'] = $PowerBB->functions->rewriterule('index.php?' . $info['path']);
+			        }
+			    }
+			}
 			$PowerBB->_CONF['template']['MemberInfo']['user_sig'] = $PowerBB->Powerparse->replace($PowerBB->_CONF['template']['MemberInfo']['user_sig']);
 			$PowerBB->_CONF['template']['MemberInfo']['user_sig'] = str_replace('&amp;','&',$PowerBB->_CONF['template']['MemberInfo']['user_sig']);
 			$PowerBB->Powerparse->replace_smiles($PowerBB->_CONF['template']['MemberInfo']['user_sig']);
 		$PowerBB->_GET['count'] = (!isset($PowerBB->_GET['count'])) ? 0 : $PowerBB->_GET['count'];
 		$PowerBB->_GET['count'] = $PowerBB->functions->CleanVariable($PowerBB->_GET['count'],'intval');
+	    if ($PowerBB->_CONF['info_row']['active_friend'])
+	    {
+	        $perpage_Friends = '300';
+	        $user_namee  = $PowerBB->_CONF['template']['MemberInfo']['username'];
+	    	$GetFriendsNum = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT distinct username_friend, userid_friend FROM " . $PowerBB->table['friends'] . " WHERE username = '$user_namee' and approval = '1'"));
 
-        $perpage_Friends = '300';
-        $user_namee  = $PowerBB->_CONF['template']['MemberInfo']['username'];
-    	$GetFriendsNum = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT distinct username_friend, userid_friend FROM " . $PowerBB->table['friends'] . " WHERE username = '$user_namee' and approval = '1'"));
+			// show Friends
+			$FriendsArr = array();
+			$join_primary_letter = 'm';
 
-		// show Friends
-		$FriendsArr 					= 	array();
-		$FriendsArr['where']			= 	array();
-        $FriendsArr['select'] 	        = 	'distinct username_friend, userid_friend';
+			$FriendsArr['select'] = $join_primary_letter.'.*, f.*';
 
-		$FriendsArr['where'][0] 			= 	array();
-		$FriendsArr['where'][0]['name'] 	=  'username';
-		$FriendsArr['where'][0]['oper']		=  '=';
-		$FriendsArr['where'][0]['value']    =  $PowerBB->_CONF['template']['MemberInfo']['username'];
+			$FriendsArr['from'] = $PowerBB->table['friends'] . ' AS '.$join_primary_letter;
 
-		$FriendsArr['order']			=	array();
-		$FriendsArr['order']['field']	=	'id';
-		$FriendsArr['order']['type']	=	'DESC';
-        $FriendsArr['limit']             =    $perpage_Friends;
-		$FriendsArr['proc'] 			= 	array();
-		$FriendsArr['proc']['*'] 		= 	array('method'=>'clean','param'=>'html');
+			$FriendsArr['join'] = array(
+			array(
+			'type'  => 'left',
+			'from'  => $PowerBB->table['member'] . ' AS f',
+			'where' => $join_primary_letter.'.userid_friend = f.id'
+			)
+			);
 
-       $PowerBB->_CONF['template']['while']['FriendsList'] = $PowerBB->core->GetList($FriendsArr,'friends');
+				$FriendsArr['where'] = array();
+				$FriendsArr['where'][0] = array();
+				$FriendsArr['where'][0]['name']  = $join_primary_letter.'.username';
+				$FriendsArr['where'][0]['oper']  = '=';
+				$FriendsArr['where'][0]['value'] = $PowerBB->_CONF['template']['MemberInfo']['username'];
 
-	   $nm = sizeof($PowerBB->_CONF['template']['while']['FriendsList']);
-       $PowerBB->template->assign('nm_friend',$nm);
-       $IsFreind = $PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['friends'] . " WHERE username='".$PowerBB->_CONF['template']['MemberInfo']['username']."' AND username_friend='".$PowerBB->_CONF['member_row']['username']."' or username_friend='".$PowerBB->_CONF['template']['MemberInfo']['username']."' AND username='".$PowerBB->_CONF['member_row']['username']."'" );
+				$FriendsArr['where'][1] = array();
+				$FriendsArr['where'][1]['name']  = 'AND '.$join_primary_letter.'.approval';
+				$FriendsArr['where'][1]['oper']  = '=';
+				$FriendsArr['where'][1]['value'] = '1';
 
-       $IsFreind_row = $PowerBB->DB->sql_fetch_array($IsFreind);
-		if($PowerBB->DB->sql_num_rows($IsFreind) > 0)
-		{
-          $PowerBB->template->assign('is_friend',1);
-          $PowerBB->template->assign('friendship_id',$IsFreind_row['id']."&amp;userid=".$PowerBB->_CONF['template']['MemberInfo']['id']);
+				$FriendsArr['order']            = array();
+				$FriendsArr['order']['field']   = $join_primary_letter.'.id';
+				$FriendsArr['order']['type']    = 'DESC';
+				$FriendsArr['limit']            = $perpage_Friends;
 
-		}
-       else
-        {
-		$PowerBB->template->assign('is_friend',0);
+				$FriendsArr['proc']             = array();
+				$FriendsArr['proc']['*']        = array('method'=>'clean','param'=>'html');
+
+				$PowerBB->_CONF['template']['while']['FriendsList'] = $PowerBB->core->GetListAdvanced($FriendsArr, 'friends', $join_primary_letter);
+
+		   $nm = sizeof($PowerBB->_CONF['template']['while']['FriendsList']);
+	       $PowerBB->template->assign('nm_friend',$nm);
+	       $IsFreind = $PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['friends'] . " WHERE username='".$PowerBB->_CONF['template']['MemberInfo']['username']."' AND username_friend='".$PowerBB->_CONF['member_row']['username']."' or username_friend='".$PowerBB->_CONF['template']['MemberInfo']['username']."' AND username='".$PowerBB->_CONF['member_row']['username']."'" );
+
+	       $IsFreind_row = $PowerBB->DB->sql_fetch_array($IsFreind);
+			if($PowerBB->DB->sql_num_rows($IsFreind) > 0)
+			{
+	          $PowerBB->template->assign('is_friend',1);
+	          $PowerBB->template->assign('friendship_id',$IsFreind_row['id']."&amp;userid=".$PowerBB->_CONF['template']['MemberInfo']['id']);
+
+			}
+	       else
+	        {
+			$PowerBB->template->assign('is_friend',0);
+	        }
+
+	       if ($nm > 0)
+			{
+	            $PowerBB->template->assign('edit_friend',1);
+				$PowerBB->template->assign('No_Friends',false);
+			}
+	     	else
+			{
+				$PowerBB->template->assign('No_Friends',true);
+			}
         }
-
-       if ($nm > 0)
-		{
-            $PowerBB->template->assign('edit_friend',1);
-			$PowerBB->template->assign('No_Friends',false);
-		}
-     	else
-		{
-			$PowerBB->template->assign('No_Friends',true);
-		}
 
        if($PowerBB->_CONF['template']['MemberInfo']['username'] != $PowerBB->_CONF['member_row']['username'])
        {
@@ -381,12 +426,12 @@ class PowerBBProfileMOD
 
 		//////////
 		//show Award member
-       $ALL_Awards_nm = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['award'] . " "));
+       $ALL_Awards_nm = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(*) FROM " . $PowerBB->table['award'] . " "));
        if ($ALL_Awards_nm > 0)
 		{
 
 		 $username = $PowerBB->_CONF['template']['MemberInfo']['username'];
-         $Award_nm = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['award'] . " WHERE username='$username'"));
+         $Award_nm = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(*) FROM " . $PowerBB->table['award'] . " WHERE username='$username'"));
          $PowerBB->template->assign('Awards_nm',$Award_nm);
 
 		$AwardArr 							= 	array();
@@ -420,14 +465,37 @@ class PowerBBProfileMOD
 		       	$PowerBB->template->assign('visitor_message_num',$GetVisitorMessageNum);
 		       	$perpage = '8';
 
-				$VisitorMessageArr 					        = 	array();
 
-				$VisitorMessageArr['where'] 				= 	array();
-				$VisitorMessageArr['where'][0] 		     	= 	array();
-				$VisitorMessageArr['where'][0]['name']   	=  'userid';
-				$VisitorMessageArr['where'][0]['oper']		=  '=';
-				$VisitorMessageArr['where'][0]['value']     =  $PowerBB->_CONF['template']['MemberInfo']['id'];
 
+				$VisitorMessageArr = array();
+				$join_primary_letter = 'm';
+				$VisitorMessageArr['select'] = '
+				    '.$join_primary_letter.'.*,
+				    u_owner.username_style_cache AS owner_style,
+				    u_owner.avater_path AS owner_avatar,
+				    u_author.username_style_cache AS postusername_style,
+				    u_author.avater_path AS postusername_avatar_path';
+
+				$VisitorMessageArr['from'] = $PowerBB->table['visitormessage'] . ' AS '.$join_primary_letter;
+
+				$VisitorMessageArr['join'] = array(
+				    array(
+				        'type'  => 'left',
+				        'from'  => $PowerBB->table['member'] . ' AS u_owner',
+				        'where' => $join_primary_letter.'.userid = u_owner.id'
+				    ),
+				    array(
+				        'type'  => 'left',
+				        'from'  => $PowerBB->table['member'] . ' AS u_author',
+				        'where' => $join_primary_letter.'.postuserid = u_author.id'
+				    )
+				);
+
+				$VisitorMessageArr['where'] = array();
+				$VisitorMessageArr['where'][0] = array();
+				$VisitorMessageArr['where'][0]['name']  = $join_primary_letter.'.userid';
+				$VisitorMessageArr['where'][0]['oper']  = '=';
+				$VisitorMessageArr['where'][0]['value'] = $PowerBB->_CONF['template']['MemberInfo']['id'];
 			   // Pager setup
 				$VisitorMessageArr['pager'] 				= 	array();
 				$VisitorMessageArr['pager']['total']		= 	$GetVisitorMessageNum;
@@ -437,7 +505,7 @@ class PowerBBProfileMOD
 				$VisitorMessageArr['pager']['var'] 		    = 	'count';
 
 				$VisitorMessageArr['order']		        	=	array();
-				$VisitorMessageArr['order']['field']    	=	'id';
+				$VisitorMessageArr['order']['field']    	=	$join_primary_letter.'.id';
 				$VisitorMessageArr['order']['type']     	=	'DESC';
 
 				$VisitorMessageArr['proc'] 			        = 	array();
@@ -446,7 +514,7 @@ class PowerBBProfileMOD
 
 
 
-			    $PowerBB->_CONF['template']['while']['VisitorMessageList'] = $PowerBB->core->GetList($VisitorMessageArr,'visitormessage');
+			    $PowerBB->_CONF['template']['while']['VisitorMessageList'] = $PowerBB->core->GetListAdvanced($VisitorMessageArr,'visitormessage',$join_primary_letter);
 
 				if ($PowerBB->_CONF['template']['while']['VisitorMessageList'] == false)
 				{

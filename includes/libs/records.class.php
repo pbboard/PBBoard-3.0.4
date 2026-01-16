@@ -4,6 +4,7 @@ Started : 19-4-2007 11:55 AM
 End : 19-4-2007 12:03 PM
 Update : 31/09/2012 08:56:54 AM
 Update : 02/04/2021 09:05:54 AM
+Update $param['join']: 12/01/2026 01:57:54 AM
 */
 
 class PowerBBRecords
@@ -27,26 +28,38 @@ class PowerBBRecords
 		$statement	.=	(!empty($param['select'])) ? $param['select'] : '*';
 		$statement	.=	' FROM ' . $param['from'];
 
-		if (@is_array($param['join']))
+		if (!empty($param['join']))
 		{
-			if ($param['join']['type'] == 'inner')
-			{
-				$statement .= ' INNER';
-			}
-			elseif ($param['join']['type'] == 'left')
-			{
-				$statement .= ' LEFT';
-			}
-			elseif ($param['join']['type'] == 'right')
-			{
-				$statement .= ' RIGHT';
-			}
-			else
-			{
-				trigger_error('ERROR::NEED_PARAMETER -- FROM Select() -- JOIN TYPE',E_USER_ERROR);
-			}
+		    $joins = is_array(reset($param['join']))
+		        ? $param['join']
+		        : array($param['join']);
 
-			$statement .= ' JOIN ' . $param['join']['from'] . ' ON ' . $param['join']['where'];
+		    foreach ($joins as $join)
+		    {
+		        if (empty($join['type']) or empty($join['from']) or empty($join['where']))
+		        {
+		            trigger_error('ERROR::NEED_PARAMETER -- FROM Select() -- JOIN', E_USER_ERROR);
+		        }
+
+		        if ($join['type'] == 'inner')
+		        {
+		            $statement .= ' INNER';
+		        }
+		        elseif ($join['type'] == 'left')
+		        {
+		            $statement .= ' LEFT';
+		        }
+		        elseif ($join['type'] == 'right')
+		        {
+		            $statement .= ' RIGHT';
+		        }
+		        else
+		        {
+		            trigger_error('ERROR::INVALID_JOIN_TYPE -- Select()', E_USER_ERROR);
+		        }
+
+		        $statement .= ' JOIN ' . $join['from'] . ' ON ' . $join['where'];
+		    }
 		}
 
 		if (@is_array($param['where'])

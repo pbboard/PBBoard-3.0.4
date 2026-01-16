@@ -46,8 +46,7 @@ if($not_installed !== false)
 // Include the required core config
 require_once('includes/config.php');
 
-// Ensure if tables are installed or not
-require_once('includes/libs/functions.class.php');
+
 // Connect to database
 if($config['db']['dbtype'] == 'mysqli')
 {
@@ -55,17 +54,10 @@ require_once('includes/libs/db_mysqli.class.php');
 }
 elseif($config['db']['dbtype'] == 'mysql')
 {
-	// Check PHP Version
-	if(version_compare(PHP_VERSION, '7.0.0', "<"))
-	{
-  		require_once('includes/libs/db.class.php');
-	}
-	else
-	{
-		exit("<br /><div style='width: 400px; font: 13pt/15pt verdana, arial, sans-serif; height: 35px; vertical-align: top;'><font color=#000080>Database error:This extension '<font color=#0000FF><b>MySQL</b></font>' was deprecated in PHP 5.5.0, and it not working in PHP 7.0.0. Instead, the <font color=#33CC33><b>MySQLi</b></font>' extension should be used.</font></div>");
-	}
-
+require_once('includes/libs/db.class.php');
 }
+// Ensure if tables are installed or not
+require_once('includes/libs/functions.class.php');
 require_once('includes/libs/records.class.php');
 require_once('includes/libs/pager.class.php');
 
@@ -227,7 +219,33 @@ class PowerBB
 	{
 		global $config,$_VARS,$CALL_SYSTEM;
 
-		$this->_CONF		=	array();
+       // 1. تعريف مصفوفات الإعدادات
+        $this->_CONF = array();
+        $this->_CONF['now'] = time();
+
+        // 2. الاتصال بالقاعدة أولاً (كما في الأصل)
+        $this->DB = new PowerBBSQL($this);
+  		$this->DB->SetInformation(	$config['db']['server'],
+  									$config['db']['username'],
+  									$config['db']['password'],
+  									$config['db']['name'],
+  									$config['db']['dbtype'],
+  									$config['db']['encoding'],
+  									$config['db']['prefix']);
+        $this->DB->sql_connect();
+
+		// General systems
+  		$this->records			   =	new PowerBBRecords($this);
+  		$this->sys_functions	   =	new PowerBBSystemFunctions($this);
+        $this->functions           =    new PowerBBFunctions($this);
+        $this->pager			   =	new PowerBBPager($this);
+
+
+  		if (!empty($config['db']['prefix']))
+  		{
+  			$this->prefix = $config['db']['prefix'];
+  		}
+
 		$this->_GET		    =	array();
 		$this->_POST		=	array();
 		$this->_COOKIE		=	array();
@@ -236,39 +254,10 @@ class PowerBB
 		//$this->table		=	array();
 		$this->_REQUEST		=	array();
 
-		// General systems
-		$this->DB				   = 	new PowerBBSQL($this);
-  		$this->pager			   =	new PowerBBPager($this);
-  		$this->sys_functions	   =	new PowerBBSystemFunctions($this);
-  		$this->records			   =	new PowerBBRecords($this);
-        $this->functions           =    new PowerBBFunctions($this);
-
-  		////////////
-		if (!defined('INSTALL'))
-		{
-  			$this->Powerparse	  	= 	new PowerBBCodeParse($this);
-  		    $this->template = new PBBTemplate($this);
-	  		if (defined('IN_ADMIN'))
-	  		{
-				$this->FeedParser	  	= 	new FeedParser($this);
-
-	  		}
-		 }
-
-  		$this->DB->SetInformation(	$config['db']['server'],
-  									$config['db']['username'],
-  									$config['db']['password'],
-  									$config['db']['name'],
-  									$config['db']['dbtype'],
-  									$config['db']['encoding'],
-  									$config['db']['prefix']);
 
   		////////////
 
-  		if (!empty($config['db']['prefix']))
-  		{
-  			$this->prefix = $config['db']['prefix'];
-  		}
+
   		if (!empty($config['Misc']['admincpdir']))
   		{
   			$this->admincpdir = $config['Misc']['admincpdir'];
@@ -282,6 +271,19 @@ class PowerBB
   			$this->DISABLE_HOOKS = $config['HOOKS']['DISABLE_HOOKS'];
   		}
   		////////////
+
+
+		if (!defined('INSTALL'))
+		{
+  			$this->Powerparse	  	= 	new PowerBBCodeParse($this);
+  		    $this->template = new PBBTemplate($this);
+	  		if (defined('IN_ADMIN'))
+	  		{
+				$this->FeedParser	  	= 	new FeedParser($this);
+
+	  		}
+		 }
+
 
   		$this->table['ads'] 			= 	$this->prefix . 'ads';
   		$this->table['announcement'] 	= 	$this->prefix . 'announcement';
@@ -360,28 +362,16 @@ class PowerBB
  		$this->_CONF['style_cookie']			=	'PowerBB_style';
  		$this->_CONF['lang_cookie']			    =	'PowerBB_lang';
  		$this->_CONF['today_cookie']			=	'PowerBB_today_date';
-		// true or false Cache
- 		$this->_CONF['files_sectiongroup_cache']=	false; // Default false
- 		$this->_CONF['files_forums_Cache']      =	false; // Default false
- 		// New 14-03-2024
- 		$this->_CONF['forums_parent_direct']      =	true; // Default true
+		// true or false of sections and sectiongroup Cache
+ 		$this->_CONF['files_sectiongroup_cache']=	true; // Default true - The option has been activated in 09-01-2026
+ 		$this->_CONF['files_forums_Cache']      =	true; // Default true - The option has been activated in 09-01-2026
+ 		$this->_CONF['forums_parent_direct']    =	false; // Default false - The option has been disabled in 09-01-2026
  		////////////
-
          $this->sys_functions->LocalArraySetup();
 
  		////////////
 
- 		if($config['db']['dbtype'] == 'mysql')
-		{
-			// Check PHP Version
-			if(version_compare(PHP_VERSION, '7.0.0', "<"))
-			{
-				// Connect to database
-				$this->DB->sql_connect();
-				$this->DB->sql_select_db();
-			}
 
-		}
 
   		// Ensure if tables are installed or not
   		$check = $this->DB->check($this->prefix . 'info');
@@ -473,7 +463,7 @@ class PowerBB
 
         ////////////
 
-    	$this->_CONF['now']						=	time();
+
  		$this->_CONF['timeout']					=	time()-300;
  		$this->_CONF['date']					=	@date('j/n/Y');
  		$this->_CONF['day']						=	@date('D');

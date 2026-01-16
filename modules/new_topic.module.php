@@ -147,8 +147,8 @@ class PowerBBTopicAddMOD
 
 
 
-		if ($PowerBB->_CONF['group_info']['view_subject'] == 0)
-		{
+		if (!$PowerBB->functions->section_group_permission($this->SectionInfo['id'],$PowerBB->_CONF['group_info']['id'],'view_subject'))
+		{		  $PowerBB->functions->ShowHeader($PowerBB->_CONF['template']['_CONF']['lang']['Mistake']);
           if (!$PowerBB->_CONF['member_permission'])
               {
               $PowerBB->template->display('login');
@@ -707,12 +707,15 @@ class PowerBBTopicAddMOD
 		$SecInfoArr['where'] 	= 	array('id',$this->SectionInfo['id']);
 
 		$section_info = $PowerBB->core->GetInfo($SecInfoArr,'section');
-		       //Create last writer cache:  id & avater_path & username_style_cache
+		       //Create writer cache:  id & avater_path & username_style_cache
 				$cache = array();
 				$cache[1]['user_id']		 	                = 	$PowerBB->_CONF['rows']['member_row']['id'];
 				$cache[2]['avater_path']		 	            = 	$PowerBB->_CONF['rows']['member_row']['avater_path'];
 				$cache[3]['username_style']		 	            = 	$PowerBB->_CONF['rows']['member_row']['username_style_cache'];
-				$cache[4]['section_title']		 	            = 	$this->SectionInfo['title'];
+				$cache[4]['section_id']		 	                = 	$this->SectionInfo['id'];
+				$cache[5]['total_posts_count']		 	        = 	'0';
+				$cache[6]['last_reply_id']		 	            = 	'0';
+				$cache[7]['last_berpage_nm']		 	        = 	'0';
 
 				$cache = serialize($cache);
 

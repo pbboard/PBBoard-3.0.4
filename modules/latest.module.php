@@ -63,38 +63,71 @@ class PowerBBLatestMOD
 
        $subject_today_nmbr  = $subject_today_nm;
 
+		// SELECT fields
+		$SubjectArr['select'] = '
+		    s.*,
+		    m.id AS writer_id,
+		    m.username_style_cache,
+		    sec.id AS section_id,
+		    sec.title AS section_title,
+		    lr.id AS last_replier_id,
+		    lr.username_style_cache AS last_replier_style';
 
+		// FROM
+		$SubjectArr['from'] = $PowerBB->table['subject'] . ' AS s';
 
-		$SubjectArr = array();
+		// JOINs
+		$SubjectArr['join'] = array(
+		    array(
+		        'type'  => 'left',
+		        'from'  => $PowerBB->table['member'] . ' AS m',
+		        'where' => 'm.username = s.writer'
+		    ),
+		    array(
+		        'type'  => 'left',
+		        'from'  => $PowerBB->table['section'] . ' AS sec',
+		        'where' => 'sec.id = s.section'
+		    ),
+		    array(
+		        'type'  => 'left',
+		        'from'  => $PowerBB->table['member'] . ' AS lr',
+		        'where' => 'lr.username = s.last_replier'
+		    )
+		);
 
-		$SubjectArr['order'] 				= 	array();
-		$SubjectArr['order']['field'] 	= 	'native_write_time';
-		$SubjectArr['order']['type'] 		= 	'DESC';
+		// WHERE conditions
+		$SubjectArr['where'] = array();
+		$SubjectArr['where'][0] = array(
+		    'con'   => 'AND',
+		    'name'  => 's.native_write_time >= ' . $deys .
+		               ' AND s.section NOT IN (' . $forum_not . ')' .
+		               ' AND s.review_subject<>1 AND s.delete_topic',
+		    'oper'  => '<>',
+		    'value' => 1
+		);
 
-		$SubjectArr['where'][1]           =    array();
-		$SubjectArr['where'][1]['con']       =    'sec_section <> 1 AND';
-		$SubjectArr['where'][1]['name']    =    'native_write_time >= ' . $deys . ' AND section not in (' .$forum_not. ') AND review_subject<>1 AND delete_topic';
-		$SubjectArr['where'][1]['oper']    =    '<>';
-		$SubjectArr['where'][1]['value']    =    '1';
+		// ORDER
+		$SubjectArr['order'] = array(
+		    'field' => 's.native_write_time',
+		    'type'  => 'DESC'
+		);
 
+		// PAGER
+		$SubjectArr['pager'] = array(
+		    'total'    => $subject_today_nm,
+		    'perpage'  => $PowerBB->_CONF['info_row']['perpage'],
+		    'count'    => $PowerBB->_GET['count'],
+		    'location' => 'index.php?page=latest&amp;today=1',
+		    'var'      => 'count'
+		);
 
-		$SubjectArr['proc']                    =    array();
-		// Ok Mr.** go to hell !
-		$SubjectArr['proc']['*']                 =    array('method'=>'clean','param'=>'html');
-		$SubjectArr['proc']['native_write_time']    =    array('method'=>'date','store'=>'write_date','type'=>$PowerBB->_CONF['info_row']['timesystem']);
-		$SubjectArr['proc']['write_time']           =    array('method'=>'date','store'=>'reply_date','type'=>$PowerBB->_CONF['info_row']['timesystem']);
-		// Pager setup
+		$SubjectArr['proc'] = array(
+		    '*' => array('method'=>'clean','param'=>'html'),
+		    'native_write_time' => array('method'=>'date','store'=>'write_date','type'=>$PowerBB->_CONF['info_row']['timesystem']),
+		    'write_time' => array('method'=>'date','store'=>'reply_date','type'=>$PowerBB->_CONF['info_row']['timesystem'])
+		);
 
-
-		$SubjectArr['pager']              =    array();
-		$SubjectArr['pager']['total']       =    $subject_today_nm;
-		$SubjectArr['pager']['perpage']    =    $PowerBB->_CONF['info_row']['perpage'];
-		$SubjectArr['pager']['count']        =    $PowerBB->_GET['count'];
-		$SubjectArr['pager']['location']    =    'index.php?page=latest&today=1';
-		$SubjectArr['pager']['var']        =    'count';
-
-
-       $PowerBB->_CONF['template']['while']['subject_list'] = $PowerBB->core->GetList($SubjectArr,'subject');
+		$PowerBB->_CONF['template']['while']['subject_list'] = $PowerBB->subject->GetSubjectListAdvanced($SubjectArr);
       if ($subject_today_nm > $PowerBB->_CONF['info_row']['perpage'])
        {
          $PowerBB->template->assign('pager',$PowerBB->pager->show());

@@ -62,7 +62,7 @@ class PowerBBSubject
 
  		if (isset($param['field']['tags_cache']))
  		{
- 			$param['field']['tags_cache'] = json_encode($param['field']['tags_cache']);
+ 			$param['field']['tags_cache'] = json_encode($param['field']['tags_cache'],JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
  		}
 
 		$query = $this->Engine->records->Update($this->Engine->table['subject'],$param['field'],$param['where']);
@@ -86,6 +86,26 @@ class PowerBBSubject
 
  	 	return $rows;
 	}
+
+	function GetSubjectListAdvanced($param)
+	{
+	    if (!isset($param) || !is_array($param)) {
+	        $param = array();
+	    }
+
+	    if (empty($param['select'])) {
+	        $param['select'] = 's.*';
+	    }
+
+	    if (empty($param['from'])) {
+	        $param['from'] = $this->Engine->table['subject'] . ' AS s';
+	    }
+
+        $rows = $this->Engine->records->GetList($param);
+
+	    return $rows;
+	}
+
 
 	function GetSubjectInfo($param)
 	{

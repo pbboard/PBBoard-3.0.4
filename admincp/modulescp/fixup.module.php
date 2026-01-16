@@ -17,21 +17,33 @@ define('CLASS_NAME','PowerBBFixMOD');
 include('../common.php');
 class PowerBBFixMOD
 {
-	function run()
+function run()
 	{
 		global $PowerBB;
 
 		if ($PowerBB->_CONF['member_permission'])
 		{
-            if (!$PowerBB->_GET['pbboard_updates']){
-			$PowerBB->template->display('header');
-             }
+            // 1. Prevent Header for AJAX and Specific Actions
+	        if (!isset($PowerBB->_GET['ajax_process']) && !isset($PowerBB->_GET['get_total']) && !isset($PowerBB->_GET['pbboard_updates']) && !isset($PowerBB->_GET['clear_all_files_cache']) && !isset($PowerBB->_GET['delete_orphan_replies'])) {
+	            $PowerBB->template->display('header');
+	        }
+
 			if ($PowerBB->_CONF['rows']['group_info']['admincp_fixup'] == '0')
 			{
-			  $PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['error_permission']);
+			    $PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['error_permission']);
 			}
 
-			if ($PowerBB->_GET['repair'])
+            // --- Priority Check: Update Posts (Move to Top) ---
+			if (isset($PowerBB->_GET['update_posts']) && (isset($PowerBB->_GET['ajax_process']) || isset($PowerBB->_GET['get_total'])))
+			{
+                 $this->_UpdatePostsStart();
+			}
+            // --- End Priority Check ---
+			if (isset($PowerBB->_GET['delete_orphan_replies']))
+			{
+                 $this->_DeleteOrphanReplies();
+			}
+			elseif ($PowerBB->_GET['repair'])
 			{
 				if ($PowerBB->_GET['main'])
 				{
@@ -41,30 +53,29 @@ class PowerBBFixMOD
 			elseif ($PowerBB->_GET['update_meter'])
 			{
 				if ($PowerBB->_GET['main'])
-				{
-					$this->_MeterMain();
+				{					$this->_MeterMain();
 				}
 				elseif ($PowerBB->_GET['start'])
 				{
 					$this->_MeterStart();
 				}
-				elseif ($PowerBB->_GET['all_cache'])
+				elseif (isset($PowerBB->_GET['all_cache']) && isset($PowerBB->_GET['ajax_process']))
 				{
-					$this->_AllCacheStart();
+                    $this->_AllCacheStart();
+				}
+				elseif ($PowerBB->_GET['clear_all_files_cache'])
+				{
+					$deletedCacheFiles = $PowerBB->functions->clearForumsCacheFiles();
+					if ($deletedCacheFiles) { die("SUCCESS"); }
 				}
 				elseif ($PowerBB->_GET['groups'])
 				{
 					$this->_MeterGroupsStart();
 				}
-
 			}
 			elseif ($PowerBB->_GET['repair_mem_posts'])
 			{
 				$this->_RepairMemberPostsStart();
-			}
-			elseif ($PowerBB->_GET['update_posts'])
-			{
-				$this->_UpdatePostsStart();
 			}
 			elseif ($PowerBB->_GET['update_username_members'])
 			{
@@ -86,14 +97,15 @@ class PowerBBFixMOD
 			{
 				$this->_php_infoStart();
 			}
-			elseif ($PowerBB->_GET['pbboard_updates']
-			and $PowerBB->_GET['start'])
+			elseif ($PowerBB->_GET['pbboard_updates'] && $PowerBB->_GET['start'])
 			{
 				$this->_pbboard_updates_start();
 			}
-           if (!$PowerBB->_GET['pbboard_updates']){
-			$PowerBB->template->display('footer');
-			}
+
+            // 2. Prevent Footer for AJAX and Specific Actions
+	        if (!isset($PowerBB->_GET['ajax_process']) && !isset($PowerBB->_GET['get_total']) && !isset($PowerBB->_GET['pbboard_updates']) && !isset($PowerBB->_GET['delete_orphan_replies']) && !isset($PowerBB->_GET['clear_all_files_cache'])) {
+                $PowerBB->template->display('footer');
+            }
 		}
 	}
 
@@ -231,88 +243,144 @@ class PowerBBFixMOD
 
 	function _AllCacheStart()
 	{
-		global $PowerBB;
+	    global $PowerBB;
+	    @session_write_close();
+	    // جلب رقم القسم عبر نظام السكربت المفلتر
+	    $sec_id = isset($PowerBB->_GET['sec_id']) ? $PowerBB->_GET['sec_id'] : 0;
 
-		if(!isset($PowerBB->_GET['pag']))
-		{
-		$page = 1;
-		}
-		else
-		{
-		$page = $PowerBB->_GET['pag'];
-		}
-		$page = ($page == 0 ? 1 : $page);
-		$perpage = 8;
-		$startpoint = ($page * $perpage) - $perpage;
-		if(!isset($PowerBB->_GET['pag']))
-		{
-		 $Empty_cache = $PowerBB->DB->sql_query("UPDATE " . $PowerBB->table['section'] . " SET forums_cache = '', sectiongroup_cache = ''");
+	    if ($sec_id > 0) {
 
-		  if($Empty_cache)
-		  {
-		  $REPAIR_TABLE = $PowerBB->DB->sql_query("REPAIR TABLE " . $PowerBB->table['section'] . "");
-		  $REPAIR_TABLE_info = $PowerBB->DB->sql_query("REPAIR TABLE " . $PowerBB->table['info'] . "");
-		  }
-		}
+         // 1. عدد الردود بانتظار الموافقة لهذا القسم (منطق الدالة القديمة)
+	        $rev_q = $PowerBB->DB->sql_fetch_array($PowerBB->DB->sql_query("
+	            SELECT COUNT(R.id) as total
+	            FROM " . $PowerBB->table['reply'] . " R
+	            INNER JOIN " . $PowerBB->table['subject'] . " S ON R.subject_id = S.id
+	            WHERE S.section = '$sec_id' AND R.review_reply = '1' AND R.delete_topic = '0'
+	        "));
+	        $r_review_num = $rev_q['total'];
 
- 		$forumArr = $PowerBB->DB->sql_query("SELECT id,title FROM " . $PowerBB->table['section'] . " ORDER BY id DESC LIMIT ".$startpoint.",".$perpage." ");
-		$forum_nm = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(id) FROM " . $PowerBB->table['section'] . ""));
+	        // 2. عدد المواضيع بانتظار الموافقة لهذا القسم (منطق الدالة القديمة)
+	        $s_review = $PowerBB->DB->sql_fetch_array($PowerBB->DB->sql_query("
+	            SELECT COUNT(id) as total FROM " . $PowerBB->table['subject'] . "
+	            WHERE section = '$sec_id' AND review_subject = '1' AND delete_topic = '0'
+	        "));
+	        $s_review_num = $s_review['total'];
 
-        $pagesnum = round(ceil($forum_nm / $perpage));
-        echo('<br><br><table border="1" width="80%" cellspacing="0" cellpadding="0" bgcolor="#FFFFFF" style="border-collapse: collapse" align="center"><tr><td><font face="Tahoma" size="2">');
+	        // 3. إحصائيات المواضيع والردود المعتمدة (الظاهرة للزوار)
+	        $stats = $PowerBB->DB->sql_fetch_array($PowerBB->DB->sql_query("
+	            SELECT COUNT(id) as total_s, SUM(reply_number) as total_r
+	            FROM " . $PowerBB->table['subject'] . "
+	            WHERE section = '$sec_id' AND delete_topic = '0' AND review_subject = '0'
+	        "));
+	        $s_num = $stats['total_s'];
+	        $r_num = $stats['total_r'];
 
-		while ($forum_row = $PowerBB->DB->sql_fetch_array($forumArr))
-		{
+	        // 4. جلب بيانات آخر نشاط بناءً على write_time
+	        $last_act = $PowerBB->DB->sql_fetch_array($PowerBB->DB->sql_query("
+	            SELECT id, title, writer, last_replier, write_time, reply_number
+	            FROM " . $PowerBB->table['subject'] . "
+	            WHERE section = '$sec_id' AND delete_topic = '0' AND review_subject = '0'
+	            ORDER BY CAST(write_time AS UNSIGNED) DESC LIMIT 1
+	        "));
 
-		 $UpdateSectionCache = $PowerBB->functions->UpdateSectionCache($forum_row['id']);
-          if($forum_row['id'])
-          {
-           $Updated = '1';
-          }
-		 if ($Updated)
-		  {
-		  echo($PowerBB->_CONF['template']['_CONF']['lang']['updated']  .  $forum_row['title']  .  $PowerBB->_CONF['template']['_CONF']['lang']['Successfully'] .' .. <br />');
-		  }
-
-		}
-		echo('</font></td></tr></table>');
-		$current_page = $page;
-
-		if ($Updated)
-		{
-			if($pagesnum != $current_page or $pagesnum > $current_page)
-			{
-			$n_page = $current_page+1;
-			$seconds= 1;
-			$n_page = intval($n_page);
-			echo('<br><table border="1" width="80%" cellspacing="0" cellpadding="0" bgcolor="#E5EBF0" style="border-collapse: collapse" align="center"><tr><td><font face="Tahoma" size="2">');
-			$transition_click = $PowerBB->_CONF['template']['_CONF']['lang']['If_your_browser_does_not_support_automatic_transition_click_here'];
-			echo('<a href="index.php?page=fixup&amp;update_meter=1&amp;all_cache=1&amp;pag='.$n_page.'">'.$transition_click.'</a>');
-			echo($PowerBB->_CONF['template']['_CONF']['lang']['Waiting_Time'].$seconds.$PowerBB->_CONF['template']['_CONF']['lang']['seconds']);
-			echo('</font></td></tr></table>');
-
-			$PowerBB->functions->redirect('index.php?page=fixup&update_meter=1&all_cache=1&pag='.$n_page,$seconds);
-			}
-			else
-			{
-			$PowerBB->functions->msg($PowerBB->_CONF['template']['_CONF']['lang']['updated_successfully']);
-
-			$Update_Cache_groups = $PowerBB->functions->Update_Cache_groups();
-			$permission = $PowerBB->functions->_MeterGroupsStart();
-            $REPAIR_TABLE = $PowerBB->DB->sql_query("REPAIR TABLE " . $PowerBB->table['section'] . "");
-			$PowerBB->functions->redirect('index.php?page=fixup&amp;update_meter=1&amp;main=1');
-			}
-
-		}
-		else
-		{
-		echo('<br><table border="1" width="80%" cellspacing="0" cellpadding="0" bgcolor="#E5EBF0" style="border-collapse: collapse" align="center"><tr><td><font face="Tahoma" size="2">');
-		echo($PowerBB->_CONF['template']['_CONF']['lang']['not_the_update']);
-		echo('</font></td></tr></table>');
-		}
+	        $l_id    = isset($last_act['id']) ? $last_act['id'] : 0;
+	        $l_title = isset($last_act['title']) ? $last_act['title'] : '';
+	        $l_time  = isset($last_act['write_time']) ? $last_act['write_time'] : 0;
+	        $l_writer = (isset($last_act['reply_number']) && $last_act['reply_number'] > 0) ? $last_act['last_replier'] : (isset($last_act['writer']) ? $last_act['writer'] : '');
 
 
+	        // 5. جلب بيانات آخر نشاط بناءً على last_reply
+	        $last_reply = $PowerBB->DB->sql_fetch_array($PowerBB->DB->sql_query("
+	            SELECT id
+	            FROM " . $PowerBB->table['reply'] . "
+	            WHERE section = '$sec_id' AND subject_id = '$l_id' AND delete_topic = '0' AND review_reply = '0'
+	            ORDER BY CAST(write_time AS UNSIGNED) DESC LIMIT 1
+	        "));
+            $l_last_reply    = isset($last_reply['id']) ? $last_reply['id'] : 0;
 
+	        // 6. جلب وتجهيز بيانات المشرفين
+	        $mod_cache = array();
+	        $mod_query = $PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['moderators'] . " WHERE section_id = '$sec_id'");
+	        while ($mod = $PowerBB->DB->sql_fetch_array($mod_query)) {
+	            $u_info = $PowerBB->DB->sql_fetch_array($PowerBB->DB->sql_query("SELECT id, avater_path, username_style_cache FROM " . $PowerBB->table['member'] . " WHERE id = '" . $mod['member_id'] . "' LIMIT 1"));
+	            $mod_cache[] = array(
+	                'id'                   => $mod['id'],
+	                'section_id'           => $mod['section_id'],
+	                'member_id'            => $mod['member_id'],
+	                'username'             => $mod['username'],
+	                'avater_path'          => (isset($u_info['avater_path']) ? $u_info['avater_path'] : ''),
+	                'username_style_cache' => (isset($u_info['username_style_cache']) ? $u_info['username_style_cache'] : '')
+	            );
+	        }
+	        $mod_json = (!empty($mod_cache)) ? json_encode($mod_cache, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) : '[]';
+
+	        // 7. التحديث الشامل لجدول الأقسام
+	        $PowerBB->DB->sql_query("
+	            UPDATE " . $PowerBB->table['section'] . "
+	            SET subject_num = '$s_num',
+	                reply_num = '$r_num',
+	                subjects_review_num = '$s_review_num',
+	                replys_review_num = '$r_review_num',
+	                last_subjectid = '$l_id',
+	                last_subject = '" . $PowerBB->DB->sql_escape($l_title) . "',
+	                last_writer = '" . $PowerBB->DB->sql_escape($l_writer) . "',
+	                last_reply = '$l_last_reply',
+	                last_date = '$l_time',
+	                last_time = '$l_time',
+	                moderators = '" . $PowerBB->DB->sql_escape($mod_json) . "'
+	            WHERE id = '$sec_id'
+	        ");
+
+	        // 8. بناء حقل forums_cache الهجين (خفيف وسريع)
+	        $cache_array = array();
+	        $parent_array = array();
+	        $sub_forums_query = $PowerBB->DB->sql_query("SELECT id, title, subject_num, reply_num, last_subject, last_subjectid, last_date, last_writer, moderators FROM " . $PowerBB->table['section'] . " WHERE parent = '$sec_id' ORDER BY sort ASC");
+
+	        if ($PowerBB->DB->sql_num_rows($sub_forums_query) > 0) {
+	            while ($sub = $PowerBB->DB->sql_fetch_array($sub_forums_query)) {
+	                $temp = array(
+	                    'id' => $sub['id'], 'title' => $sub['title'], 'subject_num' => $sub['subject_num'],
+	                    'reply_num' => $sub['reply_num'], 'last_subject' => $sub['last_subject'],
+	                    'last_subjectid' => $sub['last_subjectid'], 'last_date' => $sub['last_date'],
+	                    'last_writer' => $sub['last_writer'], 'moderators' => $sub['moderators']
+	                );
+
+						if($sub['parent'])
+						{
+						$parents['parent'] 	= 	$sub;
+						}
+	                // جلب ستايل وأفاتار آخر كاتب للقسم الفرعي
+	                if (!empty($sub['last_writer'])) {
+	                    $u = $PowerBB->DB->sql_fetch_array($PowerBB->DB->sql_query("SELECT id, avater_path, username_style_cache FROM " . $PowerBB->table['member'] . " WHERE username = '" . $PowerBB->DB->sql_escape($sub['last_writer']) . "' LIMIT 1"));
+	                    if ($u) {
+	                        $temp['last_writer_id'] = $u['id'];
+	                        $temp['avater_path'] = $u['avater_path'];
+	                        $temp['username_style_cache'] = $u['username_style_cache'];
+	                    }
+	                }
+	                $cache_array[] = $temp;
+	                $parent_array[] = $parents;
+	            }
+	        } else {
+	            // بيانات العضو الأخير للقسم الرئيسي (إذا لم يكن له أقسام فرعية)
+	            if (!empty($l_writer)) {
+	                $u = $PowerBB->DB->sql_fetch_array($PowerBB->DB->sql_query("SELECT id, avater_path, username_style_cache FROM " . $PowerBB->table['member'] . " WHERE username = '" . $PowerBB->DB->sql_escape($l_writer) . "' LIMIT 1"));
+	                if ($u) {
+	                    $cache_array['u_last'] = array('last_writer_id' => $u['id'], 'avater_path' => $u['avater_path'], 'username_style_cache' => $u['username_style_cache']);
+	                }
+	            }
+	        }
+
+	        $json_cache = json_encode($json_cache,JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+
+	        $PowerBB->DB->sql_query("UPDATE " . $PowerBB->table['section'] . " SET forums_cache = '" . $PowerBB->DB->sql_escape($json_cache) . "' WHERE id = '$sec_id'");
+
+            $UpdateSectionCache = $PowerBB->functions->UpdateSectionCache($sec_id);
+	        // 9. تحديث الكاش البرمجي للسيرفر
+	        if ($UpdateSectionCache) { die("SUCCESS"); }
+
+
+	    }
 	}
 
 	function _MeterGroupsStart()
@@ -449,20 +517,20 @@ class PowerBBFixMOD
 		{
     	$perpage = '200';
 		}
-		$page = (int) (!isset($PowerBB->_GET['pag']) ? 1 : $PowerBB->_GET['pag']);
+		$page =  (!isset($PowerBB->_GET['pag']) ? 1 : $PowerBB->_GET['pag']);
 		$page = ($page == 0 ? 1 : $page);
 
 		$startpoint = ($page * $perpage) - $perpage;
-		$member_nm = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['member'] . " WHERE id"));
+		$member_nm = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(*),id FROM " . $PowerBB->table['member'] . " WHERE id"));
               $br = '<br>';
 		echo('<br><br><table border="1" width="80%" cellspacing="0" cellpadding="0" bgcolor="#FFFFFF" style="border-collapse: collapse" align="center"><tr><td><font face="Tahoma" size="2">');
 
-		$getmember_query = $PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['member'] . " ORDER BY id DESC LIMIT ".$startpoint.",".$perpage." ");
+		$getmember_query = $PowerBB->DB->sql_query("SELECT id,usergroup,username FROM " . $PowerBB->table['member'] . " ORDER BY id DESC LIMIT ".$startpoint.",".$perpage." ");
 	    while ($MemInfo = $PowerBB->DB->sql_fetch_array($getmember_query))
         {
         	$MemUsername = $MemInfo['username'];
-		    $member_nm_reply = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['reply'] . " WHERE writer = '$MemUsername' LIMIT 1"));
-		    $member_nm_subject = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['subject'] . " WHERE writer = '$MemUsername'"));
+		    $member_nm_reply = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(*) FROM " . $PowerBB->table['reply'] . " WHERE writer = '$MemUsername'"));
+		    $member_nm_subject = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(*) FROM " . $PowerBB->table['subject'] . " WHERE writer = '$MemUsername'"));
 
 		  // change the cache of username style
 
@@ -551,117 +619,157 @@ class PowerBBFixMOD
 
 	function _UpdatePostsStart()
 	{
-		global $PowerBB;
+	    global $PowerBB;
+	    @session_write_close();
+	    @set_time_limit(0);
 
-    	$perpage = '50';
+	    // -----------------------------
+	    // 1. جلب العدد الإجمالي للمواضيع
+	    // -----------------------------
+	    if (isset($PowerBB->_GET['get_total'])) {
+	        $query = $PowerBB->DB->sql_query(
+	            "SELECT COUNT(*) FROM " . $PowerBB->table['subject'] . " WHERE delete_topic = '0'"
+	        );
+	        $row = $PowerBB->DB->sql_fetch_row($query); // يرجع الرقم مباشرة
+	        echo json_encode(array("total" => $row));
+	        exit;
+	    }
 
-		$page = (int) (!isset($PowerBB->_GET['pag']) ? 1 : $PowerBB->_GET['pag']);
-		$page = ($page == 0 ? 1 : $page);
+	    // -----------------------------
+	    // 2. معالجة الدفعات باستخدام last_id
+	    // -----------------------------
+	    if (isset($PowerBB->_GET['ajax_process'])) {
+	        $perpage = isset($PowerBB->_GET['perpage']) ? $PowerBB->_GET['perpage'] : 100;
+	        $last_id = isset($PowerBB->_GET['last_id']) ? $PowerBB->_GET['last_id'] : 0;
 
-		$startpoint = ($page * $perpage) - $perpage;
-        $br = '<br>';
-		echo('<br><br><table border="1" width="80%" cellspacing="0" cellpadding="0" bgcolor="#FFFFFF" style="border-collapse: collapse" align="center"><tr><td><font face="Tahoma" size="2">');
-       	 $reply_num = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['reply'] . " LIMIT 1"));
+	        $sql = "
+	            SELECT
+	                s.id,
+	                s.writer,
+	                s.reply_number,
+	                s.section,
+	                (
+	                    SELECT r.id
+	                    FROM {$PowerBB->table['reply']} r
+	                    WHERE r.subject_id = s.id
+	                      AND r.review_reply = '0'
+	                      AND r.delete_topic = '0'
+	                    ORDER BY r.id DESC
+	                    LIMIT 1
+	                ) AS last_r_id
+	            FROM {$PowerBB->table['subject']} s
+	            WHERE s.delete_topic='0' AND s.id > $last_id
+	            ORDER BY s.id ASC
+	            LIMIT $perpage
+	        ";
 
-		$ReplyArr = $PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['reply'] . " ORDER BY id DESC LIMIT ".$startpoint.",".$perpage." ");
+	        $res = $PowerBB->DB->sql_query($sql);
+	        $max_id = 0; // لتخزين آخر ID تم معالجته
 
-		while ($RepList = $PowerBB->DB->sql_fetch_array($ReplyArr))
-		{
+	        while ($sub = $PowerBB->DB->sql_fetch_array($res)) {
+	            $max_id = $sub['id'];
 
-				$SubjectArr = array();
-				$SubjectArr['where'] = array('id',$RepList['subject_id']);
+	            // تحديد آخر كاتب
+	            if (!empty($sub['last_r_id'])) {
+	                $reply = $PowerBB->DB->sql_fetch_array(
+	                    $PowerBB->DB->sql_query(
+	                        "SELECT writer FROM " . $PowerBB->table['reply'] . " WHERE id = ".$sub['last_r_id']
+	                    )
+	                );
+	                $target_user = $reply['writer'];
+	                $is_reply = true;
+	            } else {
+	                $target_user = $sub['writer'];
+	                $is_reply = false;
+	            }
 
-                $SubjectInfo = $PowerBB->core->GetInfo($SubjectArr,'subject');
-               if($SubjectInfo['id'])
-               {
+	            // جلب بيانات العضو
+	            $user_data = $PowerBB->DB->sql_fetch_array(
+	                $PowerBB->DB->sql_query(
+	                    "SELECT id, username_style_cache, avater_path
+	                     FROM " . $PowerBB->table['member'] . "
+	                     WHERE username = '".$PowerBB->DB->sql_escape($target_user)."'
+	                     LIMIT 1"
+	                )
+	            );
 
-				$UpdateRepArr 						= 	array();
-				$UpdateRepArr['field']		 		= 	array();
-				$UpdateRepArr['field']['section'] 	= 	$SubjectInfo['section'];
+	            $style = (!empty($user_data['username_style_cache'])) ? $user_data['username_style_cache'] : '{username}';
+	            $styled_name = str_replace('{username}', $target_user, $style);
 
-				$UpdateRepArr['where'] 			=	array('id',$RepList['id']);
+	            // بناء الكاش
+	            if ($is_reply) {
+	                $perpage_view = $PowerBB->_CONF['info_row']['perpage'];
+	                $countpage = ceil(($sub['reply_number'] + 1) / $perpage_view);
 
-				$update = $PowerBB->reply->UpdateReply($UpdateRepArr);
+	                $cache = array(
+	                    1 => $user_data['id'],
+	                    2 => $user_data['avater_path'],
+	                    3 => $style,
+	                    4 => $sub['section'],
+	                    5 => $sub['reply_number'],
+	                    6 => $sub['last_r_id'],
+	                    7 => $countpage,
+	                    8 => $styled_name
+	                );
+	            } else {
+	                $cache = array(
+	                    1 => $user_data['id'],
+	                    8 => $styled_name
+	                );
+	            }
 
-				if ($update)
-				{
-					$cache = $PowerBB->section->UpdateSectionsCache(array('parent'=>$SubjectInfo['section']));
-					//////////
-                     $reply_nm = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['reply'] . " WHERE section = ".$SubjectInfo['section']." LIMIT 1"));
-                     $review_reply_nm = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),review_reply FROM " . $PowerBB->table['reply'] . " WHERE subject_id = ".$RepList['subject_id']." and review_reply = '1' LIMIT 1"));
+	            // تحديث الموضوع
+	            $PowerBB->DB->sql_query(
+	                "UPDATE " . $PowerBB->table['subject'] . " SET
+	                    last_replier = '".$PowerBB->DB->sql_escape($target_user)."',
+	                    lastreply_cache = '".$PowerBB->DB->sql_escape(serialize($cache))."'
+	                 WHERE id = ".$sub['id']
+	            );
+	        }
 
-					$SubArr 				= 	array();
-					$SubArr['field']		=	array();
-					$SubArr['field']['reply_num'] 	= 	$reply_nm;
-					$SubArr['where'] 			=	array('id',$RepList['section']);
-					$update = $PowerBB->section->UpdateSection($SubArr);
-                    if ($RepList['review_reply'])
-                    {
-					$UpdateArr 				= 	array();
-					$UpdateArr['field']		=	array();
-					if ($SubjectInfo['write_time'] == $RepList['write_time'])
-					{
-					$UpdateArr['field']['last_replier'] 		= 	$RepList['writer'];
-					}
-					$UpdateArr['field']['review_reply'] 		= 	$review_reply_nm;
-					$UpdateArr['where'] 						= 	array('id',$RepList['subject_id']);
+	        // إعادة آخر ID للـ JS
+	        if ($max_id > 0) {
+	            echo "SUCCESS|$max_id";
+	        } else {
+	            echo "SUCCESS|0"; // انتهت جميع الدفعات
+	        }
+	        exit;
+	    }
+	}
 
-					$update = $PowerBB->core->Update($UpdateArr,'subject');
-                   }
-                 $UpdateSectionCache6 = $PowerBB->functions->UpdateSectionCache($SubjectInfo['section']);
-				}
-              }
-              else
-              {
-              		$DelReplys1Arr 						= 	array();
-					$DelReplys1Arr['where']				=	array();
-					$DelReplys1Arr['where'][0]				=	array();
-					$DelReplys1Arr['where'][0]['name']		=	'subject_id';
-					$DelReplys1Arr['where'][0]['oper']		=	'=';
-					$DelReplys1Arr['where'][0]['value']	=	$SubjectInfo['id'];
 
-					$DelReplys = $PowerBB->reply->DeleteReply($DelReplys1Arr);
-              }
+	function _DeleteOrphanReplies()
+	{
+	    global $PowerBB;
+	    @set_time_limit(0);
 
-				$s[$RepList['id']] = ($update) ? 'true' : 'false';
+	    // عدّ الردود اليتيمة قبل الحذف
+	    $count_res = $PowerBB->DB->sql_query("
+	        SELECT COUNT(*) AS total
+	        FROM {$PowerBB->table['reply']} r
+	        LEFT JOIN {$PowerBB->table['subject']} s
+	            ON r.subject_id = s.id
+	        WHERE s.id IS NULL
+	    ");
+	    $row = $PowerBB->DB->sql_fetch_row($count_res);
+	    $orphan_count = (int)$row;
 
-			echo($RepList['id'] .' ..'. $br);
+	    // الحذف المباشر لجميع الردود التي لا تتبع أي موضوع موجود
+	    $sql = "
+	        DELETE r
+	        FROM {$PowerBB->table['reply']} r
+	        LEFT JOIN {$PowerBB->table['subject']} s
+	            ON r.subject_id = s.id
+	        WHERE s.id IS NULL
+	    ";
+	    $PowerBB->DB->sql_query($sql);
 
-		}
-
-            echo('</font></td></tr></table>');
-
-		$current_page = $page;
-       $pagesnum = round(ceil($reply_num / $perpage));
-		if ($update)
-		{
-			if($pagesnum != $current_page or $pagesnum > $current_page)
-			{
-			$n_page = $current_page+1;
-			$seconds= '5';
-			$n_page = intval($n_page);
-			echo('<br><table border="1" width="80%" cellspacing="0" cellpadding="0" bgcolor="#E5EBF0" style="border-collapse: collapse" align="center"><tr><td><font face="Tahoma" size="2">');
-			$transition_click = $PowerBB->_CONF['template']['_CONF']['lang']['If_your_browser_does_not_support_automatic_transition_click_here'];
-			echo($PowerBB->_CONF['template']['_CONF']['lang']['Waiting_Time'].$seconds.$PowerBB->_CONF['template']['_CONF']['lang']['seconds']);
-			echo('</font></td></tr></table>');
-
-			$PowerBB->functions->redirect('index.php?page=fixup&amp;update_posts=1&amp;pag='.$n_page,$seconds);
-			}
-			else
-			{
-
-			$PowerBB->functions->redirect('index.php?page=fixup&amp;update_meter=1&amp;main=1');
-
-			}
-
-		}
-		else
-		{
-		echo('<br><table border="1" width="80%" cellspacing="0" cellpadding="0" bgcolor="#E5EBF0" style="border-collapse: collapse" align="center"><tr><td><font face="Tahoma" size="2">');
-		echo($PowerBB->_CONF['template']['_CONF']['lang']['forum_does_not_contain_any_posts']);
-		echo('</font></td></tr></table>');
-		}
-    }
+	    echo json_encode(array(
+	        'status' => 'success',
+	        'message' => "تم حذف {$orphan_count} رد/ردود يتيماً بنجاح."
+	    ));
+	    exit;
+	}
 
 
 
@@ -677,7 +785,7 @@ class PowerBBFixMOD
 		{
     	$perpage = '200';
 		}
-		$page = (int) (!isset($PowerBB->_GET['pag']) ? 1 : $PowerBB->_GET['pag']);
+		$page =  (!isset($PowerBB->_GET['pag']) ? 1 : $PowerBB->_GET['pag']);
 		$page = ($page == 0 ? 1 : $page);
 
 		$startpoint = ($page * $perpage) - $perpage;
@@ -823,12 +931,15 @@ class PowerBBFixMOD
 		return $returns;
 	}
 
-	function _pbboard_updates_start()
+  function _pbboard_updates_start()
 	{
 		global $PowerBB;
-            // get main dir
-			$To = $PowerBB->functions->GetMianDir();
-			$To = str_ireplace("index.php/", '', $To);
+
+		// 1. Initialize main directory path
+		$To = $PowerBB->functions->GetMianDir();
+		$To = str_ireplace("index.php/", '', $To);
+
+		// 2. Determine update source based on version
         if($PowerBB->_CONF['info_row']['MySBB_version'] == '3.0.4')
         {
 		$pbboard_last_time_updates = 'https://raw.githubusercontent.com/pbboard/updates/main/check_updates/pbboard_last_time_updates_304.txt';
@@ -842,80 +953,130 @@ class PowerBBFixMOD
 		$pbboard_last_time_updates = 'https://raw.githubusercontent.com/pbboard/updates/main/check_updates/pbboard_last_time_updates.txt';
 		}
 
+		// 3. Fetch update metadata from GitHub
 		$last_time_updates = @file_get_contents($pbboard_last_time_updates);
+		if(!$last_time_updates) {
+			$last_time_updates = $PowerBB->sys_functions->CURL_URL($pbboard_last_time_updates);
+		}
 
-         if(!$last_time_updates)
-		 {
-		 $last_time_updates = $PowerBB->sys_functions->CURL_URL($pbboard_last_time_updates);
-		 }
+		$arr = explode('-', $last_time_updates);
+		$url = trim($arr[2]);
+		$zipFile = $To . "Tmpfile.zip";
 
-		$arr = explode('-',$last_time_updates);
+		/**
+		 * STEP 4: SELF-PATCHING PHASE
+		 * If 'is_fixup_module' is flagged, we extract ONLY the fixup module first.
+		 * This replaces the OLD logic on disk before the main extraction.
+		 */
+		if(trim($arr[6]) == 'is_fixup_module') {
+			$urls = $PowerBB->sys_functions->CURL_URL($url);
+			file_put_contents($zipFile, $urls);
 
-		$url     = trim($arr[2]);
-        $urls= $PowerBB->sys_functions->CURL_URL($url);
+			$zip = new ZipArchive;
+			if ($zip->open($zipFile) === TRUE) {
+				$adminDir = $PowerBB->admincpdir;
 
-        $file_put = file_put_contents($To."Tmpfile.zip", $urls);
+				// Path of the new fixup module inside the ZIP (Default structure)
+				$fixup_in_zip = 'admincp/modulescp/fixup.module.php';
+				$new_content = $zip->getFromName($fixup_in_zip);
 
-           $zip = new ZipArchive;
-			$file = $To.'Tmpfile.zip';
-			//$path = pathinfo(realpath($file), PATHINFO_DIRNAME);
-			if ($zip->open($file) === TRUE) {
-			    $zip->extractTo($To);
+				if ($new_content) {
+					// Path to the current running module on the server
+					$fixup_on_disk = '../' . $adminDir . '/modulescp/fixup.module.php';
 
-			    $ziped = true;
-			} else {
-			   $ziped = false;
-			   echo 'Failed to open zip file';
+					if (@file_put_contents($fixup_on_disk, $new_content)) {
+						$zip->close();
+						@unlink($zipFile); // Clean up to start fresh
+
+						// Trigger AJAX restart to load the NEW code into RAM
+						echo "<div style='background:#e0f2fe; color:#0369a1; padding:15px; border-radius:8px; border:1px solid #bae6fd;'>
+								<i class='fa fa-sync fa-spin'></i> Core updated. Restarting to apply new logic...
+							  </div>";
+						echo "<script type='text/javascript'>setTimeout(function(){ AjaxUpdated(); }, 1500);</script>";
+						exit;
+					}
+				}
+				$zip->close();
+			}
+		}
+
+		/**
+		 * STEP 5: MAIN EXTRACTION PHASE
+		 * This runs only when the file has the NEW logic (either patched or already updated).
+		 */
+		$urls = $PowerBB->sys_functions->CURL_URL($url);
+		file_put_contents($zipFile, $urls);
+
+		$zip = new ZipArchive;
+		$ziped = false;
+
+		if ($zip->open($zipFile) === TRUE) {
+			$adminDir = $PowerBB->admincpdir;
+
+			for ($i = 0; $i < $zip->numFiles; $i++) {
+				$fileName = $zip->getNameIndex($i);
+				$targetName = $fileName;
+
+				// Map 'admincp/' from ZIP to the user's custom admin folder
+				if (strpos($fileName, 'admincp/') === 0) {
+					$targetName = str_replace('admincp/', $adminDir . '/', $fileName);
+				}
+
+				$fullPath = $To . $targetName;
+
+				if (substr($fileName, -1) === '/') {
+					if (!is_dir($fullPath)) @mkdir($fullPath, 0755, true);
+				} else {
+					$parentDir = dirname($fullPath);
+					if (!is_dir($parentDir)) @mkdir($parentDir, 0755, true);
+
+					$content = $zip->getFromIndex($i);
+					@file_put_contents($fullPath, $content);
+				}
+			}
+			$zip->close();
+			$ziped = true;
+		} else {
+			$ziped = false;
+			echo 'Failed to open zip file';
+		}
+
+		/**
+		 * STEP 6: POST-UPDATE (SQL, Templates, Cache, Cleanup)
+		 */
+		if($ziped) {
+			// SQL Execution
+			if(trim($arr[3]) == 'sql') {
+				$this->_pbboard_updates_sql(trim($arr[0]));
+				echo "\n<br />✅ SQL Queries executed successfully \n";
 			}
 
-	         if($ziped)
-	         {
-	          if($PowerBB->admincpdir !='admincp')
-			  {
-					for ($i = 0; $i < $zip->numFiles; $i++) {
-					   if(strstr($zip->getNameIndex($i),'admincp'))
-					   {
-						    $zip->renameIndex($i, str_replace("admincp",$PowerBB->admincpdir, $zip->getNameIndex($i)));
-						     $zip->extractTo($To,$zip->getNameIndex($i));
-					   }
-					}
-	          }
-	         $zip->close();
+			// Template Execution
+			if(trim($arr[4]) == 'templates') {
+				$this->_pbboard_updates_templates(trim($arr[0]));
+				echo "\n<br />✅ Templates updated successfully \n<br />";
+			}
 
-             // updates chmods sql
-             if(trim($arr[3]) == 'sql')
-             {
-	         $xml_code_sql     = trim($arr[0]);
-	         $updates_sql = $this->_pbboard_updates_sql($xml_code_sql);
-			  echo("\n<br />✅ Query executed successfully \n");
-	         }
+			// Cache Notification
+			if(trim($arr[5]) == 'cache') {
+				printf('<div style="font-family: \'Droid Arabic Kufi\', Tahoma, sans-serif; background: #fffcf5; border: 1px solid #fce8c3; border-right: 5px solid #f59e0b; color: #92400e; padding: 12px 15px; margin: 15px 0; border-radius: 6px; font-size: 13px; direction: rtl; line-height: 1.8;">
+					<strong>تنبيه:</strong> يستوجب بعد هذا التحديث: :
+					<code>ان تحدث كاش الأقسام بالتوجه الى: الصيانة تحديث العدادات تحديث كافة الأقسام دفعة واحدة</code>
+				</div>');
+			}
 
-             // updates templates
-             if(trim($arr[4]) == 'templates')
-             {
-	         $xml_date     = trim($arr[0]);
-	         $updates_templates = $this->_pbboard_updates_templates($xml_date);
-			  echo("\n<br />✅ Templates eupdated successfully \n<br />");
-	         }
-
+			// Finalize and Clean up
 			$PowerBB->info->UpdateInfo(array('value'=>$PowerBB->_CONF['now'],'var_name'=>'last_time_updates'));
-			unlink($file);
+			@unlink($zipFile);
+
 			echo $PowerBB->_CONF['template']['_CONF']['lang']['pbboard_updated'];
 
-			  if(trim($arr[3]) == 'sql'
-			  or trim($arr[4]) == 'templates')
-			  {
-			 	// get main dir
-				$xml_file = $PowerBB->functions->GetMianDir();
-				$xml_file = str_ireplace("index.php/", '', $xml_file);
-				$file_x = $xml_file.'addons/'.$arr[0].'.xml';
-				unlink($file_x);
-			  }
+			if(trim($arr[3]) == 'sql' || trim($arr[4]) == 'templates') {
+				@unlink($To . 'addons/' . $arr[0] . '.xml');
 			}
-			else
-	         {
-			 echo $PowerBB->_CONF['template']['_CONF']['lang']['automatic_update_fails'];
-			}
+		} else {
+			echo $PowerBB->_CONF['template']['_CONF']['lang']['automatic_update_fails'];
+		}
 	}
 
 

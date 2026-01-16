@@ -1,58 +1,41 @@
-/*
-    Colorbox Core Style:
-    The following CSS is consistent between example themes and should not be altered.
-*/
-#colorbox, #cboxOverlay, #cboxWrapper{position:absolute; top:0; left:0; z-index:9999; overflow:hidden; -webkit-transform: translate3d(0,0,0); cursor:move;}
-#cboxWrapper {max-width:none;}
-#cboxOverlay{position:fixed; width:100%; height:100%;}
-#cboxMiddleLeft, #cboxBottomLeft{clear:left;}
-#cboxContent{overflow:scroll; cursor:auto; position:relative;}
-#cboxLoadedContent{overflow:scroll; cursor:auto;  position:relative; z-index:99999;}
-#cboxTitle{margin:0;}
-#cboxLoadingOverlay, #cboxLoadingGraphic{position:absolute; top:0; left:0; width:100%; height:100%;}
-#cboxPrevious, #cboxNext, #cboxClose, #cboxSlideshow{cursor:pointer;}
-.cboxPhoto{float:left; margin:auto; border:0; display:block; max-width:none; -ms-interpolation-mode:bicubic;}
-.cboxIframe{width:100%; height:100%; display:block; border:0; padding:0; margin:0;}
-#colorbox, #cboxContent, #cboxLoadedContent{box-sizing:content-box; -moz-box-sizing:content-box; -webkit-box-sizing:content-box;}
+/* Core Overlay & Wrapper */
+#colorbox, #cboxOverlay, #cboxWrapper { position: absolute; top: 0; left: 0; z-index: 9999; overflow: hidden; }
+#cboxOverlay { position: fixed; width: 100%; height: 100%; background: rgba(0,0,0,0.9); backdrop-filter: blur(8px); }
+#cboxContent { overflow: visible; position: relative; background: transparent; }
+#cboxLoadedContent { overflow: hidden !important; border-radius: 4px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
+.cboxPhoto { float: left; margin: auto; border: 0; display: block; max-width: 100% !important; height: auto !important; }
 
-/*
-    User Style:
-    Change the following styles to modify the appearance of Colorbox.  They are
-    ordered & tabbed in a way that represents the nesting of the generated HTML.
-*/
-#cboxOverlay{background:#000; opacity: 0.9; filter: alpha(opacity = 90);}
-#colorbox{outline:0;}
-    #cboxTopLeft{width:14px; height:14px; background:url(images/controls.png) no-repeat 0 0;}
-    #cboxTopCenter{height:14px; background:url(images/border.png) repeat-x top left;}
-    #cboxTopRight{width:14px; height:14px; background:url(images/controls.png) no-repeat -36px 0;}
-    #cboxBottomLeft{width:14px; height:43px; background:url(images/controls.png) no-repeat 0 -32px;}
-    #cboxBottomCenter{height:43px; background:url(images/border.png) repeat-x bottom left;}
-    #cboxBottomRight{width:14px; height:43px; background:url(images/controls.png) no-repeat -36px -32px;}
-    #cboxMiddleLeft{width:14px; background:url(images/controls.png) repeat-y -175px 0;}
-    #cboxMiddleRight{width:14px; background:url(images/controls.png) repeat-y -211px 0;}
-    #cboxContent{background:#fff; overflow:visible;}
-        .cboxIframe{background:#fff;}
-        #cboxError{padding:50px; border:1px solid #ccc;}
-        #cboxLoadedContent{margin-bottom:5px;}
-        #cboxLoadingOverlay{background:url(images/loading_background.png) no-repeat center center;}
-        #cboxLoadingGraphic{background:url(images/loading.gif) no-repeat center center;}
-        #cboxTitle{position:absolute; bottom:-25px; left:0; text-align:center; width:100%; font-weight:bold; color:#7C7C7C;}
-        #cboxCurrent{position:absolute; bottom:-25px; left:58px; font-weight:bold; color:#7C7C7C;}
+/* Desktop Navigation Buttons */
+#cboxClose, #cboxPrevious, #cboxNext {
+    position: fixed; top: 20px; background-color: rgba(255,255,255,0.1); backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.2); width: 44px; height: 44px; border-radius: 50%;
+    cursor: pointer; text-indent: -9999px; transition: all 0.2s ease; z-index: 10000;
+}
+#cboxClose { right: 20px; background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='white' viewBox='0 0 24 24'%3E%3Cpath d='M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z'/%3E%3C/svg%3E") no-repeat center; background-size: 20px; }
+#cboxPrevious { left: 20px; top: 50%; transform: translateY(-50%); background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='white' viewBox='0 0 24 24'%3E%3Cpath d='M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z'/%3E%3C/svg%3E") no-repeat center; background-size: 20px; }
+#cboxNext { right: 20px; top: 50%; transform: translateY(-50%); background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='white' viewBox='0 0 24 24'%3E%3Cpath d='M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z'/%3E%3C/svg%3E") no-repeat center; background-size: 20px; }
 
-        /* these elements are buttons, and may need to have additional styles reset to avoid unwanted base styles */
-        #cboxPrevious, #cboxNext, #cboxSlideshow, #cboxClose {border:0; padding:0; margin:0; overflow:visible;  position:absolute; bottom:-29px; background:url(images/controls.png) no-repeat 0px 0px; width:23px; height:23px; text-indent:-9999px;}
+/* Responsive Fix for Mobile (Crucial) */
+@media only screen and (max-width: 768px) {
+    .resize_img {
+        max-width: 100% !important;
+        height: auto !important;
+        box-sizing: border-box;
+    }
+    #cboxPrevious, #cboxNext { top: auto; bottom: 20px; transform: none; }
+    #cboxPrevious { left: 20px; }
+    #cboxNext { right: 80px; }
+    #cboxClose { top: auto; bottom: 20px; right: 20px; background-color: #d93025; }
+}
 
-        /* avoid outlines on :active (mouseclick), but preserve outlines on :focus (tabbed navigating) */
-        #cboxPrevious:active, #cboxNext:active, #cboxSlideshow:active, #cboxClose:active {outline:0;}
-
-        #cboxPrevious{left:0px; background-position: -51px -25px;}
-        #cboxPrevious:hover{background-position:-51px 0px;}
-        #cboxNext{left:27px; background-position:-75px -25px;}
-        #cboxNext:hover{background-position:-75px 0px;}
-        #cboxClose{right:0; background-position:-100px -25px;}
-        #cboxClose:hover{background-position:-100px 0px;}
-
-        .cboxSlideshow_on #cboxSlideshow{background-position:-125px 0px; right:27px;}
-        .cboxSlideshow_on #cboxSlideshow:hover{background-position:-150px 0px;}
-        .cboxSlideshow_off #cboxSlideshow{background-position:-150px -25px; right:27px;}
-        .cboxSlideshow_off #cboxSlideshow:hover{background-position:-125px 0px;}
+/* Base Image Styling in Posts */
+.resize_img {
+    border: 1px solid #ddd;
+    padding: 3px;
+    background: #fff;
+    border-radius: 4px;
+    max-width: 100%; /* Important to prevent horizontal scroll */
+    height: auto;
+    display: block;
+    cursor: zoom-in;
+}

@@ -307,9 +307,7 @@
 </tr>
 <tr valign="top">
 			<td class="row1">
-تفعيل ظهور المنتديات في قائمة الإنتقال السريع في اسفل صفحات المنتدى
-<br />
-{$lang['server_resource_consumption']}
+تفعيل ظهور جميع المنتديات في قائمة الإنتقال السريع المنسدلة في اسفل صفحات المنتدى
 			</td>
 <td class="row1">
 {if {$_CONF['info_row']['allowed_powered']}}
@@ -318,6 +316,25 @@
 {else}
 <input name="allowed_powered" value="1" id="allowed_powered" type="radio">{$lang['yes']}
 &nbsp;&nbsp;<input name="allowed_powered" value="0" id="allowed_powered" type="radio" checked="checked">{$lang['no']}
+{/if}
+</td>
+</tr>
+<tr valign="top">
+<td class="row1">
+إظهار إحصائيات الأداء (<b>Debug Info</b>)
+<br />
+<font size="1">عرض معلومات استهلاك الذاكرة، عدد الاستعلامات، ووقت تحميل الصفحات وعدد الملفات المستدعاة أسفل المنتدى
+<b>للمديرين فقط</b>.</font>
+<br />
+<small><u>يُنصح بتعطيله في المواقع الكبيرة لتقليل استهلاك الموارد، وتفعيله فقط عند الحاجة لمراقبة الأداء.</u></small>
+</td>
+<td class="row1">
+{if {$_CONF['info_row']['show_debug_info']}}
+<input name="show_debug_info" value="1" id="show_debug_info" type="radio" checked="checked">{$lang['yes']}
+&nbsp;&nbsp;<input name="show_debug_info" value="0" id="show_debug_info" type="radio">{$lang['no']}
+{else}
+<input name="show_debug_info" value="1" id="show_debug_info" type="radio">{$lang['yes']}
+&nbsp;&nbsp;<input name="show_debug_info" value="0" id="show_debug_info" type="radio" checked="checked">{$lang['no']}
 {/if}
 </td>
 </tr>

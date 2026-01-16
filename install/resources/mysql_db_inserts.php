@@ -166,7 +166,7 @@ $inserts[] = "INSERT INTO pbb_info (id, var_name, value) VALUES
 (92, 'ajax_search', '0'),
 (93, 'ajax_register', '0'),
 (94, 'ajax_freply', '0'),
-(95, 'get_group_username_style', '0'),
+(95, 'get_group_username_style', '1'),
 (96, 'ajax_moderator_options', '0'),
 (97, 'reg_Sat', '1'),
 (98, 'reg_Sun', '1'),
@@ -307,13 +307,14 @@ $inserts[] = "INSERT INTO pbb_info (id, var_name, value) VALUES
 (233, 'adsense_limited_usergroups', '0'),
 (234, 'send_subject_to_friend', '1'),
 (235, 'sitemap_gzip', '1'),
-(236, 'sitemap_url_max', '1500');";
+(236, 'sitemap_url_max', '1500'),
+(237, 'show_debug_info', '0');";
 
 $inserts[] = "INSERT INTO pbb_lang (id, lang_title, lang_order, lang_on, lang_path) VALUES
 (1, 'Arabic', 1, 1, 'rtl');";
 
 $inserts[] = "INSERT INTO pbb_section (id, title, section_describe, parent, sort, section_password, show_sig, use_power_code_allow, section_picture, sectionpicture_type, use_section_picture, linksection, linkvisitor, linksite, subject_order, hide_subject, last_writer, last_subject, last_subjectid, last_date, sec_section, sig_iteration, subject_num, reply_num, forums_cache, moderators, sectiongroup_cache, footer, header, review_subject, icon, last_time, last_reply, last_berpage_nm, prefix_subject, active_prefix_subject, forum_title_color, trash, subjects_review_num, replys_review_num) VALUES
-(1, 'القسم التجريبي', '', 0, 0, '', 0, 0, '', 0, 0, 0, 0, '', 0, 0, 'admin', 'مرحباً بك في منتديات PBBoard', 1, '".$now."', 0, 0, 0, 0, '', '[]', '', '', '', 0, 'look/images/icons/i1.gif', '".$now."', 0, 0, '', 0, '', 0, 0, 0),
+(1, 'القسم التجريبي', '', 0, 1, '', 0, 0, '', 0, 0, 0, 0, '', 0, 0, 'admin', 'مرحباً بك في منتديات PBBoard', 1, '".$now."', 0, 0, 0, 0, '', '[]', '', '', '', 0, 'look/images/icons/i1.gif', '".$now."', 0, 0, '', 0, '', 0, 0, 0),
 (2, 'المنتدى التجريبي', 'منتدي تجريبي يمكنك حذفه وقتما تشاء ', 1, 1, '', 1, 1, '', 2, 0, 0, 0, '', 1, 0, 'admin', 'مرحباً بك في منتديات PBBoard', 1, '".$now."', 0, 0, 1, 0, '', '[]', '', '', '', 0, 'look/images/icons/i1.gif', '".$now."', 0, 0, '', 0, '', 0, 0, 0);";
 
 $inserts[] = "INSERT INTO pbb_subject (id, title, text, writer, section, write_date, stick, close, delete_topic, reply_number, visitor, write_time, native_write_time, icon, subject_describe, action_by, sec_subject, lastreply_cache, last_replier, poll_subject, attach_subject, actiondate, tags_cache, close_reason, delete_reason, review_subject, special, review_reply, rating, last_time, reason_edit, prefix_subject, close_poll_subject) VALUES

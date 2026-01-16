@@ -29,6 +29,18 @@ $import = $PowerBB->functions->xml_array($xml_code);
 $SingleTemplates = $import['templategroup'];
 ?>
 
+<table class="t_style_b" width="95%" align="center">
+<tr>
+	<td class="row1">
+		<b>بحث عن قالب:</b>
+		<input type="text" id="templateSearch" onkeyup="searchTemplates()"
+		       placeholder="اكتب اسم القالب..." style="width:250px;">
+	</td>
+</tr>
+</table>
+<br />
+
+
 <table border="0" class="t_style_b" cellpadding="0" cellspacing="0" align="center" width="95%" dir="ltr">
 <tr valign="top">
 	<td class="main1" colspan="2">
@@ -82,8 +94,8 @@ $PowerBB->_CONF['template']['while']['CommonTemplates'][$this->x_loop]['template
 	<td class="main1">{$lang['ViewOrginaltemplate']}</td>
 </tr>
 {Des::while}{TemplatList}
-<tr valign="top">
-	<td class="row1">
+<tr valign="top" class="template-row">
+	<td class="row1 template-title">
 <?php
 $templatetitle =$PowerBB->_CONF['template']['while']['TemplatList'][$this->x_loop]['title'];
 $template_un = $SingleTemplates[$templatetitle];
@@ -126,4 +138,29 @@ $template =  $PowerBB->_CONF['template']['while']['TemplatList'][$this->x_loop][
 	       </td>
 </tr>
 {/Des::while}
+<script type="text/javascript">
+function searchTemplates()
+{
+	var input  = document.getElementById("templateSearch").value.toLowerCase();
+	var rows   = document.getElementsByClassName("template-row");
+
+	for (var i = 0; i < rows.length; i++)
+	{
+		var titleCell = rows[i].getElementsByClassName("template-title")[0];
+		if (!titleCell) continue;
+
+		var text = titleCell.textContent || titleCell.innerText;
+
+		if (text.toLowerCase().indexOf(input) > -1)
+		{
+			rows[i].style.display = "";
+		}
+		else
+		{
+			rows[i].style.display = "none";
+		}
+	}
+}
+</script>
+
 </table>

@@ -152,28 +152,13 @@ class PowerBBFooterMOD
 
 		      }
 		  }
-		if (!empty($PowerBB->_GET['debug']))
-		{
-			if ($PowerBB->_CONF['member_row']['usergroup'] == '1')
-			{
-				$x = 1;
-				foreach ($PowerBB->_CONF['temp']['queries'] as $k => $v)
-				{
-					echo $x . ': ' . $v . '<hr />';
 
-					$x++;
-
-				}
-			}
-			else
-			{
-              exit;
-		    }
-		}
-		// $PowerBB->template->assign('query_num',$PowerBB->_CONF['temp']['query_numbers']);
-      // echo '<a target="_blank" href="'.$PowerBB->_SERVER['REQUEST_URI'].'&debug=1">Debug</a></div>';
-      //echo ''.$PowerBB->_CONF['temp']['query_numbers'].'<br />';
-
+     $user_group = (int)$PowerBB->_CONF['group_info']['id'];
+     $is_admin   = ($PowerBB->_CONF['group_info']['vice'] or $user_group == 1);
+     if($is_admin and $PowerBB->_CONF['info_row']['show_debug_info'])
+     {
+      $PowerBB->functions->ShowDebugInfo();
+     }
 		// Kill everything , Hey PowerBB you should be lovely with server because it's Powered by Linux ;)
 		unset($PowerBB->_CONF);
 		unset($PowerBB->table);
@@ -203,49 +188,21 @@ class PowerBBFooterMOD
         unset($CALL_SYSTEM);
         unset($PowerBB);
 
-        /*
-		if (phpversion() < '5.0.5')
-		{
-           @register_shutdown_function($this->cleans());
-		}
+         ob_end_flush();
 
-		$PowerBB->template->assign('memory_usage',memory_get_usage());
-		$mem_usage = memory_get_usage();
-
-
-		if ($mem_usage < 1024)
-		echo $mem_usage." bytes";
-		elseif ($mem_usage < 1048576)
-		echo round($mem_usage/1024,2)." kilobytes";
-		else
-		echo round($mem_usage/1048576,2)." megabytes";
-		unset($PowerBB);
-
-		// shutdown we register this but it might not be used
-		if (phpversion() < '5.0.5')
-		{
-           @register_shutdown_function($this->cleans());
-		}
- 	     echo'<br />';
-		$this->getDebugHtml();
-        */
-     //$sql_close = $PowerBB->DB->sql_close();
 	}
 
 	function Feeder_Generate_Key($length = 32)
 	{
-	    // الأحرف التي سيتم استخدامها في المفتاح
 	    $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
 	    $charactersLength = strlen($characters);
 	    $randomString = '';
 
-	    // PHP 7.0+ توفر وظيفة random_int الأكثر أماناً للتشفير
 	    if (function_exists('random_int')) {
 	        for ($i = 0; $i < $length; $i++) {
 	            $randomString .= $characters[random_int(0, $charactersLength - 1)];
 	        }
 	    } else {
-	        // بديل أقل أماناً إذا كان إصدار PHP قديماً
 	        for ($i = 0; $i < $length; $i++) {
 	            $randomString .= $characters[mt_rand(0, $charactersLength - 1)];
 	        }
@@ -258,65 +215,15 @@ class PowerBBFooterMOD
 	{
 	    global $PowerBB;
 
-	    // 1. محاولة جلب المفتاح الحالي
 	    $current_key = $PowerBB->_CONF['info_row']['extrafields_cache'];
 
-	    // 2. إذا لم يكن المفتاح موجوداً (أول مرة يتم فيها التثبيت)
 	    if (empty($current_key))
 	    {
-	        // إنشاء مفتاح جديد عشوائي
-	        $new_key = $this->Feeder_Generate_Key(40); // استخدم طول 40 لضمان قوة أعلى
+	        $new_key = $this->Feeder_Generate_Key(40);
 
-	        // تخزين المفتاح الجديد بأمان في قاعدة البيانات
             $PowerBB->DB->sql_query("UPDATE " . $PowerBB->table['info'] . " SET value='" . $new_key . "' WHERE var_name='extrafields_cache'");
 	    }
 	}
-
-
-
-  function getDebugHtml()
-	{
-	global $PowerBB;
-
-        $pageTime= microtime(true);
-		$memoryUsage = memory_get_usage();
-		$memoryUsagePeak = memory_get_peak_usage();
-
-
-			$dbPercent = ($PowerBB->_CONF['temp']['query_numbers'] / $pageTime) * 100;
-
-		$Queries = $PowerBB->_CONF['temp']['query_numbers'];
-
-		$return = "<h1>Page Time: " . number_format($pageTime, 4) . "s</h1>"
-			. "<h2>Memory: " . number_format($memoryUsage / 1024 / 1024, 4) . " MB "
-			. "(Peak: " . number_format($memoryUsagePeak / 1024 / 1024, 4) . " MB)</h2>"
-			. "<h2>Queries (".$Queries.", time: " . number_format($dbPercent, 4) . "s, "
-			. number_format($dbPercent, 1) . "%)</h2>"
-			. "<h2>Included Files (".$this->includedFiles().")</h2>";
-
-		echo $return;
-
-	}
-
-   function cleans()
-   {
-	global $PowerBB;
-
-	$arr=get_defined_vars ();
-	unset($arr);
-
-   }
-
-   function includedFiles()
-   {
-	global $PowerBB;
-		$includedFiles = get_included_files();
-			foreach ($includedFiles as $filename)
-			 {
-			 	echo $filename."<br>";
-			 }
-
-   }
 
 }
 

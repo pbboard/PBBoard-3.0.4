@@ -186,6 +186,12 @@ class PowerBBCOREMOD
 		$ChatWhoArr['where'][0]['oper']		= 	'=';
 		$ChatWhoArr['where'][0]['value']	= 	$PowerBB->_CONF['template']['_CONF']['lang']['chat_message'];
 
+		$ChatWhoArr['where'][1] 			= 	array();
+		$ChatWhoArr['where'][1]['con']		=	'AND';
+		$ChatWhoArr['where'][1]['name'] 	= 	'last_move';
+		$ChatWhoArr['where'][1]['oper'] 	= 	'>';
+		$ChatWhoArr['where'][1]['value'] 	= 	time() - 300;
+
 		$PowerBB->_CONF['template']['while']['ListonlineChat'] = $PowerBB->core->GetList($ChatWhoArr,'online');
 
 		$online_number = @sizeof($PowerBB->_CONF['template']['while']['ListonlineChat']);

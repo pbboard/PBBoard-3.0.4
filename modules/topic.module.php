@@ -29,7 +29,8 @@ class PowerBBTopicMOD
 			$this->_ShowTopic();
 		}
 		else
-		{			header("HTTP/1.1 404 Not Found");
+		{
+			header("HTTP/1.1 404 Not Found");
 			$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['path_not_true']);
 		}
 
@@ -156,7 +157,8 @@ class PowerBBTopicMOD
 
 		// If the id is empty, so stop the page
 		if (empty($PowerBB->_GET['id']))
-		{			header("HTTP/1.1 404 Not Found");
+		{
+			header("HTTP/1.1 404 Not Found");
 			$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['path_not_true']);
 		}
 
@@ -180,16 +182,16 @@ class PowerBBTopicMOD
 		$SecArr 			= 	array();
 		$SecArr['where'] 	= 	array('id',$PowerBB->_CONF['template']['SubjectInfo']['section']);
 
-		$this->SectionInfo = $PowerBB->core->GetInfo($SecArr,'section');
+		$This_SectionInfo = $PowerBB->core->GetInfo($SecArr,'section');
 
 
- 			if (!empty($this->SectionInfo['section_password'])
+ 			if (!empty($This_SectionInfo['section_password'])
 				and !$PowerBB->_CONF['group_info']['admincp_allow']
-				and !$PowerBB->functions->ModeratorCheck($this->SectionInfo['moderators']))
+				and !$PowerBB->functions->ModeratorCheck($This_SectionInfo['moderators']))
 			{
-     			if (empty($PowerBB->_COOKIE['pbb_sec'.$this->SectionInfo['id'].'_pass']))
+     			if (empty($PowerBB->_COOKIE['pbb_sec'.$This_SectionInfo['id'].'_pass']))
         		{
-        		    $PowerBB->_CONF['template']['section_info']['id'] = $this->SectionInfo['id'];
+        		    $PowerBB->_CONF['template']['section_info']['id'] = $This_SectionInfo['id'];
       				$PowerBB->template->display('forum_password');
       				$PowerBB->functions->stop();
      			}
@@ -198,25 +200,25 @@ class PowerBBTopicMOD
 		/** Get section's group information and make some checks **/
 		// Finally get the permissions of group
 		// Get the subject and the subject's writer information
-		$this->Info = $PowerBB->subject->GetSubjectWriterInfo(array('id'	=>	$PowerBB->_GET['id']));
-       	if (!$this->Info)
+		$This_Info = $PowerBB->subject->GetSubjectWriterInfo(array('id'	=>	$PowerBB->_GET['id']));
+       	if (!$This_Info)
 		{
-           if ($PowerBB->functions->section_group_permission($this->SectionInfo['id'],$PowerBB->_CONF['group_info']['id'],'write_subject'))
+           if ($PowerBB->functions->section_group_permission($This_SectionInfo['id'],$PowerBB->_CONF['group_info']['id'],'write_subject'))
            {
-		    $this->Info = $PowerBB->subject->GetSubjectGuestInfo(array('id'	=>	$PowerBB->_GET['id']));
+		    $This_Info = $PowerBB->subject->GetSubjectGuestInfo(array('id'	=>	$PowerBB->_GET['id']));
 		   }
 		}
 
 		// get the permissions of groups
-		$GroupInfo = $PowerBB->functions->get_cache_permissions_group_id_numbr($this->Info['usergroup']);
+		$GroupInfo = $PowerBB->functions->get_cache_permissions_group_id_numbr($This_Info['usergroup']);
 
         $PowerBB->template->assign('GroupInfo',$GroupInfo);
 
 		// Moderator Check
-		$Mod = $PowerBB->functions->ModeratorCheck($this->SectionInfo['moderators']);
+		$Mod = $PowerBB->functions->ModeratorCheck($This_SectionInfo['moderators']);
 
        // Section Check subject Are not displayed in this category in public places
-       	if ($this->SectionInfo['sec_section'])
+       	if ($This_SectionInfo['sec_section'])
 		{
 	       	if ($PowerBB->_CONF['template']['SubjectInfo']['sec_subject'] == '0')
 			{
@@ -229,9 +231,9 @@ class PowerBBTopicMOD
 				$Update = $PowerBB->subject->UpdateSubject($SubjectArr);
 			}
 		}
-		elseif ($this->SectionInfo['sec_section'] == '0'
-		and $this->SectionInfo['hide_subject'] == '0'
-		and $this->SectionInfo['review_subject'] == '0')
+		elseif ($This_SectionInfo['sec_section'] == '0'
+		and $This_SectionInfo['hide_subject'] == '0'
+		and $This_SectionInfo['review_subject'] == '0')
 		{
 	       	if ($PowerBB->_CONF['template']['SubjectInfo']['sec_subject'] == '1'
 	       	and $PowerBB->_CONF['template']['SubjectInfo']['delete_topic'] == '0'
@@ -247,7 +249,7 @@ class PowerBBTopicMOD
 			}
 		}
 		// The visitor can't show this section , so stop the page
-        if ($PowerBB->functions->section_group_permission($this->SectionInfo['id'],$PowerBB->_CONF['group_info']['id'],'view_section') == '0')
+        if ($PowerBB->functions->section_group_permission($This_SectionInfo['id'],$PowerBB->_CONF['group_info']['id'],'view_section') == '0')
 		{
           if (!$PowerBB->_CONF['member_permission'])
               {
@@ -261,7 +263,7 @@ class PowerBBTopicMOD
 	        }
 
 		}
-		if (!$PowerBB->functions->section_group_permission($this->SectionInfo['id'],$PowerBB->_CONF['group_info']['id'],'view_subject'))
+		if (!$PowerBB->functions->section_group_permission($This_SectionInfo['id'],$PowerBB->_CONF['group_info']['id'],'view_subject'))
 		 {
           if (!$PowerBB->_CONF['member_permission'])
               {
@@ -305,8 +307,8 @@ class PowerBBTopicMOD
 
 
        		// if section Allw hide subject can't show this subject  , so stop the page
-   		if ($this->SectionInfo['hide_subject']
-   		and !$PowerBB->functions->ModeratorCheck($this->SectionInfo['moderators']))
+   		if ($This_SectionInfo['hide_subject']
+   		and !$PowerBB->functions->ModeratorCheck($This_SectionInfo['moderators']))
    		{
 
 	   		if ($PowerBB->_CONF['member_row']['username'] != $PowerBB->_CONF['template']['SubjectInfo']['writer'])
@@ -316,7 +318,7 @@ class PowerBBTopicMOD
         }
 
         if ($PowerBB->_CONF['template']['SubjectInfo']['review_subject']
-   		and !$PowerBB->functions->ModeratorCheck($this->SectionInfo['moderators']))
+   		and !$PowerBB->functions->ModeratorCheck($This_SectionInfo['moderators']))
    		{
 
 	   		if ($PowerBB->_CONF['member_row']['username'] != $PowerBB->_CONF['template']['SubjectInfo']['writer']
@@ -341,7 +343,7 @@ class PowerBBTopicMOD
 		if ($PowerBB->_CONF['member_permission'])
      	{
 
-	     	if ($this->SectionInfo['hide_subject']
+	     	if ($This_SectionInfo['hide_subject']
 	       or $PowerBB->_CONF['template']['SubjectInfo']['sec_subject']
 	       or $PowerBB->_CONF['template']['SubjectInfo']['review_subject']
 	       or $PowerBB->_CONF['template']['SubjectInfo']['delete_topic'])
@@ -350,9 +352,9 @@ class PowerBBTopicMOD
      		$UpdateOnline 			= 	array();
 			$UpdateOnline['field']	=	array();
 
-			$UpdateOnline['field']['user_location'] 	= $PowerBB->_CONF['template']['_CONF']['lang']['Seen_the'] .	' <a href="index.php?page=forum&show=1&amp;id=' . $this->SectionInfo['id'] . '">' . $PowerBB->functions->CleanVariable($this->SectionInfo['title'],'sql') . '</a>';
+			$UpdateOnline['field']['user_location'] 	= $PowerBB->_CONF['template']['_CONF']['lang']['Seen_the'] .	' <a href="index.php?page=forum&show=1&amp;id=' . $This_SectionInfo['id'] . '">' . $PowerBB->functions->CleanVariable($This_SectionInfo['title'],'sql') . '</a>';
 			$UpdateOnline['field']['section_id'] 	    =  $PowerBB->_CONF['template']['SubjectInfo']['section'];
-			$UpdateOnline['field']['subject_show'] 	    =  $this->SectionInfo['parent'];
+			$UpdateOnline['field']['subject_show'] 	    =  $This_SectionInfo['parent'];
 			$UpdateOnline['where']						=	array('username',$PowerBB->_CONF['member_row']['username']);
 
 			$update = $PowerBB->core->Update($UpdateOnline,'online');
@@ -366,7 +368,7 @@ class PowerBBTopicMOD
 			$UpdateOnline['field']['user_location'] 	= 	$PowerBB->_CONF['template']['_CONF']['lang']['Seen_the_topic'].' <a href="index.php?page=topic&amp;show=1&amp;id=' . $PowerBB->_GET['id'] . '">' . $PowerBB->functions->CleanVariable($PowerBB->_CONF['template']['SubjectInfo']['title'],'sql') . '</a>';
 			$UpdateOnline['field']['section_id'] 	    =  $PowerBB->_CONF['template']['SubjectInfo']['section'];
 			$UpdateOnline['field']['subject_id'] 	    =  $PowerBB->_GET['id'];
-			$UpdateOnline['field']['subject_show'] 	    =  $this->SectionInfo['parent'];
+			$UpdateOnline['field']['subject_show'] 	    =  $This_SectionInfo['parent'];
 			$UpdateOnline['where']						=	array('username',$PowerBB->_CONF['member_row']['username']);
 
 			$update = $PowerBB->core->Update($UpdateOnline,'online');
@@ -377,7 +379,7 @@ class PowerBBTopicMOD
 		if (!$PowerBB->_CONF['member_permission'])
      	{
 
-	     	if ($this->SectionInfo['hide_subject']
+	     	if ($This_SectionInfo['hide_subject']
 	       or $PowerBB->_CONF['template']['SubjectInfo']['sec_subject']
 	       or $PowerBB->_CONF['template']['SubjectInfo']['review_subject']
 	       or $PowerBB->_CONF['template']['SubjectInfo']['delete_topic'])
@@ -386,9 +388,9 @@ class PowerBBTopicMOD
      		$UpdateOnline 			= 	array();
 			$UpdateOnline['field']	=	array();
 
-			$UpdateOnline['field']['user_location'] 	= $PowerBB->_CONF['template']['_CONF']['lang']['Seen_the'] .	' <a href="index.php?page=forum&show=1&amp;id=' . $this->SectionInfo['id'] . '">' . $PowerBB->functions->CleanVariable($this->SectionInfo['title'],'sql') . '</a>';
+			$UpdateOnline['field']['user_location'] 	= $PowerBB->_CONF['template']['_CONF']['lang']['Seen_the'] .	' <a href="index.php?page=forum&show=1&amp;id=' . $This_SectionInfo['id'] . '">' . $PowerBB->functions->CleanVariable($This_SectionInfo['title'],'sql') . '</a>';
 			$UpdateOnline['field']['section_id'] 	    =  $PowerBB->_CONF['template']['SubjectInfo']['section'];
-			$UpdateOnline['field']['subject_show'] 	    =  $this->SectionInfo['parent'];
+			$UpdateOnline['field']['subject_show'] 	    =  $This_SectionInfo['parent'];
 			$UpdateOnline['where']						=	array('user_ip',$PowerBB->_CONF['ip']);
 
 			$update = $PowerBB->core->Update($UpdateOnline,'online');
@@ -402,7 +404,7 @@ class PowerBBTopicMOD
 			$UpdateOnline['field']['user_location'] 	= 	$PowerBB->_CONF['template']['_CONF']['lang']['Seen_the_topic'].' <a href="index.php?page=topic&amp;show=1&amp;id=' . $PowerBB->_GET['id'] . '">' . $PowerBB->functions->CleanVariable($PowerBB->_CONF['template']['SubjectInfo']['title'],'sql') . '</a>';
 			$UpdateOnline['field']['section_id'] 	    =  $PowerBB->_CONF['template']['SubjectInfo']['section'];
 			$UpdateOnline['field']['subject_id'] 	    =  $PowerBB->_GET['id'];
-			$UpdateOnline['field']['subject_show'] 	    =  $this->SectionInfo['parent'];
+			$UpdateOnline['field']['subject_show'] 	    =  $This_SectionInfo['parent'];
 			$UpdateOnline['where']						=	array('user_ip',$PowerBB->_CONF['ip']);
 
 			$update = $PowerBB->core->Update($UpdateOnline,'online');
@@ -425,27 +427,27 @@ class PowerBBTopicMOD
 
 
         $SecSubject2 			= 	array();
-		$SecSubject2['where'] 	= 	array('id',$this->SectionInfo['parent']);
+		$SecSubject2['where'] 	= 	array('id',$This_SectionInfo['parent']);
 
 		$Section_rwo2 = $PowerBB->core->GetInfo($SecSubject2,'section');
         $PowerBB->_CONF['template']['SectionGroup']['write_reply'] = $PowerBB->functions->section_group_permission($PowerBB->_CONF['template']['SubjectInfo']['section'],$PowerBB->_CONF['group_info']['id'],'write_reply');
         $PowerBB->_CONF['template']['SectionGroup']['write_subject'] = $PowerBB->functions->section_group_permission($PowerBB->_CONF['template']['SubjectInfo']['section'],$PowerBB->_CONF['group_info']['id'],'write_subject');
 
 		// assigns
-		$PowerBB->template->assign('section_info',$this->SectionInfo);
+		$PowerBB->template->assign('section_info',$This_SectionInfo);
         $PowerBB->template->assign('sec_main_title',$Section_rwo2['title']);
 	    $PowerBB->template->assign('sec_main_id',$Section_rwo2['id']);
 		$PowerBB->template->assign('Mod',$Mod);
 		$PowerBB->template->assign('subject_id',$PowerBB->_GET['id']);
 		$PowerBB->template->assign('section_id',$PowerBB->_CONF['template']['SubjectInfo']['section']);
-       	$PowerBB->template->assign('show_sig',$this->SectionInfo['show_sig']);
+       	$PowerBB->template->assign('show_sig',$This_SectionInfo['show_sig']);
         $PowerBB->template->assign('count_peg',$PowerBB->_GET['count']);
         $PowerBB->template->assign('write_reply',$PowerBB->functions->section_group_permission($PowerBB->_CONF['template']['SubjectInfo']['section'],$PowerBB->_CONF['group_info']['id'],'write_reply'));
         $PowerBB->template->assign('write_subject',$PowerBB->functions->section_group_permission($PowerBB->_CONF['template']['SubjectInfo']['section'],$PowerBB->_CONF['group_info']['id'],'write_subject'));
 
 
          // nav bar get all child sections of parent
-		 $ParentList = $this->get_parent($this->SectionInfo['id']);
+		 $ParentList = $this->get_parent($This_SectionInfo['id']);
 		 $nmy = sizeof($ParentList);
 		 $nmy_neg = $nmy-1;
 		 $PowerBB->template->assign('child_num',$nmy);
@@ -467,7 +469,7 @@ class PowerBBTopicMOD
 		$PowerBB->template->assign('count_peg',$PowerBB->_GET['count']);
 
 
-		if ($PowerBB->functions->ModeratorCheck($this->SectionInfo['moderators']))
+		if ($PowerBB->functions->ModeratorCheck($This_SectionInfo['moderators']))
 		{
 			$PowerBB->template->assign('mod_toolbar',0);
 		}
@@ -476,19 +478,19 @@ class PowerBBTopicMOD
 			$PowerBB->template->assign('mod_toolbar',1);
 	       if ($PowerBB->_CONF['group_info']['edit_own_reply']== '1')
 	       {
-	        $PowerBB->_CONF['template']['_CONF']['group_info']['edit_own_reply'] = $PowerBB->functions->section_group_permission($this->SectionInfo['id'],$PowerBB->_CONF['group_info']['id'],'edit_own_reply');
+	        $PowerBB->_CONF['template']['_CONF']['group_info']['edit_own_reply'] = $PowerBB->functions->section_group_permission($This_SectionInfo['id'],$PowerBB->_CONF['group_info']['id'],'edit_own_reply');
 	       }
 	       if ($PowerBB->_CONF['group_info']['del_own_reply']== '1')
 	       {
-	        $PowerBB->_CONF['template']['_CONF']['group_info']['del_own_reply'] = $PowerBB->functions->section_group_permission($this->SectionInfo['id'],$PowerBB->_CONF['group_info']['id'],'del_own_reply');
+	        $PowerBB->_CONF['template']['_CONF']['group_info']['del_own_reply'] = $PowerBB->functions->section_group_permission($This_SectionInfo['id'],$PowerBB->_CONF['group_info']['id'],'del_own_reply');
 	       }
 	       if ($PowerBB->_CONF['group_info']['del_own_subject']== '1')
 	       {
-	        $PowerBB->_CONF['template']['_CONF']['group_info']['del_own_subject'] = $PowerBB->functions->section_group_permission($this->SectionInfo['id'],$PowerBB->_CONF['group_info']['id'],'del_own_subject');
+	        $PowerBB->_CONF['template']['_CONF']['group_info']['del_own_subject'] = $PowerBB->functions->section_group_permission($This_SectionInfo['id'],$PowerBB->_CONF['group_info']['id'],'del_own_subject');
 	       }
 	       if ($PowerBB->_CONF['group_info']['edit_own_subject']== '1')
 	       {
-	        $PowerBB->_CONF['template']['_CONF']['group_info']['edit_own_subject'] = $PowerBB->functions->section_group_permission($this->SectionInfo['id'],$PowerBB->_CONF['group_info']['id'],'edit_own_subject');
+	        $PowerBB->_CONF['template']['_CONF']['group_info']['edit_own_subject'] = $PowerBB->functions->section_group_permission($This_SectionInfo['id'],$PowerBB->_CONF['group_info']['id'],'edit_own_subject');
 	       }
 		}
 
@@ -585,30 +587,30 @@ class PowerBBTopicMOD
 	    $PowerBB->_CONF['template']['while']['extrafield']=&$extraEmptyFields;
 
 		// Make register date in nice format to show it
-		if (is_numeric($this->Info['register_date']))
+		if (is_numeric($This_Info['register_date']))
 		{
-			$this->Info['register_date'] = $PowerBB->functions->year_date($this->Info['register_date']);
+			$This_Info['register_date'] = $PowerBB->functions->year_date($This_Info['register_date']);
 		}
        $cache = json_decode(base64_decode($PowerBB->_CONF['member_row']['style_cache']), true);
        $image_path = $PowerBB->_CONF['rows']['style']['image_path'];
 
 
 		// Is writer online ?
-		$CheckOnline = ($this->Info['logged'] < $PowerBB->_CONF['timeout']) ? false : true;
+		$CheckOnline = ($This_Info['logged'] < $PowerBB->_CONF['timeout']) ? false : true;
 
 		// If the member is online , so store that in status variable
 		($CheckOnline) ? $PowerBB->template->assign('user_online',true) : $PowerBB->template->assign('user_online',false);
 
 		// Get username style
-		if (empty($this->Info['username_style_cache']))
+		if (empty($This_Info['username_style_cache']))
 		{
-			$this->Info['display_username'] = $this->Info['username'];
+			$This_Info['display_username'] = $This_Info['username'];
 		}
 		else
 		{
-			$this->Info['display_username'] = $this->Info['username_style_cache'];
+			$This_Info['display_username'] = $This_Info['username_style_cache'];
 
-			$this->Info['display_username'] = $PowerBB->functions->CleanVariable($this->Info['display_username'],'unhtml');
+			$This_Info['display_username'] = $PowerBB->functions->CleanVariable($This_Info['display_username'],'unhtml');
 		}
 
 
@@ -617,17 +619,17 @@ class PowerBBTopicMOD
             $size = @sizeof($titles);
 			for ($i = 0; $i <= $size; $i++)
 			{
-				if($titles[$size-1]['posts'] < $this->Info['posts'])
+				if($titles[$size-1]['posts'] < $This_Info['posts'])
 				{
 				$user_titles = $titles[$size-1]['usertitle'];
 				break;
 				}
-				if($titles[$i]['posts'] > $this->Info['posts'])
+				if($titles[$i]['posts'] > $This_Info['posts'])
 				{
 				$user_titles = $titles[$i]['usertitle'];
 				break;
 				}
-				if($this->Info['posts'] < $titles[1]['posts'])
+				if($This_Info['posts'] < $titles[1]['posts'])
 				{
 				$user_titles = $titles[1]['usertitle'];
 				break;
@@ -642,19 +644,19 @@ class PowerBBTopicMOD
             $y = @sizeof($ratings);
 			for ($b = 0; $b <= $y; $b++)
 			{
-				if($ratings[$y-1]['posts'] < $this->Info['posts'])
+				if($ratings[$y-1]['posts'] < $This_Info['posts'])
 				{
 				$user_ratings = $ratings[$y-1]['rating'];
 				$user_posts = $ratings[$y-1]['posts'];
 				break;
 				}
-				if($ratings[$b]['posts'] > $this->Info['posts'])
+				if($ratings[$b]['posts'] > $This_Info['posts'])
 				{
 				$user_ratings = $ratings[$b]['rating'];
 				$user_posts = $ratings[$b]['posts'];
 				break;
 				}
-				if($this->Info['posts'] < $ratings[1]['posts'])
+				if($This_Info['posts'] < $ratings[1]['posts'])
 				{
 				$user_ratings = $ratings[1]['rating'];
 				$user_posts = $ratings[1]['posts'];
@@ -668,29 +670,29 @@ class PowerBBTopicMOD
 
 
 		// The writer signture isn't empty
-		if (!empty($this->Info['user_sig']))
+		if (!empty($This_Info['user_sig']))
 		{
 			// So , use the PowerCode in it
-			$this->Info['user_sig'] = $PowerBB->Powerparse->replace($this->Info['user_sig']);
-			$PowerBB->Powerparse->replace_smiles($this->Info['user_sig']);
+			$This_Info['user_sig'] = $PowerBB->Powerparse->replace($This_Info['user_sig']);
+			$PowerBB->Powerparse->replace_smiles($This_Info['user_sig']);
 
 		// feltr sig Text
-        $this->Info['user_sig'] = $PowerBB->Powerparse->censor_words($this->Info['user_sig']);
+        $This_Info['user_sig'] = $PowerBB->Powerparse->censor_words($This_Info['user_sig']);
 		}
 
-       if (!empty($this->Info['away_msg']))
+       if (!empty($This_Info['away_msg']))
 		{
 		// Kill SQL Injection
-        $this->Info['away_msg'] = $PowerBB->functions->CleanVariable($this->Info['away_msg'],'html');
-		$this->Info['away_msg'] =$PowerBB->functions->CleanVariable($this->Info['away_msg'],'sql');
+        $This_Info['away_msg'] = $PowerBB->functions->CleanVariable($This_Info['away_msg'],'html');
+		$This_Info['away_msg'] =$PowerBB->functions->CleanVariable($This_Info['away_msg'],'sql');
         }
 
-     $this->Info['user_website'] = $PowerBB->functions->CleanVariable($this->Info['user_website'],'html');
-     $this->Info['user_info'] = $PowerBB->functions->CleanVariable($this->Info['user_info'],'html');
+     $This_Info['user_website'] = $PowerBB->functions->CleanVariable($This_Info['user_website'],'html');
+     $This_Info['user_info'] = $PowerBB->functions->CleanVariable($This_Info['user_info'],'html');
 
 
 
-		// $this->Info['text'] = wordwrap($this->Info['text'], $PowerBB->_CONF['info_row']['wordwrap'], "<br />", true);
+		// $This_Info['text'] = wordwrap($This_Info['text'], $PowerBB->_CONF['info_row']['wordwrap'], "<br />", true);
 
 		// The visitor come from search engine , I don't mean Google :/ I mean the local search engine
 		// so highlight the key word
@@ -700,7 +702,7 @@ class PowerBBTopicMOD
 		}
 
 		// If the PowerCode is allow , so use it :)
-		if ($this->SectionInfo['use_power_code_allow'])
+		if ($This_SectionInfo['use_power_code_allow'])
 		{
 	     $PowerBB->_CONF['template']['SubjectInfo']['text'] = $PowerBB->Powerparse->replace($PowerBB->_CONF['template']['SubjectInfo']['text']);
 		}
@@ -715,7 +717,7 @@ class PowerBBTopicMOD
 		$PowerBB->Powerparse->replace_smiles($PowerBB->_CONF['template']['SubjectInfo']['text']);
 
 		// feltr Subject Text
-         $this->Info['text'] = $PowerBB->Powerparse->censor_words($PowerBB->_CONF['template']['SubjectInfo']['text']);
+         $This_Info['text'] = $PowerBB->Powerparse->censor_words($PowerBB->_CONF['template']['SubjectInfo']['text']);
         // Kill XSS
         $PowerBB->functions->CleanVariable($PowerBB->_CONF['template']['SubjectInfo']['text'],'html');
 		// Kill SQL Injection
@@ -759,27 +761,27 @@ class PowerBBTopicMOD
 		}
 
 
-		$topic_date = $PowerBB->functions->_date($this->Info['native_write_time']);
-		//$topic_time = $PowerBB->functions->_time($this->Info['native_write_time']);
+		$topic_date = $PowerBB->functions->_date($This_Info['native_write_time']);
+		//$topic_time = $PowerBB->functions->_time($This_Info['native_write_time']);
 
-		$this->Info['native_write_time'] = $topic_date;
+		$This_Info['native_write_time'] = $topic_date;
 
         $Aht=$PowerBB->_CONF['template']['_CONF']['lang']['THours'];
-		$action_date = $PowerBB->functions->_date($this->Info['actiondate']);
-        //$action_time = $PowerBB->functions->_time($this->Info['actiondate']);
+		$action_date = $PowerBB->functions->_date($This_Info['actiondate']);
+        //$action_time = $PowerBB->functions->_time($This_Info['actiondate']);
 
-		$this->Info['actiondate'] = $action_date;
+		$This_Info['actiondate'] = $action_date;
 
-       $this->Info['reason_edit'] = $PowerBB->Powerparse->censor_words($this->Info['reason_edit']);
+       $This_Info['reason_edit'] = $PowerBB->Powerparse->censor_words($This_Info['reason_edit']);
 
-		// Finally $this->Info to templates
+		// Finally $This_Info to templates
 
 
 
         ///////////////////////////////////////////////
         // pager Up Subject
 		$SubjectInfid = $PowerBB->_GET['id'];
-		if ($PowerBB->functions->ModeratorCheck($this->SectionInfo['moderators']))
+		if ($PowerBB->functions->ModeratorCheck($This_SectionInfo['moderators']))
 		{
 		$SubjectInfReplyNum = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['reply'] . " WHERE subject_id='$SubjectInfid' and delete_topic <>1 LIMIT 1"));
 		}
@@ -792,7 +794,7 @@ class PowerBBTopicMOD
 
 			   if ($PowerBB->_SERVER['HTTP_REFERER'] != $Get_Page_URL)
 				{
-		        	if ($SubjectInfReplyNum != $this->Info['reply_number'])
+		        	if ($SubjectInfReplyNum != $This_Info['reply_number'])
 				   {
 			     		$RepArr 					= 	array();
 			     		$RepArr['reply_number']		=	$SubjectInfReplyNum;
@@ -801,7 +803,7 @@ class PowerBBTopicMOD
 			     		$UpdateReplyNumber = $PowerBB->subject->UpdateReplyNumber($RepArr);
 				   }
 	           }
-	           elseif ($SubjectInfReplyNum != $this->Info['reply_number'])
+	           elseif ($SubjectInfReplyNum != $This_Info['reply_number'])
 	           {
 			     		$RepArr 					= 	array();
 			     		$RepArr['reply_number']		=	$SubjectInfReplyNum;
@@ -812,7 +814,7 @@ class PowerBBTopicMOD
 
 		   // Update subject review number
 		    $SubjectInfReviewNum = $PowerBB->_CONF['template']['SubjectInfo']['review_reply'];
-		    if ($SubjectInfReviewNum != $this->Info['review_reply'])
+		    if ($SubjectInfReviewNum != $This_Info['review_reply'])
 		     {
 		      $PowerBB->DB->sql_query("UPDATE " . $PowerBB->table['subject'] . " SET review_reply='$SubjectInfReviewNum' WHERE id='$SubjectInfid'");
 		     }
@@ -835,7 +837,7 @@ class PowerBBTopicMOD
 			$ReplypagerArr['pager']['var'] 		= 	'count';
 			$ReplypagerArr['subject_id'] 		= 	$PowerBB->_GET['id'];
 
-			$this->RInfo = $PowerBB->core->GetInfo($ReplypagerArr,'reply');
+			$This_RInfo = $PowerBB->core->GetInfo($ReplypagerArr,'reply');
 
 		    $PowerBB->template->assign('pager_reply',$PowerBB->pager->show());
 
@@ -845,6 +847,7 @@ class PowerBBTopicMOD
 			{
 			  $PowerBB->_GET['last_post'] = '1';
 			}
+			/*
          //// get count perpage
           if ($SubjectInfReplyNum > $PowerBB->_CONF['info_row']['perpage'])
           {
@@ -879,8 +882,7 @@ class PowerBBTopicMOD
 				}
 		     }
           }
-
-
+          */
         // Subject top
         $PowerBB->template->assign('Subjectinfo',$PowerBB->_CONF['template']['SubjectInfo']);
         $PowerBB->template->assign('subject_title',$PowerBB->Powerparse->censor_words($PowerBB->_CONF['template']['SubjectInfo']['title']));
@@ -893,7 +895,7 @@ class PowerBBTopicMOD
         $visitor = $PowerBB->_CONF['template']['SubjectInfo']['visitor'];
 
 		$Subjectid = $PowerBB->_GET['id'];
-		if ($PowerBB->_CONF['member_row']['username'] != $this->Info['writer'])
+		if ($PowerBB->_CONF['member_row']['username'] != $This_Info['writer'])
 		{
 		$update_visitor = $PowerBB->DB->sql_query("UPDATE " . $PowerBB->table['subject'] . " SET visitor= '$visitor' WHERE id='$Subjectid'");
 		}
@@ -1010,8 +1012,8 @@ class PowerBBTopicMOD
 
          ////////////////////////////////////////////////////////////////////////
 
-		$PowerBB->template->assign('Info',$this->Info);
-		$PowerBB->template->assign('ReplierInfo',$this->Info);
+		$PowerBB->template->assign('Info',$This_Info);
+		$PowerBB->template->assign('ReplierInfo',$This_Info);
 
          $start = ($PowerBB->_CONF['info_row']['perpage']);
 		$PowerBB->template->assign('url',$PowerBB->functions->GetForumAdress().'index.php?page=topic&amp;show=1&amp;id='.$PowerBB->_GET['id']);
@@ -1040,7 +1042,9 @@ class PowerBBTopicMOD
              {
              $passwor_d ='&amp;password=';
              }
-
+       // start show posts
+     if($SubjectInfReplyNum)
+      {
 		$ReplyArr = array();
 		// Pager setup
 		$ReplyArr['pager'] 				= 	array();
@@ -1055,7 +1059,7 @@ class PowerBBTopicMOD
 		$ReplyArr['order']['field'] 		= 	'write_time';
 		$ReplyArr['order']['type'] 			= 	'ASC';
 
-		$this->RInfo = $PowerBB->reply->GetReplyWriterInfo($ReplyArr);
+		$This_RInfo = $PowerBB->reply->GetReplyWriterInfo($ReplyArr);
         if ($SubjectInfReplyNum > $PowerBB->_CONF['info_row']['perpage'])
 		{
 		 $PowerBB->template->assign('pager_reply',$PowerBB->pager->show());
@@ -1063,19 +1067,23 @@ class PowerBBTopicMOD
 
 		$PowerBB->template->assign('count',$PowerBB->_GET['count']);
 
-        		//////////
 
-		// Kill XSS
-		// TODO :: it's better to kill XSS inside the loop
-		$PowerBB->functions->CleanVariable($this->RInfo,'html');
-		$n = @sizeof($this->RInfo);
-		$this->x = 0;
+		$n = @sizeof($This_RInfo);
+		$This_x = 0;
 		// Nice loop :D
-		while ($n > $this->x)
+		while ($n > $This_x)
 		{
 
+	         // Correct the section number for the replys if it is incorrect.
+			 if ($This_RInfo[$This_x]['section'] != $PowerBB->_CONF['template']['SubjectInfo']['section'])
+			 {
+			   $real_section = $PowerBB->_CONF['template']['SubjectInfo']['section'];
+			   $Subject_id = $PowerBB->_CONF['template']['SubjectInfo']['id'];
+			   $update_incorrect_reply = $PowerBB->DB->sql_query("UPDATE " . $PowerBB->table['reply'] . " SET section= '$real_section' WHERE subject_id='$Subject_id'");
+			 }
+
 			$MemberArr 			= 	array();
-			$MemberArr['where'] 	= 	array('username',$this->RInfo[$this->x]['writer']);
+			$MemberArr['where'] 	= 	array('username',$This_RInfo[$This_x]['writer']);
 
 			$ReplierInfo = $PowerBB->core->GetInfo($MemberArr,'member');
 
@@ -1191,35 +1199,35 @@ class PowerBBTopicMOD
 			// so highlight the key word
 			if (!empty($PowerBB->_GET['highlight']))
 			{
-				$this->RInfo[$this->x]['text'] = $PowerBB->Powerparse->content_search_highlight( $this->RInfo[$this->x]['text'], $PowerBB->_GET['highlight'] );
+				$This_RInfo[$This_x]['text'] = $PowerBB->Powerparse->content_search_highlight( $This_RInfo[$This_x]['text'], $PowerBB->_GET['highlight'] );
 			}
 			// If the PowerCode is allow , use it
-			if ($this->SectionInfo['use_power_code_allow'])
+			if ($This_SectionInfo['use_power_code_allow'])
 			{
-				$this->RInfo[$this->x]['text'] = $PowerBB->Powerparse->replace($this->RInfo[$this->x]['text']);
+				$This_RInfo[$This_x]['text'] = $PowerBB->Powerparse->replace($This_RInfo[$This_x]['text']);
 			}
 			// It's not allow , don't use it
 			else
 			{
-				$this->RInfo[$this->x]['text'] = nl2br($this->RInfo[$this->x]['text']);
+				$This_RInfo[$This_x]['text'] = nl2br($This_RInfo[$This_x]['text']);
 			}
 
                  eval($PowerBB->functions->get_fetch_hooks('topic_bady'));
 
 			// Convert the smiles to image
-			$PowerBB->Powerparse->replace_smiles($this->RInfo[$this->x]['text']);
+			$PowerBB->Powerparse->replace_smiles($This_RInfo[$This_x]['text']);
 
 			// feltr Subject Text
-	         $this->RInfo[$this->x]['text'] = $PowerBB->Powerparse->censor_words($this->RInfo[$this->x]['text']);
+	         $This_RInfo[$This_x]['text'] = $PowerBB->Powerparse->censor_words($This_RInfo[$This_x]['text']);
 	        // Kill XSS
-	        $PowerBB->functions->CleanVariable($this->RInfo[$this->x]['text'],'html');
+	        $PowerBB->functions->CleanVariable($This_RInfo[$This_x]['text'],'html');
 			// Kill SQL Injection
-			$PowerBB->functions->CleanVariable($this->RInfo[$this->x]['text'],'sql');
+			$PowerBB->functions->CleanVariable($This_RInfo[$This_x]['text'],'sql');
 	    	$PowerBB->_CONF['template']['_CONF']['info_row']['show_list_last_5_posts_member'] = '0';
 	          $PowerBB->template->assign('Awards_nm',0);
 	         // If time out For Editing Disable View Icon Edite
 
-			$PowerBB->_CONF['template']['ReplyInfo'] = $this->RInfo[$this->x];
+			$PowerBB->_CONF['template']['ReplyInfo'] = $This_RInfo[$This_x];
 
 	        $time_out = $PowerBB->_CONF['info_row']['time_out']*60;
              $PowerBB->template->assign('write_time',$PowerBB->_CONF['template']['ReplyInfo']['write_time']);
@@ -1242,14 +1250,14 @@ class PowerBBTopicMOD
 	          $PowerBB->template->assign('mod_edit_member',0);
 	       }
 	        $Aht=$PowerBB->_CONF['template']['_CONF']['lang']['THours'];
-			$reply_date = $PowerBB->functions->_date($this->RInfo[$this->x]['write_time']);
+			$reply_date = $PowerBB->functions->_date($This_RInfo[$This_x]['write_time']);
 
-			$action_date = $PowerBB->functions->_date($this->RInfo[$this->x]['actiondate']);
+			$action_date = $PowerBB->functions->_date($This_RInfo[$This_x]['actiondate']);
 
-			$this->RInfo[$this->x]['write_time'] = $reply_date;
-	        $this->RInfo[$this->x]['actiondate'] = $action_date;
+			$This_RInfo[$This_x]['write_time'] = $reply_date;
+	        $This_RInfo[$This_x]['actiondate'] = $action_date;
 			// We have attachment in this reply
-			if ($this->RInfo[$this->x]['attach_reply'] and $this->RInfo[$this->x]['writer'] != 'Guest')
+			if ($This_RInfo[$This_x]['attach_reply'] and $This_RInfo[$This_x]['writer'] != 'Guest')
 			{
 				$u_id = $ReplierInfo['id'];
 				$AttachArr 							= 	array();
@@ -1257,7 +1265,7 @@ class PowerBBTopicMOD
 				$AttachArr['where'][0] 				=	array();
 				$AttachArr['where'][0]['name'] 		=	'subject_id';
 				$AttachArr['where'][0]['oper'] 		=	'=';
-				$AttachArr['where'][0]['value'] 	=	$this->RInfo[$this->x]['id'];
+				$AttachArr['where'][0]['value'] 	=	$This_RInfo[$This_x]['id'];
 				$AttachArr['where'][1] 				=	array();
 				$AttachArr['where'][1]['con']		=	'AND';
 				$AttachArr['where'][1]['name'] 		=	'reply';
@@ -1280,50 +1288,51 @@ class PowerBBTopicMOD
 			// $RInfo to templates
 
 
-	         $this->RInfo[$this->x]['reason_edit'] = $PowerBB->Powerparse->censor_words($this->RInfo[$this->x]['reason_edit']);
+	         $This_RInfo[$This_x]['reason_edit'] = $PowerBB->Powerparse->censor_words($This_RInfo[$This_x]['reason_edit']);
 
-	        $PowerBB->template->assign('resview_reply',$review_reply);
-			$PowerBB->template->assign('ReviewInfo',$this->RInfo[$this->x]);
-			$PowerBB->template->assign('Info',$this->RInfo[$this->x]);
-			$PowerBB->template->assign('section',$this->Info['section']);
-			$PowerBB->template->assign('reply_id',$this->RInfo[$this->x]['id']);
-			$PowerBB->_CONF['template']['Info']['reply_id'] = $this->RInfo[$this->x]['id'];
+	       // $PowerBB->template->assign('resview_reply',$review_reply);
+			$PowerBB->template->assign('ReviewInfo',$This_RInfo[$This_x]);
+			$PowerBB->template->assign('Info',$This_RInfo[$This_x]);
+			$PowerBB->template->assign('section',$This_Info['section']);
+			$PowerBB->template->assign('reply_id',$This_RInfo[$This_x]['id']);
+			$PowerBB->_CONF['template']['Info']['reply_id'] = $This_RInfo[$This_x]['id'];
 	     		// reply number in Subject
 				if ($PowerBB->_GET['count'] == '1')
 				{
-                $PowerBB->_CONF['template']['Info']['reply_number'] = $this->x+1;
+                $PowerBB->_CONF['template']['Info']['reply_number'] = $This_x+1;
 				}
 				elseif ($PowerBB->_GET['count'] == '2')
 				{
-				$PowerBB->_CONF['template']['Info']['reply_number'] = $this->x+1+$PowerBB->_CONF['info_row']['perpage'];
+				$PowerBB->_CONF['template']['Info']['reply_number'] = $This_x+1+$PowerBB->_CONF['info_row']['perpage'];
 				}
 				elseif ($PowerBB->_GET['count']> 2)
 				{
 				  $countn = $PowerBB->_GET['count']-1;
-				$PowerBB->_CONF['template']['Info']['reply_number'] = $this->x+1+$PowerBB->_CONF['info_row']['perpage']*$countn;
+				$PowerBB->_CONF['template']['Info']['reply_number'] = $This_x+1+$PowerBB->_CONF['info_row']['perpage']*$countn;
 				}
-				if ($this->RInfo[$this->x]['review_reply'] and $PowerBB->functions->ModeratorCheck($this->SectionInfo['moderators']))
+				if ($This_RInfo[$This_x]['review_reply'] and $PowerBB->functions->ModeratorCheck($This_SectionInfo['moderators']))
 				{
 				 $PowerBB->template->display('review_reply');
 				}
-	            elseif (!$this->RInfo[$this->x]['review_reply'])
+	            elseif (!$This_RInfo[$This_x]['review_reply'])
 	            {
 				// Show the reply :)
 				 $PowerBB->template->display('show_reply');
 				}
 
-                 $this->x += 1;
+                 $This_x += 1;
 
 		}
 
+     }
 
      if ($PowerBB->_CONF['info_row']['samesubject_show'])
 	 {
-        $this->Info['title'] 	= 	$PowerBB->functions->CleanVariable($this->Info['title'],'html');
-        $this->Info['title'] 	= 	$PowerBB->functions->CleanVariable($this->Info['title'],'sql');
+        $This_Info['title'] 	= 	$PowerBB->functions->CleanVariable($This_Info['title'],'html');
+        $This_Info['title'] 	= 	$PowerBB->functions->CleanVariable($This_Info['title'],'sql');
 
 		    $excludedWords = array();
-		    $title = preg_split('#[ \r\n\t]+#', $this->Info['title'], -1, PREG_SPLIT_NO_EMPTY);
+		    $title = preg_split('#[ \r\n\t]+#', $This_Info['title'], -1, PREG_SPLIT_NO_EMPTY);
 			$excludedWords = array_merge($excludedWords, $title);
 	        $forum_not = $PowerBB->_CONF['info_row']['last_subject_writer_not_in'];
 			if (!empty($excludedWords[0])
@@ -1409,11 +1418,11 @@ class PowerBBTopicMOD
 			}
 			else
 			{
-				if (isset($this->SectionInfo))
+				if (isset($This_SectionInfo))
 				{
 					$AdminArr = array();
 					$AdminArr['username'] = $PowerBB->_CONF['member_row']['username'];
-					$AdminArr['section_id'] = $this->SectionInfo['id'];
+					$AdminArr['section_id'] = $This_SectionInfo['id'];
 
 					$Admin = $PowerBB->moderator->IsModerator($AdminArr);
 				}
@@ -1423,7 +1432,7 @@ class PowerBBTopicMOD
 
        // Show Next subject And previous subject:)
 		 $idSubject = $PowerBB->_GET['id'];
-		 $idSection = $this->Info['section'];
+		 $idSection = $This_Info['section'];
          $getnextsubject_query = $PowerBB->DB->sql_query("SELECT title,id FROM  " . $PowerBB->table['subject'] . " WHERE id > '$idSubject' and section='" . $idSection . "' AND review_subject<>1 AND delete_topic<>1 ORDER BY id ASC LIMIT 0,1");
          $getnextsubject_row   = $PowerBB->DB->sql_fetch_array($getnextsubject_query);
 
@@ -1445,15 +1454,15 @@ class PowerBBTopicMOD
 
 		//$PowerBB->functions->GetEditorTools();
 
-     	$PowerBB->template->assign('reply_title',$PowerBB->functions->CleanVariable($this->Info['title'],'html'));
+     	$PowerBB->template->assign('reply_title',$PowerBB->functions->CleanVariable($This_Info['title'],'html'));
      	$PowerBB->template->assign('subject_id',$PowerBB->_GET['id']);
      	$PowerBB->template->assign('id',$PowerBB->_GET['id']);
      	$PowerBB->template->assign('Admin',$Admin);
-     	$PowerBB->template->assign('stick',$this->Info['stick']);
-     	$PowerBB->template->assign('close',$this->Info['close']);
-     	$PowerBB->template->assign('Info_row',$this->Info);
-     	$PowerBB->template->assign('special',$this->Info['special']);
-     	$PowerBB->template->assign('review_subject',$this->Info['review_subject']);
+     	$PowerBB->template->assign('stick',$This_Info['stick']);
+     	$PowerBB->template->assign('close',$This_Info['close']);
+     	$PowerBB->template->assign('Info_row',$This_Info);
+     	$PowerBB->template->assign('special',$This_Info['special']);
+     	$PowerBB->template->assign('review_subject',$This_Info['review_subject']);
 		$PowerBB->_GET['id'] = $PowerBB->functions->CleanVariable($PowerBB->_GET['id'],'intval');
 
        if($PowerBB->_CONF['group_info']['see_who_on_topic'])
@@ -1514,7 +1523,7 @@ class PowerBBTopicMOD
      }
 
 
-		$PowerBB->template->assign('Subjectinfo',$Subjectinfo);
+		//$PowerBB->template->assign('Subjectinfo',$Subjectinfo);
 		$PowerBB->template->assign('id',$PowerBB->_GET['id']);
 
         ///////////////////////////////////////////////
@@ -1534,7 +1543,7 @@ class PowerBBTopicMOD
 		    $PowerBB->template->assign('count',$countpage);
           }
 
- 			if ($PowerBB->functions->ModeratorCheck($this->SectionInfo['moderators']))
+ 			if ($PowerBB->functions->ModeratorCheck($This_SectionInfo['moderators']))
 			{
 
 			        // show TopicMod List
@@ -1550,7 +1559,7 @@ class PowerBBTopicMOD
 			      $TopicMods = $PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['topicmod'] . " WHERE id ");
 				  while ($ModsList = $PowerBB->DB->sql_fetch_array($TopicMods))
 			      {
-					if ( strstr( ",".$ModsList['forums'].",", ",".$this->Info['section']."," ) and $ModsList['forums'] != '*' )
+					if ( strstr( ",".$ModsList['forums'].",", ",".$This_Info['section']."," ) and $ModsList['forums'] != '*' )
 					{
 						$PowerBB->template->assign('Multi_Moderation',1);
 					}
@@ -1619,7 +1628,7 @@ class PowerBBTopicMOD
 		}
 		else
 		{
-		$less_num = strlen(utf8_decode($text)) >= 4;
+		$less_num = strlen($text) >= 4;
 		}
 		if($less_num)
 		{

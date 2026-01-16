@@ -319,35 +319,37 @@ function fetch_gzipped_text($source)
 
  	/**
  	 * Clean the variable from any dirty :) , we should be thankful for abuamal
- 	 *
- 	 * By : abuamal
  	 */
 	function CleanVariable($variable, $type)
 	{
-		if (!is_array($variable))
-		{
-			return $this->SafeInput($variable,$type);
-		}
-		else
-		{
-			foreach ($variable as $key => $var)
-			{
+	    $types = explode(',', $type);
 
-				if (is_array($var))
-				{
-					$this->CleanVariable($variable[$key], $type);
-				}
-				else
-				{
-					if (isset($variable[$key]))
-					{
-				    	$variable[$key] = $this->SafeInput($var, $type);
-					}
-				}
-			}
-
-			return true;
-		}
+	    if (!is_array($variable))
+	    {
+	        foreach ($types as $single_type)
+	        {
+	            $variable = $this->SafeInput($variable, trim($single_type));
+	        }
+	        return $variable;
+	    }
+	    else
+	    {
+	        foreach ($variable as $key => $var)
+	        {
+	            if (is_array($var))
+	            {
+	                $variable[$key] = $this->CleanVariable($var, $type);
+	            }
+	            else
+	            {
+	                foreach ($types as $single_type)
+	                {
+	                    $variable[$key] = $this->SafeInput($variable[$key], trim($single_type));
+	                }
+	            }
+	        }
+	        return $variable;
+	    }
 	}
 
 	/**
@@ -499,7 +501,7 @@ function fetch_gzipped_text($source)
 	{
 		global $PowerBB;
 
-	   if($input > time()){
+	   if (!is_numeric($input)) {
 	   return false;
 	   exit;
 	   }

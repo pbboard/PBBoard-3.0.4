@@ -366,11 +366,18 @@ class PowerBBCommon
 			// If the information isn't valid CheckMember's value will be false
 			// otherwise the value will be an array
 			$this->CheckMember = $PowerBB->core->GetInfo($MemberArr,'member');
+            $salt = $this->CheckMember['active_number'];
 
 			// This is a member :)
 			if ($this->CheckMember != false)
 			{
-				$this->__MemberProcesses();
+	           if(empty($salt))
+				{
+				$this->__VisitorProcesses();
+	            }
+				else
+				{	             $this->__MemberProcesses();
+				}
 			}
 			// This is visitor
 			else

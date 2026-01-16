@@ -874,17 +874,39 @@ class PowerBBReplyAddMOD
 						$review_reply = 1;
 					}
 
+                  	$Reply_NumArr = $this->SubjectInfo['reply_number'];
 
+					$ss_r = $PowerBB->_CONF['info_row']['perpage']/2+1;
+					$roun_ss_r = round($ss_r, 0);
+					$reply_number_r = $Reply_NumArr-$roun_ss_r+1;
+					$pagenum_r = $reply_number_r/$PowerBB->_CONF['info_row']['perpage'];
+					$round0_r = round($pagenum_r, 0);
+					$countpage = $round0_r+1;
+					$countpage = str_replace("-", '', $countpage);
 
 
 
 			     	 if ($PowerBB->_CONF['member_permission'])
 					 {
+				       //Create last info cache for last replier & writer and last post
+						$cache = array();
+						$cache[1]['user_id']		 	                = 	$PowerBB->_CONF['rows']['member_row']['id'];
+						$cache[2]['avater_path']		 	            = 	$PowerBB->_CONF['rows']['member_row']['avater_path'];
+						$cache[3]['username_style']		 	            = 	$PowerBB->_CONF['rows']['member_row']['username_style_cache'];
+						$cache[4]['section_id']		 	                = 	$this->SectionInfo['id'];
+						$cache[5]['total_posts_count']		 	        = 	$PagerReplyNumArr+1;
+						$cache[6]['last_reply_id']		 	            = 	$PowerBB->reply->id;
+						$cache[7]['last_berpage_nm']		 	        = 	$countpage;
+						$cache[8]['writer_subject_username_style']	    = 	$PowerBB->functions->get_username_style_cache($this->SubjectInfo['writer']);
+
+						$cache = serialize($cache);
+
 			     		$LastArr = array();
-			     		$LastArr['replier'] 	= 	$PowerBB->_CONF['member_row']['username'];
+			     		$LastArr['field']['last_replier'] 	= 	$PowerBB->_CONF['member_row']['username'];
+			     		$LastArr['field']['lastreply_cache'] 	= 	$cache;
 			     		$LastArr['where']		=	array('id',$this->SubjectInfo['id']);
 
-				     	$UpdateLastReplier = $PowerBB->subject->UpdateLastReplier($LastArr);
+				     	$UpdateLastReplier = $PowerBB->subject->UpdateSubject($LastArr);
 
 
 				     		//////////
@@ -926,34 +948,33 @@ class PowerBBReplyAddMOD
 
 							if ($PowerBB->_CONF['info_row']['allowed_emailed'] == '1')
 							{
+								$SectionInfoid = $this->SectionInfo['id'];
+								$SubjectInfoid = $this->SubjectInfo['id'];
+								$member_row_id = $PowerBB->_CONF['member_row']['id'];
 
-							$SectionInfoid = $this->SectionInfo['id'];
-							$SubjectInfoid = $this->SubjectInfo['id'];
-							$member_row_id = $PowerBB->_CONF['member_row']['id'];
-
-							$subject_user_emailed_nm = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['emailed'] . " WHERE subject_id='$SubjectInfoid' and user_id ='$member_row_id' LIMIT 1"));
+								$subject_user_emailed_nm = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['emailed'] . " WHERE subject_id='$SubjectInfoid' and user_id ='$member_row_id' LIMIT 1"));
 
 
 							if ($PowerBB->_POST['emailed'])
 							{
 
-							$EmailedArr 			= 	array();
-							$EmailedArr['where'] 	= 	array('subject_id',$this->SubjectInfo['id']);
+								$EmailedArr 			= 	array();
+								$EmailedArr['where'] 	= 	array('subject_id',$this->SubjectInfo['id']);
 
-							$this->EmailedInfo = $PowerBB->emailed->GetEmailedInfo($EmailedArr);
+								$this->EmailedInfo = $PowerBB->emailed->GetEmailedInfo($EmailedArr);
 
 
-							if ($subject_user_emailed_nm < 1)
-							{
-							$EmailedArr 								= 	array();
-							$EmailedArr['get_id']						=	true;
-							$EmailedArr['field']						=	array();
-							$EmailedArr['field']['user_id'] 			= 	$PowerBB->_CONF['member_row']['id'];
-							$EmailedArr['field']['subject_id'] 			= 	$this->SubjectInfo['id'];
-							$EmailedArr['field']['subject_title'] 		= 	$PowerBB->functions->CleanVariable($PowerBB->_POST['title'],'html');
+								if ($subject_user_emailed_nm < 1)
+								{
+								$EmailedArr 								= 	array();
+								$EmailedArr['get_id']						=	true;
+								$EmailedArr['field']						=	array();
+								$EmailedArr['field']['user_id'] 			= 	$PowerBB->_CONF['member_row']['id'];
+								$EmailedArr['field']['subject_id'] 			= 	$this->SubjectInfo['id'];
+								$EmailedArr['field']['subject_title'] 		= 	$PowerBB->functions->CleanVariable($PowerBB->_POST['title'],'html');
 
-							$Insert = $PowerBB->emailed->InsertEmailed($EmailedArr);
-							}
+								$Insert = $PowerBB->emailed->InsertEmailed($EmailedArr);
+								}
 
 							}
 							//Send email notification to all participants in this department with a new reply
@@ -978,37 +999,37 @@ class PowerBBReplyAddMOD
 							if ($PowerBB->emailed->IsEmailed(array('where' => array('subject_id',$SubjectInfoid))))
 							{
 
-							while ($getmember_row = $PowerBB->DB->sql_fetch_array($getmember_query))
-							{
-							$MemArr 			= 	array();
-							$MemArr['where'] 	= 	array('id',$getmember_row['user_id']);
-
-							$MemInfo = $PowerBB->core->GetInfo($MemArr,'member');
-
-							$username = $PowerBB->_CONF['template']['_CONF']['lang']['hello_your']  . $MemInfo['username'].'<br>';
-
-		                    	if ($PowerBB->_CONF['info_row']['mailer']=='phpmail')
+								while ($getmember_row = $PowerBB->DB->sql_fetch_array($getmember_query))
 								{
-							     $Send = $PowerBB->functions->send_this_php($MemInfo['email'],$title.':'.$PowerBB->_POST['title'],$starthtml.$username.$Form_Massege.$Endhtml,$PowerBB->_CONF['info_row']['send_email']);
-					            }
-								elseif ($PowerBB->_CONF['info_row']['mailer']=='smtp')
-								{
-								$to = $MemInfo['email'];
-								$fromname = $PowerBB->_CONF['info_row']['title'];
-								$message = $starthtml.$username.$Form_Massege.$Endhtml;
-								$subject = $PowerBB->functions->CleanVariable($PowerBB->_POST['title'],'html');
-								$from = $PowerBB->_CONF['info_row']['send_email'];
-                                require_once("includes/class_mail.php");
-                                define('STOP_COMMON',false);
-								$mail->setFrom($from, $fromname);
-								$mail->addAddress($to);     // Add a recipient
-								$mail->Subject = $subject;
-								$mail->Body    = $message;
-								$mail->send();
-					            $mail->ClearAddresses();
-								}
+									$MemArr 			= 	array();
+									$MemArr['where'] 	= 	array('id',$getmember_row['user_id']);
 
-							}
+									$MemInfo = $PowerBB->core->GetInfo($MemArr,'member');
+
+									$username = $PowerBB->_CONF['template']['_CONF']['lang']['hello_your']  . $MemInfo['username'].'<br>';
+
+			                    	if ($PowerBB->_CONF['info_row']['mailer']=='phpmail')
+									{
+								     $Send = $PowerBB->functions->send_this_php($MemInfo['email'],$title.':'.$PowerBB->_POST['title'],$starthtml.$username.$Form_Massege.$Endhtml,$PowerBB->_CONF['info_row']['send_email']);
+						            }
+									elseif ($PowerBB->_CONF['info_row']['mailer']=='smtp')
+									{
+									$to = $MemInfo['email'];
+									$fromname = $PowerBB->_CONF['info_row']['title'];
+									$message = $starthtml.$username.$Form_Massege.$Endhtml;
+									$subject = $PowerBB->functions->CleanVariable($PowerBB->_POST['title'],'html');
+									$from = $PowerBB->_CONF['info_row']['send_email'];
+	                                require_once("includes/class_mail.php");
+	                                define('STOP_COMMON',false);
+									$mail->setFrom($from, $fromname);
+									$mail->addAddress($to);     // Add a recipient
+									$mail->Subject = $subject;
+									$mail->Body    = $message;
+									$mail->send();
+						            $mail->ClearAddresses();
+									}
+
+							   }
 							}
 
 							///////////
@@ -1050,11 +1071,26 @@ class PowerBBReplyAddMOD
 	                 }
 	                 else
 					 {
+
+				       //Create last info cache for Guest and post
+						$cache = array();
+						$cache[1]['user_id']		 	                = 	"";
+						$cache[2]['avater_path']		 	            = 	$PowerBB->_CONF['info_row']['default_avatar'];
+						$cache[3]['username_style']		 	            = 	'Guest';
+						$cache[4]['section_id']		 	                = 	$this->SectionInfo['id'];
+						$cache[5]['total_posts_count']		 	        = 	$PagerReplyNumArr+1;
+						$cache[6]['last_reply_id']		 	            = 	$PowerBB->reply->id;
+						$cache[7]['last_berpage_nm']		 	        = 	$countpage;
+						$cache[8]['writer_subject_username_style']	    = 	'Guest';
+
+						$cache = serialize($cache);
+
 			     		$LastArr = array();
-			     		$LastArr['replier'] 	= 	'Guest';
+			     		$LastArr['field']['last_replier'] 	= 	'Guest';
+			     		$LastArr['field']['lastreply_cache'] 	= 	$cache;
 			     		$LastArr['where']		=	array('id',$this->SubjectInfo['id']);
 
-				     	$UpdateLastReplier = $PowerBB->subject->UpdateLastReplier($LastArr);
+				     	$UpdateLastReplier = $PowerBB->subject->UpdateSubject($LastArr);
 
 		     		       // Update Last subject's information in Section
 				     		$LastArr 					        = 	array();
@@ -1099,15 +1135,7 @@ class PowerBBReplyAddMOD
 
 					// get url to last reply
 					//$Reply_NumArr = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['reply'] . " WHERE subject_id='$Subjectid' and delete_topic <>1 LIMIT 1"));
-					$Reply_NumArr = $this->SubjectInfo['reply_number'];
 
-					$ss_r = $PowerBB->_CONF['info_row']['perpage']/2+1;
-					$roun_ss_r = round($ss_r, 0);
-					$reply_number_r = $Reply_NumArr-$roun_ss_r+1;
-					$pagenum_r = $reply_number_r/$PowerBB->_CONF['info_row']['perpage'];
-					$round0_r = round($pagenum_r, 0);
-					$countpage = $round0_r+1;
-					$countpage = str_replace("-", '', $countpage);
 
 					if($Reply_NumArr <= $PowerBB->_CONF['info_row']['perpage'])
 					{

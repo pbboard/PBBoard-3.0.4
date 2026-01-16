@@ -53,14 +53,7 @@ class PowerBBCoreMOD
 	function _GetSections()
 	{
 		global $PowerBB;
-		if($PowerBB->_CONF['forums_parent_direct'])
-		{
-		 $PowerBB->functions->_GetSections_direct();
-		}
-		else
-		{
-		 $PowerBB->functions->_GetSections();
-		}
+        $PowerBB->functions->_GetSections_cache();
 	}
 
 	function _GetOnline()
@@ -269,7 +262,6 @@ class PowerBBCoreMOD
 
      $PowerBB->_CONF['template']['_CONF']['lang']['online_today']= str_replace(":","",$PowerBB->_CONF['template']['_CONF']['lang']['online_today']);
      }
-       //////////
     }
 
    function _GetFastStatic()
@@ -321,160 +313,44 @@ class PowerBBCoreMOD
 	       $PowerBB->template->assign('sn',$PowerBB->functions->with_comma($PowerBB->_CONF['info_row']['subject_number']));
 	       $PowerBB->template->assign('rn',$PowerBB->functions->with_comma($PowerBB->_CONF['info_row']['reply_number']));
       }
-        ////////////// Get Statistics
+		 // Get Statistics
+		if ($PowerBB->_CONF['info_row']['activate_last_static_list'] == 1) {
+		    $limit = (int)$PowerBB->_CONF['info_row']['last_static_num'];
 
-     if ($PowerBB->_CONF['info_row']['activate_last_static_list'] == 1)
-       {
+		    $sql_union = "
+		        (SELECT id, username AS f1, register_date AS f2, username_style_cache AS f3, avater_path AS f4, 'new_reg' AS type FROM " . $PowerBB->table['member'] . " ORDER BY id DESC LIMIT $limit)
+		        UNION ALL
+		        (SELECT id, username AS f1, posts AS f2, username_style_cache AS f3, avater_path AS f4, 'top_posts' AS type FROM " . $PowerBB->table['member'] . " WHERE posts != '0' ORDER BY posts DESC LIMIT $limit)
+		        UNION ALL
+		        (SELECT id, username AS f1, reputation AS f2, username_style_cache AS f3, avater_path AS f4, 'top_rep' AS type FROM " . $PowerBB->table['member'] . " WHERE reputation != '0' ORDER BY reputation DESC LIMIT $limit)
+		        UNION ALL
+		        (SELECT id, username AS f1, invite_num AS f2, username_style_cache AS f3, avater_path AS f4, 'top_inv' AS type FROM " . $PowerBB->table['member'] . " WHERE invite_num != '0' ORDER BY invite_num DESC LIMIT $limit)
+		        UNION ALL
+		        (SELECT id, title AS f1, visitor AS f2, '' AS f3, '' AS f4, 'top_vis' AS type FROM " . $PowerBB->table['subject'] . " WHERE review_subject<>'1' AND delete_topic<>'1' AND visitor <> '0' ORDER BY visitor DESC LIMIT $limit)
+		        UNION ALL
+		        (SELECT id, title AS f1, reply_num AS f2, '' AS f3, '' AS f4, 'top_sec' AS type FROM " . $PowerBB->table['section'] . " WHERE sec_section<>'1' AND reply_num <> '0' ORDER BY reply_num DESC LIMIT $limit)
+		    ";
 
-        $limit = $PowerBB->_CONF['info_row']['last_static_num'];
-        $limitLastPost = $PowerBB->_CONF['info_row']['last_posts_static_num'];
-       // Latest registered Member list
-       $StaticInfo = array();
-       $StaticInfo['order']        = array();
-       $StaticInfo['order']['field'] = 'id';
-       $StaticInfo['order']['type']  = 'DESC';
-       $StaticInfo['limit']        = $limit;
+		    $result = $PowerBB->DB->sql_query($sql_union);
 
+		    $expected = ['latest_registered', 'TopMemberList', 'TopMemberReputation', 'TopMemberInvite', 'TopSubjectVisitor', 'TopSectionsList'];
+		    foreach($expected as $list) { $PowerBB->_CONF['template']['while'][$list] = []; }
 
-       $StaticInfo['proc']                    =    array();
-       // Ok Mr.** go to hell !
-       $StaticInfo['proc']['*']                 =    array('method'=>'clean','param'=>'html');
-       $StaticInfo['proc']['register_date']           =    array('method'=>'time_ago','store'=>'register_date','type'=>$PowerBB->_CONF['info_row']['timesystem']);
+		    while ($row = $PowerBB->DB->sql_fetch_array($result)) {
+		        $type = $row['type'];
+		        $clean_title = $PowerBB->functions->CleanVariable($row['f1'], 'html');
+		        $f2_formatted = $PowerBB->functions->with_comma($row['f2']);
 
-       $PowerBB->_CONF['template']['while']['latest_registered'] = $PowerBB->core->GetList($StaticInfo,'member');
+		        if ($type == 'new_reg') $PowerBB->_CONF['template']['while']['latest_registered'][] = ['id' => $row['id'], 'username' => $clean_title, 'register_date' => $PowerBB->functions->time_ago($row['f2']), 'user_style' => $row['f3'], 'avatar' => $row['f4']];
+		        if ($type == 'top_posts') $PowerBB->_CONF['template']['while']['TopMemberList'][] = ['id' => $row['id'], 'username' => $clean_title, 'posts' => $f2_formatted, 'user_style' => $row['f3'], 'avatar' => $row['f4']];
+		        if ($type == 'top_rep') $PowerBB->_CONF['template']['while']['TopMemberReputation'][] = ['id' => $row['id'], 'username' => $clean_title, 'reputation' => $f2_formatted, 'user_style' => $row['f3'], 'avatar' => $row['f4']];
+		        if ($type == 'top_inv') $PowerBB->_CONF['template']['while']['TopMemberInvite'][] = ['id' => $row['id'], 'username' => $clean_title, 'invite_num' => $f2_formatted, 'user_style' => $row['f3'], 'avatar' => $row['f4']];
+		        if ($type == 'top_vis') $PowerBB->_CONF['template']['while']['TopSubjectVisitor'][] = ['id' => $row['id'], 'title' => $clean_title, 'visitor' => $f2_formatted];
+		        if ($type == 'top_sec') $PowerBB->_CONF['template']['while']['TopSectionsList'][] = ['id' => $row['id'], 'title' => $clean_title, 'reply_num' => $f2_formatted];
+		    }
 
-       /**
-        * Get top ten list of subjects which have big visitors
-        */
-
-
-       $TopSubjectVisitorArr                        =    array();
-       // Order data
-       $TopSubjectVisitorArr['order']              =    array();
-       $TopSubjectVisitorArr['order']['field']    =    'visitor';
-       $TopSubjectVisitorArr['order']['type']        =    'DESC';
-
-       // Ten rows only
-       $TopSubjectVisitorArr['limit']             =    $limit;
-
-       $TopSubjectVisitorArr['where'][0]           =    array();
-       $TopSubjectVisitorArr['where'][0]['name']    =    'review_subject<>1 AND sec_subject<>1 AND delete_topic';
-
-       $TopSubjectVisitorArr['where'][0]['oper']    =    '<>';
-       $TopSubjectVisitorArr['where'][0]['value']    =    '1';
-
-       $TopSubjectVisitorArr['where'][1]['con']    =    ' AND';
-       $TopSubjectVisitorArr['where'][1]['name']    =    ' visitor';
-       $TopSubjectVisitorArr['where'][1]['oper']    =    '!=';
-       $TopSubjectVisitorArr['where'][1]['value']    =    '0';
-
-       // Clean data
-       $TopSubjectVisitorArr['proc']              =    array();
-       $TopSubjectVisitorArr['proc']['*']           =    array('method'=>'clean','param'=>'html');
-
-       $PowerBB->_CONF['template']['while']['TopSubjectVisitor'] = $PowerBB->core->GetList($TopSubjectVisitorArr,'subject');
-       $PowerBB->template->assign('TopSubjectVisitorNum',sizeof($PowerBB->_CONF['template']['while']['TopSubjectVisitor']));
-
-       /**
-        * Get top ten list of member who have big posts
-        */
-       $TopMemberList                    =    array();
-
-       // Order data
-       $TopMemberList['order']           =    array();
-       $TopMemberList['order']['field']    =    'posts';
-       $TopMemberList['order']['type']    =    'DESC';
-
-       // Ten rows only
-       $TopMemberList['limit']             =    $limit;
-
-       //remove who thier posts is 0
-       $TopMemberList['where'][0]['name']       =    'posts';
-       $TopMemberList['where'][0]['oper']       =    '!=';
-       $TopMemberList['where'][0]['value']       =    '0';
-
-       // Clean data
-       $TopMemberList['proc']              =    array();
-       $TopMemberList['proc']['*']        =    array('method'=>'clean','param'=>'html');
-
-       $PowerBB->_CONF['template']['while']['TopMemberList'] = $PowerBB->core->GetList($TopMemberList,'member');
-
-       $PowerBB->template->assign('TopMemberListNum',sizeof($PowerBB->_CONF['template']['while']['TopMemberList']));
-
-
-       /**
-        * Get top ten list of sections who have big posts
-        */
-
-       $TopSectionsArr                    =    array();
-       // Order data
-       $TopSectionsArr['order']           =    array();
-       $TopSectionsArr['order']['field']    =    'reply_num';
-       $TopSectionsArr['order']['type']    =    'DESC';
-
-       // Ten rows only
-       $TopSectionsArr['limit']             =    $limit;
-
-       $TopSectionsArr['where'][1]           =    array();
-       $TopSectionsArr['where'][1]['con']       =    'AND';
-       $TopSectionsArr['where'][1]['name']    =    'sec_section<>1 AND hide_subject <> 1 AND reply_num';
-       $TopSectionsArr['where'][1]['oper']    =    '!=';
-       $TopSectionsArr['where'][1]['value']    =    '0';
-       // Clean data
-       $TopSectionsArr['proc']              =    array();
-       $TopSectionsArr['proc']['*']        =    array('method'=>'clean','param'=>'html');
-
-       $PowerBB->_CONF['template']['while']['TopSectionsList'] = $PowerBB->core->GetList($TopSectionsArr,'section');
-       $PowerBB->template->assign('TopSectionListNum',sizeof($PowerBB->_CONF['template']['while']['TopSectionsList']));
-
-
-        /**
-        * Get top member invite
-        */
-       $MemberInviteArr                        =    array();
-
-       // Order data
-       $MemberInviteArr['order']              =    array();
-       $MemberInviteArr['order']['field']     =    'invite_num';
-       $MemberInviteArr['order']['type']        =    'DESC';
-
-       $MemberInviteArr['limit']             =    $limit;
-       $MemberInviteArr['where'][0]['name']          =    'invite_num';
-       $MemberInviteArr['where'][0]['oper']          =    '!=';
-       $MemberInviteArr['where'][0]['value']          =    '0';
-       // Clean data
-       $MemberInviteArr['proc']              =    array();
-       $MemberInviteArr['proc']['*']           =    array('method'=>'clean','param'=>'html');
-
-       $PowerBB->_CONF['template']['while']['TopMemberInvite'] = $PowerBB->core->GetList($MemberInviteArr,'member');
-       $PowerBB->template->assign('TopMemberInviteNum',sizeof($PowerBB->_CONF['template']['while']['TopMemberInvite']));
-
-       ///////////////
-
-        /**
-        * Get top member Reputation
-        */
-       $MemberReputationArr                        =    array();
-
-       // Order data
-       $MemberReputationArr['order']              =    array();
-       $MemberReputationArr['order']['field']     =    'reputation';
-       $MemberReputationArr['order']['type']        =    'DESC';
-
-       $MemberReputationArr['limit']             =    $limit;
-
-       $MemberReputationArr['where'][0]['name']       =    'reputation';
-       $MemberReputationArr['where'][0]['oper']       =    '!=';
-       $MemberReputationArr['where'][0]['value']       =    '0';
-
-       // Clean data
-       $MemberReputationArr['proc']              =    array();
-       $MemberReputationArr['proc']['*']           =    array('method'=>'clean','param'=>'html');
-
-       $PowerBB->_CONF['template']['while']['TopMemberReputation'] = $PowerBB->core->GetList($MemberReputationArr,'member');
-       $PowerBB->template->assign('MemberReputationNum',sizeof($PowerBB->_CONF['template']['while']['TopMemberReputation']));
-
-     }
+		    $PowerBB->template->assign('default_avatar', $PowerBB->_CONF['info_row']['default_avatar']);
+		}
 
     }
 

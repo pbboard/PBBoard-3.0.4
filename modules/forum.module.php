@@ -491,220 +491,172 @@ function _GetSubjectList()
 	    /**
 		 * Ok , are you ready to get subjects list ? :)
 		 */
-		$SubjectArr = array();
-		$SubjectArr['select'] = '
-		    s.*,
-		    m.id AS writer_id,
-		    m.username_style_cache,
-		    lr.id AS last_replier_id,
-		    lr.username_style_cache AS last_replier_style';
+        $SubjectArr = array();
+		$SubjectArr['select'] = 's.*';
+		$SubjectArr['from'] = $PowerBB->table['subject'] . ' AS s';
+		$SubjectArr['join'] = array();
+		$SubjectArr['where'] = array();
 
-        $SubjectArr['from'] = $PowerBB->table['subject'] . ' AS s';
+		$SubjectArr['where'][0] = array();
+		$SubjectArr['where'][0]['name'] = 's.section';
+		$SubjectArr['where'][0]['oper'] = '=';
+		$SubjectArr['where'][0]['value'] = (int)$this->Section['id'];
 
-		// JOINs
-		$SubjectArr['join'] = array(
-		    array(
-		        'type'  => 'left',
-		        'from'  => $PowerBB->table['member'] . ' AS m',
-		        'where' => 'm.username = s.writer'
-		    ),
-		    array(
-		        'type'  => 'left',
-		        'from'  => $PowerBB->table['member'] . ' AS lr',
-		        'where' => 'lr.username = s.last_replier'
-		    )
-		);
-		$SubjectArr['where'] 				= 	array();
-		$SubjectArr['where'][0] 			= 	array();
-		$SubjectArr['where'][0]['name'] 	= 	's.section';
-		$SubjectArr['where'][0]['oper'] 	= 	'=';
-		$SubjectArr['where'][0]['value'] 	= 	$this->Section['id'];
+		$SubjectArr['where'][1] = array();
+		$SubjectArr['where'][1]['con'] = 'AND';
+		$SubjectArr['where'][1]['name'] = 's.stick';
+		$SubjectArr['where'][1]['oper'] = '<>';
+		$SubjectArr['where'][1]['value'] = 1;
 
-		$SubjectArr['where'][1] 			= 	array();
-		$SubjectArr['where'][1]['con']		=	'AND';
-		$SubjectArr['where'][1]['name'] 	= 	's.stick';
-		$SubjectArr['where'][1]['oper'] 	= 	'<>';
-		$SubjectArr['where'][1]['value'] 	= 	'1';
+		$SubjectArr['where'][2] = array();
+		$SubjectArr['where'][2]['con'] = 'AND';
+		$SubjectArr['where'][2]['name'] = 's.review_subject';
+		$SubjectArr['where'][2]['oper'] = '<>';
+		$SubjectArr['where'][2]['value'] = 1;
 
-		$SubjectArr['where'][2] 			= 	array();
-		$SubjectArr['where'][2]['con']		=	'AND';
-		$SubjectArr['where'][2]['name'] 	= 	's.review_subject';
-		$SubjectArr['where'][2]['oper'] 	= 	'<>';
-		$SubjectArr['where'][2]['value'] 	= 	'1';
-        if (!$PowerBB->functions->ModeratorCheck($this->Section['id']))
-   		{
-		$SubjectArr['where'][3] 			= 	array();
-		$SubjectArr['where'][3]['con']		=	'AND';
-		$SubjectArr['where'][3]['name'] 	= 	's.delete_topic';
-		$SubjectArr['where'][3]['oper'] 	= 	'<>';
-		$SubjectArr['where'][3]['value'] 	= 	'1';
-        }
-
-		if ($this->Section['hide_subject']
-			and !$PowerBB->functions->ModeratorCheck($this->Section['moderators']))
+		if (!$PowerBB->functions->ModeratorCheck($this->Section['id']))
 		{
-			$SubjectArr['where'][1] 			= 	array();
-			$SubjectArr['where'][1]['con'] 		= 	'AND';
-			$SubjectArr['where'][1]['name'] 	= 	's.writer';
-			$SubjectArr['where'][1]['oper'] 	= 	'=';
-			$SubjectArr['where'][1]['value'] 	= 	$PowerBB->_CONF['member_row']['username'];
+			$SubjectArr['where'][3] = array();
+			$SubjectArr['where'][3]['con'] = 'AND';
+			$SubjectArr['where'][3]['name'] = 's.delete_topic';
+			$SubjectArr['where'][3]['oper'] = '<>';
+			$SubjectArr['where'][3]['value'] = 1;
 		}
 
+		if ($this->Section['hide_subject'] and !$PowerBB->functions->ModeratorCheck($this->Section['moderators']))
+		{
+			$SubjectArr['where'][4] = array();
+			$SubjectArr['where'][4]['con'] = 'AND';
+			$SubjectArr['where'][4]['name'] = 's.writer';
+			$SubjectArr['where'][4]['oper'] = '=';
+			$SubjectArr['where'][4]['value'] = $PowerBB->_CONF['member_row']['username'];
+		}
 
-		/** Show the subject order by (oldr - new )**/
 		if($PowerBB->_GET['orderby'] == '1')
 		{
-		    if ($PowerBB->_GET['sort'] == 'reply_number') {
-		        $order = 's.reply_number';
-		        $type  = 'DESC';
-		    } elseif ($PowerBB->_GET['sort'] == 'visitor') {
-		        $order = 's.visitor';
-		        $type  = 'DESC';
-		    } elseif ($PowerBB->_GET['sort'] == 'rating') {
-		        $order = 's.rating';
-		        $type  = 'DESC';
-		    } elseif ($PowerBB->_GET['sort'] == 'writer') {
-		        $order = 's.writer';
-		        $type  = 'DESC';
-		    } elseif ($PowerBB->_GET['sort'] == 'asc' || $PowerBB->_GET['sort'] == 'id') {
-		        // توحيد الحالتين لضمان عدم حدوث تعارض في الروابط
-		        $order = 's.id';
-		        $type  = 'ASC';
-		        $PowerBB->_GET['sort'] = 'id'; // تثبيت القيمة لتستخدم في الرابط (Location)
-		    } else {
-		        $order = 's.write_time';
-		        $type  = 'DESC';
-		    }
+			if ($PowerBB->_GET['sort'] == 'reply_number') {
+				$order = 's.reply_number';
+				$type  = 'DESC';
+			} elseif ($PowerBB->_GET['sort'] == 'visitor') {
+				$order = 's.visitor';
+				$type  = 'DESC';
+			} elseif ($PowerBB->_GET['sort'] == 'rating') {
+				$order = 's.rating';
+				$type  = 'DESC';
+			} elseif ($PowerBB->_GET['sort'] == 'writer') {
+				$order = 's.writer';
+				$type  = 'DESC';
+			} elseif ($PowerBB->_GET['sort'] == 'asc' || $PowerBB->_GET['sort'] == 'id') {
+				$order = 's.id';
+				$type  = 'ASC';
+				$PowerBB->_GET['sort'] = 'id';
+			} else {
+				$order = 's.write_time';
+				$type  = 'DESC';
+			}
 
-		    $location = "index.php?page=forum&amp;show=1&amp;orderby=1&amp;id=".$PowerBB->_GET['id']."&amp;sort=".$PowerBB->_GET['sort'];
-		    $location = preg_replace('/&count='.$PowerBB->_GET['count'].'/is', "", $location);
+			$location = "index.php?page=forum&amp;show=1&amp;orderby=1&amp;id=".$PowerBB->_GET['id']."&amp;sort=".$PowerBB->_GET['sort'];
+			$location = preg_replace('/&count='.$PowerBB->_GET['count'].'/is', "", $location);
 
-		    $SubjectArr['order'] = array();
-		    $SubjectArr['order']['field'] 	= 	$order;
-		    $SubjectArr['order']['type'] 	= 	$type;
+			$SubjectArr['order'] = array();
+			$SubjectArr['order']['field'] = $order;
+			$SubjectArr['order']['type'] = $type;
 		}
-        else
-        {
-		    $SubjectArr['order'] = array();
-			$SubjectArr['order']['field'] 	= 	's.write_time';
-			$SubjectArr['order']['type'] 	= 	'DESC';
-			$location = 'index.php?page=forum&amp;show=1&amp;id=' . $this->Section['id'] . $password;
-
-          }
+		else
+		{
+			$SubjectArr['order'] = array();
+			$SubjectArr['order']['field'] = 's.write_time';
+			$SubjectArr['order']['type'] = 'DESC';
+			$location = 'index.php?page=forum&amp;show=1&amp;id=' . (int)$this->Section['id'] . $password;
+		}
 
 		if ($this->Section['hide_subject'])
 		{
-		  if ($PowerBB->functions->ModeratorCheck($this->Section['moderators']))
-		  {
-          $subject_nums = $this->Section['subject_num'];
-          }
-          else
-		  {
-		  $Forum_user_subject_number = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(*) FROM " . $PowerBB->table['subject'] . " WHERE section ='" . $this->Section['id'] . "' AND writer='" . $PowerBB->_CONF['member_row']['username'] . "' "));
-          $subject_nums = $Forum_user_subject_number;
-          }
-        }
-        else
-        {
-		  if ($PowerBB->functions->ModeratorCheck($this->Section['moderators']))
-		  {
-          $subject_nums = $this->Section['subject_num'];
-          }
-          else
-		  {
-          $subject_nums = $this->Section['subjects_review_num'];
-          }
-        }
-
-	    $SubjectArr['proc'] 						= 	array();
-		$SubjectArr['proc']['*'] 					= 	array('method'=>'clean','param'=>'html');
-		$SubjectArr['proc']['native_write_time'] 	= 	array('method'=>'date','store'=>'write_date','type'=>$PowerBB->_CONF['info_row']['timesystem']);
-		$SubjectArr['proc']['write_time'] 			= 	array('method'=>'date','store'=>'reply_date','type'=>$PowerBB->_CONF['info_row']['timesystem']);
-
-		// Pager setup
-		$SubjectArr['pager'] 				= 	array();
-		$SubjectArr['pager']['total']		= 	$subject_nums;
-		$SubjectArr['pager']['perpage'] 	= 	$PowerBB->_CONF['info_row']['subject_perpage'];
-		$SubjectArr['pager']['count'] 		= 	$PowerBB->_GET['count'];
-		$SubjectArr['pager']['location'] 	= 	$location;
-		$SubjectArr['pager']['var'] 		= 	'count';
-
-    $PowerBB->_CONF['template']['while']['subject_list'] = $PowerBB->subject->GetSubjectListAdvanced($SubjectArr);
-
-
-
-		$StickSubjectArr = array();
-	    /**
-		 * Ok , are you ready to get subjects list ? :)
-		 */
-		$StickSubjectArr = array();
-		$StickSubjectArr['select'] = '
-		    s.*,
-		    m.id AS writer_id,
-		    m.username_style_cache,
-		    lr.id AS last_replier_id,
-		    lr.username_style_cache AS last_replier_style';
-
-        $StickSubjectArr['from'] = $PowerBB->table['subject'] . ' AS s';
-
-		// JOINs
-		$StickSubjectArr['join'] = array(
-		    array(
-		        'type'  => 'left',
-		        'from'  => $PowerBB->table['member'] . ' AS m',
-		        'where' => 'm.username = s.writer'
-		    ),
-		    array(
-		        'type'  => 'left',
-		        'from'  => $PowerBB->table['member'] . ' AS lr',
-		        'where' => 'lr.username = s.last_replier'
-		    )
-		);
-
-
-		$StickSubjectArr['where'] 				= 	array();
-		$StickSubjectArr['where'][0] 			= 	array();
-		$StickSubjectArr['where'][0]['name'] 	= 	's.section';
-		$StickSubjectArr['where'][0]['oper'] 	= 	'=';
-		$StickSubjectArr['where'][0]['value'] 	= 	$this->Section['id'];
-
-		$StickSubjectArr['where'][1] 			= 	array();
-		$StickSubjectArr['where'][1]['con']		=	'AND';
-		$StickSubjectArr['where'][1]['name'] 	= 	's.stick';
-		$StickSubjectArr['where'][1]['oper'] 	= 	'=';
-		$StickSubjectArr['where'][1]['value'] 	= 	'1';
-
-
-        if (!$PowerBB->functions->ModeratorCheck($this->Section['id']))
-   		{
-		$StickSubjectArr['where'][2] 			= 	array();
-		$StickSubjectArr['where'][2]['con']		=	'AND';
-		$StickSubjectArr['where'][2]['name'] 	= 	's.delete_topic';
-		$StickSubjectArr['where'][2]['oper'] 	= 	'<>';
-		$StickSubjectArr['where'][2]['value'] 	= 	'1';
+			if ($PowerBB->functions->ModeratorCheck($this->Section['moderators']))
+			{
+				$subject_nums = $this->Section['subject_num'];
+			}
+			else
+			{
+				$username_clean = $PowerBB->DB->sql_escape($PowerBB->_CONF['member_row']['username']);
+				$section_id_clean = (int)$this->Section['id'];
+				$Forum_user_subject_number = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(*) FROM " . $PowerBB->table['subject'] . " WHERE section = $section_id_clean AND writer = '$username_clean'"));
+				$subject_nums = $Forum_user_subject_number;
+			}
+		}
+		else
+		{
+			if ($PowerBB->functions->ModeratorCheck($this->Section['moderators']))
+			{
+				$subject_nums = $this->Section['subject_num'];
+			}
+			else
+			{
+				$subject_nums = $this->Section['subjects_review_num'];
+			}
 		}
 
-		if ($this->Section['hide_subject']
-		and ! $PowerBB->functions->ModeratorCheck($this->Section['id']))
+		$SubjectArr['proc'] = array();
+		$SubjectArr['proc']['*'] = array('method'=>'clean','param'=>'html');
+		$SubjectArr['proc']['native_write_time'] = array('method'=>'date','store'=>'write_date','type'=>$PowerBB->_CONF['info_row']['timesystem']);
+		$SubjectArr['proc']['write_time'] = array('method'=>'date','store'=>'reply_date','type'=>$PowerBB->_CONF['info_row']['timesystem']);
+
+		$SubjectArr['pager'] = array();
+		$SubjectArr['pager']['total'] = $subject_nums;
+		$SubjectArr['pager']['perpage'] = $PowerBB->_CONF['info_row']['subject_perpage'];
+		$SubjectArr['pager']['count'] = $PowerBB->_GET['count'];
+		$SubjectArr['pager']['location'] = $location;
+		$SubjectArr['pager']['var'] = 'count';
+
+		$PowerBB->_CONF['template']['while']['subject_list'] = $PowerBB->subject->GetSubjectListAdvanced($SubjectArr);
+
+
+        $StickSubjectArr = array();
+		$StickSubjectArr['select'] = 's.*';
+		$StickSubjectArr['from'] = $PowerBB->table['subject'] . ' AS s';
+		$StickSubjectArr['join'] = array();
+
+		$StickSubjectArr['where'] = array();
+		$StickSubjectArr['where'][0] = array();
+		$StickSubjectArr['where'][0]['name'] = 's.section';
+		$StickSubjectArr['where'][0]['oper'] = '=';
+		$StickSubjectArr['where'][0]['value'] = (int)$this->Section['id'];
+
+		$StickSubjectArr['where'][1] = array();
+		$StickSubjectArr['where'][1]['con'] = 'AND';
+		$StickSubjectArr['where'][1]['name'] = 's.stick';
+		$StickSubjectArr['where'][1]['oper'] = '=';
+		$StickSubjectArr['where'][1]['value'] = 1;
+
+		if (!$PowerBB->functions->ModeratorCheck($this->Section['id']))
 		{
-		$StickSubjectArr['where'][3] 			= 	array();
-		$StickSubjectArr['where'][3]['con'] 	= 	'AND';
-		$StickSubjectArr['where'][3]['name'] 	= 	's.writer';
-		$StickSubjectArr['where'][3]['oper'] 	= 	'=';
-		$StickSubjectArr['where'][3]['value'] 	= 	$PowerBB->_CONF['member_row']['username'];
+			$StickSubjectArr['where'][2] = array();
+			$StickSubjectArr['where'][2]['con'] = 'AND';
+			$StickSubjectArr['where'][2]['name'] = 's.delete_topic';
+			$StickSubjectArr['where'][2]['oper'] = '<>';
+			$StickSubjectArr['where'][2]['value'] = 1;
+		}
+
+		if ($this->Section['hide_subject'] and !$PowerBB->functions->ModeratorCheck($this->Section['id']))
+		{
+			$StickSubjectArr['where'][3] = array();
+			$StickSubjectArr['where'][3]['con'] = 'AND';
+			$StickSubjectArr['where'][3]['name'] = 's.writer';
+			$StickSubjectArr['where'][3]['oper'] = '=';
+			$StickSubjectArr['where'][3]['value'] = $PowerBB->_CONF['member_row']['username'];
 		}
 
 		$StickSubjectArr['order'] = array();
-		$StickSubjectArr['order']['field'] 	= 	'write_time';
-		$StickSubjectArr['order']['type'] 	= 	'DESC';
+		$StickSubjectArr['order']['field'] = 's.write_time';
+		$StickSubjectArr['order']['type'] = 'DESC';
 
-		$StickSubjectArr['proc'] 						= 	array();
-		// Ok Mr.XSS go to hell !
-		$StickSubjectArr['proc']['*'] 					= 	array('method'=>'clean','param'=>'html');
-		$StickSubjectArr['proc']['native_write_time'] 	= 	array('method'=>'date','store'=>'write_date','type'=>$PowerBB->_CONF['info_row']['timesystem']);
-		$StickSubjectArr['proc']['write_time'] 			= 	array('method'=>'date','store'=>'reply_date','type'=>$PowerBB->_CONF['info_row']['timesystem']);
+		$StickSubjectArr['proc'] = array();
+		$StickSubjectArr['proc']['*'] = array('method'=>'clean','param'=>'html');
+		$StickSubjectArr['proc']['native_write_time'] = array('method'=>'date','store'=>'write_date','type'=>$PowerBB->_CONF['info_row']['timesystem']);
+		$StickSubjectArr['proc']['write_time'] = array('method'=>'date','store'=>'reply_date','type'=>$PowerBB->_CONF['info_row']['timesystem']);
 
 		$PowerBB->_CONF['template']['while']['stick_subject_list'] = $PowerBB->subject->GetSubjectListAdvanced($StickSubjectArr);
+
 		if (sizeof($PowerBB->_CONF['template']['while']['stick_subject_list']) <= 0)
 		{
 			$PowerBB->template->assign('NO_STICK_SUBJECTS',true);
@@ -715,161 +667,159 @@ function _GetSubjectList()
 		}
 
                 // Get the list of subjects that need review
-				 $username = $PowerBB->_CONF['member_row']['username'];
-			     $SUBJECTS_review_subject_mem = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(*) FROM " . $PowerBB->table['subject'] . " WHERE section = ".$PowerBB->_GET['id']." AND writer='$username' AND review_subject='1'"));
-			 if ($PowerBB->functions->ModeratorCheck($this->Section['id']))
-			 {
-				$ReviewSubjectArr = array();
-				$ReviewSubjectArr['select'] = '
-				    s.*,
-				    m.id AS writer_id,
-				    m.username_style_cache,
-				    lr.id AS last_replier_id,
-				    lr.username_style_cache AS last_replier_style';
+			$username = $PowerBB->DB->sql_escape($PowerBB->_CONF['member_row']['username']);
+			$section_id_clean = (int)$this->Section['id'];
 
-		        $ReviewSubjectArr['from'] = $PowerBB->table['subject'] . ' AS s';
+			$res_review = $PowerBB->DB->sql_query("SELECT COUNT(*) FROM " . $PowerBB->table['subject'] . " WHERE section = $section_id_clean AND writer = '$username' AND review_subject = 1");
+			$SUBJECTS_review_subject_mem = $PowerBB->DB->sql_fetch_row($res_review);
 
-				// JOINs
-				$ReviewSubjectArr['join'] = array(
-				    array(
-				        'type'  => 'left',
-				        'from'  => $PowerBB->table['member'] . ' AS m',
-				        'where' => 'm.username = s.writer'
-				    ),
-				    array(
-				        'type'  => 'left',
-				        'from'  => $PowerBB->table['member'] . ' AS lr',
-				        'where' => 'lr.username = s.last_replier'
-				    )
-				);
-
-				$ReviewSubjectArr['where'] 				= 	array();
-
-				$ReviewSubjectArr['where'][0] 			= 	array();
-				$ReviewSubjectArr['where'][0]['name'] 	= 	's.section';
-				$ReviewSubjectArr['where'][0]['oper'] 	= 	'=';
-				$ReviewSubjectArr['where'][0]['value'] 	= 	$this->Section['id'];
-
-				$ReviewSubjectArr['where'][1] 			= 	array();
-				$ReviewSubjectArr['where'][1]['con']	=	'AND';
-				$ReviewSubjectArr['where'][1]['name'] 	= 	's.review_subject';
-				$ReviewSubjectArr['where'][1]['oper'] 	= 	'=';
-				$ReviewSubjectArr['where'][1]['value'] 	= 	'1';
-
-		        if (!$PowerBB->functions->ModeratorCheck($this->Section['id']))
-		   		{
-				$StickSubjectArr['where'][2] 			= 	array();
-				$StickSubjectArr['where'][2]['con']		=	'AND';
-				$StickSubjectArr['where'][2]['name'] 	= 	's.delete_topic';
-				$StickSubjectArr['where'][2]['oper'] 	= 	'<>';
-				$StickSubjectArr['where'][2]['value'] 	= 	'1';
-				}
-
-					if ($this->Section['hide_subject']
-					and ! $PowerBB->functions->ModeratorCheck($this->Section['id']))
-				{
-					$ReviewSubjectArr['where'][3] 			= 	array();
-					$ReviewSubjectArr['where'][3]['con'] 		= 	'AND';
-					$ReviewSubjectArr['where'][3]['name'] 	= 	's.writer';
-					$ReviewSubjectArr['where'][3]['oper'] 	= 	'=';
-					$ReviewSubjectArr['where'][3]['value'] 	= 	$PowerBB->_CONF['member_row']['username'];
-				}
-
-				$ReviewSubjectArr['order'] 				= 	array();
-				$ReviewSubjectArr['order']['field'] 	= 	'write_time';
-				$ReviewSubjectArr['order']['type'] 		= 	'DESC';
-
-				$ReviewSubjectArr['proc'] 						= 	array();
-				// Ok Mr.XSS go to hell !
-				$ReviewSubjectArr['proc']['*'] 					= 	array('method'=>'clean','param'=>'html');
-				$ReviewSubjectArr['proc']['native_write_time'] 	= 	array('method'=>'date','store'=>'write_date','type'=>$PowerBB->_CONF['info_row']['timesystem']);
-				$ReviewSubjectArr['proc']['write_time'] 		= 	array('method'=>'date','store'=>'reply_date','type'=>$PowerBB->_CONF['info_row']['timesystem']);
-
-				$PowerBB->_CONF['template']['while']['review_subject_list'] = $PowerBB->subject->GetSubjectListAdvanced($ReviewSubjectArr);
-
-				if (sizeof($PowerBB->_CONF['template']['while']['review_subject_list']) <= 0)
-				{
-					$PowerBB->template->assign('NO_REVIEW_SUBJECTS',true);
-				}
-				else
-				{
-					$PowerBB->template->assign('NO_REVIEW_SUBJECTS',false);
-				}
-			 }
-			elseif ($SUBJECTS_review_subject_mem>0)
+			if ($PowerBB->functions->ModeratorCheck($this->Section['id']))
 			{
+			    $ReviewSubjectArr = array();
+			    $ReviewSubjectArr['select'] = 's.*';
+			    $ReviewSubjectArr['from'] = $PowerBB->table['subject'] . ' AS s';
+			    $ReviewSubjectArr['join'] = array();
+			    $ReviewSubjectArr['where'] = array();
 
-				$ReviewSubjectArr = array();
-				$ReviewSubjectArr['select'] = '
-				    s.*,
-				    m.id AS writer_id,
-				    m.username_style_cache,
-				    lr.id AS last_replier_id,
-				    lr.username_style_cache AS last_replier_style';
+			    $ReviewSubjectArr['where'][0] = array();
+			    $ReviewSubjectArr['where'][0]['name'] = 's.section';
+			    $ReviewSubjectArr['where'][0]['oper'] = '=';
+			    $ReviewSubjectArr['where'][0]['value'] = $section_id_clean;
 
-		        $ReviewSubjectArr['from'] = $PowerBB->table['subject'] . ' AS s';
+			    $ReviewSubjectArr['where'][1] = array();
+			    $ReviewSubjectArr['where'][1]['con'] = 'AND';
+			    $ReviewSubjectArr['where'][1]['name'] = 's.review_subject';
+			    $ReviewSubjectArr['where'][1]['oper'] = '=';
+			    $ReviewSubjectArr['where'][1]['value'] = 1;
 
-				// JOINs
-				$ReviewSubjectArr['join'] = array(
-				    array(
-				        'type'  => 'left',
-				        'from'  => $PowerBB->table['member'] . ' AS m',
-				        'where' => 'm.username = s.writer'
-				    ),
-				    array(
-				        'type'  => 'left',
-				        'from'  => $PowerBB->table['member'] . ' AS lr',
-				        'where' => 'lr.username = s.last_replier'
-				    )
-				);
+			    if (!$PowerBB->functions->ModeratorCheck($this->Section['id']))
+			    {
+			        $ReviewSubjectArr['where'][2] = array();
+			        $ReviewSubjectArr['where'][2]['con'] = 'AND';
+			        $ReviewSubjectArr['where'][2]['name'] = 's.delete_topic';
+			        $ReviewSubjectArr['where'][2]['oper'] = '<>';
+			        $ReviewSubjectArr['where'][2]['value'] = 1;
+			    }
 
-					$ReviewSubjectArr['where'] 				= 	array();
+			    if ($this->Section['hide_subject'] and !$PowerBB->functions->ModeratorCheck($this->Section['id']))
+			    {
+			        $ReviewSubjectArr['where'][3] = array();
+			        $ReviewSubjectArr['where'][3]['con'] = 'AND';
+			        $ReviewSubjectArr['where'][3]['name'] = 's.writer';
+			        $ReviewSubjectArr['where'][3]['oper'] = '=';
+			        $ReviewSubjectArr['where'][3]['value'] = $PowerBB->_CONF['member_row']['username'];
+			    }
 
-					$ReviewSubjectArr['where'][0] 			= 	array();
-					$ReviewSubjectArr['where'][0]['name'] 	= 	's.section';
-					$ReviewSubjectArr['where'][0]['oper'] 	= 	'=';
-					$ReviewSubjectArr['where'][0]['value'] 	= 	$this->Section['id'];
+			    $ReviewSubjectArr['order'] = array();
+			    $ReviewSubjectArr['order']['field'] = 's.write_time';
+			    $ReviewSubjectArr['order']['type'] = 'DESC';
 
-					$ReviewSubjectArr['where'][1] 			= 	array();
-					$ReviewSubjectArr['where'][1]['con']	=	'AND';
-					$ReviewSubjectArr['where'][1]['name'] 	= 	's.review_subject';
-					$ReviewSubjectArr['where'][1]['oper'] 	= 	'=';
-					$ReviewSubjectArr['where'][1]['value'] 	= 	'1';
+			    $ReviewSubjectArr['proc'] = array();
+			    $ReviewSubjectArr['proc']['*'] = array('method'=>'clean','param'=>'html');
+			    $ReviewSubjectArr['proc']['native_write_time'] = array('method'=>'date','store'=>'write_date','type'=>$PowerBB->_CONF['info_row']['timesystem']);
+			    $ReviewSubjectArr['proc']['write_time'] = array('method'=>'date','store'=>'reply_date','type'=>$PowerBB->_CONF['info_row']['timesystem']);
 
-					$ReviewSubjectArr['where'][2] 			= 	array();
-					$ReviewSubjectArr['where'][2]['con']	=	'AND';
-					$ReviewSubjectArr['where'][2]['name'] 	= 	's.writer';
-					$ReviewSubjectArr['where'][2]['oper'] 	= 	'=';
-					$ReviewSubjectArr['where'][2]['value'] 	= 	$PowerBB->_CONF['member_row']['username'];
+			    $PowerBB->_CONF['template']['while']['review_subject_list'] = $PowerBB->subject->GetSubjectListAdvanced($ReviewSubjectArr);
 
-					$ReviewSubjectArr['order'] 				= 	array();
-					$ReviewSubjectArr['order']['field'] 	= 	'write_time';
-					$ReviewSubjectArr['order']['type'] 		= 	'DESC';
+			    $PowerBB->template->assign('NO_REVIEW_SUBJECTS', (sizeof($PowerBB->_CONF['template']['while']['review_subject_list']) <= 0));
+			}
+			elseif ($SUBJECTS_review_subject_mem > 0)
+			{
+			    $ReviewSubjectArr = array();
+			    $ReviewSubjectArr['select'] = 's.*';
+			    $ReviewSubjectArr['from'] = $PowerBB->table['subject'] . ' AS s';
+			    $ReviewSubjectArr['join'] = array();
+			    $ReviewSubjectArr['where'] = array();
 
-					$ReviewSubjectArr['proc'] 						= 	array();
-					// Ok Mr.XSS go to hell !
-					$ReviewSubjectArr['proc']['*'] 					= 	array('method'=>'clean','param'=>'html');
-					$ReviewSubjectArr['proc']['native_write_time'] 	= 	array('method'=>'date','store'=>'write_date','type'=>$PowerBB->_CONF['info_row']['timesystem']);
-					$ReviewSubjectArr['proc']['write_time'] 		= 	array('method'=>'date','store'=>'reply_date','type'=>$PowerBB->_CONF['info_row']['timesystem']);
+			    $ReviewSubjectArr['where'][0] = array();
+			    $ReviewSubjectArr['where'][0]['name'] = 's.section';
+			    $ReviewSubjectArr['where'][0]['oper'] = '=';
+			    $ReviewSubjectArr['where'][0]['value'] = $section_id_clean;
 
-					$PowerBB->_CONF['template']['while']['review_subject_list'] = $PowerBB->subject->GetSubjectListAdvanced($ReviewSubjectArr);
+			    $ReviewSubjectArr['where'][1] = array();
+			    $ReviewSubjectArr['where'][1]['con'] = 'AND';
+			    $ReviewSubjectArr['where'][1]['name'] = 's.review_subject';
+			    $ReviewSubjectArr['where'][1]['oper'] = '=';
+			    $ReviewSubjectArr['where'][1]['value'] = 1;
 
-					if (sizeof($PowerBB->_CONF['template']['while']['review_subject_list']) <= 0)
-					{
-						$PowerBB->template->assign('NO_REVIEW_SUBJECTS',true);
-					}
-					else
-					{
-						$PowerBB->template->assign('NO_REVIEW_SUBJECTS',false);
-					}
+			    $ReviewSubjectArr['where'][2] = array();
+			    $ReviewSubjectArr['where'][2]['con'] = 'AND';
+			    $ReviewSubjectArr['where'][2]['name'] = 's.writer';
+			    $ReviewSubjectArr['where'][2]['oper'] = '=';
+			    $ReviewSubjectArr['where'][2]['value'] = $PowerBB->_CONF['member_row']['username'];
 
+			    $ReviewSubjectArr['order'] = array();
+			    $ReviewSubjectArr['order']['field'] = 's.write_time';
+			    $ReviewSubjectArr['order']['type'] = 'DESC';
+
+			    $ReviewSubjectArr['proc'] = array();
+			    $ReviewSubjectArr['proc']['*'] = array('method'=>'clean','param'=>'html');
+			    $ReviewSubjectArr['proc']['native_write_time'] = array('method'=>'date','store'=>'write_date','type'=>$PowerBB->_CONF['info_row']['timesystem']);
+			    $ReviewSubjectArr['proc']['write_time'] = array('method'=>'date','store'=>'reply_date','type'=>$PowerBB->_CONF['info_row']['timesystem']);
+
+			    $PowerBB->_CONF['template']['while']['review_subject_list'] = $PowerBB->subject->GetSubjectListAdvanced($ReviewSubjectArr);
+
+			    $PowerBB->template->assign('NO_REVIEW_SUBJECTS', (sizeof($PowerBB->_CONF['template']['while']['review_subject_list']) <= 0));
 			}
 			else
 			{
-				$PowerBB->template->assign('NO_REVIEW_SUBJECTS',true);
+			    $PowerBB->template->assign('NO_REVIEW_SUBJECTS', true);
 			}
 
+		$all_active_lists = array();
+		if (!empty($PowerBB->_CONF['template']['while']['subject_list']))
+		    $all_active_lists[] = &$PowerBB->_CONF['template']['while']['subject_list'];
+		if (!empty($PowerBB->_CONF['template']['while']['stick_subject_list']))
+		    $all_active_lists[] = &$PowerBB->_CONF['template']['while']['stick_subject_list'];
+		if (!empty($PowerBB->_CONF['template']['while']['review_subject_list']))
+		    $all_active_lists[] = &$PowerBB->_CONF['template']['while']['review_subject_list'];
 
+		if (!empty($all_active_lists)) {
+		    $usernames_to_fetch = array();
+
+		    foreach ($all_active_lists as $list) {
+		        foreach ($list as $row) {
+		            if (!empty($row['writer'])) $usernames_to_fetch[] = $row['writer'];
+		            if (!empty($row['last_replier'])) $usernames_to_fetch[] = $row['last_replier'];
+		        }
+		    }
+
+		    if (!empty($usernames_to_fetch)) {
+		        $usernames_to_fetch = array_unique($usernames_to_fetch);
+		        $escaped_names = array();
+		        foreach($usernames_to_fetch as $uname) {
+		            if (trim($uname) != '') {
+		                $escaped_names[] = "'" . $PowerBB->DB->sql_escape($uname) . "'";
+		            }
+		        }
+
+		        if (!empty($escaped_names)) {
+		            // بفضل الفهرس الجديد على username، هذا الاستعلام أصبح سريعاً جداً
+		            $user_sql = "SELECT id, username, username_style_cache FROM " . $PowerBB->table['member'] . " WHERE username IN (" . implode(',', $escaped_names) . ")";
+		            $user_res = $PowerBB->DB->sql_query($user_sql);
+
+		            $users_info_map = array();
+		            while ($u = $PowerBB->DB->sql_fetch_assoc($user_res)) {
+		                $users_info_map[$u['username']] = $u;
+		            }
+
+		            foreach ($all_active_lists as &$list) {
+		                foreach ($list as $key => $val) {
+		                    $w_name = $val['writer'];
+		                    $lr_name = $val['last_replier'];
+
+		                    // ربط بيانات الكاتب - مع حماية ضد القيم المفقودة
+		                    $list[$key]['writer_id'] = isset($users_info_map[$w_name]) ? $users_info_map[$w_name]['id'] : 0;
+		                    $list[$key]['username_style_cache'] = isset($users_info_map[$w_name]) ? $users_info_map[$w_name]['username_style_cache'] : '';
+
+		                    // ربط بيانات آخر رد - مع حماية ضد القيم المفقودة
+		                    $list[$key]['last_replier_id'] = isset($users_info_map[$lr_name]) ? $users_info_map[$lr_name]['id'] : 0;
+		                    $list[$key]['last_replier_style'] = isset($users_info_map[$lr_name]) ? $users_info_map[$lr_name]['username_style_cache'] : '';
+		                }
+		            }
+		        }
+		    }
+		}
 
 		 if ($subject_nums > $PowerBB->_CONF['info_row']['subject_perpage'])
 		 {
@@ -877,7 +827,7 @@ function _GetSubjectList()
          }
 
 		$PowerBB->template->assign('section_id',$this->Section['id']);
-     	$PowerBB->template->assign('count',$PowerBB->_GET['count']);
+
 	}
 
     /**

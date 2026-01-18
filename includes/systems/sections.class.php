@@ -289,6 +289,8 @@ class PowerBBSection
  		{
  			return false;
  		}
+ 		//addslashes åÐå ãåãå áÊäÙíÝ ÇáßÇÔ ãä ÇáÝÇÕáÉ áÇíäÕÍ ÈÇÓÊÎÏÇã
+ 		$cache = str_replace("'", '', $cache);
 		return $cache;
 	}
 
@@ -359,6 +361,7 @@ class PowerBBSection
  		{
  			return false;
  		}
+ 		$cache = str_replace("'", '', $cache);
 		return $cache;
 	}
  	function UpdateSectionsCache($param)
@@ -373,17 +376,9 @@ class PowerBBSection
    		$SecArr 			= 	array();
 		$SecArr['where'] 	= 	array('id',$param['id']);
 		$SectionInfo = $this->GetSectionInfo($SecArr);
-          if ($SectionInfo and !$SectionInfo['parent']== "0")
+          if ($SectionInfo and $SectionInfo['parent'] != "0")
  	       {
- 	            if($PowerBB->_CONF['forums_parent_direct'])
- 	            {
-              	//$cache = $this->CreateSectionsDirect($SectionInfo);
-              	$cache = $this->CreateSectionsCache($SectionInfo);
- 	            }
- 	            else
- 	            {
-              	$cache = $this->CreateSectionsCache($SectionInfo);
-              	}
+               $cache = $this->CreateSectionsCache($SectionInfo);
 				if ($cache == false)
 				 {
 				  $cache = '';
@@ -397,8 +392,6 @@ class PowerBBSection
                    {
                    	$forums_cache = $cache;
                    }
-                if($this->Engine->_CONF['files_forums_Cache'])
-                {
 
 		            // get main dir
 					$file_forums_cache = $PowerBB->functions->GetMianDir()."cache/forums_cache/forums_cache_".$SectionInfo['parent'].".php";
@@ -416,17 +409,7 @@ class PowerBBSection
 	 				{
 	 					$fail = true;
 	 				}
- 			   }
- 			   /*
- 			   elseif(!$this->Engine->_CONF['files_forums_Cache']
- 			   or $this->Engine->_CONF['forums_parent_direct'])
- 			   {
-					$ForumCacheArr 				= 	array();
-					$ForumCacheArr['field']['forums_cache'] 	= 	$forums_cache;
-					$ForumCacheArr['where'] 		        = 	array('id',$SectionInfo['parent']);
-					$UpdateForumCache = $this->UpdateSection($ForumCacheArr);
-			   }
-			   */
+
            }
            else
            {
@@ -447,9 +430,6 @@ class PowerBBSection
                    {
                    	$forums_cache = $cache;
                    }
-                  if($this->Engine->_CONF['files_forums_Cache'])
-                  {
-
 		            // get main dir
 					$file_forums_cache = $PowerBB->functions->GetMianDir()."cache/forums_cache/forums_cache_".$param['parent'].".php";
 	                $file_forums_cache = str_ireplace("index.php/", '', $file_forums_cache);
@@ -466,18 +446,7 @@ class PowerBBSection
 	 				{
 	 					$fail = true;
 	 				}
-                  }
-                  /*
-	 			  elseif(!$this->Engine->_CONF['files_forums_Cache']
-	 			  or $this->Engine->_CONF['forums_parent_direct'])
-	 			  {
-						$ForumCacheArr 				= 	array();
-						$ForumCacheArr['field']['forums_cache'] 	= 	$forums_cache;
-						$ForumCacheArr['where'] 		        = 	array('id',$param['parent']);
-						$UpdateForumCache = $this->UpdateSection($ForumCacheArr);
 
-				  }
-                 */
 			 }
            }
          $this->Engine->functions->PBB_Create_last_posts_cache(0);

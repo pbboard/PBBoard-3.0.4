@@ -57,13 +57,13 @@ class PowerBBLatestMOD
 
 		// 1. استعلام العد السريع
 		$subject_today_nm_query = $PowerBB->DB->sql_query("
-			SELECT COUNT(*)
-			FROM " . $PowerBB->table['subject'] . "
-			WHERE section NOT IN (" . $forum_not . ")
-			AND review_subject = 0
-			AND delete_topic = 0
-			AND write_time >= " . $deys
-		);
+		    SELECT COUNT(*)
+		    FROM " . $PowerBB->table['subject'] . "
+		    WHERE delete_topic = 0
+		    AND review_subject = 0
+		    AND write_time >= " . $deys . "
+		    AND section NOT IN (" . $forum_not . ")
+		");
 		$subject_today_nm_row = $PowerBB->DB->sql_fetch_row($subject_today_nm_query);
 		$subject_today_nm = $subject_today_nm_row;
 
@@ -91,7 +91,7 @@ class PowerBBLatestMOD
 		$LastSubjectArr['where'] = array();
 		$LastSubjectArr['where'][0] = array(
 			'con'   => 'AND',
-			'name'  => 's.section NOT IN (' . $forum_not . ') AND s.review_subject = 0 AND s.delete_topic = 0 AND s.write_time',
+			'name'  => 's.delete_topic = 0 AND s.review_subject = 0 AND s.section NOT IN (' . $forum_not . ') AND s.write_time',
 			'oper'  => '>=',
 			'value' => $deys
 		);

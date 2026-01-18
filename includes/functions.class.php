@@ -21,7 +21,8 @@ class PowerBBFunctions
 
         // Get online forums
 		if ($PowerBB->_CONF['info_row']['active_forum_online_number'])
-		{
+		{
+
 			$online_counts = array();
 			$res_online = $PowerBB->DB->sql_query("SELECT section_id, COUNT(*) as total FROM {$PowerBB->table['online']} GROUP BY section_id");
 			while ($on_row = $PowerBB->DB->sql_fetch_array($res_online)) {
@@ -52,36 +53,32 @@ class PowerBBFunctions
 	      	{
              // foreach main sections
              if ($parent == 0)
-             {	             if ($cat['sort'] == 0)
+             {
+	             if ($cat['sort'] == 0)
 	             {
 				  $cat['sort'] =  "1";
 				 }
 			  $PowerBB->_CONF['template']['foreach']['forums_list'][$cat['id'] . '_m'] = $cat;
 			 }
 
-
-			if($PowerBB->_CONF['files_forums_Cache'])
-			{
-				   $cache_include = "cache/forums_cache/forums_cache_".$cat['id'].".php";
-					if (is_file($cache_include)) {
-					include $cache_include;
-					}
-					elseif ($parent == 0)
-				    {
-				   	$is_cache	= false;
-				   	}
-			}
-			else
-			{
-			$forums_cache = $PowerBB->functions->get_forum_cache($cat['id'],$cat['forums_cache']);
-			}
+			   $cache_include = "cache/forums_cache/forums_cache_".$cat['id'].".php";
+				if (is_file($cache_include)) {
+				include $cache_include;
+				}
+				elseif ($parent == 0)
+			    {
+			   	$is_cache	= false;
+			   	$forums_cache = '';
+			   	}
 
  			 if (!empty($forums_cache))
 			 {
 
                 $forums = $PowerBB->functions->decode_forum_cache($forums_cache);
 					foreach($forums as $forum)
-					{						$subs_ids = array();
+					{
+
+						$subs_ids = array();
 						if ($PowerBB->_CONF['group_info']['vice']
 						or $PowerBB->_CONF['member_row']['usergroup'] == '1')
 						{
@@ -140,15 +137,13 @@ class PowerBBFunctions
 									$forum['is_sub'] 	= 	0;
 									$forum['sub']		=	'';
 									$t_sub=0;
-									if ($PowerBB->_CONF['files_forums_Cache'])
-									{
-									@include("cache/forums_cache/forums_cache_".$forum['id'].".php");
+									$forum_cache_include = "cache/forums_cache/forums_cache_".$forum['id'].".php";
+									if (is_file($forum_cache_include)) {
+									include $forum_cache_include;
 									}
-									else
-									{
-									$forums_cache = $PowerBB->functions->get_forum_cache($forum['id'],$forum['forums_cache']);
-									}
-
+                                    else
+                                    {                                    $forums_cache = '';
+                                    }
                                     if (!empty($forums_cache))
 		                           {
 										$subs = $PowerBB->functions->decode_forum_cache($forums_cache);
@@ -223,14 +218,15 @@ class PowerBBFunctions
 
 											        }
                                                    // subs forum ++
-													if ($PowerBB->_CONF['files_forums_Cache'])
-													{
-													@include("cache/forums_cache/forums_cache_".$sub['id'].".php");
+
+				                                   $sub_cache_include = "cache/forums_cache/forums_cache_".$sub['id'].".php";
+													if (is_file($sub_cache_include)) {
+													include $sub_cache_include;
 													}
-													else
-													{
-													$forums_cache = $PowerBB->functions->get_forum_cache($sub['id'],$sub['forums_cache']);
-													}
+                                                    else
+                                                    {
+                                                    $forums_cache = '';
+                                                    }
  				                                   if (!empty($forums_cache))
 						                           {
 														$subsforum = $PowerBB->functions->decode_forum_cache($forums_cache);
@@ -276,14 +272,15 @@ class PowerBBFunctions
                                                             }
 
                                                               // subs forum +++
-															if ($PowerBB->_CONF['files_forums_Cache'])
-															{
-															@include("cache/forums_cache/forums_cache_".$subforum['id'].".php");
+                                                             $subs_cache_include = "cache/forums_cache/forums_cache_".$subforum['id'].".php";
+															if (is_file($subs_cache_include)) {
+															include $sub_cache_include;
 															}
-															else
-															{
-															$forums_cache = $PowerBB->functions->get_forum_cache($subforum['id'],$subforum['forums_cache']);
-															}
+		                                                    else
+		                                                    {
+		                                                    $forums_cache = '';
+		                                                    }
+
  						                                   if (!empty($forums_cache))
 								                           {
 																$subs4forum = $PowerBB->functions->decode_forum_cache($forums_cache);
@@ -330,14 +327,14 @@ class PowerBBFunctions
 
 
 																	   // subs forum ++++
-																		if ($PowerBB->_CONF['files_forums_Cache'])
-																		{
-																		@include("cache/forums_cache/forums_cache_".$sub4forum['id'].".php");
+			                                                             $subs4_cache_include = "cache/forums_cache/forums_cache_".$sub4forum['id'].".php";
+																		if (is_file($subs4_cache_include)) {
+																		include $subs4_cache_include;
 																		}
-																		else
-																		{
-																		$forums_cache = $PowerBB->functions->get_forum_cache($subforum['id'],$subforum['forums_cache']);
-																		}
+					                                                    else
+					                                                    {
+					                                                    $forums_cache = '';
+					                                                    }
 			 						                                   if (!empty($forums_cache))
 											                           {
 																			$subs5forum = $PowerBB->functions->decode_forum_cache($forums_cache);
@@ -384,14 +381,15 @@ class PowerBBFunctions
 
 
                                                                                        // subs forum +++++
-																                       if ($PowerBB->_CONF['files_forums_Cache'])
-																						{
-																						@include("cache/forums_cache/forums_cache_".$sub5forum['id'].".php");
+							                                                             $subs5_cache_include = "cache/forums_cache/forums_cache_".$sub5forum['id'].".php";
+																						if (is_file($subs5_cache_include)) {
+																						include $subs5_cache_include;
 																						}
-																						else
-																						{
-																						$forums_cache = $PowerBB->functions->get_forum_cache($subforum['id'],$subforum['forums_cache']);
-																						}
+									                                                    else
+									                                                    {
+									                                                    $forums_cache = '';
+									                                                    }
+
 							 						                                   if (!empty($forums_cache))
 															                           {
 																							$subs6forum = $PowerBB->functions->decode_forum_cache($forums_cache);
@@ -1316,20 +1314,7 @@ function pbb_prepare_main_view(array $tree)
 		{
 		   return false;
 		}
- 		$num = '150';
-		$titlenum = '90';
-		// visito today number  today_cookie
-		if ($PowerBB->_CONF['date'] == $PowerBB->_CONF['info_row']['today_date_cache'])
-		{
-          $PowerBB->functions->visitor_today_number();
-        }
-        else
-        {
-         if ($PowerBB->_CONF['info_row']['mor_hours_online_today'] == '0')
-		 {
-          $PowerBB->info->UpdateInfo(array('value'=>'1','var_name'=>'today_number_cache'));
-		 }
-        }
+
        $PowerBB->_GET['id']	= 	$PowerBB->functions->CleanVariable($PowerBB->_GET['id'],'intval');
  		// Check if title is empty so use the default name of forum
  		// which stored in info_row['title']
@@ -3108,15 +3093,14 @@ function UpdateSectionCache($SectionCache)
 			$PowerBB->_CONF['template']['foreach']['forumsy_list'][$caty['id'] . '_m'] = $caty;
 			unset($sectiongroup);
 
-			if($PowerBB->_CONF['files_forums_Cache'])
-			{
-			@include("cache/forums_cache/forums_cache_".$caty['id'].".php");
+			$forum_cache_include = "cache/forums_cache/forums_cache_".$caty['id'].".php";
+			if (is_file($forum_cache_include)) {
+			include $forum_cache_include;
 			}
 			else
 			{
-			$forums_cache = $caty['forums_cache'];
+			$forums_cache = '';
 			}
-
 			if (!empty($forums_cache))
 			{
                	$ForumArr 						= 	array();
@@ -3139,13 +3123,13 @@ function UpdateSectionCache($SectionCache)
 						{
 							$forumy['is_sub'] 	= 	0;
 							$forumy['sub']		=	'';
-								if($PowerBB->_CONF['files_forums_Cache'])
-								{
-								@include("cache/forums_cache/forums_cache_".$forumy['id'].".php");
+								$Sub_cache_include = "cache/forums_cache/forums_cache_".$forumy['id'].".php";
+								if (is_file($Sub_cache_include)) {
+								include $Sub_cache_include;
 								}
 								else
 								{
-								$forums_cache = $forumy['forums_cache'];
+								$forums_cache = '';
 								}
                                if (!empty($forums_cache))
 	                           {

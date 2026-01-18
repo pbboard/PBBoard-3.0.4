@@ -59,7 +59,7 @@ class PowerBBLatestMOD
  		$PowerBB->_GET['count'] = $PowerBB->functions->CleanVariable($PowerBB->_GET['count'],'intval');
         $forum_not = $PowerBB->_CONF['info_row']['last_subject_writer_not_in'];
 
-        $subject_today_nm = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['subject'] . " WHERE native_write_time >= " . $deys . " AND section not in (" .$forum_not. ") AND review_subject<>1 AND delete_topic<>1 LIMIT 1"));
+        $subject_today_nm = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(*) FROM " . $PowerBB->table['subject'] . " WHERE delete_topic=0 AND review_subject=0 AND native_write_time >= " . $deys . " AND section NOT IN (" .$forum_not. ")"));
 
        $subject_today_nmbr  = $subject_today_nm;
 

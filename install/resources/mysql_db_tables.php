@@ -353,7 +353,7 @@ $tables[] = "CREATE TABLE pbb_member (
   user_title varchar(300) NOT NULL default '',
   visitor int(9) NOT NULL DEFAULT '0',
   user_info mediumtext NOT NULL,
-  avater_path mediumtext NOT NULL,
+  avater_path varchar(255) NOT NULL default '',
   away int(1) NOT NULL DEFAULT '0',
   away_msg mediumtext NOT NULL,
   new_password varchar(200) NOT NULL default '',
@@ -375,7 +375,7 @@ $tables[] = "CREATE TABLE pbb_member (
   autoreply_msg text NOT NULL,
   pm_senders int(1) NOT NULL DEFAULT '0',
   pm_senders_msg varchar(255) NOT NULL default '',
-  member_ip varchar(20) NOT NULL default '',
+  member_ip varchar(100) NOT NULL default '',
   subject_sig mediumtext NOT NULL,
   reply_sig mediumtext NOT NULL,
   username_style_cache varchar(255) NOT NULL default '',
@@ -403,8 +403,9 @@ $tables[] = "CREATE TABLE pbb_member (
   PRIMARY KEY (id),
   INDEX (username),
   INDEX (email),
-  INDEX (usergroup)
-) ENGINE=MyISAM";
+  INDEX (usergroup),
+  INDEX idx_user_info (id, username, usergroup, username_style_cache, avater_path)
+) ENGINE=InnoDB";
 
 $tables[] = "CREATE TABLE pbb_moderators (
   id int(9) NOT NULL AUTO_INCREMENT,
@@ -416,9 +417,9 @@ $tables[] = "CREATE TABLE pbb_moderators (
 
 $tables[] = "CREATE TABLE pbb_online (
   id int(11) NOT NULL AUTO_INCREMENT,
-  username varchar(250) NOT NULL default '',
+  username varchar(150) NOT NULL default '',
   path text NOT NULL,
-  logged int(15) NOT NULL DEFAULT '0',
+  logged int(11) NOT NULL DEFAULT '0',
   user_id int(9) NOT NULL DEFAULT '0',
   user_ip varchar(45) NOT NULL default '',
   hide_browse int(1) NOT NULL DEFAULT '0',
@@ -426,17 +427,18 @@ $tables[] = "CREATE TABLE pbb_online (
   user_location text NOT NULL,
   subject_show int(1) NOT NULL DEFAULT '0',
   subject_id int(9) NOT NULL DEFAULT '0',
-  last_move int(15) NOT NULL DEFAULT '0',
+  last_move int(11) NOT NULL DEFAULT '0',
   section_id int(9) NOT NULL DEFAULT '0',
   is_bot int(1) NOT NULL DEFAULT '0',
-  bot_name varchar(250) NOT NULL default '',
+  bot_name varchar(150) NOT NULL default '',
   PRIMARY KEY (id),
+  INDEX (username),
   INDEX (user_id),
   INDEX (user_ip),
   INDEX (logged),
   INDEX (last_move),
   INDEX (is_bot)
-) ENGINE=MyISAM";
+) ENGINE=InnoDB";
 
 $tables[] = "CREATE TABLE pbb_pages (
   id int(9) NOT NULL AUTO_INCREMENT,
@@ -538,7 +540,7 @@ $tables[] = "CREATE TABLE pbb_reply (
   INDEX subject_replies (subject_id, write_time),
   INDEX writer_idx (writer),
   INDEX section_idx (section)
-) ENGINE=MyISAM";
+) ENGINE=InnoDB";
 
 $tables[] = "CREATE TABLE pbb_reputation (
   id int(9) NOT NULL AUTO_INCREMENT,
@@ -604,7 +606,7 @@ $tables[] = "CREATE TABLE pbb_section (
   subjects_review_num int(1) NOT NULL DEFAULT '0',
   replys_review_num int(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (id)
-) ENGINE=MyISAM";
+) ENGINE=InnoDB";
 
 $tables[] = "CREATE TABLE pbb_sectiongroup (
   id int(9) NOT NULL AUTO_INCREMENT,
@@ -687,8 +689,10 @@ $tables[] = "CREATE TABLE pbb_subject (
   INDEX writer_idx (writer),
   INDEX last_replier_idx (last_replier),
   INDEX write_time_idx (write_time),
-  INDEX native_write_idx (native_write_time)
-) ENGINE=MyISAM";
+  INDEX native_write_idx (native_write_time),
+  INDEX idx_perf_subject (delete_topic, review_subject, native_write_time, section),
+  INDEX idx_perf_reply (delete_topic, review_subject, write_time, section)
+) ENGINE=InnoDB";
 
 $tables[] = "CREATE TABLE pbb_supermemberlogs (
   id int(9) NOT NULL AUTO_INCREMENT,
@@ -707,7 +711,7 @@ $tables[] = "CREATE TABLE pbb_tags (
   PRIMARY KEY (id),
   INDEX (tag),
   INDEX (number)
-) ENGINE=MyISAM";
+) ENGINE=InnoDB";
 
 $tables[] = "CREATE TABLE pbb_tags_subject (
   id int(9) NOT NULL AUTO_INCREMENT,
@@ -718,7 +722,7 @@ $tables[] = "CREATE TABLE pbb_tags_subject (
   PRIMARY KEY (id),
   INDEX (tag_id),
   INDEX (subject_id)
-) ENGINE=MyISAM";
+) ENGINE=InnoDB";
 
 $tables[] = "CREATE TABLE pbb_template (
   templateid int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -735,7 +739,7 @@ $tables[] = "CREATE TABLE pbb_template (
   active smallint(5) UNSIGNED NOT NULL DEFAULT '1',
   PRIMARY KEY (templateid),
   INDEX style_title (styleid, title, templatetype)
-) ENGINE=MyISAM";
+) ENGINE=InnoDB";
 
 $tables[] = "CREATE TABLE pbb_templates_edits (
   id int(9) NOT NULL AUTO_INCREMENT,
@@ -814,7 +818,7 @@ $tables[] = "CREATE TABLE pbb_visitormessage (
   messageread smallint(5) UNSIGNED NOT NULL DEFAULT '0',
   PRIMARY KEY (id),
   INDEX user_date (userid, dateline)
-) ENGINE=MyISAM";
+) ENGINE=InnoDB";
 
 $tables[] = "CREATE TABLE pbb_vote (
   id int(9) NOT NULL AUTO_INCREMENT,

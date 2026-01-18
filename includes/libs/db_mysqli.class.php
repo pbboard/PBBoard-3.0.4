@@ -143,23 +143,25 @@ function sql_connect()
 		}
 
 		return $result;
-		$this->sql_free_result($result);
 	}
 
 	function sql_fetch_array($result)
 	{
 		$out = mysqli_fetch_array($result);
 		return $out;
-		$this->sql_free_result($result);
 	}
 
 	function sql_fetch_assoc($result)
 	{
 		$out = mysqli_fetch_assoc($result);
 		return $out;
-		$this->sql_free_result($result);
 	}
 
+	function sql_fetchrow($result)
+	{
+		$out = mysqli_fetch_assoc($result);
+		return $out;
+	}
 	function sql_fetch_row($result)
 	{
 		$rows = mysqli_fetch_row($result);
@@ -170,13 +172,11 @@ function sql_connect()
 	{
 		$out = mysqli_num_rows($result);
 		return $out;
-		$this->sql_free_result($result);
 	}
 
 	function sql_insert_id()
 	{
-		return ($this->connect) ? @mysqli_insert_id($this->connect) : false;
-
+	 return ($this->connect) ? @mysqli_insert_id($this->connect) : false;
 	}
 
 

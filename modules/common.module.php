@@ -233,67 +233,28 @@ class PowerBBCommon
                   }
 			  }
 	     }
-          // end auto link titles php
-			if ($PowerBB->_CONF['info_row']['mor_seconds_online'] == '300')
-			{
-	 		// Delete not important rows in online table
-	 		$CleanOnline = $PowerBB->_CONF['timeout'];
-	        $CleanDelOnline = $PowerBB->DB->sql_query("DELETE FROM " . $PowerBB->table['online'] . " WHERE logged <= $CleanOnline ");
-	 		}
-			else
-			{
-			// Delete not important rows in online table
-		     if ($PowerBB->_CONF['info_row']['mor_seconds_online'])
-		      {
-	           $time_check_online=$PowerBB->_CONF['now']-$PowerBB->_CONF['info_row']['mor_seconds_online'];
-	           $DelOnline = $PowerBB->DB->sql_query("DELETE FROM " . $PowerBB->table['online'] . " WHERE logged <= $time_check_online ");
-	          }
-			}
+           // end auto link titles php
+		// --- Performance Optimization: Online Table Cleanup & Auto-Maintenance ---
+		if ($PowerBB->_CONF['date'] != $PowerBB->_CONF['info_row']['today_date_cache'])
+		{
+		    $PowerBB->info->UpdateInfo(array('value' => $PowerBB->_CONF['date'], 'var_name' => 'today_date_cache'));
+
+		    $PowerBB->info->UpdateInfo(array('value' => '1', 'var_name' => 'today_number_cache'));
+
+		    $PowerBB->DB->sql_query("TRUNCATE TABLE " . $PowerBB->table['visitor']);
+		    $PowerBB->DB->sql_query("TRUNCATE TABLE " . $PowerBB->table['today']);
+
+		    $PowerBB->DB->sql_query("OPTIMIZE TABLE " . $PowerBB->table['today']);
+		    $PowerBB->DB->sql_query("OPTIMIZE TABLE " . $PowerBB->table['online']);
+		}
+
+		if (mt_rand(1, 20) == 1) {
+		    $timeout_val = ($PowerBB->_CONF['info_row']['mor_seconds_online']) ? $PowerBB->_CONF['info_row']['mor_seconds_online'] : 300;
+		    $clean_time = $PowerBB->_CONF['now'] - $timeout_val;
+		    $PowerBB->DB->sql_query("DELETE FROM " . $PowerBB->table['online'] . " WHERE logged <= $clean_time");
+		}
 
 
-
-         // Delete not important rows in today table
-	      if ($PowerBB->_CONF['info_row']['show_online_list_today'] == 1)
-	      {
-			if ($PowerBB->_CONF['info_row']['mor_hours_online_today'] == '0')
-			{
-				if ($PowerBB->_CONF['date'] != $PowerBB->_CONF['info_row']['today_date_cache'])
-				{
-
-			 		$CleanArr 			= 	array();
-			 		$CleanArr['date'] 	= 	$PowerBB->_CONF['date'];
-			 	 	$CleanToday = $PowerBB->online->CleanTodayTable($CleanArr);
-					if (isset($PowerBB->_COOKIE[$PowerBB->_CONF['today_cookie']]) != $PowerBB->_CONF['info_row']['today_date_cache'])
-					{
-					 $Update_today_number_cache = $PowerBB->info->UpdateInfo(array('value'=>'1','var_name'=>'today_number_cache'));
-                     $truncate_visitor = $PowerBB->DB->sql_query("TRUNCATE " . $PowerBB->table['visitor'] );
-					}
-
-			       $PowerBB->info->UpdateInfo(array('value'=>$PowerBB->_CONF['date'],'var_name'=>'today_date_cache'));
-		 	 	}
-	 	 	}
-			else
-			{
-				$mor_online_today = ($PowerBB->_CONF['now'] - ($PowerBB->_CONF['info_row']['mor_hours_online_today'] * 86400));
-				$CleanmorToday = $PowerBB->DB->sql_query("DELETE FROM " . $PowerBB->table['today'] . " WHERE logged <= $mor_online_today");
-				$NewDate = ($PowerBB->_CONF['now'] - ($PowerBB->_CONF['info_row']['mor_hours_online_today'] * 86400));
-				$l_date = @date('j/n/Y',$NewDate);
-				$e_date = $PowerBB->_CONF['info_row']['today_date_cache'];
-				//if($e_date <= $l_date)
-				if ($PowerBB->_CONF['date'] != $PowerBB->_CONF['info_row']['today_date_cache'])
-	            {
-
-				    if ($PowerBB->_COOKIE['PowerBB_today_date'] != $PowerBB->_CONF['info_row']['today_date_cache'])
-					{
-					 $Update_today_number_cache = $PowerBB->info->UpdateInfo(array('value'=>'1','var_name'=>'today_number_cache'));
-                     $truncate_visitor = $PowerBB->DB->sql_query("TRUNCATE " . $PowerBB->table['visitor'] );
-					}
-
-			        $PowerBB->info->UpdateInfo(array('value'=>$PowerBB->_CONF['date'],'var_name'=>'today_date_cache'));
-	            }
-	 	    }
-
-	      }
 		////////////
 	}
 
@@ -618,19 +579,16 @@ class PowerBBCommon
 			$InsertOnline['field']['user_ip'] 			= 	$PowerBB->_CONF['ip'];
 			$InsertOnline['field']['hide_browse'] 		= 	$PowerBB->_CONF['member_row']['hide_online'];
 			$InsertOnline['field']['user_location'] 	= 	$MemberLocation;
-			if($page )
 			$InsertOnline['field']['user_id'] 			= 	$PowerBB->_CONF['member_row']['id'];
 
 			$insert = $PowerBB->core->Insert($InsertOnline,'online');
 		}
-		// Member is already online , just update information
+      // Member is already online , just update information
 		else
 		{
+			$time_gap = $PowerBB->_CONF['now'] - $IsOnline['last_move'];
 
-			if ($IsOnline['logged'] < $PowerBB->_CONF['timeout']
-				or $IsOnline['path'] != $PowerBB->_SERVER['QUERY_STRING']
-				or $IsOnline['username_style'] != $username_style
-				or $IsOnline['hide_browse'] != $PowerBB->_CONF['rows']['member_row']['hide_online'])
+			if ($IsOnline['path'] != $path || $time_gap > 60 || $IsOnline['username_style'] != $username_style || $IsOnline['hide_browse'] != $PowerBB->_CONF['rows']['member_row']['hide_online'])
 			{
 				$UpdateOnline 					= 	array();
 				$UpdateOnline['field']			=	array();
@@ -643,19 +601,18 @@ class PowerBBCommon
 				$UpdateOnline['field']['user_location']		=	$MemberLocation;
 				$UpdateOnline['field']['user_id']			=	$PowerBB->_CONF['member_row']['id'];
 				$UpdateOnline['field']['last_move']         =   $PowerBB->_CONF['now'];
+				$UpdateOnline['field']['logged']            =   $PowerBB->_CONF['now'];
 
-				$valid_pages = ['forum', 'topic', 'post'];
-				// إذا كانت قيمة $PowerBB->_GET['page'] غير موجودة (!) في المصفوفة
+				$valid_pages = array('forum', 'topic', 'post');
 				if (!in_array($PowerBB->_GET['page'], $valid_pages))
 				{
-				    $UpdateOnline['field']['section_id']		=	"";
-				    $UpdateOnline['field']['subject_id']		=	"";
-				    $UpdateOnline['field']['subject_show']		=	"";
+					$UpdateOnline['field']['section_id']		=	"";
+					$UpdateOnline['field']['subject_id']		=	"";
+					$UpdateOnline['field']['subject_show']		=	"";
 				}
 
-				$UpdateOnline['where']						=	array('username',$PowerBB->_CONF['member_row']['username']);
-
-				$update = $PowerBB->core->Update($UpdateOnline,'online');
+				$UpdateOnline['where']						=	array('username', $PowerBB->_CONF['member_row']['username']);
+				$update = $PowerBB->core->Update($UpdateOnline, 'online');
 			}
 		}
 
@@ -928,15 +885,14 @@ class PowerBBCommon
 			$insert = $PowerBB->core->Insert($InsertOnlineArr,'online');
 
 		}
-		else
+       else
 		{
-
 		   // visitor already online , just update information
-
-
-			if ($OnlineInfo)
+			if ($OnlineInfo && $OnlineInfo['user_id'] == '-1')
 			{
-				if ($OnlineInfo['user_id']=='-1')
+				$time_gap_v = $PowerBB->_CONF['now'] - $OnlineInfo['last_move'];
+
+				if ($OnlineInfo['path'] != addslashes($PowerBB->_SERVER['QUERY_STRING']) || $time_gap_v > 60)
 				{
 					$UpdateOnlineArr 					= 	array();
 					$UpdateOnlineArr['field']			=	array();
@@ -947,25 +903,23 @@ class PowerBBCommon
 					$UpdateOnlineArr['field']['user_ip'] 			= 	$PowerBB->_CONF['ip'];
 					$UpdateOnlineArr['field']['user_location'] 	    = 	$GuestLocation;
 					$UpdateOnlineArr['field']['user_id']			=	-1;
-		            $UpdateOnlineArr['field']['last_move']          = $PowerBB->_CONF['now'];
-		            $UpdateOnlineArr['field']['is_bot']             = $isBot;
-		            $UpdateOnlineArr['field']['bot_name']           = $BotName;
+					$UpdateOnlineArr['field']['last_move']          =   $PowerBB->_CONF['now'];
+					$UpdateOnlineArr['field']['logged']             =   $PowerBB->_CONF['now']; // هام لبقاء الزائر في القائمة
+					$UpdateOnlineArr['field']['is_bot']             =   $isBot;
+					$UpdateOnlineArr['field']['bot_name']           =   $BotName;
 
-					$valid_pages = ['forum', 'topic', 'post'];
-					// إذا كانت قيمة $PowerBB->_GET['page'] غير موجودة (!) في المصفوفة
+					$valid_pages = array('forum', 'topic', 'post');
 					if (!in_array($PowerBB->_GET['page'], $valid_pages))
 					{
-					    $UpdateOnlineArr['field']['section_id']		=	"";
-					    $UpdateOnlineArr['field']['subject_id']		=	"";
-					    $UpdateOnlineArr['field']['subject_show']		=	"";
+						$UpdateOnlineArr['field']['section_id']		=	"";
+						$UpdateOnlineArr['field']['subject_id']		=	"";
+						$UpdateOnlineArr['field']['subject_show']	=	"";
 					}
 
 					$UpdateOnlineArr['where']						=	array('id',$OnlineInfo['id']);
-
-				   $update = $PowerBB->core->Update($UpdateOnlineArr,'online');
-              }
+					$update = $PowerBB->core->Update($UpdateOnlineArr,'online');
+				}
 			}
-
 		}
 
          if ($PowerBB->_CONF['info_row']['show_online_list_today'] == 1)

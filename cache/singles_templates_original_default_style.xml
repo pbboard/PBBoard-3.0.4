@@ -353,7 +353,7 @@ src="index.php?page=download&amp;attach=1&amp;id={$SubjectAttachList['id']}" tit
 ]]></add_attach_table>
 <add_chat_message><![CDATA[<div class="chat-input-area" dir="{$_CONF['info_row']['content_dir']}" style="background: #fff; padding: 10px; border: 1px solid #ccc; border-top: 1px solid #eee; margin-bottom: 20px;">
     <div style="display: flex; gap: 8px; align-items: center;">
-        
+
         <div style="position: relative;">
             <img src="look/images/emoii.gif" onclick="$('#smile_box').toggleClass('active')" style="width: 28px; cursor: pointer;" title="{$lang['smiles']}">
             <div id="smile_box" class="border shadow" style="position: absolute; bottom: 45px; <?php echo ($PowerBB->_CONF['info_row']['content_dir'] == 'rtl') ? 'right: 0;' : 'left: 0;'; ?> background: #fff; border: 1px solid #ccc; width: 260px; padding: 5px; z-index: 999; grid-template-columns: repeat(8, 1fr); gap: 2px;">
@@ -1455,7 +1455,7 @@ showButtonPanel: true
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <link rel="apple-touch-icon" href="{$ForumAdress}look/images/pbboard-icon.png" />
     <title>{$lang['chat_message']}</title>
-    
+
     <script type="text/javascript" src="{$ForumAdress}includes/js/jquery-1.10.2.js"></script>
     <link rel="stylesheet" href="{$ForumAdress}look/fonts/font-awesome.min.css" />
     <link rel="stylesheet" href="{$ForumAdress}look/fonts/fonts.css" />
@@ -1466,44 +1466,44 @@ showButtonPanel: true
             display: flex;
             /* تحديد الاتجاه بناءً على لغة الموقع */
             flex-direction: <?php echo ($PowerBB->_CONF['info_row']['content_dir'] == 'rtl') ? 'row' : 'row-reverse'; ?>;
-            height: 550px; 
-            border: 1px solid #ccc; 
-            background: #fff; 
+            height: 550px;
+            border: 1px solid #ccc;
+            background: #fff;
             margin: auto;
             width: 98%;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
 
         /* منطقة الرسائل */
-        .digi-main { 
-            flex: 1; 
-            display: flex; 
-            flex-direction: column; 
-            min-width: 0; 
+        .digi-main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
         }
 
         /* منطقة المتواجدين */
-        .digi-sidebar { 
-            width: 220px; 
-            background: #f7f9fb; 
-            overflow-y: auto; 
+        .digi-sidebar {
+            width: 220px;
+            background: #f7f9fb;
+            overflow-y: auto;
             border-<?php echo ($PowerBB->_CONF['info_row']['content_dir'] == 'rtl') ? 'left' : 'right'; ?>: 1px solid #ddd;
         }
 
-        .digi-header { 
-            background: #185886; 
-            color: #fff; 
-            padding: 10px; 
+        .digi-header {
+            background: #185886;
+            color: #fff;
+            padding: 10px;
             font-family: "Droid Arabic Kufi", "tahoma", sans-serif;
-            font-size: 11px; 
-            font-weight: bold; 
+            font-size: 11px;
+            font-weight: bold;
         }
 
-        .chat_ee { 
-            flex: 1; 
-            overflow-y: auto; 
-            padding: 10px; 
-            background: #fff; 
+        .chat_ee {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px;
+            background: #fff;
             max-height:none;
            font-family: "Droid Arabic Kufi", "tahoma", sans-serif;
         }
@@ -1512,14 +1512,14 @@ showButtonPanel: true
         #smile_box.active { display: grid !important; }
 
         @media (max-width: 768px) {
-            .digi-container { 
-                flex-direction: column !important; 
-                height: auto; 
+            .digi-container {
+                flex-direction: column !important;
+                height: auto;
             }
-            .digi-sidebar { 
-                width: 100%; 
-                height: 180px; 
-                order: 2; 
+            .digi-sidebar {
+                width: 100%;
+                height: 180px;
+                order: 2;
                 border: none;
                 border-top: 2px solid #185886;
             }
@@ -1579,7 +1579,7 @@ showButtonPanel: true
         $.get("index.php?page=chat_message&chat_w=1&t=" + Math.random(), function(data) {
             if(data.trim() !== "") {
                 var objDiv = document.getElementById("main_chat_scroll");
-                
+
                 // 1. حساب المسافة قبل التحديث: هل المستخدم في القاع؟
                 // نترك هامش بسيط (50 بكسل) للتأكد من رغبة المستخدم في البقاء بالأسفل
                 var isAtBottom = (objDiv.scrollHeight - objDiv.clientHeight - objDiv.scrollTop < 50);
@@ -1588,10 +1588,10 @@ showButtonPanel: true
                 if (lastChatContent !== "" && data.trim() !== lastChatContent) {
                     playNotificationSound();
                 }
-                
+
                 lastChatContent = data.trim();
                 $("#content_div_id").html(data);
-                
+
                 // 3. النزول لأسفل فقط إذا كان المستخدم أصلاً في القاع
                 if(objDiv && isAtBottom) {
                     objDiv.scrollTop = objDiv.scrollHeight;
@@ -1613,8 +1613,8 @@ showButtonPanel: true
         if(msgText.trim() == "") return;
 
         $.post("index.php?page=chat_message&start=1", { textc: msgText, ajax: 1 }, function() {
-            $("#box_text").val(""); 
-            read_cont(); 
+            $("#box_text").val("");
+            read_cont();
         });
     }
 
@@ -11731,7 +11731,7 @@ itemtype="https://schema.org/ListItem">
                     {/Des::while}
                 </table>
             </div>
-            
+
             <div id='reputation_table' style="display:none;">
                 <table class="wd100 brd0 clp0">
                     {Des::while}{TopMemberReputation}
@@ -11804,7 +11804,7 @@ itemtype="https://schema.org/ListItem">
 		        {Des::while}{lastPostsList}
 		        <tr>
 		            <td class="row2 right_text_align">
-		                <i class="fa fa-sticky-note color_gray"></i> 
+		                <i class="fa fa-sticky-note color_gray"></i>
 		                <a href="index.php?page=topic&amp;show=1&amp;id={$lastPostsList['id']}">{$lastPostsList['title']}</a>
 		            </td>
 		            <td class="row2 center_text_align" style="white-space:nowrap; padding:5px;">
@@ -11841,7 +11841,7 @@ $PowerBB->_CONF['template']['while']['lastPostsList'][$this->x_loop]['avater_pat
 <span class="brd0" style="background-image: url(<?php echo $PowerBB->_CONF['template']['ForumAdress'].$PowerBB->_CONF['template']['image_path'];?>/{$_CONF['info_row']['default_avatar']}); width: 32px; height: 32px; background-position: center; background-repeat: no-repeat; background-size: 32px; display: inline-block; vertical-align: middle;"></span>
 {/if}
 </a>
-		                <br/> 
+		                <br/>
 		                <span class="last_time_ago"><?php echo $PowerBB->functions->time_ago($PowerBB->_CONF['template']['while']['lastPostsList'][$this->x_loop]['write_time']); ?></span>
 		            </td>
 		        </tr>
@@ -11854,7 +11854,7 @@ $PowerBB->_CONF['template']['while']['lastPostsList'][$this->x_loop]['avater_pat
                     {Des::while}{TopSubjectVisitor}
                     <tr>
                         <td class="row2 right_text_align">
-                            <i class="fa fa-eye color_gray"></i> 
+                            <i class="fa fa-eye color_gray"></i>
                             <a href="index.php?page=topic&amp;show=1&amp;id={$TopSubjectVisitor['id']}">{$TopSubjectVisitor['title']}</a>
                         </td>
                         <td class="row2 center_text_align wd1">{$TopSubjectVisitor['visitor']}</td>
@@ -11889,8 +11889,8 @@ $(document).ready(function() {
         $('#topparticipants_table, #reputation_table, #register_table, #invite_table').hide();
         $('#' + id + '_table').show();
 
-        $('#pp-topparticipants, #pp-reputation, #pp-register, #pp-invite').css('background-color', ''); 
-        $(this).css('background-color', '#e9ecef'); 
+        $('#pp-topparticipants, #pp-reputation, #pp-register, #pp-invite').css('background-color', '');
+        $(this).css('background-color', '#e9ecef');
     });
 
     $('#pp-lastsubject, #pp-topsubjects, #pp-topsections').click(function() {
@@ -13424,17 +13424,19 @@ itemtype="https://schema.org/ListItem">
 </a>
 </td>
 <td class="row1 center_text_align wd15">
-{if {$subject_list['last_replier_style']}}
+{if {$subject_list['last_replier']} !=''}
 <a href="index.php?page=profile&amp;show=1&amp;id={$subject_list['last_replier_id']}">
 {$subject_list['last_replier_style']}
 </a>
 {else}
+{if {$subject_list['writer_id']}}
 <a href="index.php?page=profile&amp;show=1&amp;id={$subject_list['writer_id']}">
 {$subject_list['username_style_cache']}
 </a>
-{$subject_list['writer']}
+{else}
+Guest
 {/if}
-
+{/if}
 <br />
 <span class="smallfont">
 {$subject_list['reply_date']}
@@ -17559,34 +17561,34 @@ $.post("index.php?page=usercp&options=1&mention=1&start=1",data,function Success
 <chat_window><![CDATA[{Des::while}{Messages}
 <div style="padding: 5px 8px 2px 8px; vertical-align: top; font-size: 13px; clear: both;">
     <span style="display: inline-flex; align-items: center; gap: 5px;">
-        {if {$_CONF['info_row']['allow_avatar']}}    
+        {if {$_CONF['info_row']['allow_avatar']}}
         <?php
         if(empty($PowerBB->_CONF['template']['while']['Messages'][$this->x_loop]['avater_path']))
         {
             $PowerBB->_CONF['template']['while']['Messages'][$this->x_loop]['avater_path'] = $PowerBB->functions->GetForumAdress().$PowerBB->_CONF['template']['image_path'].'/'.$PowerBB->_CONF['info_row']['default_avatar'];
         }
-        ?>        
+        ?>
             <img src="{$Messages['avater_path']}" style="width:20px; height:20px; border-radius:3px; vertical-align: middle;">
         {/if}
         <a target="_blank" href="index.php?page=profile&id={$Messages['user_id']}" style="font-weight: bold; text-decoration: none;">
             {$Messages['username_style_cache']}
-        </a> 
-    </span>   
-</div>        
+        </a>
+    </span>
+</div>
 
 <div style="padding: 2px 8px 8px 8px; font-size: 13px; border-bottom: 1px solid #f2f2f2; clear: both;">
     <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 15px; width: 100%;">
-        
+
         <span style="color: #333; word-wrap: break-word; overflow-wrap: break-word; max-width: 80%;">
-            <?php 
+            <?php
                 $msgContent = $PowerBB->_CONF['template']['while']['Messages'][$this->x_loop]['message'];
                 $msgContent = $PowerBB->Powerparse->feltr_words($msgContent);
                 $msgContent = $PowerBB->Powerparse->bb_common($msgContent);
-                $msgContent = $PowerBB->Powerparse->Simplereplace($msgContent);   
+                $msgContent = $PowerBB->Powerparse->Simplereplace($msgContent);
                 $PowerBB->Powerparse->replace_smiles($msgContent);
                 echo $msgContent;
             ?>
-        </span> 
+        </span>
 
         <span style="color: #999; white-space: nowrap; font-size: 11px; align-self: center;">
             <small>
@@ -17594,8 +17596,8 @@ $.post("index.php?page=usercp&options=1&mention=1&start=1",data,function Success
             </small>
         </span>
 
-    </div>    
-</div>  
+    </div>
+</div>
 {/Des::while}]]></chat_window>
 <chat_online><![CDATA[<div style="padding: 8px; background: #eef2f5; border-bottom: 1px solid #ddd; font-weight: bold; font-size: 12px;">
     <i class="fa fa-users"></i> {$lang['Number_Members']}: {$online_chat_number}
@@ -17609,7 +17611,7 @@ $.post("index.php?page=usercp&options=1&mention=1&start=1",data,function Success
         {if {$ListonlineChat['is_bot']} == '1'}
             <i class="fa fa-android" style="color: #4caf50;"></i> <b>{$ListonlineChat['bot_name']}</b>
         {else}
-            <i class="fa fa-user-secret" style="color: #999;"></i> 
+            <i class="fa fa-user-secret" style="color: #999;"></i>
             <?php
             $guestStyle = $PowerBB->_CONF['template']['while']['ListonlineChat'][$this->x_loop]['username_style'];
             $guestStyle = str_ireplace('Guest', $PowerBB->_CONF['template']['lang']['Guest_'], $guestStyle);

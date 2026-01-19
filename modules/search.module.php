@@ -858,24 +858,43 @@ class PowerBBSearchEngineMOD
          $SectionInfo = $PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['section'] . " WHERE sec_section<>1");
 		}
 
-        $sec = ' AND section =  ';
 	        if ($search_only == '1')
              {
-				$subject_nm = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['subject'] . "  WHERE CONCAT(title,text) LIKE '%$keyword%' AND sec_subject = 0 AND review_subject = 0  AND delete_topic = 0"));
+				$subject_nm = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT COUNT(*) FROM " . $PowerBB->table['subject'] . "  WHERE CONCAT(title,text) LIKE '%$keyword%' AND sec_subject = 0 AND review_subject = 0  AND delete_topic = 0"));
 				$PowerBB->template->assign('nm',$subject_nm);
-                $SubjectArr 						= 	array();
+			    $SubjectArr['select'] = '
+			    s.*,
+			    m.id AS writer_id,
+			    m.username_style_cache,
+			    sec.id AS section_id,
+			    sec.title AS section_title';
+			    $SubjectArr['from'] = $PowerBB->table['subject'] . ' AS s';
+				// JOINs
+				$SubjectArr['join'] = array(
+				    array(
+				        'type'  => 'left',
+				        'from'  => $PowerBB->table['member'] . ' AS m',
+				        'where' => 'm.username = s.writer'
+				    ),
+				    array(
+				        'type'  => 'left',
+				        'from'  => $PowerBB->table['section'] . ' AS sec',
+				        'where' => 'sec.id = s.section'
+				    ),
+				);
+
 				$SubjectArr['where'] 				= 	array();
 				$SubjectArr['where'][0] 			= 	array();
-				$SubjectArr['where'][0]['name'] 	=  'CONCAT(title,text)';
+				$SubjectArr['where'][0]['name'] 	=  'CONCAT(s.title,s.text)';
 				$SubjectArr['where'][0]['oper']		=  'LIKE';
 				$SubjectArr['where'][0]['value']    =  '%'.$keyword.'%';
                 $SubjectArr['where'][1] 			= 	array();
 				$SubjectArr['where'][1]['con']		=	'AND';
-				$SubjectArr['where'][1]['name'] 	= 	'review_subject=0 AND sec_subject=0 AND delete_topic';
+				$SubjectArr['where'][1]['name'] 	= 	's.review_subject=0 AND s.sec_subject=0 AND s.delete_topic';
 				$SubjectArr['where'][1]['oper'] 	= 	'=';
 				$SubjectArr['where'][1]['value'] 	= 	'0';
 				$SubjectArr['order'] 			= 	array();
-				$SubjectArr['order']['field'] 	= 	'id';
+				$SubjectArr['order']['field'] 	= 	's.id';
 				$SubjectArr['order']['type'] 	= 	strtoupper($sort_order);
 				$SubjectArr['proc'] 						= 	array();
 				// Ok Mr.XSS go to hell !
@@ -906,23 +925,43 @@ class PowerBBSearchEngineMOD
 					$SubjectArr['pager']['var'] 		= 	'count';
 	           }
 
-				$PowerBB->_CONF['template']['while']['SubjectList'] = $PowerBB->core->GetList($SubjectArr,'subject');
+				$PowerBB->_CONF['template']['while']['SubjectList'] = $PowerBB->subject->GetSubjectListAdvanced($SubjectArr);
                $PowerBB->_CONF['template']['PagerLocation'] = $SubjectArr['pager']['location'];
              }
 
              if ($search_only == '2')
              {
-             	 $reply_nm = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['reply'] . " WHERE CONCAT(title,text) LIKE '%$keyword%' AND delete_topic = 0 AND section not in (" .$forum_not. ") AND review_reply = 0 LIMIT 1"));
+             	 $reply_nm = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(*) FROM " . $PowerBB->table['reply'] . " WHERE CONCAT(title,text) LIKE '%$keyword%' AND delete_topic = 0 AND section not in (" .$forum_not. ") AND review_reply = 0"));
                  $PowerBB->template->assign('nm',$reply_nm);
-				$ReplyArr 						= 	array();
+			    $ReplyArr['select'] = '
+			    s.*,
+			    m.id AS writer_id,
+			    m.username_style_cache,
+			    sec.id AS section_id,
+			    sec.title AS section_title';
+			    $ReplyArr['from'] = $PowerBB->table['reply'] . ' AS s';
+				// JOINs
+				$ReplyArr['join'] = array(
+				    array(
+				        'type'  => 'left',
+				        'from'  => $PowerBB->table['member'] . ' AS m',
+				        'where' => 'm.username = s.writer'
+				    ),
+				    array(
+				        'type'  => 'left',
+				        'from'  => $PowerBB->table['section'] . ' AS sec',
+				        'where' => 'sec.id = s.section'
+				    ),
+				);
+
 				$ReplyArr['where']				=	array();
 				$ReplyArr['where'][0]			=	array();
-				$ReplyArr['where'][0]['name']	=	'CONCAT(title,text) LIKE "%'.$keyword.'%" AND review_reply = 0 AND section not in (' .$forum_not. ') AND delete_topic';
+				$ReplyArr['where'][0]['name']	=	'CONCAT(s.title,s.text) LIKE "%'.$keyword.'%" AND s.review_reply = 0 AND s.section not in (' .$forum_not. ') AND s.delete_topic';
 				$ReplyArr['where'][0]['oper'] 	= 	'=';
 				$ReplyArr['where'][0]['value']	=    '0';
 
 				$ReplyArr['order'] 			= 	array();
-				$ReplyArr['order']['field'] 	= 	'id';
+				$ReplyArr['order']['field'] 	= 	's.id';
 				$ReplyArr['order']['type'] 	= 	strtoupper($sort_order);
 
 				$ReplyArr['proc'] 						= 	array();
@@ -952,7 +991,8 @@ class PowerBBSearchEngineMOD
 				$ReplyArr['pager']['location'] 	= 	'index.php?page=search&amp;option=1&amp;keyword='.$keyword.'&amp;search_only=2&amp;section=all&amp;sort_order='.strtoupper($sort_order);
 				$ReplyArr['pager']['var'] 		= 	'count';
                }
-				$PowerBB->_CONF['template']['while']['ReplyList'] = $PowerBB->core->GetList($ReplyArr,'reply');
+				$PowerBB->_CONF['template']['while']['ReplyList'] = $PowerBB->reply->GetReplyListAdvanced($ReplyArr);
+
                 $PowerBB->_CONF['template']['PagerLocation'] = $ReplyArr['pager']['location'];
                 $PowerBB->_CONF['template']['_CONF']['ReplyList']['id'] = 1;
                 $PowerBB->_CONF['template']['ReplyList']['id'] = 1;
@@ -962,25 +1002,44 @@ class PowerBBSearchEngineMOD
 
             if ($search_only == '3')
              {
-             	$subject_title = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['subject'] . " WHERE title LIKE '%$keyword%' AND delete_topic = 0 AND review_subject = 0 AND sec_subject = 0"));
+             	$subject_title = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(*) FROM " . $PowerBB->table['subject'] . " WHERE title LIKE '%$keyword%' AND delete_topic = 0 AND review_subject = 0 AND sec_subject = 0"));
                 $PowerBB->template->assign('nm',$subject_title);
-				$SubjectTitleArr = array();
+			    $SubjectTitleArr['select'] = '
+			    s.*,
+			    m.id AS writer_id,
+			    m.username_style_cache,
+			    sec.id AS section_id,
+			    sec.title AS section_title';
+			    $SubjectTitleArr['from'] = $PowerBB->table['subject'] . ' AS s';
+				// JOINs
+				$SubjectTitleArr['join'] = array(
+				    array(
+				        'type'  => 'left',
+				        'from'  => $PowerBB->table['member'] . ' AS m',
+				        'where' => 'm.username = s.writer'
+				    ),
+				    array(
+				        'type'  => 'left',
+				        'from'  => $PowerBB->table['section'] . ' AS sec',
+				        'where' => 'sec.id = s.section'
+				    ),
+				);
 
 				$SubjectTitleArr['where'] 				= 	array();
 
 				$SubjectTitleArr['where'][0] 			= 	array();
-				$SubjectTitleArr['where'][0]['name'] 	= 	'title';
+				$SubjectTitleArr['where'][0]['name'] 	= 	's.title';
 				$SubjectTitleArr['where'][0]['oper'] 	= 	'LIKE';
 				$SubjectTitleArr['where'][0]['value'] 	= 	'%'.$keyword.'%';
 
                 $SubjectTitleArr['where'][1] 			= 	array();
 				$SubjectTitleArr['where'][1]['con']		=	'AND';
-				$SubjectTitleArr['where'][1]['name'] 	= 	'review_subject = 0 AND sec_subject = 0 AND delete_topic';
+				$SubjectTitleArr['where'][1]['name'] 	= 	's.review_subject = 0 AND s.sec_subject = 0 AND s.delete_topic';
 				$SubjectTitleArr['where'][1]['oper'] 	= 	'=';
 				$SubjectTitleArr['where'][1]['value'] 	= 	'0';
 
 				$SubjectTitleArr['order'] 			= 	array();
-				$SubjectTitleArr['order']['field'] 	= 	'id';
+				$SubjectTitleArr['order']['field'] 	= 	's.id';
 				$SubjectTitleArr['order']['type'] 	= 	strtoupper($sort_order);
 
 				$SubjectTitleArr['proc'] 						= 	array();
@@ -1011,7 +1070,7 @@ class PowerBBSearchEngineMOD
 				$SubjectTitleArr['pager']['location'] 	= 	'index.php?page=search&amp;option=1&amp;keyword='.$keyword.'&amp;search_only=3&amp;section=all&amp;sort_order='.strtoupper($sort_order);
 				$SubjectTitleArr['pager']['var'] 		= 	'count';
               }
-				$PowerBB->_CONF['template']['while']['SubjectTitleList'] = $PowerBB->core->GetList($SubjectTitleArr,'subject');
+				$PowerBB->_CONF['template']['while']['SubjectTitleList'] = $PowerBB->subject->GetSubjectListAdvanced($SubjectTitleArr);
                $PowerBB->_CONF['template']['PagerLocation'] = $SubjectTitleArr['pager']['location'];
 
            }
@@ -1078,12 +1137,10 @@ class PowerBBSearchEngineMOD
 		 }
 
 
-        $sec = ' AND section =  ';
-
 
           if ($search_only == '1')
           {
-          	$subject_nm = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['subject'] . " WHERE text LIKE '%$keyword%' AND section = '$section' AND delete_topic = 0 AND review_subject = 0 AND sec_subject = 0"));
+          	$subject_nm = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(*) FROM " . $PowerBB->table['subject'] . " WHERE text LIKE '%$keyword%' AND section = '$section' AND delete_topic = 0 AND review_subject = 0 AND sec_subject = 0"));
 
 			$PowerBB->template->assign('nm',$subject_nm);
 
@@ -1362,26 +1419,43 @@ class PowerBBSearchEngineMOD
 	           	$username    =  '%' .$username .'%';
 		       }
 
-       	        $username_subject_nm = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['subject'] . " WHERE writer LIKE '$username' AND delete_topic = 0 AND review_subject = 0 AND sec_subject = 0 ".$section." "));
+       	        $username_subject_nm = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(*) FROM " . $PowerBB->table['subject'] . " WHERE writer LIKE '$username' AND delete_topic = 0 AND review_subject = 0 AND sec_subject = 0 ".$section." "));
 
 				$PowerBB->template->assign('username_nm',$username_subject_nm);
-
-
-                $MemSubjectArr 						= 	array();
+			    $MemSubjectArr['select'] = '
+			    s.*,
+			    m.id AS writer_id,
+			    m.username_style_cache,
+			    sec.id AS section_id,
+			    sec.title AS section_title';
+			    $MemSubjectArr['from'] = $PowerBB->table['subject'] . ' AS s';
+				// JOINs
+				$MemSubjectArr['join'] = array(
+				    array(
+				        'type'  => 'left',
+				        'from'  => $PowerBB->table['member'] . ' AS m',
+				        'where' => 'm.username = s.writer'
+				    ),
+				    array(
+				        'type'  => 'left',
+				        'from'  => $PowerBB->table['section'] . ' AS sec',
+				        'where' => 'sec.id = s.section'
+				    ),
+				);
 				$MemSubjectArr['where'] 				= 	array();
 				$MemSubjectArr['where'][0] 			= 	array();
-				$MemSubjectArr['where'][0]['name'] 	=  'writer';
+				$MemSubjectArr['where'][0]['name'] 	=  's.writer';
 				$MemSubjectArr['where'][0]['oper']		=  'LIKE';
 	           	$MemSubjectArr['where'][0]['value']    =  $username;
 
                 $MemSubjectArr['where'][1] 			= 	array();
 				$MemSubjectArr['where'][1]['con']		=	'AND';
-				$MemSubjectArr['where'][1]['name'] 	= 	"review_subject = 0 AND sec_subject = 0 ".$section." AND delete_topic";
+				$MemSubjectArr['where'][1]['name'] 	= 	"s.review_subject = 0 AND s.sec_subject = 0 ".$section." AND s.delete_topic";
 				$MemSubjectArr['where'][1]['oper'] 	= 	'=';
 				$MemSubjectArr['where'][1]['value'] = 	'0';
 
 				$MemSubjectArr['order'] 			= 	array();
-				$MemSubjectArr['order']['field'] 	= 	'id';
+				$MemSubjectArr['order']['field'] 	= 	's.id';
 				$MemSubjectArr['order']['type'] 	= 	strtoupper($sort_order);
 
 				$MemSubjectArr['proc'] 						= 	array();
@@ -1417,7 +1491,7 @@ class PowerBBSearchEngineMOD
 
 
 
-               	$PowerBB->_CONF['template']['while']['MembersListSubject'] = $PowerBB->subject->GetSubjectList($MemSubjectArr);
+               	$PowerBB->_CONF['template']['while']['MembersListSubject'] = $PowerBB->subject->GetSubjectListAdvanced($MemSubjectArr);
                 $PowerBB->_CONF['template']['PagerLocation'] = $MemSubjectArr['pager']['location'];
 
                     if ($username_subject_nm > $PowerBB->_CONF['info_row']['perpage'])
@@ -1494,14 +1568,18 @@ class PowerBBSearchEngineMOD
 
 		}
 
+
+
         if ($section == 'all')
 		{
               $section = " AND section not in (" .$forum_not. ")";
+              $section_join = " AND s.section not in (" .$forum_not. ")";
               $sectionall = "all";
 		 }
 		 else
 		{
               $section = " AND section = '".$section."' AND section not in (" .$forum_not. ")";
+              $section_join = " AND s.section = '".$section."' AND s.section not in (" .$forum_not. ")";
               $sectionall = $PowerBB->_GET['section'];
 		 }
 
@@ -1514,17 +1592,38 @@ class PowerBBSearchEngineMOD
 	           $username_reply_nm = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['reply'] . " WHERE writer LIKE '$username' AND delete_topic = 0 AND review_reply = 0 ".$section." LIMIT 1"));
 
 				$PowerBB->template->assign('username_nm',$username_reply_nm);
-		     	$MemReplyArr 								= 	array();
+
+			    $MemReplyArr['select'] = '
+			    s.*,
+			    m.id AS writer_id,
+			    m.username_style_cache,
+			    sec.id AS section_id,
+			    sec.title AS section_title';
+			    $MemReplyArr['from'] = $PowerBB->table['reply'] . ' AS s';
+				// JOINs
+				$MemReplyArr['join'] = array(
+				    array(
+				        'type'  => 'left',
+				        'from'  => $PowerBB->table['member'] . ' AS m',
+				        'where' => 'm.username = s.writer'
+				    ),
+				    array(
+				        'type'  => 'left',
+				        'from'  => $PowerBB->table['section'] . ' AS sec',
+				        'where' => 'sec.id = s.section'
+				    ),
+				);
+
 				$MemReplyArr['where'] 						= 	array();
 
 				$MemReplyArr['where'][0] 			= 	array();
-				$MemReplyArr['where'][0]['name'] 	=  'writer';
+				$MemReplyArr['where'][0]['name'] 	=  's.writer';
 				$MemReplyArr['where'][0]['oper']		=  'LIKE';
 	           	$MemReplyArr['where'][0]['value']    =  $username;
 
                 $MemReplyArr['where'][1] 			= 	array();
 				$MemReplyArr['where'][1]['con']		=	'AND';
-				$MemReplyArr['where'][1]['name'] 	= 	'section not in (' .$forum_not. ') AND review_reply = 0 '.$section.' AND delete_topic';
+				$MemReplyArr['where'][1]['name'] 	= 	's.section not in (' .$forum_not. ') AND s.review_reply = 0 '.$section_join.' AND s.delete_topic';
 				$MemReplyArr['where'][1]['oper'] 	= 	'=';
 				$MemReplyArr['where'][1]['value'] 	= 	'0';
 
@@ -1564,7 +1663,7 @@ class PowerBBSearchEngineMOD
 					$MemReplyArr['pager']['var'] 		= 	'count';
 	           }
 
-			$PowerBB->_CONF['template']['while']['MembersListReply'] = $PowerBB->reply->GetReplyList($MemReplyArr);
+			$PowerBB->_CONF['template']['while']['MembersListReply'] = $PowerBB->reply->GetReplyListAdvanced($MemReplyArr);
             $PowerBB->_CONF['template']['PagerLocation'] = $MemReplyArr['pager']['location'];
 
 
@@ -1708,22 +1807,41 @@ class PowerBBSearchEngineMOD
 
 				$PowerBB->template->assign('username_nm',$username_reply_nm);
 
-			    $MemReplyArr                        =   array();
+			    $MemReplyArr['select'] = '
+			    s.*,
+			    m.id AS writer_id,
+			    m.username_style_cache,
+			    sec.id AS section_id,
+			    sec.title AS section_title';
+			    $MemReplyArr['from'] = $PowerBB->table['reply'] . ' AS s';
+				// JOINs
+				$MemReplyArr['join'] = array(
+				    array(
+				        'type'  => 'left',
+				        'from'  => $PowerBB->table['member'] . ' AS m',
+				        'where' => 'm.username = s.writer'
+				    ),
+				    array(
+				        'type'  => 'left',
+				        'from'  => $PowerBB->table['section'] . ' AS sec',
+				        'where' => 'sec.id = s.section'
+				    ),
+				);
 				$MemReplyArr['where'] 				= 	array();
 				$MemReplyArr['where'][0] 			= 	array();
-				$MemReplyArr['where'][0]['name'] 	= 	'section';
+				$MemReplyArr['where'][0]['name'] 	= 	's.section';
 				$MemReplyArr['where'][0]['oper'] 	= 	'=';
 				$MemReplyArr['where'][0]['value'] 	= 	$section;
 
 				$MemReplyArr['where'][1] 			= 	array();
 				$MemReplyArr['where'][1]['con']		=	'AND';
-				$MemReplyArr['where'][1]['name'] 	= 	'review_reply';
+				$MemReplyArr['where'][1]['name'] 	= 	's.review_reply';
 				$MemReplyArr['where'][1]['oper'] 	= 	'=';
 				$MemReplyArr['where'][1]['value'] 	= 	'1';
 
 				$MemReplyArr['where'][2] 			= 	array();
 				$MemReplyArr['where'][2]['con']		=	'AND';
-				$MemReplyArr['where'][2]['name'] 	= 	'delete_topic';
+				$MemReplyArr['where'][2]['name'] 	= 	's.delete_topic';
 				$MemReplyArr['where'][2]['oper'] 	= 	'=';
 				$MemReplyArr['where'][2]['value'] 	= 	'0';
 
@@ -1754,7 +1872,7 @@ class PowerBBSearchEngineMOD
 
 
 
-				$PowerBB->_CONF['template']['while']['MembersListReply'] = $PowerBB->reply->GetReplyList($MemReplyArr);
+				$PowerBB->_CONF['template']['while']['MembersListReply'] = $PowerBB->reply->GetReplyListAdvanced($MemReplyArr);
 				$PowerBB->_CONF['template']['PagerLocation'] = $MemReplyArr['pager']['location'];
 
 

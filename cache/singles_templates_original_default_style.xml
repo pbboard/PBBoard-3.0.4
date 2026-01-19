@@ -352,23 +352,41 @@ src="index.php?page=download&amp;attach=1&amp;id={$SubjectAttachList['id']}" tit
 </table>
 ]]></add_attach_table>
 <add_chat_message><![CDATA[<div class="chat-input-area" dir="{$_CONF['info_row']['content_dir']}" style="background: #fff; padding: 10px; border: 1px solid #ccc; border-top: 1px solid #eee; margin-bottom: 20px;">
-    <div style="display: flex; gap: 8px; align-items: center;">
 
-        <div style="position: relative;">
-            <img src="look/images/emoii.gif" onclick="$('#smile_box').toggleClass('active')" style="width: 28px; cursor: pointer;" title="{$lang['smiles']}">
-            <div id="smile_box" class="border shadow" style="position: absolute; bottom: 45px; <?php echo ($PowerBB->_CONF['info_row']['content_dir'] == 'rtl') ? 'right: 0;' : 'left: 0;'; ?> background: #fff; border: 1px solid #ccc; width: 260px; padding: 5px; z-index: 999; grid-template-columns: repeat(8, 1fr); gap: 2px;">
-                {Des::while}{SmlList}
-                <img src="{$SmlList['smile_path']}" onclick="AddSmileyIcon(' {$SmlList['smile_short']} '); $('#smile_box').removeClass('active');" style="width: 22px; cursor: pointer; padding: 2px;" class="brd0">
-                {/Des::while}
-            </div>
+		<?php
+		if ($member['posts'] < $PowerBB->_CONF['info_row']['chat_num_mem_posts'] and $PowerBB->_CONF['member_row']['usergroup'] != '1')
+		{
+		?>    
+        <div style="color: #a94442; background-color: #f2dede; padding: 10px; border-radius: 4px; font-size: 12px; text-align: center;">
+            عذراً، تحتاج إلى <b>{$_CONF['info_row']['chat_num_mem_posts']}</b> مشاركة في المنتدى لتتمكن من الدردشة.
         </div>
+    <?php
+}
+else
+{
+?>
+        <div style="display: flex; gap: 8px; align-items: center;">
+            <div style="position: relative;">
+                <img src="look/images/emoii.gif" onclick="$('#smile_box').toggleClass('active')" style="width: 28px; cursor: pointer;" title="{$lang['smiles']}">
+                <div id="smile_box" class="border shadow">
+                    {Des::while}{SmlList}
+                    <img src="{$SmlList['smile_path']}" onclick="AddSmileyIcon(' {$SmlList['smile_short']} ');" style="width: 22px; cursor: pointer; padding: 2px;">
+                    {/Des::while}
+                </div>
+            </div>
 
-        <textarea id="box_text" placeholder="{$lang['add_chat_message1']}" style="flex: 1; height: 38px; padding: 8px; border: 1px solid #ddd; resize: none; font-size: 13px; border-radius: 4px; outline: none; background: #fafafa;"></textarea>
+            <textarea id="box_text" 
+                      maxlength="{$_CONF['info_row']['chat_num_characters']}" 
+                      style="flex: 1; height: 38px; padding: 8px; border: 1px solid #ddd; resize: none; font-size: 13px; border-radius: 4px; outline: none; background: #fafafa;"></textarea>
 
-        <button type="button" onclick="AjaxInsertChat();" style="background: #185886; color: #fff; border: none; padding: 0 15px; height: 38px; cursor: pointer; border-radius: 4px; font-weight: bold; display: flex; align-items: center; gap: 5px;">
-            <i class="fa fa-paper-plane"></i> {$lang['insert_chat_message']}
-        </button>
-    </div>
+            <button type="button" onclick="AjaxInsertChat();" id="send_btn" style="background: #185886; color: #fff; border: none; padding: 0 15px; height: 38px; cursor: pointer; border-radius: 4px; font-weight: bold; display: flex; align-items: center; gap: 5px;">
+                <i class="fa fa-paper-plane"></i> {$lang['insert_chat_message']}
+            </button>
+        </div>
+        <div id="char_count" style="font-size: 10px; color: #999; text-align: left; margin-top: 2px;">0 / {$_CONF['info_row']['chat_num_characters']}</div>
+<?php
+}
+?>
 </div>
 
 <script type="text/javascript">
@@ -376,7 +394,16 @@ function AddSmileyIcon(icon) {
     var input = document.getElementById('box_text');
     input.value += icon;
     input.focus();
+    $(input).trigger('input');
 }
+
+$('#box_text').on('input', function() {
+    var len = $(this).val().length;
+    var max = {$_CONF['info_row']['chat_num_characters']};
+    $('#char_count').text(len + ' / ' + max);
+    if(len >= max) $('#char_count').css('color', 'red');
+    else $('#char_count').css('color', '#999');
+});
 </script>]]></add_chat_message>
 <add_edit_attach_reply><![CDATA[<!doctype html>
 <html dir="{$_CONF['info_row']['content_dir']}" lang="{$_CONF['info_row']['content_language']}">
@@ -1453,89 +1480,104 @@ showButtonPanel: true
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset={$_CONF['info_row']['charset']}" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-    <link rel="apple-touch-icon" href="{$ForumAdress}look/images/pbboard-icon.png" />
     <title>{$lang['chat_message']}</title>
-
     <script type="text/javascript" src="{$ForumAdress}includes/js/jquery-1.10.2.js"></script>
     <link rel="stylesheet" href="{$ForumAdress}look/fonts/font-awesome.min.css" />
-    <link rel="stylesheet" href="{$ForumAdress}look/fonts/fonts.css" />
     <link rel="stylesheet" href="{$ForumAdress}{$style_path}" />
-    <style>
-        /* الحاوية الرئيسية بنمط DigiChat */
-        .digi-container {
-            display: flex;
-            /* تحديد الاتجاه بناءً على لغة الموقع */
-            flex-direction: <?php echo ($PowerBB->_CONF['info_row']['content_dir'] == 'rtl') ? 'row' : 'row-reverse'; ?>;
-            height: 550px;
-            border: 1px solid #ccc;
-            background: #fff;
-            margin: auto;
-            width: 98%;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
 
-        /* منطقة الرسائل */
-        .digi-main {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            min-width: 0;
-        }
+<style>
+    .digi-container {
+        display: flex;
+        flex-direction: <?php echo ($PowerBB->_CONF['info_row']['content_dir'] == 'rtl') ? 'row' : 'row-reverse'; ?>;
+        height: 600px;
+        border: 1px solid #ccc;
+        background: #fff;
+        margin: 10px auto 0 auto;
+        width: 98%;
+        position: relative;
+        overflow: hidden;
+    }
 
-        /* منطقة المتواجدين */
+    .digi-main { flex: 1; display: flex; flex-direction: column; background: #fff; min-width: 0; position: relative; }
+
+    .chat_ee { 
+        flex: 1 !important; 
+        height: auto !important;
+        max-height: none !important;
+        overflow-y: auto !important; 
+        display: flex !important;
+        flex-direction: column !important;
+        padding: 10px !important;
+    }
+
+    #content_div_id { margin-top: auto !important; width: 100%; }
+
+    .digi-sidebar { 
+        width: 240px; 
+        background: #f7f9fb; 
+        border-<?php echo ($PowerBB->_CONF['info_row']['content_dir'] == 'rtl') ? 'left' : 'right'; ?>: 1px solid #ddd;
+        transition: transform 0.3s ease;
+        z-index: 1001;
+    }
+
+    .digi-header { background: #185886; color: #fff; padding: 10px; display: flex; justify-content: space-between; align-items: center; }
+
+    .mobile-toggle { 
+        display: none; 
+        cursor: pointer; 
+        background: rgba(255,255,255,0.2); 
+        padding: 5px 10px; 
+        border-radius: 4px;
+        font-size: 12px;
+    }
+
+    .sidebar-overlay {
+        display: none;
+        position: absolute;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background: rgba(0,0,0,0.5);
+        z-index: 1000;
+    }
+
+    @media (max-width: 768px) {
+        .mobile-toggle { display: block; }
         .digi-sidebar {
+            position: absolute;
+            top: 0; bottom: 0;
             width: 220px;
-            background: #f7f9fb;
-            overflow-y: auto;
-            border-<?php echo ($PowerBB->_CONF['info_row']['content_dir'] == 'rtl') ? 'left' : 'right'; ?>: 1px solid #ddd;
+            transform: translateX(<?php echo ($PowerBB->_CONF['info_row']['content_dir'] == 'rtl') ? '220px' : '-220px'; ?>);
         }
+        .digi-sidebar.active { transform: translateX(0); }
+        .sidebar-overlay.active { display: block; }
+    }
 
-        .digi-header {
-            background: #185886;
-            color: #fff;
-            padding: 10px;
-            font-family: "Droid Arabic Kufi", "tahoma", sans-serif;
-            font-size: 11px;
-            font-weight: bold;
-        }
+    #smile_box { 
+        display: none !important; 
+        position: absolute; 
+        bottom: 45px; 
+        background: #fff; 
+        border: 1px solid #ccc; 
+        width: 260px; 
+        padding: 5px; 
+        z-index: 9999 !important; 
+        grid-template-columns: repeat(8, 1fr); 
+        gap: 2px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    }
+    #smile_box.active { display: grid !important; }
 
-        .chat_ee {
-            flex: 1;
-            overflow-y: auto;
-            padding: 10px;
-            background: #fff;
-            max-height:none;
-           font-family: "Droid Arabic Kufi", "tahoma", sans-serif;
-        }
-
-        #smile_box { display: none !important; }
-        #smile_box.active { display: grid !important; }
-
-        @media (max-width: 768px) {
-            .digi-container {
-                flex-direction: column !important;
-                height: auto;
-            }
-            .digi-sidebar {
-                width: 100%;
-                height: 180px;
-                order: 2;
-                border: none;
-                border-top: 2px solid #185886;
-            }
-            .chat_ee { height: 350px; }
-        }
-    </style>
+    .add_chat_message { margin: -1px auto 20px auto; width: 98%; position: relative; }
+</style>
 </head>
 <body>
-<audio id="chatAudio">
-   <source src="https://www.soundjay.com/buttons/beep-07a.mp3" type="audio/mpeg">
-</audio>
+
+<audio id="chatAudio"><source src="https://www.soundjay.com/buttons/beep-07a.mp3" type="audio/mpeg"></audio>
 {template}address_bar_part1{/template}
 <a href="index.php?page=chat_message&amp;chatout=1">{$lang['mange_chat']} </a>
 {template}address_bar_part2{/template}
-
 <div class="digi-container">
+    <div class="sidebar-overlay" onclick="toggleMobileSidebar()"></div>
+    
     <div class="digi-sidebar">
         <div class="digi-header"><i class="fa fa-users"></i> {$lang['online_naw']}</div>
         <div id="content_online"></div>
@@ -1543,114 +1585,106 @@ showButtonPanel: true
 
     <div class="digi-main">
         <div class="digi-header">
-            <i class="fa fa-comments"></i> {$lang['chat_message']}
+            <div><i class="fa fa-comments"></i> {$lang['chat_message']}</div>
+            <div class="mobile-toggle" onclick="toggleMobileSidebar()" title="{$lang['online_naw']}">
+                <i class="fa fa-users"></i> <span id="m_count">0</span>             
+            </div>
             {if {$_CONF['rows']['group_info']['admincp_allow']}}
-                <a href="index.php?page=chat_message&control=1&amp;main=1" style="float:<?php echo ($PowerBB->_CONF['info_row']['content_dir'] == 'rtl') ? 'left' : 'right'; ?>; color:#fff;">
+                <a href="index.php?page=chat_message&control=1&amp;main=1" title="{$lang['manges_chat']}" style="color:#fff;">
                     <i class="fa fa-cog"></i>
                 </a>
-            {/if}
+            {/if}                 
         </div>
         <div class="chat_ee" id="main_chat_scroll">
             <div id="content_div_id"></div>
         </div>
     </div>
 </div>
-<div class="add_chat_message" style="margin: auto; margin-top: -1px; width: 98.1%; position: relative; z-index: 10;">
+
+<div class="add_chat_message">
     {template}add_chat_message{/template}
 </div>
 
 <script type="text/javascript">
-    var waittime = 5000; // تحديث الرسائل كل 5 ثواني
-    var lastChatContent = "";
-    var isAudioAllowed = false; // متغير للتحقق من سماح المتصفح بالصوت
+    var waittime = 7000;
+    var isAudioAllowed = false;
+    var userIsScrolling = false;
 
-    // دالة لتشغيل التنبيه مع معالجة قيود المتصفح
-    function playNotificationSound() {
-        var chatAudio = document.getElementById('chatAudio');
-        if (chatAudio && isAudioAllowed) {
-            chatAudio.play().catch(function(error) {
-                console.log("تعذر تشغيل الصوت: ", error);
+    function toggleMobileSidebar() {
+        $('.digi-sidebar, .sidebar-overlay').toggleClass('active');
+    }
+
+    $("#main_chat_scroll").on('scroll', function() {
+        var div = $(this);
+        userIsScrolling = (div[0].scrollHeight - div.scrollTop() - div.outerHeight()) > 50;
+    });
+
+    function AjaxInsertChat() {
+        var msgText = $("#box_text").val();
+        if(msgText && msgText.trim() != "") {
+            $(".add_chat_message button").attr("disabled", true);
+            
+            $.post("index.php?page=chat_message&start=1", { textc: msgText, ajax: 1 }, function() {
+                $("#box_text").val(""); 
+                $(".add_chat_message button").attr("disabled", false);
+                userIsScrolling = false;
+                read_cont();
             });
         }
     }
 
-// دالة جلب الرسائل المحسنة
     function read_cont() {
         $.get("index.php?page=chat_message&chat_w=1&t=" + Math.random(), function(data) {
             if(data.trim() !== "") {
-                var objDiv = document.getElementById("main_chat_scroll");
-
-                // 1. حساب المسافة قبل التحديث: هل المستخدم في القاع؟
-                // نترك هامش بسيط (50 بكسل) للتأكد من رغبة المستخدم في البقاء بالأسفل
-                var isAtBottom = (objDiv.scrollHeight - objDiv.clientHeight - objDiv.scrollTop < 50);
-
-                // 2. تفعيل التنبيه الصوتي عند وصول محتوى جديد
-                if (lastChatContent !== "" && data.trim() !== lastChatContent) {
-                    playNotificationSound();
+                var currentHash = data.length;
+                if (sessionStorage.getItem('last_l') && sessionStorage.getItem('last_l') != currentHash) {
+                    if (isAudioAllowed) document.getElementById('chatAudio').play();
                 }
-
-                lastChatContent = data.trim();
+                sessionStorage.setItem('last_l', currentHash);
+                
                 $("#content_div_id").html(data);
-
-                // 3. النزول لأسفل فقط إذا كان المستخدم أصلاً في القاع
-                if(objDiv && isAtBottom) {
-                    objDiv.scrollTop = objDiv.scrollHeight;
+                
+                if (!userIsScrolling) {
+                    var scroller = document.getElementById("main_chat_scroll");
+                    if(scroller) scroller.scrollTop = scroller.scrollHeight;
                 }
             }
         });
     }
 
-    // دالة جلب المتواجدين
     function read_users() {
         $.get("index.php?page=chat_message&chat_users=1&t=" + Math.random(), function(data) {
             $("#content_online").html(data);
-        });
-    }
-
-    // دالة الإرسال عبر Ajax
-    function AjaxInsertChat() {
-        var msgText = $("#box_text").val();
-        if(msgText.trim() == "") return;
-
-        $.post("index.php?page=chat_message&start=1", { textc: msgText, ajax: 1 }, function() {
-            $("#box_text").val("");
-            read_cont();
+            var count = $(data).find('#online_count_val').text() || "1";
+            $("#m_count").text(count);
         });
     }
 
     $(document).ready(function() {
-        // البدء الفوري
         read_cont();
         read_users();
-
-        // ضبط التوقيت الدوري
         setInterval(read_cont, waittime);
-        setInterval(read_users, 15000);
+        setInterval(read_users, 20000);
 
-        // تفعيل الإذن بالصوت عند أول نقرة في الصفحة أو عند محاولة الكتابة
-        // هذا يحل مشكلة قيود المتصفحات الحديثة (Autoplay Policy)
-        $(document).one('click keypress', function() {
-            var chatAudio = document.getElementById('chatAudio');
-            if (chatAudio) {
-                chatAudio.muted = true; // تشغيل صامت أولاً لتهيئة المتصفح
-                chatAudio.play().then(function() {
-                    chatAudio.pause();
-                    chatAudio.muted = false;
-                    isAudioAllowed = true; // الآن أصبح الصوت مسموحاً به
-                });
+        $(document).on('keydown', '#box_text', function(e) {
+            if(e.which == 13 && !e.shiftKey) {
+                e.preventDefault(); 
+                AjaxInsertChat();
+                return false; 
             }
         });
 
-        // تفعيل الإرسال عبر Enter
-        $("#box_text").on('keypress', function(e) {
-            if(e.which == 13 && !e.shiftKey) {
-                AjaxInsertChat();
-                e.preventDefault();
+        $(document).on('mousedown', function(e) {
+            if (!$(e.target).closest('#smile_box, img[onclick*="smile_box"]').length) {
+                $('#smile_box').removeClass('active');
             }
+        });
+
+        $(document).one('mousedown touchstart', function() {
+            isAudioAllowed = true;
         });
     });
 </script>
-
 </body>
 </html>
 {/if}]]></chat>
@@ -8449,7 +8483,7 @@ itemtype="https://schema.org/ListItem">
 {if {$SubjectList['stick']}}
 <b><span style="color:#FF0000;">{$lang['sticky']} : </span></b>
 {/if}
-<a href="index.php?page=topic&amp;show=1&amp;highlight={$keyword}&amp;id={$SubjectList['id']}{$password}">
+<a href="index.php?page=topic&amp;show=1&amp;id={$SubjectList['id']}{$password}">
 {$SubjectList['title']}</a>
 </a>
 {if {$SubjectList['close']}}
@@ -8486,7 +8520,7 @@ itemtype="https://schema.org/ListItem">
 {if {$SubjectTitleList['stick']}}
 <b><span style="color:#FF0000;">{$lang['sticky']} : </span></b>
 {/if}
-<a href="index.php?page=topic&amp;show=1&amp;highlight={$keyword}&amp;id={$SubjectTitleList['id']}{$password}">
+<a href="index.php?page=topic&amp;show=1&amp;id={$SubjectTitleList['id']}{$password}">
 {$SubjectTitleList['title']}</a>
 {if {$SubjectTitleList['close']}}
 {$lang['subject_close']}
@@ -8524,7 +8558,7 @@ itemtype="https://schema.org/ListItem">
 {if {$MembersListSubject['stick']}}
 <b><span style="color:#FF0000;">{$lang['sticky']} : </span></b>
 {/if}
-<a href="index.php?page=topic&amp;show=1&amp;highlight={$keyword}&amp;id={$MembersListSubject['id']}{$password}">
+<a href="index.php?page=topic&amp;show=1&amp;id={$MembersListSubject['id']}{$password}">
 {$MembersListSubject['title']}</a>
 {if {$MembersListSubject['close']}}
 {$lang['subject_close']}
@@ -8591,7 +8625,7 @@ itemtype="https://schema.org/ListItem">
 {/if}		</td>
 <td class="row2 wd40">
 {$lang['bY_reply']}
-<a href="index.php?page=post&amp;show=1&amp;highlight={$keyword}&amp;id={$ReplyList['id']}">
+<a href="index.php?page=post&amp;show=1&amp;id={$ReplyList['id']}">
 {if {$ReplyList['title']} !=''}
 {$ReplyList['title']}
 {else}
@@ -8672,7 +8706,7 @@ itemtype="https://schema.org/ListItem">
 <img src="{$_CONF['SubjectListOne_row']['icon_path']}{$SubjectListOne['icon']}" alt="" />
 </td>
 <td class="row2 wd30">
-<a href="index.php?page=topic&amp;show=1&amp;highlight={$keyword}&amp;id={$SubjectListOne['id']}{$password}">
+<a href="index.php?page=topic&amp;show=1&amp;id={$SubjectListOne['id']}{$password}">
 {$SubjectListOne['title']}
 </a>
 {if {$SubjectListOne['close']}}
@@ -8699,7 +8733,7 @@ itemtype="https://schema.org/ListItem">
 <img src="{$_CONF['SubjectTitleListOne_row']['icon_path']}{$SubjectTitleListOne['icon']}" alt="" />
 </td>
 <td class="row2 wd30">
-<a href="index.php?page=topic&amp;show=1&amp;highlight={$keyword}&amp;id={$SubjectTitleListOne['id']}{$password}">
+<a href="index.php?page=topic&amp;show=1&amp;id={$SubjectTitleListOne['id']}{$password}">
 {$SubjectTitleListOne['title']}
 </a>
 {if {$SubjectTitleListOne['close']}}
@@ -8733,7 +8767,7 @@ itemtype="https://schema.org/ListItem">
 <img src="{$_CONF['MembersListSubjectOne_row']['icon_path']}{$MembersListSubjectOne['icon']}" alt="" />
 </td>
 <td class="row2 wd30">
-<a href="index.php?page=topic&amp;show=1&amp;highlight={$keyword}&amp;id={$MembersListSubjectOne['id']}{$password}">
+<a href="index.php?page=topic&amp;show=1&amp;id={$MembersListSubjectOne['id']}{$password}">
 {$MembersListSubjectOne['title']}
 </a>
 {if {$MembersListSubjectOne['close']}}
@@ -8800,7 +8834,7 @@ itemtype="https://schema.org/ListItem">
 {/if}		</td>
 <td class="row2 wd40">
 {$lang['bY_reply']}
-<a href="index.php?page=post&amp;show=1&amp;highlight={$keyword}&amp;id={$ReplyListOne['id']}">
+<a href="index.php?page=post&amp;show=1&amp;id={$ReplyListOne['id']}">
 {if {$ReplyListOne['title']} !=''}
 {$ReplyListOne['title']}
 {else}
@@ -8833,8 +8867,7 @@ itemtype="https://schema.org/ListItem">
 </table>
 <br />
 <br />]]></search_results_one>
-<search_results_tags><![CDATA[
-{template}address_bar_part1{/template}
+<search_results_tags><![CDATA[{template}address_bar_part1{/template}
 <li itemprop="itemListElement" itemscope
 itemtype="https://schema.org/ListItem">
 <a itemprop="item" href="index.php?page=search&amp;option=5&amp;tag={$tags}&amp;sort_order=DESC">
@@ -8847,7 +8880,39 @@ itemtype="https://schema.org/ListItem">
 {template}address_bar_part2{/template}
 
 
-<br /><table class="border wd70 brd1 clpc0 a-center">
+<br />
+<style>
+    .tags-container-box {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        padding: 5px 0;
+    }
+    .tag-badge {
+        display: inline-block;
+        background-color: #f2f2f2;
+        color: #444;
+        padding: 4px 12px;
+        border-radius: 20px;
+        border: 1px solid #dcdcdc;
+        text-decoration: none;
+        font-size: 12px;
+        transition: all 0.3s ease;
+    }
+    .tag-badge:hover {
+        background-color: #3498db;
+        color: #fff;
+        border-color: #2980b9;
+        text-decoration: none;
+    }
+    .edit-tags-link {
+        font-size: 11px;
+        color: #fff;
+        text-decoration: underline;
+    }
+</style>
+
+<table class="border wd70 brd1 clpc0 a-center">
 <tr class="center_text_align">
 <td class="tcat wd70" colspan="2">
 <div class="r-right">
@@ -8864,7 +8929,7 @@ itemtype="https://schema.org/ListItem">
 {Des::while}{Subject}
 <tr class="center_text_align">
 <td class="row1 wd70" colspan="2">
-<a href="index.php?page=topic&amp;show=1&amp;id={$Subject['subject_id']}">{$Subject['subject_title']}</a>
+<a href="index.php?page=topic&amp;show=1&amp;id={$Subject['subject_id']}" class="tag-badge">{$Subject['subject_title']}</a>
 </td>
 </tr>
 {/Des::while}
@@ -8889,9 +8954,7 @@ itemtype="https://schema.org/ListItem">
 <meta itemprop="position" content="2" />
 </li>
 {template}address_bar_part2{/template}
-
 <br />
-<div class="center_text_align">
 {if {$review_reply}}
 <script language="JavaScript">
 function checkAll(form){
@@ -8900,15 +8963,12 @@ eval("form.elements[" + i + "].checked = form.elements[0].checked");
 }
 }
 </script>
-
 <form action="index.php?page=managementreply&amp;do_review_reply=1&amp;section={$section}" name="form1" method="post">
 {/if}
-
-<table class="border wd98 brd1 clpc0">
+<table class="border wd98 brd1 clpc0 a-center">
 <tr>
-<td class="tcat center_text_align wd100">
+<td class="tcat small_text wd100 a-center" colspan="6">
 {if {$review_reply}}
-
 <div class="l-left">
 &nbsp;<input type="checkbox" name="check_all" onClick="checkAll(this.form)" />&nbsp;
 <div class="r-right">
@@ -8916,6 +8976,9 @@ eval("form.elements[" + i + "].checked = form.elements[0].checked");
 &nbsp;<input class="button button_b" name="approveposts" type="submit" value="{$lang['approveposts']}" />&nbsp;
 </div>
 </div>
+<?php
+$PowerBB->_CONF['template']['colspan'] = '4';
+?>
 {/if}
 <div class="r-right">{$lang['Search_results_for_all_reply_user']}
 {$keyword}</div>
@@ -8926,67 +8989,68 @@ eval("form.elements[" + i + "].checked = form.elements[0].checked");
 {/if}
 </td>
 </tr>
+<tr>
+<td class="thead wd3 a-center">
+</td>
+<td class="thead wd40 a-center">
+{$lang['subject_title']}
+</td>
+<td class="thead wd10 a-center">
+{$lang['subject_writer']}
+</td>
+<td class="thead wd15 a-center">
+{$lang['forum']}
+</td>
+{if {$review_reply}}
+<td class="thead wd3 a-center">
+</td>
+{/if}
+</tr>
 {Des::while}{MembersListReply}
-<tr class="radiusContent">
-<td class="row2 radiusContent va-t">
-<div class="l-left">
- <span class="smallfont">{$MembersListReply['reply_date']}</span>
- {if {$review_reply}}
-<input type="checkbox" name="check[]" value="{$MembersListReply['id']}" />
-{/if}
- </div>
-{if {$MembersListReply['icon']} !=''}
-<img src="{$_CONF['MembersListReply_row']['icon_path']}{$MembersListReply['icon']}" alt="" />
-{else}
-<img src="look/images/icons/i1.gif" alt="" />
-{/if}
+<tr>
+<td class="row2 wd3 a-center">
+<img src="{$_CONF['ReplyList_row']['icon_path']}{$MembersListReply['icon']}" alt="" />
+</td>
+<td class="row1 wd40">
+<?php $PowerBB->_CONF['template']['while']['MembersListReply'][$this->x_loop]['title'] = $PowerBB->functions->CleanVariable($PowerBB->_CONF['template']['while']['MembersListReply'][$this->x_loop]['title'],'html'); ?>
+<?php $PowerBB->_CONF['template']['while']['MembersListReply'][$this->x_loop]['title'] = $PowerBB->Powerparse->censor_words($PowerBB->_CONF['template']['while']['MembersListReply'][$this->x_loop]['title']); ?>
 <a href="index.php?page=post&amp;show=1&amp;id={$MembersListReply['id']}">
 {$MembersListReply['title']}
 </a>
-|
-{$lang['LastsPostsWriter']}
+</td>
+<td class="row2 wd15 a-center">
 {if {$MembersListReply['writer']} =='Guest'}
 {$lang['Guest_']}
  {else}
-<a href="index.php?page=profile&amp;show=1&amp;username={$MembersListReply['writer']}">{$MembersListReply['writer']}</a>
+<a href="index.php?page=profile&amp;show=1&amp;id={$MembersListReply['writer_id']}">{$MembersListReply['username_style_cache']}</a>
 {/if}
-<?php $PowerBB->_CONF['template']['while']['MembersListReply'][$this->x_loop]['title'] = $PowerBB->functions->CleanVariable($PowerBB->_CONF['template']['while']['MembersListReply'][$this->x_loop]['title'],'html'); ?>
-<?php $PowerBB->_CONF['template']['while']['MembersListReply'][$this->x_loop]['title'] = $PowerBB->Powerparse->censor_words($PowerBB->_CONF['template']['while']['MembersListReply'][$this->x_loop]['title']); ?>
-<?php
-$PowerBB->_CONF['template']['while']['MembersListReply'][$this->x_loop]['text'] = $PowerBB->functions->replace_strip($PowerBB->_CONF['template']['while']['MembersListReply'][$this->x_loop]['text']);
-?>
-{if {$MembersListReply['close']}}
-| {$lang['subject_close']}
-{/if}
-
-<?php      	$section_id = $PowerBB->_CONF['template']['while']['MembersListReply'][$this->x_loop]['section'];
-$GetForum = $PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['section'] . " WHERE id = '$section_id'");
-$Forum = $PowerBB->DB->sql_fetch_array($GetForum);
-$Forum_title = $Forum['title'];
-$Forum_id = $Forum['id'];
-?>
-|{$lang['forum']}:		<a href="index.php?page=forum&amp;show=1&amp;id=<?php echo $Forum_id; ?>"><?php echo $Forum_title; ?></a>
-
 <br />
-<div class="textemain"><pre class="post" style="direction:{$_CONF['info_row']['content_dir']};"> {$MembersListReply['text']}</pre></div>
+<span class="smallfont">{$MembersListReply['reply_date']}</span>
 </td>
+<td class="row1 wd15 a-center">
+<a href="index.php?page=forum&amp;show=1&amp;id={$MembersListReply['section_id']}"><span class="smallfont">{$MembersListReply['section_title']}</span></a>
+</td>
+ {if {$review_reply}}
+<td class="row2 wd3 a-center">
+<input type="checkbox" name="check[]" value="{$MembersListReply['id']}" />
+</td>
+{/if}
 </tr>
 {/Des::while}
 </table>
 {if {$review_reply}}
 </form>
 {/if}
-</div>
 <br />
 <table class="wd98 brd1 clpc0 a-center" style="border-collapse: collapse">
 <tr>
-<td class="right_text_align wd2">
+<td class="wd2 a-right">
 {if {$pager}}
 {$pager}
 {/if}
 </td>
 </tr>
-</table><br />
+</table>
 <br />]]></search_results_username_reply>
 <search_results_username_subject><![CDATA[{template}address_bar_part1{/template}
  <li itemprop="itemListElement" itemscope
@@ -8998,8 +9062,6 @@ itemtype="https://schema.org/ListItem">
 <meta itemprop="position" content="2" />
 </li>
 {template}address_bar_part2{/template}
-
-
 <br />
 <table class="border wd98 brd1 clpc0 a-center">
 <tr>
@@ -9053,7 +9115,7 @@ itemtype="https://schema.org/ListItem">
 {if {$SubjectList['stick']}}
 <b><span style="color:#FF0000;">{$lang['sticky']} : </span></b>
 {/if}
-<a href="index.php?page=topic&show=1&highlight={$keyword}&id={$SubjectList['id']}{$password}">
+<a href="index.php?page=topic&amp;show=1&amp;id={$SubjectList['id']}{$password}">
 {$SubjectList['title']}</a>
 {if {$SubjectList['close']}}
 {$lang['subject_close']}
@@ -9063,7 +9125,7 @@ itemtype="https://schema.org/ListItem">
 </td>
 {if !{$search_username_subjects} }
 <td class="row1 wd20 a-center">
-<a href="index.php?page=profile&show=1&username={$SubjectList['writer']}">{$SubjectList['writer']}</a>
+<a href="index.php?page=profile&amp;show=1&amp;id={$SubjectList['writer_id']}">{$SubjectList['username_style_cache']}</a>
 </td>
 {/if}
 <td class="row2 wd10 a-center">
@@ -9077,20 +9139,12 @@ itemtype="https://schema.org/ListItem">
 {$SubjectList['visitor']}
 </td>
 <td class="row2 wd28 a-center">
-<a href="index.php?page=profile&show=1&username={$SubjectList['writer']}">{$SubjectList['writer']}</a>
+<a href="index.php?page=profile&amp;show=1&amp;username={$SubjectList['writer_id']}">{$SubjectList['username_style_cache']}</a>
 <br />
 <span class="smallfont">{$SubjectList['reply_date']}</span>
 </td>
 <td class="row2 wd15 a-center">
-<?php
-
-$section_id = $PowerBB->_CONF['template']['while']['SubjectList'][$this->x_loop]['section'];
-$GetForum = $PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['section'] . " WHERE id = '$section_id'");
-$Forum = $PowerBB->DB->sql_fetch_array($GetForum);
-$Forum_title = $Forum['title'];
-$Forum_id = $Forum['id'];
-?>
-<a href="index.php?page=forum&amp;show=1&amp;id=<?php echo $Forum_id; ?>"><span class="smallfont"><?php echo $Forum_title; ?></span></a>
+<a href="index.php?page=forum&amp;show=1&amp;id={$SubjectList['section_id']}"><span class="smallfont">{$SubjectList['section_title']}</span></a>
 </td>
 </tr>
 {/Des::while}
@@ -9107,7 +9161,7 @@ $Forum_id = $Forum['id'];
 {if {$SubjectTitleList['stick']}}
 <b><span style="color:#FF0000;">{$lang['sticky']} : </span></b>
 {/if}
-<a href="index.php?page=topic&show=1&id={$SubjectTitleList['id']}{$password}">
+<a href="index.php?page=topic&amp;show=1&amp;id={$SubjectTitleList['id']}{$password}">
 {$SubjectTitleList['title']}</a>
 {if {$SubjectTitleList['close']}}
 {$lang['subject_close']}
@@ -9117,7 +9171,7 @@ $Forum_id = $Forum['id'];
 </td>
 {if !{$search_username_subjects} }
 <td class="row1 wd20 a-center">
-<a href="index.php?page=profile&show=1&username={$SubjectTitleList['writer']}">{$SubjectTitleList['writer']}</a>
+<a href="index.php?page=profile&amp;show=1&amp;id={$SubjectTitleList['writer_id']}">{$SubjectTitleList['username_style_cache']}</a>
 <br />
 {$SubjectTitleList['write_date']}
 </td>
@@ -9133,20 +9187,12 @@ $Forum_id = $Forum['id'];
 {$SubjectTitleList['visitor']}
 </td>
 <td class="row2 wd28 a-center">
-<a href="index.php?page=profile&show=1&username={$SubjectTitleList['writer']}">{$SubjectTitleList['writer']}</a>
+<a href="index.php?page=profile&amp;show=1&amp;username={$SubjectTitleList['writer_id']}">{$SubjectTitleList['username_style_cache']}</a>
 <br />
 <span class="smallfont">{$SubjectTitleList['reply_date']}</span>
 </td>
 <td class="row2 wd15 a-center">
-<?php
-
-$section_id = $PowerBB->_CONF['template']['while']['SubjectTitleList'][$this->x_loop]['section'];
-$GetForum = $PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['section'] . " WHERE id = '$section_id'");
-$Forum = $PowerBB->DB->sql_fetch_array($GetForum);
-$Forum_title = $Forum['title'];
-$Forum_id = $Forum['id'];
-?>
-<a href="index.php?page=forum&amp;show=1&amp;id=<?php echo $Forum_id; ?>"><span class="smallfont"><?php echo $Forum_title; ?></span></a>
+<a href="index.php?page=forum&amp;show=1&amp;id={$SubjectTitleList['section_id']}"><span class="smallfont">{$SubjectTitleList['section_title']}</span></a>
 </td>
 </tr>
 {/Des::while}
@@ -9162,7 +9208,7 @@ $Forum_id = $Forum['id'];
 {if {$MembersListSubject['stick']}}
 <b><span style="color:#FF0000;">{$lang['sticky']} : </span></b>
 {/if}
-<a href="index.php?page=topic&show=1&id={$MembersListSubject['id']}{$password}">
+<a href="index.php?page=topic&amp;show=1&amp;id={$MembersListSubject['id']}{$password}">
 {$MembersListSubject['title']}</a>
 {if {$MembersListSubject['close']}}
 {$lang['subject_close']}
@@ -9172,7 +9218,7 @@ $Forum_id = $Forum['id'];
 </td>
 {if !{$search_username_subjects}}
 <td class="row1 wd20 a-center">
-<a href="index.php?page=profile&show=1&username={$MembersListSubject['writer']}">{$MembersListSubject['writer']}</a>
+<a href="index.php?page=profile&amp;show=1&amp;id={$MembersListSubject['writer_id']}">{$MembersListSubject['username_style_cache']}</a>
 <br />
 {$MembersListSubject['write_date']}
 </td>
@@ -9188,20 +9234,12 @@ $Forum_id = $Forum['id'];
 {$MembersListSubject['visitor']}
 </td>
 <td class="row2 wd28 a-center">
-<a href="index.php?page=profile&show=1&username={$MembersListSubject['writer']}">{$MembersListSubject['writer']}</a>
+<a href="index.php?page=profile&amp;show=1&amp;id={$MembersListSubject['writer_id']}">{$MembersListSubject['username_style_cache']}</a>
 <br />
 <span class="smallfont">{$MembersListSubject['reply_date']}</span>
 </td>
 <td class="row1 wd15 a-center">
-<?php
-
-$section_id = $PowerBB->_CONF['template']['while']['MembersListSubject'][$this->x_loop]['section'];
-$GetForum = $PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['section'] . " WHERE id = '$section_id'");
-$Forum = $PowerBB->DB->sql_fetch_array($GetForum);
-$Forum_title = $Forum['title'];
-$Forum_id = $Forum['id'];
-?>
-<a href="index.php?page=forum&amp;show=1&amp;id=<?php echo $Forum_id; ?>"><span class="smallfont"><?php echo $Forum_title; ?></span></a>
+<a href="index.php?page=forum&amp;show=1&amp;id={$MembersListSubject['section_id']}"><span class="smallfont">{$MembersListSubject['section_title']}</span></a>
 </td>
 </tr>
 {/Des::while}
@@ -9217,8 +9255,7 @@ $Forum_id = $Forum['id'];
 </tr>
 </table>
 <br />
-<br />
-]]></search_results_username_subject>
+<br />]]></search_results_username_subject>
 <sections_list><![CDATA[<div class="sections">
 {if {$SHOW_SUB_SECTIONS}}
 <!-- start_category-in_page_forum -->
@@ -16526,7 +16563,21 @@ comm._toggle();
 </table>
 <br />
 </form>]]></chat_edit>
-<review_reply><![CDATA[{Des::while}{AdsensesList}
+<review_reply><![CDATA[{if {$ajax} == '1'}
+<link rel="stylesheet" href="{$ForumAdress}look/fonts/font-awesome.min.css" />
+<link rel="stylesheet" href="{$ForumAdress}look/fonts/fonts.css" />
+<link rel="stylesheet" href="{$ForumAdress}{$style_path}" />
+<script type="text/javascript" src="{$ForumAdress}includes/js/jquery-1.10.2.js"></script>
+<script type="text/javascript" src="{$ForumAdress}includes/js/jquery-ui.js"></script>
+{/if}
+{if {$ajax_last_replier}}
+<?php
+$site = $PowerBB->_CONF['template']['location'];
+echo '<meta http-equiv="refresh" content="0;URL='.$site.'" />';
+?>
+{/if}
+
+{Des::while}{AdsensesList}
 {if {$AdsensesList['between_replys']} == '1'}
 <div class="center_text_align">
 {$AdsensesList['adsense']}
@@ -16555,21 +16606,24 @@ comm._toggle();
 [<a title="{$lang['post']}
 ({$Info['reply_number']})" name="{$Info['reply_id']}" href="#{$Info['reply_id']}">{$Info['reply_number']}</a>]
 {if !{$mod_toolbar}}
-<input type="checkbox" name="check[]" value="{$Info['reply_id']}" />
+<input type="checkbox" id="docheck" name="checkd[]" onchange="AjaxDoReplys()" value="{$Info['reply_id']}" />
 {/if}
 </div>
 </dd>
 </dl>
-<dl class="center_text_align">
+<dl>
 <dt></dt>
-<dd class="va-t r-nfo r-review">
+<dd class="va-t r-nfo center_text_align">
 <div onclick="switchBlock('menu_{$Info['reply_id']}');">
 {template}writer_info{/template}
 </div>
 </dd>
 <dd class="tbar_review va-t">
 {get_hook}show_reply_text{/get_hook}
+<div id="status_{$Info['reply_id']}">
 <div class="text">{$Info['text']}</div>
+</div>
+<div id="status_rename_{$Info['reply_id']}" style="display: none;margin:0px;"></div>
 <div class="bottom_text"></div>
 {if {$Info['attach_reply']}}
 {template}attach_show{/template}
@@ -16577,7 +16631,7 @@ comm._toggle();
 {if {$Info['action_by']} != ''}
 <br />
 <br />
-<div class="action_by center_text_align">
+<div id="action_by_{$Info['reply_id']}" class="action_by center_text_align">
 <i>
 {$lang['action_by_reply']}
 <b><a title="{$Info['action_by']}" href="index.php?page=profile&show=1&username={$Info['action_by']}">{$Info['action_by']}</a></b>
@@ -16603,47 +16657,56 @@ comm._toggle();
 
 </dd>
 </dl>
-<dl>
+{if {$_CONF['group_info']['write_reply']}}
+<dl class="subc center_text_align">
 <dt></dt>
-<dd class="row1 a-center subbr"></dd>
-<dd class="row1 a-center">
+<dd class="r-subc1"></dd>
+<dd class="r-subc2">
 <!-- table -->
-
-<div style="width:100%; border-collapse: collapse;" class="table">
+<div class="wd100 clpc0 table r-subc">
 <dl>
 <dt></dt>
 <dd>
-<div class="r-right">
+<div class="r-right add_reputation">
 {if {$_CONF['member_permission']}}
 {if {$ReplierInfo['username']} !=''}
 {if {$_CONF['member_row']['username']} != {$ReplierInfo['username']}}
+
 {if {$_CONF['info_row']['reputationallw']} == 1}
 <a href="javascript:switchMenuNone('{$Info['reply_number']}replyreputation')"
 title="{$lang['add_reputation_to']}
 {$ReplierInfo['username']}">
-<img class="brd0" alt="{$lang['add_reputation_to']}
-{$ReplierInfo['username']}"
-src="{$image_path}/reputation.gif" />
+<i title="{$lang['add_reputation_to']}
+{$ReplierInfo['username']}"class="fa fa-thumbs-o-up fa-2" aria-hidden="true"></i>
 </a>
 {template}reply_reputation{/template}
-{/if}
-{/if}
-{/if}
-<a title="{$lang['reporting_for_post']}"
+{if {$ReplierInfo['usergroup']} > 2}
+<a class="for_post" title="{$lang['reporting_for_post']}"
 href="index.php?page=report&amp;index=1&amp;subject_id={$Info['subject_id']}&amp;reply_id={$Info['reply_id']}&amp;count={$count_peg}">
-<img alt="{$lang['reporting_for_post']}"
-class="brd0" src="{$image_path}/report.gif" />
+<i title="{$lang['reporting_for_post']}"class="fa fa-bell-o" aria-hidden="true"></i>
 </a>
+{/if}
+{/if}
+{/if}
+{/if}
 {/if}
 </div>
 <div class="l-left">
 <ul class="post_controls">
 {if {$_CONF['member_permission']}}
-{if !{$mod_toolbar}}
+{if {$mod_toolbar} == '0'}
 <li>
-<a title="{$lang['edit_reply']}"
-href="index.php?page=management&amp;reply=1&amp;section={$Info['section']}&amp;subject_id={$Info['subject_id']}&amp;reply_id={$Info['reply_id']}&amp;reply_number={$Info['reply_number']}&amp;count={$count_peg}&amp;operator=edit" class="Button_secondary">
-{$lang['edit_reply']}</a>
+<a title="{$lang['edit_reply']}" OnClick="edit_slide_Downd({$Info['reply_id']});return false;" class="Button_secondary">
+{$lang['edit_reply']}
+</a>
+<div class="edit_to_post slide_Down_{$Info['reply_id']}" id="edit_{$Info['reply_id']}" style="display:none;">
+<option value="{$Info['reply_id']}" class="Button_ss" aria-hidden="true" title="{$lang['fastedit']}" onclick="edit_reply('{$Info['reply_id']}')">
++&nbsp;{$lang['fastedit']}</option>
+<a title="{$lang['fulliedit']}"
+href="index.php?page=management&amp;reply=1&amp;section={$Info['section']}&amp;subject_id={$Info['subject_id']}&amp;reply_id={$Info['reply_id']}&amp;reply_number={$Info['reply_number']}&amp;count={$count_peg}&amp;operator=edit" class="Button_ss">
+{$lang['fulliedit']}
+</a>
+</div>
 </li>
 <li>
 <a href="index.php?page=managementreply&amp;do_replys=1&amp;section={$Info['section']}&amp;subject_id={$Info['subject_id']}&amp;reply_id={$Info['reply_id']}&amp;operator=delete" class="Button_secondary"
@@ -16651,17 +16714,26 @@ title="{$lang['delete_reply']}">
 {$lang['delete_reply']}</a>
 </li>
 {else}
+
 {if {$SubjectInfo['close']} == '0'}
 {if {$timeout}}
 {if {$_CONF['member_row']['username']} == {$ReplierInfo['username']}}
 {if {$_CONF['group_info']['edit_own_reply']}}
 <li>
-<a title="{$lang['edit_reply']}"
-href="index.php?page=management&amp;reply=1&amp;section={$Info['section']}&amp;subject_id={$Info['subject_id']}&amp;reply_id={$Info['reply_id']}&amp;reply_number={$Info['reply_number']}&amp;count={$count_peg}&amp;operator=edit" class="Button_secondary">
+<a title="{$lang['edit_reply']}" OnClick="edit_slide_Downd({$Info['reply_id']});return false;" class="Button_secondary">
 {$lang['edit_reply']}
 </a>
+<div class="edit_to_post slide_Down_{$Info['reply_id']}" id="edit_{$Info['reply_id']}" style="display:none;">
+<option value="{$Info['reply_id']}" class="Button_ss" aria-hidden="true" title="{$lang['fastedit']}" onclick="edit_reply('{$Info['reply_id']}')">
++&nbsp;{$lang['fastedit']}</option>
+<a title="{$lang['fulliedit']}"
+href="index.php?page=management&amp;reply=1&amp;section={$Info['section']}&amp;subject_id={$Info['subject_id']}&amp;reply_id={$Info['reply_id']}&amp;reply_number={$Info['reply_number']}&amp;count={$count_peg}&amp;operator=edit" class="Button_ss">
+{$lang['fulliedit']}
+</a>
+</div>
 </li>
 {/if}
+
 {if {$_CONF['group_info']['del_own_reply']}}
 <li>
 <a href="index.php?page=managementreply&amp;do_replys=1&amp;section={$Info['section']}&amp;subject_id={$Info['subject_id']}&amp;reply_id={$Info['reply_id']}&amp;operator=delete" class="Button_secondary"
@@ -16676,7 +16748,7 @@ title="{$lang['delete_reply']}">
 {/if}
 {/if}
 <li>
-<a href="index.php?page=new_reply&amp;index=1&amp;id={$subject_id}{$password}
+<a href="index.php?page=new_reply&amp;index=1&amp;id={$Info['subject_id']}{$password}
 &amp;qu_Reply={$Info['reply_id']}&amp;user={$ReplierInfo['username']}" class="Button_secondary"
 title="{$lang['qu_reply']}">
 {$lang['quote']}
@@ -16695,8 +16767,27 @@ title="{$lang['qu_reply']}">
 </div><!-- /table -->
 </dd>
 </dl>
+{/if}
 </div><!-- /table -->
-<br />]]></review_reply>
+<br />
+<script type='text/javascript'>
+function edit_slide_Downd(id) {
+$(".slide_Down_"+id).slideToggle();
+}
+function edit_reply(valu)
+{
+$("#status_rename_"+valu+"").show();
+$('html, body').animate({
+        scrollTop: $("#status_"+valu).offset().top
+    }, 100);
+$.post("index.php?page=topic&fastEdit=1&id="+valu, function(data, status){
+$("#status_rename_"+valu+"").html(data);
+$('.bottom_text').attr('style','min-height:2px !important;');
+});
+$("#status_"+valu+"").hide();
+$(".slide_Down_"+id).hide();
+}
+</script>]]></review_reply>
 <usercp_security><![CDATA[<title> {$lang['security_settings']}
 - {$_CONF['info_row']['title']}</title>
 {template}address_bar_part1{/template}
@@ -17600,7 +17691,7 @@ $.post("index.php?page=usercp&options=1&mention=1&start=1",data,function Success
 </div>
 {/Des::while}]]></chat_window>
 <chat_online><![CDATA[<div style="padding: 8px; background: #eef2f5; border-bottom: 1px solid #ddd; font-weight: bold; font-size: 12px;">
-    <i class="fa fa-users"></i> {$lang['Number_Members']}: {$online_chat_number}
+    <i class="fa fa-users"></i> {$lang['Number_Members']}: <span id="online_count_val">{$online_chat_number}</span>
 </div>
 
 <ul style="list-style: none; padding: 0; margin: 0;">
@@ -17621,7 +17712,7 @@ $.post("index.php?page=usercp&options=1&mention=1&start=1",data,function Success
         {/if}
     {else}
         <i class="fa fa-user" style="color: #185886; font-size: 11px;"></i>
-        <a target="_blank" href="index.php?page=profile&id={$ListonlineChat['user_id']}" style="text-decoration: none; font-weight: 500;">
+        <a target="_blank" href="index.php?page=profile&show=1&id={$ListonlineChat['user_id']}" style="text-decoration: none; font-weight: 500;">
             {$ListonlineChat['username_style']}
         </a>
     {/if}

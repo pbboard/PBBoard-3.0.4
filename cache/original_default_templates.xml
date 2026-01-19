@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <styles name="default-style-304" pbbversion="3.0.4" product="PBBoard" image_path ="../styles/style_default/images" style_path="../styles/style_default/css/style.css" type="custom">
 <templategroup>
-<template name="address_bar_part1" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<br />
+<template name="address_bar_part1" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<br />
 <div class="address_bar">
 <div class="addr_bar">
 <ol itemscope itemtype="https://schema.org/BreadcrumbList" class="itemscope-nav">
@@ -15,13 +15,13 @@ itemtype="https://schema.org/ListItem">
 <meta itemprop="position" content="1" />
 </li>
 <div class="btn-nav"></div>]]></template>
-<template name="address_bar_part2" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[</ol>
+<template name="address_bar_part2" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[</ol>
 </div>
 </div>
 <br />
 <br />
 {template}side_list{/template}]]></template>
-<template name="add_attach_pm" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<style>
+<template name="add_attach_pm" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<style>
 .file-preview {
     display: inline-block;
     font-size: 159px;
@@ -125,7 +125,7 @@ or $PowerBB->_CONF['template']['while']['PmAttachList'][$this->x_loop]['extensio
 {/Des::while}
 </ul>
 ]]></template>
-<template name="add_attach_reply" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<ul style="list-style: none;display: inline-block;" >
+<template name="add_attach_reply" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<ul style="list-style: none;display: inline-block;" >
 {Des::while}{SubjectAttachList}
 <li class="attachmentInsert">
 <?php
@@ -196,7 +196,7 @@ or $PowerBB->_CONF['template']['while']['SubjectAttachList'][$this->x_loop]['ext
 
 {/Des::while}
 </ul>]]></template>
-<template name="add_attach_subject" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<html dir="{$_CONF['info_row']['content_dir']}" xmlns="http://www.w3.org/1999/xhtml" xml:lang="{$_CONF['info_row']['content_language']}" lang="{$_CONF['info_row']['content_language']}"><head>
+<template name="add_attach_subject" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<html dir="{$_CONF['info_row']['content_dir']}" xmlns="http://www.w3.org/1999/xhtml" xml:lang="{$_CONF['info_row']['content_language']}" lang="{$_CONF['info_row']['content_language']}"><head>
 <meta http-equiv="Content-Type" content="text/html; charset={$_CONF['info_row']['charset']}" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <style type="text/css">
@@ -318,7 +318,7 @@ src="index.php?page=download&amp;attach=1&amp;id={$SubjectAttachList['id']}" tit
 </table>
 </body>
 </html>]]></template>
-<template name="add_attach_table" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[
+<template name="add_attach_table" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[
 <br />
 <table class="border wd50 brd1 clpc0 a-center" id="add_attach_table">
 <tr class="center_text_align">
@@ -352,24 +352,42 @@ src="index.php?page=download&amp;attach=1&amp;id={$SubjectAttachList['id']}" tit
 {/if}
 </table>
 ]]></template>
-<template name="add_chat_message" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<div class="chat-input-area" dir="{$_CONF['info_row']['content_dir']}" style="background: #fff; padding: 10px; border: 1px solid #ccc; border-top: 1px solid #eee; margin-bottom: 20px;">
-    <div style="display: flex; gap: 8px; align-items: center;">
+<template name="add_chat_message" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<div class="chat-input-area" dir="{$_CONF['info_row']['content_dir']}" style="background: #fff; padding: 10px; border: 1px solid #ccc; border-top: 1px solid #eee; margin-bottom: 20px;">
 
-        <div style="position: relative;">
-            <img src="look/images/emoii.gif" onclick="$('#smile_box').toggleClass('active')" style="width: 28px; cursor: pointer;" title="{$lang['smiles']}">
-            <div id="smile_box" class="border shadow" style="position: absolute; bottom: 45px; <?php echo ($PowerBB->_CONF['info_row']['content_dir'] == 'rtl') ? 'right: 0;' : 'left: 0;'; ?> background: #fff; border: 1px solid #ccc; width: 260px; padding: 5px; z-index: 999; grid-template-columns: repeat(8, 1fr); gap: 2px;">
-                {Des::while}{SmlList}
-                <img src="{$SmlList['smile_path']}" onclick="AddSmileyIcon(' {$SmlList['smile_short']} '); $('#smile_box').removeClass('active');" style="width: 22px; cursor: pointer; padding: 2px;" class="brd0">
-                {/Des::while}
-            </div>
+		<?php
+		if ($member['posts'] < $PowerBB->_CONF['info_row']['chat_num_mem_posts'] and $PowerBB->_CONF['member_row']['usergroup'] != '1')
+		{
+		?>    
+        <div style="color: #a94442; background-color: #f2dede; padding: 10px; border-radius: 4px; font-size: 12px; text-align: center;">
+            عذراً، تحتاج إلى <b>{$_CONF['info_row']['chat_num_mem_posts']}</b> مشاركة في المنتدى لتتمكن من الدردشة.
         </div>
+    <?php
+}
+else
+{
+?>
+        <div style="display: flex; gap: 8px; align-items: center;">
+            <div style="position: relative;">
+                <img src="look/images/emoii.gif" onclick="$('#smile_box').toggleClass('active')" style="width: 28px; cursor: pointer;" title="{$lang['smiles']}">
+                <div id="smile_box" class="border shadow">
+                    {Des::while}{SmlList}
+                    <img src="{$SmlList['smile_path']}" onclick="AddSmileyIcon(' {$SmlList['smile_short']} ');" style="width: 22px; cursor: pointer; padding: 2px;">
+                    {/Des::while}
+                </div>
+            </div>
 
-        <textarea id="box_text" placeholder="{$lang['add_chat_message1']}" style="flex: 1; height: 38px; padding: 8px; border: 1px solid #ddd; resize: none; font-size: 13px; border-radius: 4px; outline: none; background: #fafafa;"></textarea>
+            <textarea id="box_text" 
+                      maxlength="{$_CONF['info_row']['chat_num_characters']}" 
+                      style="flex: 1; height: 38px; padding: 8px; border: 1px solid #ddd; resize: none; font-size: 13px; border-radius: 4px; outline: none; background: #fafafa;"></textarea>
 
-        <button type="button" onclick="AjaxInsertChat();" style="background: #185886; color: #fff; border: none; padding: 0 15px; height: 38px; cursor: pointer; border-radius: 4px; font-weight: bold; display: flex; align-items: center; gap: 5px;">
-            <i class="fa fa-paper-plane"></i> {$lang['insert_chat_message']}
-        </button>
-    </div>
+            <button type="button" onclick="AjaxInsertChat();" id="send_btn" style="background: #185886; color: #fff; border: none; padding: 0 15px; height: 38px; cursor: pointer; border-radius: 4px; font-weight: bold; display: flex; align-items: center; gap: 5px;">
+                <i class="fa fa-paper-plane"></i> {$lang['insert_chat_message']}
+            </button>
+        </div>
+        <div id="char_count" style="font-size: 10px; color: #999; text-align: left; margin-top: 2px;">0 / {$_CONF['info_row']['chat_num_characters']}</div>
+<?php
+}
+?>
 </div>
 
 <script type="text/javascript">
@@ -377,9 +395,18 @@ function AddSmileyIcon(icon) {
     var input = document.getElementById('box_text');
     input.value += icon;
     input.focus();
+    $(input).trigger('input');
 }
+
+$('#box_text').on('input', function() {
+    var len = $(this).val().length;
+    var max = {$_CONF['info_row']['chat_num_characters']};
+    $('#char_count').text(len + ' / ' + max);
+    if(len >= max) $('#char_count').css('color', 'red');
+    else $('#char_count').css('color', '#999');
+});
 </script>]]></template>
-<template name="add_edit_attach_reply" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<!doctype html>
+<template name="add_edit_attach_reply" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<!doctype html>
 <html dir="{$_CONF['info_row']['content_dir']}" lang="{$_CONF['info_row']['content_language']}">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset={$_CONF['info_row']['charset']}" />
@@ -502,7 +529,7 @@ src="index.php?page=download&amp;attach=1&amp;id={$ReplyAttachList['id']}" title
 </table>
 </body>
 </html>]]></template>
-<template name="add_edit_attach_subject" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<!doctype html>
+<template name="add_edit_attach_subject" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<!doctype html>
 <html dir="{$_CONF['info_row']['content_dir']}" lang="{$_CONF['info_row']['content_language']}">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset={$_CONF['info_row']['charset']}" />
@@ -633,7 +660,7 @@ src="index.php?page=download&amp;attach=1&amp;id={$SubjectAttachList['id']}" tit
 </body>
 </html>
 ]]></template>
-<template name="add_poll_table" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<br />
+<template name="add_poll_table" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<br />
 <table class="border wd70 brd1 clpc0 a-center" id="poll_question_answers">
 <tr class="center_text_align">
 <td class="thead1" colspan="2">
@@ -670,7 +697,7 @@ src="index.php?page=download&amp;attach=1&amp;id={$SubjectAttachList['id']}" tit
 </td>
 </tr></table>
 ]]></template>
-<template name="add_reply_link" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[{if {$write_reply}}
+<template name="add_reply_link" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[{if {$write_reply}}
 <a href="index.php?page=new_reply&amp;index=1&amp;id={$subject_id}{$password}" class="button_b" id="buttons_link"
 title="{$lang['add_new_reply']}">
 {$lang['add_new_reply']}
@@ -686,7 +713,7 @@ title="{$lang['add_new_reply']}">
 </a>
 {/if}
 {/if}]]></template>
-<template name="add_subject_link" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[{if {$write_subject}}
+<template name="add_subject_link" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[{if {$write_subject}}
 <a href="index.php?page=new_topic&amp;index=1&amp;id={$section_id}{$password}" class="button_b" id="buttons_link"
 title="{$lang['add_new_topic']}">
 {$lang['add_new_topic']}
@@ -702,7 +729,7 @@ title="{$lang['add_new_topic']}">
 </a>
 {/if}
 {/if}]]></template>
-<template name="add_tags_table" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<br />
+<template name="add_tags_table" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<br />
 <div class="center_text_align">
 <table class="border wd70 brd1 clpc0 a-center" id="add_tags_table">
 <tr class="center_text_align">
@@ -726,7 +753,7 @@ title="{$lang['add_new_topic']}">
 </table>
 </div>
 ]]></template>
-<template name="add_this" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[ {if {$_CONF['info_row']['active_add_this']} == '1'}
+<template name="add_this" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[ {if {$_CONF['info_row']['active_add_this']} == '1'}
 <!-- AddToAny BEGIN -->
 <div class="a2a_kit a2a_kit_size_24 a2a_default_style">
 <a class="a2a_button_facebook a2a_counter"></a>
@@ -744,7 +771,7 @@ a2a_config.exclude_services = ["email"];
 <script type="text/javascript" src="//static.addtoany.com/menu/page.js"></script>
 <!-- AddToAny END -->
 {/if}]]></template>
-<template name="ads" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[{if !{$No_Ads}}
+<template name="ads" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[{if !{$No_Ads}}
 <br />
 <div class="center_text_align">
 <a href="index.php?page=ads&amp;goto=1&amp;id={$AdsInfo['id']}" target="_blank">
@@ -762,7 +789,7 @@ title="{$AdsInfo['sitename']}  {$lang['clicks_ads_num']}: {$AdsInfo['clicks']}" 
 <br />
 {/if}
 ]]></template>
-<template name="adsense_forum" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[ </table>
+<template name="adsense_forum" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[ </table>
 <table class="border wd98 brd1 clpc0 a-center">
 {Des::while}{AdsensesList}
 {if {$AdsensesList['forum']} == '1'}
@@ -776,7 +803,7 @@ title="{$AdsInfo['sitename']}  {$lang['clicks_ads_num']}: {$AdsInfo['clicks']}" 
 </table>
 <table class="border wd98 brd1 clpc0 a-center">
 ]]></template>
-<template name="adsense_home" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[{Des::while}{AdsensesList}
+<template name="adsense_home" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[{Des::while}{AdsensesList}
 {if {$AdsensesList['home']} == '1'}
 <div class="center_text_align">
 {$AdsensesList['adsense']}
@@ -785,7 +812,7 @@ title="{$AdsInfo['sitename']}  {$lang['clicks_ads_num']}: {$AdsInfo['clicks']}" 
 {/if}
 {/Des::while}
 ]]></template>
-<template name="adsense_topic" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[{Des::while}{AdsensesList}
+<template name="adsense_topic" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[{Des::while}{AdsensesList}
 {if {$AdsensesList['topic']} == '1'}
 <div class="left_text_align">
 {$AdsensesList['adsense']}
@@ -809,7 +836,7 @@ break;
 ?>
 {/if}
 {/Des::while}]]></template>
-<template name="alerts" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[      <!-- Code alerts Menu start -->
+<template name="alerts" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[      <!-- Code alerts Menu start -->
 <div id="alerts-content">
 <div class="thead">{$lang['alerts']}</div>
 <div class="menu_popup">
@@ -909,7 +936,7 @@ break;
 <!--Menu_3-->
 </div>
 <!-- Code alerts Menu End -->]]></template>
-<template name="announcement" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<!-- action_find_addons_1 -->
+<template name="announcement" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<!-- action_find_addons_1 -->
 {template}address_bar_part1{/template}
 <li itemprop="itemListElement" itemscope
 itemtype="https://schema.org/ListItem">
@@ -959,11 +986,11 @@ itemtype="https://schema.org/ListItem">
 <!-- action_find_addons_5 -->
 <br />
 ]]></template>
-<template name="archive_footer" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<div id="copyright">
+<template name="archive_footer" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<div id="copyright">
 <!--copyright-->
 </div>
 ]]></template>
-<template name="archive_forum" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<template name="archive_forum" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" dir="{$_CONF['info_row']['content_dir']}" lang="{$_CONF['info_row']['content_language']}">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset={$_CONF['info_row']['charset']}" />
@@ -1064,7 +1091,7 @@ itemtype="https://schema.org/ListItem">
 <br />
 </div>
 </body>]]></template>
-<template name="archive_main" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<template name="archive_main" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" dir="{$_CONF['info_row']['content_dir']}" lang="{$_CONF['info_row']['content_language']}">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset={$_CONF['info_row']['charset']}" />
@@ -1144,7 +1171,7 @@ itemtype="https://schema.org/ListItem">
 <br />
 </div>
 </body>]]></template>
-<template name="archive_reply" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<br /><div class="post">
+<template name="archive_reply" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<br /><div class="post">
 <div class="posttop">
 <div class="username">
 <a href="javascript:switchMenuNone('{$Info['reply_id']}replyswitch')">
@@ -1161,13 +1188,13 @@ itemtype="https://schema.org/ListItem">
 </div>
 <hr />
 ]]></template>
-<template name="archive_reply_guest" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<br /><div class="post"><div class="posttop"><div class="username">{$reply_guest['writer']}</div>
+<template name="archive_reply_guest" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<br /><div class="post"><div class="posttop"><div class="username">{$reply_guest['writer']}</div>
 <div class="date">
 {$write_time}</div></div><div class="posttext">
 {$reply_guest['text']}</div></div><hr />
 ]]></template>
-<template name="archive_subject" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<div id="navbar"></div>]]></template>
-<template name="attach_show" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[{if !{$ATTACH_SHOW}}
+<template name="archive_subject" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<div id="navbar"></div>]]></template>
+<template name="attach_show" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[{if !{$ATTACH_SHOW}}
 <div style="clear:both">&nbsp;
 {Des::while}{AttachList}
 <?php
@@ -1304,7 +1331,7 @@ KB
 <br />
 </div>
 {/if}]]></template>
-<template name="avatar_options_list" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[	<?php $t=0;	?>
+<template name="avatar_options_list" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[	<?php $t=0;	?>
 <!-- table --><div style="width:100%; border-spacing:1px;" class="table border">
 <dl class="valign-t">
 <dt></dt>
@@ -1336,7 +1363,7 @@ echo "</dl><dl><dt></dt>";
 {$pager}
 </div>
 ]]></template>
-<template name="avatar_options_site" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[{if {$_CONF['info_row']['ajax_moderator_options']}}
+<template name="avatar_options_site" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[{if {$_CONF['info_row']['ajax_moderator_options']}}
 <table class="border wd90 brd1 clpc0 a-center">
 <tr class="center_text_align">
 <td class="tcat wd90" colspan="2">
@@ -1360,7 +1387,7 @@ echo "</dl><dl><dt></dt>";
 </tr>
 </table>
 {/if}]]></template>
-<template name="avatar_options_upload" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[
+<template name="avatar_options_upload" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[
 <table class="border wd80 brd1 clpc0 a-center">
 <tr class="center_text_align">
 <td class="tcat wd80" colspan="2">
@@ -1382,7 +1409,7 @@ echo "</dl><dl><dt></dt>";
 </tr>
 </table>
 ]]></template>
-<template name="awards" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<br />
+<template name="awards" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<br />
 {if {$Awards_nm} > '0'}
 <!-- table -->
 <div class="LastSubjectWriter">
@@ -1408,7 +1435,7 @@ echo "</dl><dl><dt></dt>";
 </div><!-- /table -->
 {/if}
 <br />]]></template>
-<template name="birth_date" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<link rel="stylesheet" href="{$ForumAdress}includes/js/jquery-ui.css">
+<template name="birth_date" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<link rel="stylesheet" href="{$ForumAdress}includes/js/jquery-ui.css">
 {if {$_CONF['info_row']['content_language']} == 'ar'}
 <script src="{$ForumAdress}includes/js/datepicker-ar.js"></script>
 {/if}
@@ -1427,7 +1454,7 @@ showButtonPanel: true
 <div class="inner-addon">
 <i class="fa fa-calendar fa-2x" aria-hidden="true"></i> <input type="text" class="form-control" name="birth_date" id="datepicker" maxlength="10" style="min-width: 15%;width: 15%;">
 </div>]]></template>
-<template name="board_close" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<title>{$lang['board_close']} -
+<template name="board_close" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<title>{$lang['board_close']} -
 {if {$_CONF['info_row']['allowed_powered']} == 1}
 {$lang['powered']}
 {/if}</title>
@@ -1448,95 +1475,110 @@ showButtonPanel: true
 </tr>
 </table></div><br />
 <br />]]></template>
-<template name="chat" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[{if {$chatout}}
+<template name="chat" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[{if {$chatout}}
 <!DOCTYPE html>
 <html dir="{$_CONF['info_row']['content_dir']}" lang="{$_CONF['info_row']['content_language']}">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset={$_CONF['info_row']['charset']}" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-    <link rel="apple-touch-icon" href="{$ForumAdress}look/images/pbboard-icon.png" />
     <title>{$lang['chat_message']}</title>
-
     <script type="text/javascript" src="{$ForumAdress}includes/js/jquery-1.10.2.js"></script>
     <link rel="stylesheet" href="{$ForumAdress}look/fonts/font-awesome.min.css" />
-    <link rel="stylesheet" href="{$ForumAdress}look/fonts/fonts.css" />
     <link rel="stylesheet" href="{$ForumAdress}{$style_path}" />
-    <style>
-        /* الحاوية الرئيسية بنمط DigiChat */
-        .digi-container {
-            display: flex;
-            /* تحديد الاتجاه بناءً على لغة الموقع */
-            flex-direction: <?php echo ($PowerBB->_CONF['info_row']['content_dir'] == 'rtl') ? 'row' : 'row-reverse'; ?>;
-            height: 550px;
-            border: 1px solid #ccc;
-            background: #fff;
-            margin: auto;
-            width: 98%;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
 
-        /* منطقة الرسائل */
-        .digi-main {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            min-width: 0;
-        }
+<style>
+    .digi-container {
+        display: flex;
+        flex-direction: <?php echo ($PowerBB->_CONF['info_row']['content_dir'] == 'rtl') ? 'row' : 'row-reverse'; ?>;
+        height: 600px;
+        border: 1px solid #ccc;
+        background: #fff;
+        margin: 10px auto 0 auto;
+        width: 98%;
+        position: relative;
+        overflow: hidden;
+    }
 
-        /* منطقة المتواجدين */
+    .digi-main { flex: 1; display: flex; flex-direction: column; background: #fff; min-width: 0; position: relative; }
+
+    .chat_ee { 
+        flex: 1 !important; 
+        height: auto !important;
+        max-height: none !important;
+        overflow-y: auto !important; 
+        display: flex !important;
+        flex-direction: column !important;
+        padding: 10px !important;
+    }
+
+    #content_div_id { margin-top: auto !important; width: 100%; }
+
+    .digi-sidebar { 
+        width: 240px; 
+        background: #f7f9fb; 
+        border-<?php echo ($PowerBB->_CONF['info_row']['content_dir'] == 'rtl') ? 'left' : 'right'; ?>: 1px solid #ddd;
+        transition: transform 0.3s ease;
+        z-index: 1001;
+    }
+
+    .digi-header { background: #185886; color: #fff; padding: 10px; display: flex; justify-content: space-between; align-items: center; }
+
+    .mobile-toggle { 
+        display: none; 
+        cursor: pointer; 
+        background: rgba(255,255,255,0.2); 
+        padding: 5px 10px; 
+        border-radius: 4px;
+        font-size: 12px;
+    }
+
+    .sidebar-overlay {
+        display: none;
+        position: absolute;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background: rgba(0,0,0,0.5);
+        z-index: 1000;
+    }
+
+    @media (max-width: 768px) {
+        .mobile-toggle { display: block; }
         .digi-sidebar {
+            position: absolute;
+            top: 0; bottom: 0;
             width: 220px;
-            background: #f7f9fb;
-            overflow-y: auto;
-            border-<?php echo ($PowerBB->_CONF['info_row']['content_dir'] == 'rtl') ? 'left' : 'right'; ?>: 1px solid #ddd;
+            transform: translateX(<?php echo ($PowerBB->_CONF['info_row']['content_dir'] == 'rtl') ? '220px' : '-220px'; ?>);
         }
+        .digi-sidebar.active { transform: translateX(0); }
+        .sidebar-overlay.active { display: block; }
+    }
 
-        .digi-header {
-            background: #185886;
-            color: #fff;
-            padding: 10px;
-            font-family: "Droid Arabic Kufi", "tahoma", sans-serif;
-            font-size: 11px;
-            font-weight: bold;
-        }
+    #smile_box { 
+        display: none !important; 
+        position: absolute; 
+        bottom: 45px; 
+        background: #fff; 
+        border: 1px solid #ccc; 
+        width: 260px; 
+        padding: 5px; 
+        z-index: 9999 !important; 
+        grid-template-columns: repeat(8, 1fr); 
+        gap: 2px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    }
+    #smile_box.active { display: grid !important; }
 
-        .chat_ee {
-            flex: 1;
-            overflow-y: auto;
-            padding: 10px;
-            background: #fff;
-            max-height:none;
-           font-family: "Droid Arabic Kufi", "tahoma", sans-serif;
-        }
-
-        #smile_box { display: none !important; }
-        #smile_box.active { display: grid !important; }
-
-        @media (max-width: 768px) {
-            .digi-container {
-                flex-direction: column !important;
-                height: auto;
-            }
-            .digi-sidebar {
-                width: 100%;
-                height: 180px;
-                order: 2;
-                border: none;
-                border-top: 2px solid #185886;
-            }
-            .chat_ee { height: 350px; }
-        }
-    </style>
+    .add_chat_message { margin: -1px auto 20px auto; width: 98%; position: relative; }
+</style>
 </head>
 <body>
-<audio id="chatAudio">
-   <source src="https://www.soundjay.com/buttons/beep-07a.mp3" type="audio/mpeg">
-</audio>
+
+<audio id="chatAudio"><source src="https://www.soundjay.com/buttons/beep-07a.mp3" type="audio/mpeg"></audio>
 {template}address_bar_part1{/template}
 <a href="index.php?page=chat_message&amp;chatout=1">{$lang['mange_chat']} </a>
 {template}address_bar_part2{/template}
-
 <div class="digi-container">
+    <div class="sidebar-overlay" onclick="toggleMobileSidebar()"></div>
+    
     <div class="digi-sidebar">
         <div class="digi-header"><i class="fa fa-users"></i> {$lang['online_naw']}</div>
         <div id="content_online"></div>
@@ -1544,118 +1586,110 @@ showButtonPanel: true
 
     <div class="digi-main">
         <div class="digi-header">
-            <i class="fa fa-comments"></i> {$lang['chat_message']}
+            <div><i class="fa fa-comments"></i> {$lang['chat_message']}</div>
+            <div class="mobile-toggle" onclick="toggleMobileSidebar()" title="{$lang['online_naw']}">
+                <i class="fa fa-users"></i> <span id="m_count">0</span>             
+            </div>
             {if {$_CONF['rows']['group_info']['admincp_allow']}}
-                <a href="index.php?page=chat_message&control=1&amp;main=1" style="float:<?php echo ($PowerBB->_CONF['info_row']['content_dir'] == 'rtl') ? 'left' : 'right'; ?>; color:#fff;">
+                <a href="index.php?page=chat_message&control=1&amp;main=1" title="{$lang['manges_chat']}" style="color:#fff;">
                     <i class="fa fa-cog"></i>
                 </a>
-            {/if}
+            {/if}                 
         </div>
         <div class="chat_ee" id="main_chat_scroll">
             <div id="content_div_id"></div>
         </div>
     </div>
 </div>
-<div class="add_chat_message" style="margin: auto; margin-top: -1px; width: 98.1%; position: relative; z-index: 10;">
+
+<div class="add_chat_message">
     {template}add_chat_message{/template}
 </div>
 
 <script type="text/javascript">
-    var waittime = 5000; // تحديث الرسائل كل 5 ثواني
-    var lastChatContent = "";
-    var isAudioAllowed = false; // متغير للتحقق من سماح المتصفح بالصوت
+    var waittime = 7000;
+    var isAudioAllowed = false;
+    var userIsScrolling = false;
 
-    // دالة لتشغيل التنبيه مع معالجة قيود المتصفح
-    function playNotificationSound() {
-        var chatAudio = document.getElementById('chatAudio');
-        if (chatAudio && isAudioAllowed) {
-            chatAudio.play().catch(function(error) {
-                console.log("تعذر تشغيل الصوت: ", error);
+    function toggleMobileSidebar() {
+        $('.digi-sidebar, .sidebar-overlay').toggleClass('active');
+    }
+
+    $("#main_chat_scroll").on('scroll', function() {
+        var div = $(this);
+        userIsScrolling = (div[0].scrollHeight - div.scrollTop() - div.outerHeight()) > 50;
+    });
+
+    function AjaxInsertChat() {
+        var msgText = $("#box_text").val();
+        if(msgText && msgText.trim() != "") {
+            $(".add_chat_message button").attr("disabled", true);
+            
+            $.post("index.php?page=chat_message&start=1", { textc: msgText, ajax: 1 }, function() {
+                $("#box_text").val(""); 
+                $(".add_chat_message button").attr("disabled", false);
+                userIsScrolling = false;
+                read_cont();
             });
         }
     }
 
-// دالة جلب الرسائل المحسنة
     function read_cont() {
         $.get("index.php?page=chat_message&chat_w=1&t=" + Math.random(), function(data) {
             if(data.trim() !== "") {
-                var objDiv = document.getElementById("main_chat_scroll");
-
-                // 1. حساب المسافة قبل التحديث: هل المستخدم في القاع؟
-                // نترك هامش بسيط (50 بكسل) للتأكد من رغبة المستخدم في البقاء بالأسفل
-                var isAtBottom = (objDiv.scrollHeight - objDiv.clientHeight - objDiv.scrollTop < 50);
-
-                // 2. تفعيل التنبيه الصوتي عند وصول محتوى جديد
-                if (lastChatContent !== "" && data.trim() !== lastChatContent) {
-                    playNotificationSound();
+                var currentHash = data.length;
+                if (sessionStorage.getItem('last_l') && sessionStorage.getItem('last_l') != currentHash) {
+                    if (isAudioAllowed) document.getElementById('chatAudio').play();
                 }
-
-                lastChatContent = data.trim();
+                sessionStorage.setItem('last_l', currentHash);
+                
                 $("#content_div_id").html(data);
-
-                // 3. النزول لأسفل فقط إذا كان المستخدم أصلاً في القاع
-                if(objDiv && isAtBottom) {
-                    objDiv.scrollTop = objDiv.scrollHeight;
+                
+                if (!userIsScrolling) {
+                    var scroller = document.getElementById("main_chat_scroll");
+                    if(scroller) scroller.scrollTop = scroller.scrollHeight;
                 }
             }
         });
     }
 
-    // دالة جلب المتواجدين
     function read_users() {
         $.get("index.php?page=chat_message&chat_users=1&t=" + Math.random(), function(data) {
             $("#content_online").html(data);
-        });
-    }
-
-    // دالة الإرسال عبر Ajax
-    function AjaxInsertChat() {
-        var msgText = $("#box_text").val();
-        if(msgText.trim() == "") return;
-
-        $.post("index.php?page=chat_message&start=1", { textc: msgText, ajax: 1 }, function() {
-            $("#box_text").val("");
-            read_cont();
+            var count = $(data).find('#online_count_val').text() || "1";
+            $("#m_count").text(count);
         });
     }
 
     $(document).ready(function() {
-        // البدء الفوري
         read_cont();
         read_users();
-
-        // ضبط التوقيت الدوري
         setInterval(read_cont, waittime);
-        setInterval(read_users, 15000);
+        setInterval(read_users, 20000);
 
-        // تفعيل الإذن بالصوت عند أول نقرة في الصفحة أو عند محاولة الكتابة
-        // هذا يحل مشكلة قيود المتصفحات الحديثة (Autoplay Policy)
-        $(document).one('click keypress', function() {
-            var chatAudio = document.getElementById('chatAudio');
-            if (chatAudio) {
-                chatAudio.muted = true; // تشغيل صامت أولاً لتهيئة المتصفح
-                chatAudio.play().then(function() {
-                    chatAudio.pause();
-                    chatAudio.muted = false;
-                    isAudioAllowed = true; // الآن أصبح الصوت مسموحاً به
-                });
+        $(document).on('keydown', '#box_text', function(e) {
+            if(e.which == 13 && !e.shiftKey) {
+                e.preventDefault(); 
+                AjaxInsertChat();
+                return false; 
             }
         });
 
-        // تفعيل الإرسال عبر Enter
-        $("#box_text").on('keypress', function(e) {
-            if(e.which == 13 && !e.shiftKey) {
-                AjaxInsertChat();
-                e.preventDefault();
+        $(document).on('mousedown', function(e) {
+            if (!$(e.target).closest('#smile_box, img[onclick*="smile_box"]').length) {
+                $('#smile_box').removeClass('active');
             }
+        });
+
+        $(document).one('mousedown touchstart', function() {
+            isAudioAllowed = true;
         });
     });
 </script>
-
 </body>
 </html>
 {/if}]]></template>
-<template name="editor_js" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<link rel="stylesheet" href="{$ForumAdress}look/sceditor/minified/themes/default.min.css" id="theme-style" />
+<template name="editor_js" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<link rel="stylesheet" href="{$ForumAdress}look/sceditor/minified/themes/default.min.css" id="theme-style" />
 <script src="{$ForumAdress}look/sceditor/minified/formats/bbcode.js"></script>
 <script src="{$ForumAdress}look/sceditor/minified/PBB_bbcode.js"></script>
 <script src="{$ForumAdress}look/sceditor/minified/plugins/undo.js"></script>
@@ -1874,7 +1908,7 @@ echo "</tr><tr>";
 
 
 ]]></template>
-<template name="editor_simple" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<script type="text/javascript" src="{$ForumAdress}includes/js/IEprompt.js"></script>
+<template name="editor_simple" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<script type="text/javascript" src="{$ForumAdress}includes/js/IEprompt.js"></script>
 <script type='text/javascript'>
 {if {$_CONF['info_row']['content_language']} != 'ar'}
 function iePrompt(str){
@@ -1900,7 +1934,7 @@ return iePrompt(str);
 bbcode._Print("mini",100);
 </script>
 ]]></template>
-<template name="edit_poll_table1" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<title>{$lang['poll_edit']} -
+<template name="edit_poll_table1" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<title>{$lang['poll_edit']} -
 {if {$_CONF['info_row']['allowed_powered']} == 1}
 {$lang['powered']}
 {/if}</title>
@@ -1954,7 +1988,7 @@ $(document).ready(Ready);
 </td>
 </tr>
 ]]></template>
-<template name="edit_poll_table2" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<tr class="center_text_align">
+<template name="edit_poll_table2" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<tr class="center_text_align">
 <td class="row1">
 <?php $PowerBB->_CONF['template']['answers'] = $PowerBB->Powerparse->censor_words($PowerBB->_CONF['template']['answers']); ?>
 {$lang['answers_number']}
@@ -1964,7 +1998,7 @@ $(document).ready(Ready);
 <input name="answer[]" value="{$answers}" size="25" />
 </td>
 </tr>]]></template>
-<template name="edit_poll_table3" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[	<tr class="more_tr center_text_align">
+<template name="edit_poll_table3" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[	<tr class="more_tr center_text_align">
 <td class="row1" colspan="2">
 <input type="button" name="more_answers" class="more_answers_class" value="{$lang['more_answers']}" />
 </td>
@@ -1978,7 +2012,7 @@ $(document).ready(Ready);
 </table></div>
 </form>
 <br />]]></template>
-<template name="fast_reply_js" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<link rel="stylesheet" href="{$ForumAdress}look/sceditor/minified/themes/default.min.css" id="theme-style" />
+<template name="fast_reply_js" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<link rel="stylesheet" href="{$ForumAdress}look/sceditor/minified/themes/default.min.css" id="theme-style" />
 <script src="{$ForumAdress}look/sceditor/minified/formats/bbcode.js"></script>
 <script src="{$ForumAdress}look/sceditor/minified/PBB_bbcode.js"></script>
 <script src="look/sceditor/languages/{$_CONF['info_row']['content_language']}.js"></script>
@@ -2077,7 +2111,7 @@ $(function() {
 <br />
 
 ]]></template>
-<template name="footer" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[{if {$_CONF['info_row']['sidebar_list_active']} and {$on_sidebar_list_thes_page}}
+<template name="footer" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[{if {$_CONF['info_row']['sidebar_list_active']} and {$on_sidebar_list_thes_page}}
 </div>
 <div class="sbp_show">
 <a class="sbp_buton sbp_foot" style="margin-top: -17px; float: {$_CONF['info_row']['sidebar_list_align']};" title="{$lang['sbplus_sidebarac']}"></a>
@@ -2183,7 +2217,7 @@ $(function() {
 </body>
 </html>
 ]]></template>
-<template name="forget_password_form" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<title>{$lang['Retrieve_password']}
+<template name="forget_password_form" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<title>{$lang['Retrieve_password']}
 {if {$_CONF['info_row']['allowed_powered']} == 1}
 - {$lang['powered']}
 {/if}</title>
@@ -2265,7 +2299,7 @@ doc.src = "includes/captcha.php" + "?act=" + clicks;
 </div>
 <br />
 </form><br />]]></template>
-<template name="forum" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[{template}address_bar_part1{/template}
+<template name="forum" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[{template}address_bar_part1{/template}
 <!--adding_route_sequence_numbers-->
 <?php
  $itemprop_content = 2;
@@ -2329,7 +2363,7 @@ title="{$section_info['title']}">
 {/if}
 {/if}
 <br />]]></template>
-<template name="forum_announcement_table" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[{Des::while}{AnnouncementList}
+<template name="forum_announcement_table" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[{Des::while}{AnnouncementList}
 {if {$AnnouncementList['id']} !=''}
 <tr>
 <td class="row1 wd2 a-center forum_sub_dotrev">
@@ -2376,7 +2410,7 @@ title="{$lang['announcement']}" />
 </tr>
 {/if}
 {/Des::while}]]></template>
-<template name="forum_moderator_table" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[{if {$STOP_MODERATOR_TEMPLATE}}
+<template name="forum_moderator_table" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[{if {$STOP_MODERATOR_TEMPLATE}}
 {$lang['NO_MODERATOR']}
 {else}
 {Des::while}{ModeratorsList}
@@ -2388,7 +2422,7 @@ title="{$lang['announcement']}" />
 {/if}
 {/Des::while}
 {/if}]]></template>
-<template name="forum_online_table" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[{Des::while}{SectionVisitor}
+<template name="forum_online_table" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[{Des::while}{SectionVisitor}
 {if {$SectionVisitor['username']} == 'Guest'}
 <span class="inline-block">
 <?php echo $PowerBB->_CONF['template']['while']['SectionVisitor'][$this->x_loop]['username_style'] = str_ireplace('Guest',$PowerBB->_CONF['template']['lang']['Guest_'],$PowerBB->_CONF['template']['while']['SectionVisitor'][$this->x_loop]['username_style']); ?>،
@@ -2406,7 +2440,7 @@ title="{$lang['time_logged_online']}
 {$lang['no_online_section']}
 {/if}
 {/if}]]></template>
-<template name="forum_password" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<title>{$lang['password_forum']}
+<template name="forum_password" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<title>{$lang['password_forum']}
 {if {$_CONF['info_row']['allowed_powered']} == 1}
 - {$lang['powered']}
 {/if}</title>
@@ -2427,7 +2461,7 @@ title="{$lang['time_logged_online']}
 </tr>
 </table><br />
 ]]></template>
-<template name="forum_perpage_reply" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<?php
+<template name="forum_perpage_reply" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<?php
 $subject_id = $PowerBB->_CONF['template']['while']['subject_list'][$this->x_loop]['id'];
 $PagerReplyNumArr = $PowerBB->_CONF['template']['while']['subject_list'][$this->x_loop]['reply_number'];
 ?>
@@ -2481,7 +2515,7 @@ $countpage = $last_pagef;
 <?php
 unset($PagerReplyNumArr);
 ?>]]></template>
-<template name="forum_stick_perpage_reply" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<?php
+<template name="forum_stick_perpage_reply" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<?php
 $subject_id = $PowerBB->_CONF['template']['while']['stick_subject_list'][$this->x_loop]['id'];
 $PagerReplyNumArr = $PowerBB->_CONF['template']['while']['stick_subject_list'][$this->x_loop]['reply_number'];
 ?>
@@ -2535,7 +2569,7 @@ $countpage = $last_pagef;
 <?php
 unset($PagerReplyNumArr);
 ?>]]></template>
-<template name="forum_subject_table" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<script type='text/javascript'>
+<template name="forum_subject_table" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<script type='text/javascript'>
 function AjaxTitle()
 {
 var data = {};
@@ -3286,7 +3320,7 @@ title="{$lang['rss_section']}" aria-hidden="true"></i>
 </table>
 {/if}
 <br />]]></template>
-<template name="frame_form" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<script language="javascript">
+<template name="frame_form" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<script language="javascript">
 var myframes = 10;
 </script><style>
 table, input, select { font-size:8pt; font-family:tahoma;}
@@ -3314,7 +3348,7 @@ document.write('<option value=' + i + '>{$lang['Under_Num']}  ' + i);</script></
 <script language="javascript">
 showFrame(1);
 </script>]]></template>
-<template name="friends_main" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<title> {$lang['friends_list']} -
+<template name="friends_main" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<title> {$lang['friends_list']} -
 {$_CONF['info_row']['title']}</title>
 {template}address_bar_part1{/template}
 <li itemprop="itemListElement" itemscope
@@ -3457,7 +3491,7 @@ itemtype="https://schema.org/ListItem">
 <!-- /table3 -->
 <br /><br />
 <br />]]></template>
-<template name="guest_info" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[	<div class="center_text_align">
+<template name="guest_info" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[	<div class="center_text_align">
 <table class="wd90 brd1 clpc0">
 <tr>
 <td class="tbar_writer_info center_text_align wd100">
@@ -3467,7 +3501,7 @@ itemtype="https://schema.org/ListItem">
 </tr>
 </table>
 </div>]]></template>
-<template name="header" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<!-- action_find_addons_1 -->
+<template name="header" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<!-- action_find_addons_1 -->
 {template}header_bar{/template}
 <!--pbb.logo.start-->
 <header>
@@ -3521,7 +3555,7 @@ function my_search() {
 {template}main_bar{/template}
 <!-- action_find_addons_2 -->
 ]]></template>
-<template name="header_bar" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<div class="nav_header_bar-top">
+<template name="header_bar" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<div class="nav_header_bar-top">
 <nav id="nav_header_bar">
 <ul class="p-navgroup">
 <!-- aiction_find_adidons_2 -->
@@ -3767,7 +3801,7 @@ $(document).ready(function(){
 </div>
 </div>
 <!-- header_bar -->]]></template>
-<template name="headinclud" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<!doctype html>
+<template name="headinclud" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<!doctype html>
 <html dir="{$_CONF['info_row']['content_dir']}" lang="{$_CONF['info_row']['content_language']}">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset={$_CONF['info_row']['charset']}" />
@@ -3823,7 +3857,7 @@ $(document).ready(function(){
 </head>
 <body>
 {template}header{/template}]]></template>
-<template name="iconbox" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<fieldset>
+<template name="iconbox" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<fieldset>
 <legend>{$lang['icons']}</legend>
 <?php $t=0;	?>
 <table class="wd80 brd0 clp0 a-center" style="border-collapse: collapse">
@@ -3866,7 +3900,7 @@ echo "</tr><tr>";
 </table>
 </fieldset>
 ]]></template>
-<template name="imgs_resize" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[{if {$_CONF['info_row']['resize_imagesAllow']} == 1}
+<template name="imgs_resize" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[{if {$_CONF['info_row']['resize_imagesAllow']} == 1}
 <link rel="stylesheet" href="{$ForumAdress}applications/core/fancybox/fancybox.css" type="text/css" />
 
 <style type="text/css">
@@ -3893,7 +3927,7 @@ $(document).ready(function(){
 </script>
 <script type="text/javascript" src="{$ForumAdress}includes/js/resize_images.js"></script>
 {/if}]]></template>
-<template name="info_bar" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[{get_hook}header{/get_hook}
+<template name="info_bar" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[{get_hook}header{/get_hook}
 {if {$_CONF['info_row']['show_ads']}}
 {template}ads{/template}
 {/if}
@@ -3934,7 +3968,7 @@ if ($PowerBB->_CONF['template']['while']['AdsensesList'][$this->x_loop]['in_page
 <br />
 {/if}
 ]]></template>
-<template name="jump_forums_list" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<table class="l-left wd50 brd1 clpc0">
+<template name="jump_forums_list" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<table class="l-left wd50 brd1 clpc0">
 <tr>
 <td class="left_text_align wd50">
 
@@ -4053,7 +4087,7 @@ $selected = "";
 </table>
 <br />
 <br />]]></template>
-<template name="lasts_posts_bar" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[{if {$_CONF['info_row']['activate_lasts_posts_bar']} == 1}
+<template name="lasts_posts_bar" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[{if {$_CONF['info_row']['activate_lasts_posts_bar']} == 1}
 <br />
 <script type="text/javascript">
      function tick(){
@@ -4080,7 +4114,7 @@ $selected = "";
 
 </div>
 {/if}	]]></template>
-<template name="last_subject_writer" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[{if {$_CONF['info_row']['show_list_last_5_posts_member']} == 1}
+<template name="last_subject_writer" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[{if {$_CONF['info_row']['show_list_last_5_posts_member']} == 1}
 <div class="LastSubjectWriter center_text_align">
 <div class="center_text_align wd100">
 {$lang['Member_Topics']}
@@ -4120,7 +4154,7 @@ $PowerBB->_CONF['template']['while']['Writer_subjectList'][$this->x_loop]['title
 </div>
 {/if}
 <br />]]></template>
-<template name="login" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[{template}address_bar_part1{/template}
+<template name="login" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[{template}address_bar_part1{/template}
 <li itemprop="itemListElement" itemscope
 itemtype="https://schema.org/ListItem">
 <a href="index.php?page=login&amp;sign=1">
@@ -4170,7 +4204,7 @@ itemtype="https://schema.org/ListItem">
 </div>
 </form>
 <br />]]></template>
-<template name="login_msg" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[	<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<template name="login_msg" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[	<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html dir="{$_CONF['info_row']['content_dir']}" xmlns="http://www.w3.org/1999/xhtml" xml:lang="{$_CONF['info_row']['content_language']}" lang="{$_CONF['info_row']['content_language']}">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset={$_CONF['info_row']['charset']}" />
@@ -4197,7 +4231,7 @@ itemtype="https://schema.org/ListItem">
 </div>
 </body>
 </html>]]></template>
-<template name="logout_msg" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[	<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<template name="logout_msg" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[	<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html dir="{$_CONF['info_row']['content_dir']}" xmlns="http://www.w3.org/1999/xhtml" xml:lang="{$_CONF['info_row']['content_language']}" lang="{$_CONF['info_row']['content_language']}">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset={$_CONF['info_row']['charset']}" />
@@ -4224,7 +4258,7 @@ itemtype="https://schema.org/ListItem">
 </div>
 </body>
 </html>]]></template>
-<template name="main" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[{if {$_CONF['info_row']['activate_special_bar']} == 1}
+<template name="main" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[{if {$_CONF['info_row']['activate_special_bar']} == 1}
 {template}special{/template}
 {/if}
 {template}address_bar_part1{/template}
@@ -4244,7 +4278,7 @@ itemtype="https://schema.org/ListItem">
 <br />
 <br />
 <!-- actirrWon_find_ddaddons_4 -->]]></template>
-<template name="main_bar" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<div id="primary_nav">
+<template name="main_bar" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<div id="primary_nav">
 <ul class="y_nav r-right">
 <li class="{$main_page}">
 <a href="index.php" title="Forum">{$lang['forum']}</a></li>
@@ -4306,7 +4340,7 @@ itemtype="https://schema.org/ListItem">
 <div class="pbboard_body">
 <div class="pbb_main">
 {template}info_bar{/template}]]></template>
-<template name="main_static_table" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[	<!-- action_find_addons_1 -->
+<template name="main_static_table" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[	<!-- action_find_addons_1 -->
 <div class="border_radius">
 <ul class="rUlRow">
 <li class="tcat">
@@ -4441,7 +4475,7 @@ title="{$lang['time_logged_online']}{$OnlineList['logged']}">{$OnlineList['usern
 {template}statistics_list{/template}
 <!-- action_find_addons_7 -->
 ]]></template>
-<template name="multi_quote" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[{if {$mqtids}}
+<template name="multi_quote" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[{if {$mqtids}}
 <?php
 $mqtids = $PowerBB->_CONF['template']['mqtids'];
 $subjectids = $PowerBB->_CONF['template']['subject_info']['id'];if (strstr($mqtids,$PowerBB->_CONF['template']['subject_info']['id']))
@@ -4474,7 +4508,7 @@ echo $quote_reply_info."
 }
 ?>
 {/if}]]></template>
-<template name="new_reply" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[{template}address_bar_part1{/template}
+<template name="new_reply" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[{template}address_bar_part1{/template}
 <?php $title = $PowerBB->_CONF['template']['subject_info']['title'];
 $PowerBB->_CONF['template']['subject_info']['title'] = $PowerBB->Powerparse->censor_words($PowerBB->_CONF['template']['subject_info']['title']); ?>
 <li itemprop="itemListElement" itemscope
@@ -4798,7 +4832,7 @@ function getMeta(url) {
 </tr>
 </table>
 <br />]]></template>
-<template name="new_topic" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<script type='text/javascript'>
+<template name="new_topic" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<script type='text/javascript'>
 function ShowPollTable()
 {
 if ($("#poll_id").is(":checked"))
@@ -5224,7 +5258,7 @@ function getMeta(url) {
 </form>
 <!-- action_find_addons_7 -->
 ]]></template>
-<template name="online" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<title>{$lang['Whos_Online']}
+<template name="online" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<title>{$lang['Whos_Online']}
 {if {$_CONF['info_row']['allowed_powered']} == 1}
 - {$lang['powered']}
 {/if}</title>{template}address_bar_part1{/template}
@@ -5333,7 +5367,7 @@ $x = $PowerBB->_CONF['template']['GetOnlineNum_mem'] - $PowerBB->_GET['count']+1
 <br />
 <br />
 <br />]]></template>
-<template name="options_mod" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<table style="border-collapse: collapse" dir="ltr" class="wd98 brd0 clp0">
+<template name="options_mod" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<table style="border-collapse: collapse" dir="ltr" class="wd98 brd0 clp0">
 <tr>
 <td class="left_text_align">
 {if !{$mod_toolbar}}
@@ -5409,7 +5443,7 @@ title="{$lang['Management_tools']}" />
 </tr>
 </table>
 </form>]]></template>
-<template name="pager_style_part1" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<table class="multi_pages brd1 clpc0 a-[align]">
+<template name="pager_style_part1" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<table class="multi_pages brd1 clpc0 a-[align]">
 <tr class="a-center">
 <td class="mainbar pagesnum wd17">
 <span class="smallfont">[Pages]</span>
@@ -5418,15 +5452,15 @@ title="{$lang['Management_tools']}" />
 <span class="smallfont">[prev]</span>
 </td>
 ]]></template>
-<template name="pager_style_part2" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<td class="main_bar wd1">
+<template name="pager_style_part2" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<td class="main_bar wd1">
 <span class="smallfont"><strong>[p]</strong></span>
 </td>
 ]]></template>
-<template name="pager_style_part3" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<td class="pag_row wd1">
+<template name="pager_style_part3" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<td class="pag_row wd1">
 <a href="[l]&amp;[v]=[c]"><span class="smallfont">[p]</span></a>
 </td>
 ]]></template>
-<template name="pager_style_part4" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<td class="pag_row wd1 next_show"><span class="smallfont">[next]</span></td>
+<template name="pager_style_part4" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<td class="pag_row wd1 next_show"><span class="smallfont">[next]</span></td>
 <td class="pag_row wd1 last_page_show"><a href="[l]&amp;[v]=[last]"><span class="smallfont">[last_page]</span></a></td>
 <td class="mainbar wd1 Go_to_the_page_show">
 <a href="javascript:switchMenuNone('pageid');" id="pagdropmenu" title="[Jump_between_pages]"><span class="menu_open"></span></a>
@@ -5448,7 +5482,7 @@ title="{$lang['Management_tools']}" />
 </table></div></td>
 </tr>
 </table><br />]]></template>
-<template name="pages" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[      <!-- Code pages Menu start -->
+<template name="pages" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[      <!-- Code pages Menu start -->
 <div id="pages-content">
 <div class="thead">{$lang['pages']}</div>
 {Des::while}{PagesList}
@@ -5460,7 +5494,7 @@ title="{$lang['Management_tools']}" />
 {/Des::while}
 </div>
 <!-- Code pages Menu End -->]]></template>
-<template name="pm_list" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<script type='text/javascript'>function checkAll(form){
+<template name="pm_list" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<script type='text/javascript'>function checkAll(form){
 for (var i = 0; i < form.elements.length; i++){
 eval("form.elements[" + i + "].checked = form.elements[0].checked");
 }
@@ -5609,7 +5643,7 @@ src="{$image_path}/newfolder.gif" class="brd0" />
 <br />
 <br />
 <br />]]></template>
-<template name="pm_popup" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[{if {$_CONF['rows']['group_info']['use_pm']} == 1}
+<template name="pm_popup" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[{if {$_CONF['rows']['group_info']['use_pm']} == 1}
 <script type="text/javascript">
 $(document).ready(function(drag) {
 $("#pm_popup").draggable()
@@ -5668,7 +5702,7 @@ title="{$lang['Read_the_message']}">
 </div>
 {/if}
 ]]></template>
-<template name="pm_preview" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[{if {$view_preview}}
+<template name="pm_preview" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[{if {$view_preview}}
 <div class="center_text_align">
 <table class="border wd100 brd1 clpc1">
 <tr>
@@ -5687,7 +5721,7 @@ title="{$lang['Read_the_message']}">
 </div>
 <br />
 {/if}]]></template>
-<template name="pm_send" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<title>{$lang['Send_PM']} -
+<template name="pm_send" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<title>{$lang['Send_PM']} -
 {$_CONF['info_row']['title']}</title>
 <div class="usercp_context">{if !{$address_bar_pm_send_SHOW}}
 {template}address_bar_part1{/template}
@@ -6002,7 +6036,7 @@ function getMeta(url) {
 <!-- action_find_addons_7 -->
 
 ]]></template>
-<template name="pm_setting" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[{template}address_bar_part1{/template}
+<template name="pm_setting" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[{template}address_bar_part1{/template}
 <a href="index.php?page=pm_list&amp;list=1&amp;folder=inbox">{$lang['Private_Messages']}</a>
 <div class="btn-nav"></div>
 {$lang['Settings_Private_Messages']}
@@ -6090,7 +6124,7 @@ function getMeta(url) {
 <dd class="usercp_right">{template}usercp_menu{/template}</dd>
 </dl>
 </div><!-- /table --><br />]]></template>
-<template name="pm_show" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<!-- action_find_addons_1 -->
+<template name="pm_show" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<!-- action_find_addons_1 -->
 <style>
 .r-nfo{
 border-bottom: 1px solid #d1d1e1 !important;
@@ -6155,7 +6189,7 @@ border-bottom: 1px solid #d1d1e1 !important;
 </div>
 <br />
 ]]></template>
-<template name="portal" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[{template}address_bar_part1{/template}
+<template name="portal" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[{template}address_bar_part1{/template}
 <li itemprop="itemListElement" itemscope
 itemtype="https://schema.org/ListItem">
 <a itemprop="item" href="{$Adress}index.php?page=portal">
@@ -6419,7 +6453,7 @@ width: 100% !important;
 }
 </style>
 {/if}]]></template>
-<template name="portal_calendar" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[
+<template name="portal_calendar" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[
 
 <style>
 #calendar {
@@ -6529,10 +6563,10 @@ start: '2015-02-28'
 
 <div id='calendar'></div>
 ]]></template>
-<template name="portal_clock" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<i class="fa fa-clock-o" aria-hidden="true"></i>
+<template name="portal_clock" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<i class="fa fa-clock-o" aria-hidden="true"></i>
 {$lang['timer']}
 {$timer}]]></template>
-<template name="portal_last_news" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[{if {$_CONF['info_row']['style_block_latest_news']} =='1'}
+<template name="portal_last_news" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[{if {$_CONF['info_row']['style_block_latest_news']} =='1'}
 {Des::while}{LastNews_subjectList}
 <table class="border wd100 clp0" style="border-collapse: collapse;table-layout: fixed;">
 <?php
@@ -6700,7 +6734,7 @@ $text = $PowerBB->Powerparse->deletedalltags($text,$num);
 </table>
 {/if}
 {/if}]]></template>
-<template name="portal_latest_posts" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[{Des::while}{LastsPostsInfo}
+<template name="portal_latest_posts" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[{Des::while}{LastsPostsInfo}
 <?php $PowerBB->_CONF['template']['while']['LastsPostsInfo'][$this->x_loop]['title'] = $PowerBB->Powerparse->censor_words($PowerBB->_CONF['template']['while']['LastsPostsInfo'][$this->x_loop]['title']);
 $nums ='30';
 $PowerBB->_CONF['template']['while']['LastsPostsInfo'][$this->x_loop]['title'] =  $PowerBB->Powerparse->_wordwrap($PowerBB->_CONF['template']['while']['LastsPostsInfo'][$this->x_loop]['title'],$nums);
@@ -6729,7 +6763,7 @@ index.php?page=topic&amp;show=1&amp;id={$LastsPostsInfo['id']}">
 </span>
 {/Des::while}
 ]]></template>
-<template name="portal_main_categories" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[{Des::foreach}{forumsy_list}{forumy}
+<template name="portal_main_categories" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[{Des::foreach}{forumsy_list}{forumy}
 {if {$forumy['parent']} == 0}
 <span class="portal_main_categories smallfont">
 <img class="brd0" src="look/portal/images/news_icon.gif" alt="" />
@@ -6739,7 +6773,7 @@ index.php?page=topic&amp;show=1&amp;id={$LastsPostsInfo['id']}">
 </span>
 {/if}
 {/Des::foreach}]]></template>
-<template name="portal_main_menu" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<span class="smallfont  portal_main_menu">
+<template name="portal_main_menu" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<span class="smallfont  portal_main_menu">
 <img class="brd0" src="look/portal/images/news_icon.gif" alt="" />
 <a href="index.php?page=portal">{$lang['home']}</a><br />
 <!-- action_find_addons_2 -->
@@ -6786,7 +6820,7 @@ index.php?page=topic&amp;show=1&amp;id={$LastsPostsInfo['id']}">
 {/if}
 <!-- action_find_addons_3 -->
 </span>]]></template>
-<template name="portal_online" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<span class="portal_online smallfont">
+<template name="portal_online" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<span class="portal_online smallfont">
 </strong> ({$MemberNumber})
 {$lang['member_and']}
 ({$SpidersNumber})
@@ -6828,7 +6862,7 @@ title="{$lang['time_logged_online']}{$OnlineList['logged']}">{$OnlineList['usern
 {/if}
 {/if}
 </span>]]></template>
-<template name="portal_static" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<span class="smallfont  portal_static ">
+<template name="portal_static" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<span class="smallfont  portal_static ">
 <img class="brd0" src="look/portal/images/menublip.gif" alt="" />
 {$lang['Number_Members']}  :  {$StaticInfo['GetMemberNumber']}<br />
 <img class="brd0" src="look/portal/images/menublip.gif" alt="" />
@@ -6842,7 +6876,7 @@ title="{$lang['time_logged_online']}{$OnlineList['logged']}">{$OnlineList['usern
 <img class="brd0" src="look/portal/images/menublip.gif" alt="" />
 {$lang['Age_forum']}  :  {$StaticInfo['Age']} {$lang['Day']}
 </span>]]></template>
-<template name="preview" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<div style="clear:both"></div>
+<template name="preview" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<div style="clear:both"></div>
 {if {$view_preview}}
 <br />
 <table class="border wd98 brd1 clpc0 a-center" style="line-height:1.5;">
@@ -6860,13 +6894,13 @@ title="{$lang['time_logged_online']}{$OnlineList['logged']}">{$OnlineList['usern
 <br />
 {/if}
 <div style="clear:both;"></div>]]></template>
-<template name="print_footer" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[
+<template name="print_footer" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[
 <div class="a-center">
 <!--copyright-->
 </div>
 </body>
 </html>]]></template>
-<template name="print_reply" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<div class="center_text_align">
+<template name="print_reply" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<div class="center_text_align">
 <table class="tborder wd90 brd0 clp8 clpc1">
 <tr>
 <td class="page">
@@ -6882,7 +6916,7 @@ title="{$lang['time_logged_online']}{$OnlineList['logged']}">{$OnlineList['usern
 </table>
 </div>
 <br />]]></template>
-<template name="print_subject" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<!doctype html>
+<template name="print_subject" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<!doctype html>
 <html dir="{$_CONF['info_row']['content_dir']}" lang="{$_CONF['info_row']['content_language']}">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset={$_CONF['info_row']['charset']}" />
@@ -6999,7 +7033,7 @@ document.write('<form> '
 </div>
 </div>
 <br />]]></template>
-<template name="profile" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[{template}address_bar_part1{/template}
+<template name="profile" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[{template}address_bar_part1{/template}
  <li itemprop="itemListElement" itemscope
 itemtype="https://schema.org/ListItem">
 <a itemprop="item" href="index.php?page=profile&amp;show=1&amp;id={$MemberInfo['id']}">
@@ -7472,7 +7506,7 @@ silverlight_xap_url : '{$ForumAdress}applications/core/plupload/Moxie.xap'
 
 });
 </script>]]></template>
-<template name="register" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[
+<template name="register" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[
 {template}address_bar_part1{/template}
 <li itemprop="itemListElement" itemscope
 itemtype="https://schema.org/ListItem">
@@ -7715,7 +7749,7 @@ id="invite_id" style="min-width: 50px;" class="max-input" size="20" dir="{$_CONF
 </div>
 <!-- /table -->
 <br /></form><br />]]></template>
-<template name="register_rules" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<title>{$lang['Registration_requirements_forums']}
+<template name="register_rules" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<title>{$lang['Registration_requirements_forums']}
  - {$_CONF['info_row']['title']}</title>
 
 {template}address_bar_part1{/template}
@@ -7754,7 +7788,7 @@ itemtype="https://schema.org/ListItem">
 </table>
 </form>
 <br />]]></template>
-<template name="replys_delet_index" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[{template}address_bar_part1{/template}
+<template name="replys_delet_index" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[{template}address_bar_part1{/template}
 {$lang['Management_Subjects']}
 <div class="btn-nav"></div>
 {$lang['del_posts']}
@@ -7819,10 +7853,10 @@ itemtype="https://schema.org/ListItem">
 </tr>
 </table>
 ]]></template>
-<template name="replys_delet_index2" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<input  type="hidden" name="num" value="{$x}">
+<template name="replys_delet_index2" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<input  type="hidden" name="num" value="{$x}">
 <input  type="hidden" name="check[]" value="{$replys}">
 ]]></template>
-<template name="replys_move_index" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<br />
+<template name="replys_move_index" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<br />
 <br />
 <br />
 <form method="post" action="index.php?page=managementreply&amp;do_replys=1&amp;startmoveposts=1" name="form1" method="post">
@@ -7844,10 +7878,10 @@ itemtype="https://schema.org/ListItem">
 </tr>
 </table>
 ]]></template>
-<template name="replys_move_index2" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<input  type="hidden" name="num" value="{$x}">
+<template name="replys_move_index2" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<input  type="hidden" name="num" value="{$x}">
 <input  type="hidden" name="check[]" value="{$replys}">
 ]]></template>
-<template name="reply_delete_index" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[{template}address_bar_part1{/template}
+<template name="reply_delete_index" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[{template}address_bar_part1{/template}
 {$lang['Management_Subjects']}
 <div class="btn-nav"></div>
 {$lang['delete_reply']}
@@ -7910,7 +7944,7 @@ itemtype="https://schema.org/ListItem">
 </table></form>
 <br />
 <br />]]></template>
-<template name="reply_edit" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[{template}address_bar_part1{/template}
+<template name="reply_edit" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[{template}address_bar_part1{/template}
 <a href="index.php?page=forum&amp;show=1&amp;id={$ReplyInfo['section']}
 {$password}">
 {$section_info['title']} </a>
@@ -8157,7 +8191,7 @@ function getMeta(url) {
 <!-- action_find_addons_7 -->
 
 ]]></template>
-<template name="reply_reputation" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<script language="javascript">
+<template name="reply_reputation" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<script language="javascript">
 function Ajax_{$Info['id']}_Reputation()
 {
 
@@ -8213,7 +8247,7 @@ $(document).ready(Ready);
 </div>
 <!-- Code reputation Menu End -->
 ]]></template>
-<template name="rules_board_main" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[
+<template name="rules_board_main" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[
 {template}address_bar_part1{/template}
 <li itemprop="itemListElement" itemscope
 itemtype="https://schema.org/ListItem">
@@ -8241,7 +8275,7 @@ itemtype="https://schema.org/ListItem">
 <br />
 <br />
 <br />]]></template>
-<template name="search" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<br />
+<template name="search" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<br />
 {if {$_CONF['info_row']['ajax_search']}}
 <script language="javascript">
 function AjaxSearch()
@@ -8396,7 +8430,7 @@ itemtype="https://schema.org/ListItem">
 <br />
 <br />
 <br /><br />]]></template>
-<template name="search_results_all" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<title>{$lang['Search_Results']}
+<template name="search_results_all" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<title>{$lang['Search_Results']}
 - {$_CONF['info_row']['title']}</title>
 {template}address_bar_part1{/template}
 <li itemprop="itemListElement" itemscope
@@ -8450,7 +8484,7 @@ itemtype="https://schema.org/ListItem">
 {if {$SubjectList['stick']}}
 <b><span style="color:#FF0000;">{$lang['sticky']} : </span></b>
 {/if}
-<a href="index.php?page=topic&amp;show=1&amp;highlight={$keyword}&amp;id={$SubjectList['id']}{$password}">
+<a href="index.php?page=topic&amp;show=1&amp;id={$SubjectList['id']}{$password}">
 {$SubjectList['title']}</a>
 </a>
 {if {$SubjectList['close']}}
@@ -8487,7 +8521,7 @@ itemtype="https://schema.org/ListItem">
 {if {$SubjectTitleList['stick']}}
 <b><span style="color:#FF0000;">{$lang['sticky']} : </span></b>
 {/if}
-<a href="index.php?page=topic&amp;show=1&amp;highlight={$keyword}&amp;id={$SubjectTitleList['id']}{$password}">
+<a href="index.php?page=topic&amp;show=1&amp;id={$SubjectTitleList['id']}{$password}">
 {$SubjectTitleList['title']}</a>
 {if {$SubjectTitleList['close']}}
 {$lang['subject_close']}
@@ -8525,7 +8559,7 @@ itemtype="https://schema.org/ListItem">
 {if {$MembersListSubject['stick']}}
 <b><span style="color:#FF0000;">{$lang['sticky']} : </span></b>
 {/if}
-<a href="index.php?page=topic&amp;show=1&amp;highlight={$keyword}&amp;id={$MembersListSubject['id']}{$password}">
+<a href="index.php?page=topic&amp;show=1&amp;id={$MembersListSubject['id']}{$password}">
 {$MembersListSubject['title']}</a>
 {if {$MembersListSubject['close']}}
 {$lang['subject_close']}
@@ -8592,7 +8626,7 @@ itemtype="https://schema.org/ListItem">
 {/if}		</td>
 <td class="row2 wd40">
 {$lang['bY_reply']}
-<a href="index.php?page=post&amp;show=1&amp;highlight={$keyword}&amp;id={$ReplyList['id']}">
+<a href="index.php?page=post&amp;show=1&amp;id={$ReplyList['id']}">
 {if {$ReplyList['title']} !=''}
 {$ReplyList['title']}
 {else}
@@ -8627,7 +8661,7 @@ itemtype="https://schema.org/ListItem">
 </table>
 <br />
 <br />]]></template>
-<template name="search_results_one" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<title>{$lang['Search_Results']}
+<template name="search_results_one" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<title>{$lang['Search_Results']}
 - {$_CONF['info_row']['title']}</title>
 {template}address_bar_part1{/template}
 {$lang['Search_Results']}
@@ -8673,7 +8707,7 @@ itemtype="https://schema.org/ListItem">
 <img src="{$_CONF['SubjectListOne_row']['icon_path']}{$SubjectListOne['icon']}" alt="" />
 </td>
 <td class="row2 wd30">
-<a href="index.php?page=topic&amp;show=1&amp;highlight={$keyword}&amp;id={$SubjectListOne['id']}{$password}">
+<a href="index.php?page=topic&amp;show=1&amp;id={$SubjectListOne['id']}{$password}">
 {$SubjectListOne['title']}
 </a>
 {if {$SubjectListOne['close']}}
@@ -8700,7 +8734,7 @@ itemtype="https://schema.org/ListItem">
 <img src="{$_CONF['SubjectTitleListOne_row']['icon_path']}{$SubjectTitleListOne['icon']}" alt="" />
 </td>
 <td class="row2 wd30">
-<a href="index.php?page=topic&amp;show=1&amp;highlight={$keyword}&amp;id={$SubjectTitleListOne['id']}{$password}">
+<a href="index.php?page=topic&amp;show=1&amp;id={$SubjectTitleListOne['id']}{$password}">
 {$SubjectTitleListOne['title']}
 </a>
 {if {$SubjectTitleListOne['close']}}
@@ -8734,7 +8768,7 @@ itemtype="https://schema.org/ListItem">
 <img src="{$_CONF['MembersListSubjectOne_row']['icon_path']}{$MembersListSubjectOne['icon']}" alt="" />
 </td>
 <td class="row2 wd30">
-<a href="index.php?page=topic&amp;show=1&amp;highlight={$keyword}&amp;id={$MembersListSubjectOne['id']}{$password}">
+<a href="index.php?page=topic&amp;show=1&amp;id={$MembersListSubjectOne['id']}{$password}">
 {$MembersListSubjectOne['title']}
 </a>
 {if {$MembersListSubjectOne['close']}}
@@ -8801,7 +8835,7 @@ itemtype="https://schema.org/ListItem">
 {/if}		</td>
 <td class="row2 wd40">
 {$lang['bY_reply']}
-<a href="index.php?page=post&amp;show=1&amp;highlight={$keyword}&amp;id={$ReplyListOne['id']}">
+<a href="index.php?page=post&amp;show=1&amp;id={$ReplyListOne['id']}">
 {if {$ReplyListOne['title']} !=''}
 {$ReplyListOne['title']}
 {else}
@@ -8834,8 +8868,7 @@ itemtype="https://schema.org/ListItem">
 </table>
 <br />
 <br />]]></template>
-<template name="search_results_tags" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[
-{template}address_bar_part1{/template}
+<template name="search_results_tags" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[{template}address_bar_part1{/template}
 <li itemprop="itemListElement" itemscope
 itemtype="https://schema.org/ListItem">
 <a itemprop="item" href="index.php?page=search&amp;option=5&amp;tag={$tags}&amp;sort_order=DESC">
@@ -8848,7 +8881,39 @@ itemtype="https://schema.org/ListItem">
 {template}address_bar_part2{/template}
 
 
-<br /><table class="border wd70 brd1 clpc0 a-center">
+<br />
+<style>
+    .tags-container-box {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        padding: 5px 0;
+    }
+    .tag-badge {
+        display: inline-block;
+        background-color: #f2f2f2;
+        color: #444;
+        padding: 4px 12px;
+        border-radius: 20px;
+        border: 1px solid #dcdcdc;
+        text-decoration: none;
+        font-size: 12px;
+        transition: all 0.3s ease;
+    }
+    .tag-badge:hover {
+        background-color: #3498db;
+        color: #fff;
+        border-color: #2980b9;
+        text-decoration: none;
+    }
+    .edit-tags-link {
+        font-size: 11px;
+        color: #fff;
+        text-decoration: underline;
+    }
+</style>
+
+<table class="border wd70 brd1 clpc0 a-center">
 <tr class="center_text_align">
 <td class="tcat wd70" colspan="2">
 <div class="r-right">
@@ -8865,7 +8930,7 @@ itemtype="https://schema.org/ListItem">
 {Des::while}{Subject}
 <tr class="center_text_align">
 <td class="row1 wd70" colspan="2">
-<a href="index.php?page=topic&amp;show=1&amp;id={$Subject['subject_id']}">{$Subject['subject_title']}</a>
+<a href="index.php?page=topic&amp;show=1&amp;id={$Subject['subject_id']}" class="tag-badge">{$Subject['subject_title']}</a>
 </td>
 </tr>
 {/Des::while}
@@ -8880,7 +8945,7 @@ itemtype="https://schema.org/ListItem">
 </table>
 <br /><br />
 ]]></template>
-<template name="search_results_username_reply" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[{template}address_bar_part1{/template}
+<template name="search_results_username_reply" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[{template}address_bar_part1{/template}
  <li itemprop="itemListElement" itemscope
 itemtype="https://schema.org/ListItem">
 <a itemprop="item" href="index.php?page=search&amp;option=4&amp;username={$keyword}&amp;starteronly=0&amp;section=all&amp;exactname=1&amp;sort_order=DESC">
@@ -8890,9 +8955,7 @@ itemtype="https://schema.org/ListItem">
 <meta itemprop="position" content="2" />
 </li>
 {template}address_bar_part2{/template}
-
 <br />
-<div class="center_text_align">
 {if {$review_reply}}
 <script language="JavaScript">
 function checkAll(form){
@@ -8901,15 +8964,12 @@ eval("form.elements[" + i + "].checked = form.elements[0].checked");
 }
 }
 </script>
-
 <form action="index.php?page=managementreply&amp;do_review_reply=1&amp;section={$section}" name="form1" method="post">
 {/if}
-
-<table class="border wd98 brd1 clpc0">
+<table class="border wd98 brd1 clpc0 a-center">
 <tr>
-<td class="tcat center_text_align wd100">
+<td class="tcat small_text wd100 a-center" colspan="6">
 {if {$review_reply}}
-
 <div class="l-left">
 &nbsp;<input type="checkbox" name="check_all" onClick="checkAll(this.form)" />&nbsp;
 <div class="r-right">
@@ -8917,6 +8977,9 @@ eval("form.elements[" + i + "].checked = form.elements[0].checked");
 &nbsp;<input class="button button_b" name="approveposts" type="submit" value="{$lang['approveposts']}" />&nbsp;
 </div>
 </div>
+<?php
+$PowerBB->_CONF['template']['colspan'] = '4';
+?>
 {/if}
 <div class="r-right">{$lang['Search_results_for_all_reply_user']}
 {$keyword}</div>
@@ -8927,69 +8990,70 @@ eval("form.elements[" + i + "].checked = form.elements[0].checked");
 {/if}
 </td>
 </tr>
+<tr>
+<td class="thead wd3 a-center">
+</td>
+<td class="thead wd40 a-center">
+{$lang['subject_title']}
+</td>
+<td class="thead wd10 a-center">
+{$lang['subject_writer']}
+</td>
+<td class="thead wd15 a-center">
+{$lang['forum']}
+</td>
+{if {$review_reply}}
+<td class="thead wd3 a-center">
+</td>
+{/if}
+</tr>
 {Des::while}{MembersListReply}
-<tr class="radiusContent">
-<td class="row2 radiusContent va-t">
-<div class="l-left">
- <span class="smallfont">{$MembersListReply['reply_date']}</span>
- {if {$review_reply}}
-<input type="checkbox" name="check[]" value="{$MembersListReply['id']}" />
-{/if}
- </div>
-{if {$MembersListReply['icon']} !=''}
-<img src="{$_CONF['MembersListReply_row']['icon_path']}{$MembersListReply['icon']}" alt="" />
-{else}
-<img src="look/images/icons/i1.gif" alt="" />
-{/if}
+<tr>
+<td class="row2 wd3 a-center">
+<img src="{$_CONF['ReplyList_row']['icon_path']}{$MembersListReply['icon']}" alt="" />
+</td>
+<td class="row1 wd40">
+<?php $PowerBB->_CONF['template']['while']['MembersListReply'][$this->x_loop]['title'] = $PowerBB->functions->CleanVariable($PowerBB->_CONF['template']['while']['MembersListReply'][$this->x_loop]['title'],'html'); ?>
+<?php $PowerBB->_CONF['template']['while']['MembersListReply'][$this->x_loop]['title'] = $PowerBB->Powerparse->censor_words($PowerBB->_CONF['template']['while']['MembersListReply'][$this->x_loop]['title']); ?>
 <a href="index.php?page=post&amp;show=1&amp;id={$MembersListReply['id']}">
 {$MembersListReply['title']}
 </a>
-|
-{$lang['LastsPostsWriter']}
+</td>
+<td class="row2 wd15 a-center">
 {if {$MembersListReply['writer']} =='Guest'}
 {$lang['Guest_']}
  {else}
-<a href="index.php?page=profile&amp;show=1&amp;username={$MembersListReply['writer']}">{$MembersListReply['writer']}</a>
+<a href="index.php?page=profile&amp;show=1&amp;id={$MembersListReply['writer_id']}">{$MembersListReply['username_style_cache']}</a>
 {/if}
-<?php $PowerBB->_CONF['template']['while']['MembersListReply'][$this->x_loop]['title'] = $PowerBB->functions->CleanVariable($PowerBB->_CONF['template']['while']['MembersListReply'][$this->x_loop]['title'],'html'); ?>
-<?php $PowerBB->_CONF['template']['while']['MembersListReply'][$this->x_loop]['title'] = $PowerBB->Powerparse->censor_words($PowerBB->_CONF['template']['while']['MembersListReply'][$this->x_loop]['title']); ?>
-<?php
-$PowerBB->_CONF['template']['while']['MembersListReply'][$this->x_loop]['text'] = $PowerBB->functions->replace_strip($PowerBB->_CONF['template']['while']['MembersListReply'][$this->x_loop]['text']);
-?>
-{if {$MembersListReply['close']}}
-| {$lang['subject_close']}
-{/if}
-
-<?php      	$section_id = $PowerBB->_CONF['template']['while']['MembersListReply'][$this->x_loop]['section'];
-$GetForum = $PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['section'] . " WHERE id = '$section_id'");
-$Forum = $PowerBB->DB->sql_fetch_array($GetForum);
-$Forum_title = $Forum['title'];
-$Forum_id = $Forum['id'];
-?>
-|{$lang['forum']}:		<a href="index.php?page=forum&amp;show=1&amp;id=<?php echo $Forum_id; ?>"><?php echo $Forum_title; ?></a>
-
 <br />
-<div class="textemain"><pre class="post" style="direction:{$_CONF['info_row']['content_dir']};"> {$MembersListReply['text']}</pre></div>
+<span class="smallfont">{$MembersListReply['reply_date']}</span>
 </td>
+<td class="row1 wd15 a-center">
+<a href="index.php?page=forum&amp;show=1&amp;id={$MembersListReply['section_id']}"><span class="smallfont">{$MembersListReply['section_title']}</span></a>
+</td>
+ {if {$review_reply}}
+<td class="row2 wd3 a-center">
+<input type="checkbox" name="check[]" value="{$MembersListReply['id']}" />
+</td>
+{/if}
 </tr>
 {/Des::while}
 </table>
 {if {$review_reply}}
 </form>
 {/if}
-</div>
 <br />
 <table class="wd98 brd1 clpc0 a-center" style="border-collapse: collapse">
 <tr>
-<td class="right_text_align wd2">
+<td class="wd2 a-right">
 {if {$pager}}
 {$pager}
 {/if}
 </td>
 </tr>
-</table><br />
+</table>
 <br />]]></template>
-<template name="search_results_username_subject" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[{template}address_bar_part1{/template}
+<template name="search_results_username_subject" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[{template}address_bar_part1{/template}
  <li itemprop="itemListElement" itemscope
 itemtype="https://schema.org/ListItem">
 <a itemprop="item" href="index.php?page=search&amp;option=3&amp;username={$keyword}&amp;starteronly=0&amp;section=all&amp;exactname=1&amp;sort_order=DESC">
@@ -8999,8 +9063,6 @@ itemtype="https://schema.org/ListItem">
 <meta itemprop="position" content="2" />
 </li>
 {template}address_bar_part2{/template}
-
-
 <br />
 <table class="border wd98 brd1 clpc0 a-center">
 <tr>
@@ -9054,7 +9116,7 @@ itemtype="https://schema.org/ListItem">
 {if {$SubjectList['stick']}}
 <b><span style="color:#FF0000;">{$lang['sticky']} : </span></b>
 {/if}
-<a href="index.php?page=topic&show=1&highlight={$keyword}&id={$SubjectList['id']}{$password}">
+<a href="index.php?page=topic&amp;show=1&amp;id={$SubjectList['id']}{$password}">
 {$SubjectList['title']}</a>
 {if {$SubjectList['close']}}
 {$lang['subject_close']}
@@ -9064,7 +9126,7 @@ itemtype="https://schema.org/ListItem">
 </td>
 {if !{$search_username_subjects} }
 <td class="row1 wd20 a-center">
-<a href="index.php?page=profile&show=1&username={$SubjectList['writer']}">{$SubjectList['writer']}</a>
+<a href="index.php?page=profile&amp;show=1&amp;id={$SubjectList['writer_id']}">{$SubjectList['username_style_cache']}</a>
 </td>
 {/if}
 <td class="row2 wd10 a-center">
@@ -9078,20 +9140,12 @@ itemtype="https://schema.org/ListItem">
 {$SubjectList['visitor']}
 </td>
 <td class="row2 wd28 a-center">
-<a href="index.php?page=profile&show=1&username={$SubjectList['writer']}">{$SubjectList['writer']}</a>
+<a href="index.php?page=profile&amp;show=1&amp;username={$SubjectList['writer_id']}">{$SubjectList['username_style_cache']}</a>
 <br />
 <span class="smallfont">{$SubjectList['reply_date']}</span>
 </td>
 <td class="row2 wd15 a-center">
-<?php
-
-$section_id = $PowerBB->_CONF['template']['while']['SubjectList'][$this->x_loop]['section'];
-$GetForum = $PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['section'] . " WHERE id = '$section_id'");
-$Forum = $PowerBB->DB->sql_fetch_array($GetForum);
-$Forum_title = $Forum['title'];
-$Forum_id = $Forum['id'];
-?>
-<a href="index.php?page=forum&amp;show=1&amp;id=<?php echo $Forum_id; ?>"><span class="smallfont"><?php echo $Forum_title; ?></span></a>
+<a href="index.php?page=forum&amp;show=1&amp;id={$SubjectList['section_id']}"><span class="smallfont">{$SubjectList['section_title']}</span></a>
 </td>
 </tr>
 {/Des::while}
@@ -9108,7 +9162,7 @@ $Forum_id = $Forum['id'];
 {if {$SubjectTitleList['stick']}}
 <b><span style="color:#FF0000;">{$lang['sticky']} : </span></b>
 {/if}
-<a href="index.php?page=topic&show=1&id={$SubjectTitleList['id']}{$password}">
+<a href="index.php?page=topic&amp;show=1&amp;id={$SubjectTitleList['id']}{$password}">
 {$SubjectTitleList['title']}</a>
 {if {$SubjectTitleList['close']}}
 {$lang['subject_close']}
@@ -9118,7 +9172,7 @@ $Forum_id = $Forum['id'];
 </td>
 {if !{$search_username_subjects} }
 <td class="row1 wd20 a-center">
-<a href="index.php?page=profile&show=1&username={$SubjectTitleList['writer']}">{$SubjectTitleList['writer']}</a>
+<a href="index.php?page=profile&amp;show=1&amp;id={$SubjectTitleList['writer_id']}">{$SubjectTitleList['username_style_cache']}</a>
 <br />
 {$SubjectTitleList['write_date']}
 </td>
@@ -9134,20 +9188,12 @@ $Forum_id = $Forum['id'];
 {$SubjectTitleList['visitor']}
 </td>
 <td class="row2 wd28 a-center">
-<a href="index.php?page=profile&show=1&username={$SubjectTitleList['writer']}">{$SubjectTitleList['writer']}</a>
+<a href="index.php?page=profile&amp;show=1&amp;username={$SubjectTitleList['writer_id']}">{$SubjectTitleList['username_style_cache']}</a>
 <br />
 <span class="smallfont">{$SubjectTitleList['reply_date']}</span>
 </td>
 <td class="row2 wd15 a-center">
-<?php
-
-$section_id = $PowerBB->_CONF['template']['while']['SubjectTitleList'][$this->x_loop]['section'];
-$GetForum = $PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['section'] . " WHERE id = '$section_id'");
-$Forum = $PowerBB->DB->sql_fetch_array($GetForum);
-$Forum_title = $Forum['title'];
-$Forum_id = $Forum['id'];
-?>
-<a href="index.php?page=forum&amp;show=1&amp;id=<?php echo $Forum_id; ?>"><span class="smallfont"><?php echo $Forum_title; ?></span></a>
+<a href="index.php?page=forum&amp;show=1&amp;id={$SubjectTitleList['section_id']}"><span class="smallfont">{$SubjectTitleList['section_title']}</span></a>
 </td>
 </tr>
 {/Des::while}
@@ -9163,7 +9209,7 @@ $Forum_id = $Forum['id'];
 {if {$MembersListSubject['stick']}}
 <b><span style="color:#FF0000;">{$lang['sticky']} : </span></b>
 {/if}
-<a href="index.php?page=topic&show=1&id={$MembersListSubject['id']}{$password}">
+<a href="index.php?page=topic&amp;show=1&amp;id={$MembersListSubject['id']}{$password}">
 {$MembersListSubject['title']}</a>
 {if {$MembersListSubject['close']}}
 {$lang['subject_close']}
@@ -9173,7 +9219,7 @@ $Forum_id = $Forum['id'];
 </td>
 {if !{$search_username_subjects}}
 <td class="row1 wd20 a-center">
-<a href="index.php?page=profile&show=1&username={$MembersListSubject['writer']}">{$MembersListSubject['writer']}</a>
+<a href="index.php?page=profile&amp;show=1&amp;id={$MembersListSubject['writer_id']}">{$MembersListSubject['username_style_cache']}</a>
 <br />
 {$MembersListSubject['write_date']}
 </td>
@@ -9189,20 +9235,12 @@ $Forum_id = $Forum['id'];
 {$MembersListSubject['visitor']}
 </td>
 <td class="row2 wd28 a-center">
-<a href="index.php?page=profile&show=1&username={$MembersListSubject['writer']}">{$MembersListSubject['writer']}</a>
+<a href="index.php?page=profile&amp;show=1&amp;id={$MembersListSubject['writer_id']}">{$MembersListSubject['username_style_cache']}</a>
 <br />
 <span class="smallfont">{$MembersListSubject['reply_date']}</span>
 </td>
 <td class="row1 wd15 a-center">
-<?php
-
-$section_id = $PowerBB->_CONF['template']['while']['MembersListSubject'][$this->x_loop]['section'];
-$GetForum = $PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['section'] . " WHERE id = '$section_id'");
-$Forum = $PowerBB->DB->sql_fetch_array($GetForum);
-$Forum_title = $Forum['title'];
-$Forum_id = $Forum['id'];
-?>
-<a href="index.php?page=forum&amp;show=1&amp;id=<?php echo $Forum_id; ?>"><span class="smallfont"><?php echo $Forum_title; ?></span></a>
+<a href="index.php?page=forum&amp;show=1&amp;id={$MembersListSubject['section_id']}"><span class="smallfont">{$MembersListSubject['section_title']}</span></a>
 </td>
 </tr>
 {/Des::while}
@@ -9218,9 +9256,8 @@ $Forum_id = $Forum['id'];
 </tr>
 </table>
 <br />
-<br />
-]]></template>
-<template name="sections_list" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<div class="sections">
+<br />]]></template>
+<template name="sections_list" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<div class="sections">
 {if {$SHOW_SUB_SECTIONS}}
 <!-- start_category-in_page_forum -->
 <ul class="categorys">
@@ -9368,7 +9405,7 @@ imgChange.className = "collapsed";
 <!-- End_All-categorys -->
 </div>
 <br />]]></template>
-<template name="send_active_code" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<title>{$lang['send_active_code']}
+<template name="send_active_code" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<title>{$lang['send_active_code']}
 {if {$_CONF['info_row']['allowed_powered']} == 1}
 - {$lang['send_active_code']}
 {/if}</title>
@@ -9447,7 +9484,7 @@ doc.src = "includes/captcha.php" + "?act=" + clicks;
 </table>
 <br />
 </form><br />]]></template>
-<template name="send_admin" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[{template}address_bar_part1{/template}
+<template name="send_admin" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[{template}address_bar_part1{/template}
 <li itemprop="itemListElement" itemscope
 itemtype="https://schema.org/ListItem">
 <a itemprop="item" href="index.php?page=send&amp;sendmessage=1">
@@ -9544,7 +9581,7 @@ doc.src = "includes/captcha.php" + "?act=" + clicks;
 </div>
 </form>
 <br />]]></template>
-<template name="send_email" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<title> {$lang['Send_Email_Message_to']}
+<template name="send_email" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<title> {$lang['Send_Email_Message_to']}
 {$MemberInfo['username']} -
 {$_CONF['info_row']['title']}</title>
 
@@ -9629,7 +9666,7 @@ doc.src = "includes/captcha.php" + "?act=" + clicks;
 </table>
 </form>
 <br />]]></template>
-<template name="send_report" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[{template}address_bar_part1{/template}
+<template name="send_report" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[{template}address_bar_part1{/template}
 {$lang['Report_admin_bad_post']}
 {template}address_bar_part2{/template}<form method="post" action="index.php?page=report&amp;start=1">
 <br />
@@ -9662,7 +9699,7 @@ doc.src = "includes/captcha.php" + "?act=" + clicks;
 </td>
 </tr>
 </table></div></form><br />]]></template>
-<template name="send_subject_to_friend" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<title>{$lang['sendsubjecttofriend_m']}
+<template name="send_subject_to_friend" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<title>{$lang['sendsubjecttofriend_m']}
 - {$_CONF['info_row']['title']}</title>
 {template}address_bar_part1{/template}
 {$lang['sendsubjecttofriend_m']}
@@ -9767,7 +9804,7 @@ index.php?page=topic&amp;show=1&amp;id={$SubjectInfo['id']}
 <input TYPE="hidden" id="subject_id" name="subject_id" value="{$SubjectInfo['id']}" />
 </form>
 <br />]]></template>
-<template name="show_memberlist" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[ {template}address_bar_part1{/template}
+<template name="show_memberlist" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[ {template}address_bar_part1{/template}
  <li itemprop="itemListElement" itemscope
 itemtype="https://schema.org/ListItem">
 <a itemprop="item" href="index.php?page=member_list&amp;index=1&amp;show=1">
@@ -10147,7 +10184,7 @@ title="{$lang['no_photo']}" width="80" height="80" />
 <br /><br />
 <br />
 ]]></template>
-<template name="show_msg" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[	{if {$use_style}}
+<template name="show_msg" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[	{if {$use_style}}
 	<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 	<html dir="{$_CONF['info_row']['content_dir']}" xmlns="http://www.w3.org/1999/xhtml" xml:lang="{$_CONF['info_row']['content_language']}" lang="{$_CONF['info_row']['content_language']}">
 	<head>
@@ -10180,7 +10217,7 @@ title="{$lang['no_photo']}" width="80" height="80" />
 	</body>
 	</html>
 	{/if}]]></template>
-<template name="show_onlain_topic" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[
+<template name="show_onlain_topic" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[
 <table class="border wd98 brd1 clpc0 a-center">
 <tr>
 <td class="thead1 right_text_align wd98">{$lang['onlain_members_topic']}
@@ -10210,7 +10247,7 @@ title="{$lang['no_photo']}" width="80" height="80" />
 </td>
 </tr>
 </table>]]></template>
-<template name="show_page" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[{template}address_bar_part1{/template}
+<template name="show_page" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[{template}address_bar_part1{/template}
  <li itemprop="itemListElement" itemscope
 itemtype="https://schema.org/ListItem">
 <a itemprop="item" href="index.php?page=pages&amp;show=1&amp;id={$GetPage['id']}">
@@ -10238,7 +10275,7 @@ itemtype="https://schema.org/ListItem">
 <br />
 <br />
 <br />]]></template>
-<template name="show_poll" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[	<tr>
+<template name="show_poll" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[	<tr>
 <td class="row1 wd50">
 {if {$ShowVote}}
 {$answers}
@@ -10258,7 +10295,7 @@ itemtype="https://schema.org/ListItem">
 <i title="{$lang['votes']}" class="fa fa-users" aria-hidden="true"></i> {$Vote}
 </td>
 </tr>]]></template>
-<template name="show_poll_down" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[{if {$_CONF['group_info']['vote_poll']} == 1}
+<template name="show_poll_down" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[{if {$_CONF['group_info']['vote_poll']} == 1}
 <tr>
 <td class="thead1 center_text_align" colspan="3">
 {if {$ShowVote}}
@@ -10279,7 +10316,7 @@ itemtype="https://schema.org/ListItem">
 {/if}
 </table><br />
 </form>]]></template>
-<template name="show_poll_top" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<form method="post" action="index.php?page=vote&amp;start=1&amp;id={$Poll['id']}&amp;subject_id={$subject_id}">
+<template name="show_poll_top" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<form method="post" action="index.php?page=vote&amp;start=1&amp;id={$Poll['id']}&amp;subject_id={$subject_id}">
 <table class="border wd98 brd1 clpc0 a-center">
 <tr>
 <td class="tcat wd95" colspan="3">
@@ -10314,7 +10351,7 @@ itemtype="https://schema.org/ListItem">
 <strong><?php echo $PowerBB->_CONF['template']['Poll']['qus']; ?> !</strong>
 </td>
 </tr>]]></template>
-<template name="show_reply" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[{if {$ajax} == '1'}
+<template name="show_reply" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[{if {$ajax} == '1'}
 <link rel="stylesheet" href="{$ForumAdress}look/fonts/font-awesome.min.css" />
 <link rel="stylesheet" href="{$ForumAdress}look/fonts/fonts.css" />
 <link rel="stylesheet" href="{$ForumAdress}{$style_path}" />
@@ -10539,7 +10576,7 @@ $("#status_"+valu+"").hide();
 $(".slide_Down_"+id).hide();
 }
 </script>]]></template>
-<template name="show_subject" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<!-- action_find_addons_1 -->
+<template name="show_subject" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<!-- action_find_addons_1 -->
 {template}show_subject_information{/template}
 <!-- table -->
 <div style="width:98%; border-spacing:0px;" class="table mrgTable border subcontent" onclick="switchBlock('Options_mods')">
@@ -10775,7 +10812,7 @@ $("#status_"+valu+"").hide();
 }
 
 </script>]]></template>
-<template name="show_subject_control" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[{if {$_CONF['info_row']['ajax_moderator_options']}}
+<template name="show_subject_control" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[{if {$_CONF['info_row']['ajax_moderator_options']}}
 <script language="javascript">
 function AjaxModerator()
 {
@@ -10894,7 +10931,7 @@ $(document).ready(Ready);
 <div class="center_text_align" id="statusmod"></div>
 {/if}
 </form>]]></template>
-<template name="show_subject_information" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<script type='text/javascript'>
+<template name="show_subject_information" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<script type='text/javascript'>
 function AjaxSubjectRating()
 {
     var AjaxState = {ajaxSend : $("#rating_status").html("<div class='info_bar'> <img border='0' alt='' src='{$image_path}/loading.gif'></div>")};
@@ -11145,7 +11182,7 @@ title="{$lang['Cancel']}
 </dl>
 </div>
 <!-- /table14 -->]]></template>
-<template name="show_tags_topic" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<style>
+<template name="show_tags_topic" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<style>
     .tags-container-box {
         display: flex;
         flex-wrap: wrap;
@@ -11209,7 +11246,7 @@ title="{$lang['Cancel']}
         </td>
     </tr>
 </table>]]></template>
-<template name="show_votes" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<tr class="center_text_align va-t">
+<template name="show_votes" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<tr class="center_text_align va-t">
 <td class="row1 wd10">{$answers}</td>
 <td class="row1 wd15">
 <?php
@@ -11230,7 +11267,7 @@ $PowerBB->_CONF['template']['Voteddd'] = $PowerBB->_CONF['template']['Vote']*5;
 {$Vote}
 </td>
 </tr>]]></template>
-<template name="show_votes_down" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<tr class="center_text_align va-t">
+<template name="show_votes_down" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<tr class="center_text_align va-t">
 <td class="thead1" colspan="4">
 <a href="index.php?page=topic&amp;show=1&amp;id={$subject_id}">
 {$lang['bac_to_subject']}</a>
@@ -11239,7 +11276,7 @@ $PowerBB->_CONF['template']['Voteddd'] = $PowerBB->_CONF['template']['Vote']*5;
 </table>
 <br />
 <br />]]></template>
-<template name="show_votes_top" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[
+<template name="show_votes_top" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[
 {template}address_bar_part1{/template}
 <li itemprop="itemListElement" itemscope
 itemtype="https://schema.org/ListItem">
@@ -11280,7 +11317,7 @@ itemtype="https://schema.org/ListItem">
 <td class="thead wd15">{$lang['votes_Cumulative']}</td>
 <td class="thead wd49">{$lang['the_votes']}</td>
 <td class="thead wd5">{$lang['votess']}</td></tr>]]></template>
-<template name="signature_show" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[{if {$show_sig} == '1'}
+<template name="signature_show" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[{if {$show_sig} == '1'}
 <!-- table -->
 <div id="signature" class="table mrgTable border">
 <dl class="center_text_align">
@@ -11299,7 +11336,7 @@ itemtype="https://schema.org/ListItem">
 </div>
 <!-- /table -->
 {/if}]]></template>
-<template name="smilebox" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<fieldset>
+<template name="smilebox" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<fieldset>
 <legend>{$lang['smiles']}</legend>
 <?php $t=0;	?>
 <table class="wd100 brd0 clp0 clpc1">
@@ -11346,7 +11383,7 @@ echo "</tr><tr>";
 </tr>
 </table>
 </div>]]></template>
-<template name="smile_all" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<template name="smile_all" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" dir="{$_CONF['info_row']['content_dir']}" xml:lang="{$_CONF['info_row']['content_language']}" lang="{$_CONF['info_row']['content_language']}">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset={$_CONF['info_row']['charset']}" />
@@ -11403,7 +11440,7 @@ echo "</tr><tr>";
 <br />
 <br />
 </body></html>]]></template>
-<template name="special" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[{if {$Special_Show}}
+<template name="special" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[{if {$Special_Show}}
 <br />
 <?php $Sp=0;?>
 <!-- table --><div class="table mrgTable show special-bar center_text_align">
@@ -11444,7 +11481,7 @@ index.php?page=topic&amp;show=1&amp;id={$Special_subjectList['id']}">
 </div><!-- /table -->
 <br />
 {/if}]]></template>
-<template name="special_subject" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[{template}address_bar_part1{/template}
+<template name="special_subject" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[{template}address_bar_part1{/template}
 <a href="">{$lang['Special_Subject_forums']}</a>
 {template}address_bar_part2{/template}
 <br />
@@ -11481,7 +11518,7 @@ alt="{$lang['s_special']}" /></td>
 {/if}</table>
 <br />
 <br />]]></template>
-<template name="static" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[
+<template name="static" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[
 {template}address_bar_part1{/template}
 <li itemprop="itemListElement" itemscope
 itemtype="https://schema.org/ListItem">
@@ -11693,7 +11730,7 @@ itemtype="https://schema.org/ListItem">
 <br />
 <br />
 ]]></template>
-<template name="statistics_list" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[{if {$_CONF['info_row']['activate_last_static_list']} == 1}
+<template name="statistics_list" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[{if {$_CONF['info_row']['activate_last_static_list']} == 1}
 <div id="activate_last_static_list">
     <br />
     <div class="border_radius">
@@ -11904,7 +11941,7 @@ $(document).ready(function() {
 });
 </script>
 {/if}]]></template>
-<template name="stuff_profile" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<table class="wd98 brd0 clpc0 a-center">
+<template name="stuff_profile" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<table class="wd98 brd0 clpc0 a-center">
 <tr>
 <td class='va-t'>
 <!-- MAIN TABLE -->
@@ -12377,7 +12414,7 @@ $("#static_table").hide();
 }
 $(document).ready(Ready);
 </script>]]></template>
-<template name="subjects_delete_index" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[{template}address_bar_part1{/template}
+<template name="subjects_delete_index" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[{template}address_bar_part1{/template}
 {$lang['Management_Subjects']}
 <div class="btn-nav"></div>
 {$lang['deletethread']}
@@ -12432,8 +12469,8 @@ $(document).ready(Ready);
 </tr>
 </table>
 ]]></template>
-<template name="subjects_delete_index2" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<input  type="hidden" name="check[]" value="{$subjects}">]]></template>
-<template name="subjects_move_index" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[
+<template name="subjects_delete_index2" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<input  type="hidden" name="check[]" value="{$subjects}">]]></template>
+<template name="subjects_move_index" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[
 <br />
 <title>
 {$lang['Management_Subjects']}
@@ -12456,8 +12493,8 @@ $(document).ready(Ready);
 </table>
 <br />
 ]]></template>
-<template name="subjects_move_index2" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[	<input  type="hidden" name="check[]" value="{$subjects}">]]></template>
-<template name="subject_close_index" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[{if !{$_CONF['info_row']['ajax_moderator_options']}}
+<template name="subjects_move_index2" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[	<input  type="hidden" name="check[]" value="{$subjects}">]]></template>
+<template name="subject_close_index" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[{if !{$_CONF['info_row']['ajax_moderator_options']}}
 <form method="post" action="index.php?page=management&amp;close=1&amp;subject_id={$subject}">
 {/if}<table class="border wd60 brd1 clpc0 a-center">
 <tr class="center_text_align">
@@ -12500,7 +12537,7 @@ $(document).ready(Ready);
 <br />
 <br />
 ]]></template>
-<template name="subject_delete_index" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[{template}address_bar_part1{/template}
+<template name="subject_delete_index" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[{template}address_bar_part1{/template}
 {$lang['Management_Subjects']}
 <div class="btn-nav"></div>
 {$lang['del_subject']}
@@ -12563,7 +12600,7 @@ $(document).ready(Ready);
 </table></form>
 <br />
 <br />]]></template>
-<template name="subject_edit" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<title>{$lang['edit_subject']} : {$SubjectInfo['title']}</title>
+<template name="subject_edit" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<title>{$lang['edit_subject']} : {$SubjectInfo['title']}</title>
 <script language="javascript">
 function ShowPollTable()
 {
@@ -12923,7 +12960,7 @@ function getMeta(url) {
 <!-- action_find_addons_7 -->
 
 ]]></template>
-<template name="subject_merge_index" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<br />
+<template name="subject_merge_index" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<br />
 {template}address_bar_part1{/template}
 {$lang['Management_Subjects']}
 <div class="btn-nav"></div>
@@ -12959,7 +12996,7 @@ function getMeta(url) {
 </tr>
 </table>
 </form><br /><br />]]></template>
-<template name="subject_move_index" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<br />
+<template name="subject_move_index" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<br />
 <?php $PowerBB->_CONF['template']['subject_title'] = $PowerBB->Powerparse->censor_words($PowerBB->_CONF['template']['subject_title']); ?>{if !{$_CONF['info_row']['ajax_moderator_options']}}
 {template}address_bar_part1{/template}
 {$lang['Management_Subjects']}
@@ -12988,7 +13025,7 @@ function getMeta(url) {
 </table>
 <br />
 <br />]]></template>
-<template name="subject_repeat_index" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<br />
+<template name="subject_repeat_index" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<br />
 {if {$_CONF['info_row']['ajax_moderator_options']}}
 {else}
 {template}address_bar_part1{/template}
@@ -13020,7 +13057,7 @@ function getMeta(url) {
 </tr>
 </table>
 </form><br /><br />]]></template>
-<template name="subject_reputation" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<script language="javascript">
+<template name="subject_reputation" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<script language="javascript">
 function AjaxSubjectReputation()
 {
 
@@ -13073,7 +13110,7 @@ $(document).ready(Ready);
 </div>
 </div>
 <!-- Code reputation Menu End -->]]></template>
-<template name="subject_top" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[{template}address_bar_part1{/template}
+<template name="subject_top" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[{template}address_bar_part1{/template}
 <?php
  $itemprop_content = 2;
 ?>
@@ -13137,7 +13174,7 @@ itemtype="https://schema.org/ListItem">
 var addquotebutton     = "img-submit";
 var removequotebutton  = "img-quote-on";
 </script>]]></template>
-<template name="tags_edit_subject" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[
+<template name="tags_edit_subject" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[
 {template}address_bar_part1{/template}
 <a href="index.php?page=forum&amp;show=1&amp;id={$Subjectinfo['section']}{$password}">
 {$SectionInfo['title']}
@@ -13218,7 +13255,7 @@ function handleEnter(event) {
     }
 }
 </script>]]></template>
-<template name="tags_show_subject" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[{template}address_bar_part1{/template}
+<template name="tags_show_subject" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[{template}address_bar_part1{/template}
 {$lang['subjects_titles_use_sem_tags']}:
 <b>{$tag}</b>
 {$lang['Atag']}
@@ -13248,7 +13285,7 @@ function handleEnter(event) {
 </tr>
 </table><br /><br />
 ]]></template>
-<template name="teamlist_down" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<div class="center_text_align">
+<template name="teamlist_down" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<div class="center_text_align">
 <table class="row1 wd98 brd0 clp1" style="border-collapse: collapse">
 <tr>
 <td class="row1 center_text_align wd48"><a href="index.php?page=profile&amp;show=1&amp;id={$id}">{$username}</a></td>
@@ -13264,7 +13301,7 @@ function handleEnter(event) {
 </tr>
 </table></div>
 ]]></template>
-<template name="teamlist_top" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[{template}address_bar_part1{/template}
+<template name="teamlist_top" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[{template}address_bar_part1{/template}
 <li itemprop="itemListElement" itemscope
 itemtype="https://schema.org/ListItem">
 <a itemprop="item" href="index.php?page=team&amp;show=1">
@@ -13281,7 +13318,7 @@ itemtype="https://schema.org/ListItem">
 <td class="thead1 center_text_align wd10">{$lang['Pm_Message']}</td>
 </tr>
 </table></div>]]></template>
-<template name="today_reply" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[{template}address_bar_part1{/template}
+<template name="today_reply" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[{template}address_bar_part1{/template}
 <li itemprop="itemListElement" itemscope
 itemtype="https://schema.org/ListItem">
 <a itemprop="item" href="index.php?page=latest_reply&amp;today=1">
@@ -13375,7 +13412,7 @@ Guest
 <br />
 <br />
 <br />]]></template>
-<template name="today_subject" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[{template}address_bar_part1{/template}
+<template name="today_subject" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[{template}address_bar_part1{/template}
 <li itemprop="itemListElement" itemscope
 itemtype="https://schema.org/ListItem">
 <a itemprop="item" href="index.php?page=latest&amp;today=1">
@@ -13469,7 +13506,7 @@ Guest
 <br />
 <br />
 <br />]]></template>
-<template name="topic_end" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<div class="center_text_align" id="status"></div>
+<template name="topic_end" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<div class="center_text_align" id="status"></div>
 <dl style="width:98%; border-spacing:0px;border-collapse: collapse;" class="table mrgTable">
 <dt></dt>
 <dd class="right_text_align mod_box">
@@ -13620,7 +13657,7 @@ return $("#docheck_status").html(key_values.join());
 <br />
 <br />
 <br />]]></template>
-<template name="topic_end_fast_reply" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[{if {$SectionGroup['write_reply']} == '1'}
+<template name="topic_end_fast_reply" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[{if {$SectionGroup['write_reply']} == '1'}
 {if {$_CONF['info_row']['fastreply_allow']} == 1}
 {if {$_CONF['info_row']['ajax_freply']}}
 <script type='text/javascript'>
@@ -13829,7 +13866,7 @@ doc.src = "includes/captcha.php" + "?act=" + clicks;
 {/if}
 <br />
 ]]></template>
-<template name="topic_end_same_subject" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[
+<template name="topic_end_same_subject" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[
 <table class="border wd98 brd1 clpc0 a-center">
 <tr>
 <td class="tcat center_text_align wd98" colspan="5">
@@ -13880,7 +13917,7 @@ doc.src = "includes/captcha.php" + "?act=" + clicks;
 {/Des::while}
 </table>
 ]]></template>
-<template name="usercptools" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[      <!-- Code usercptools Menu start -->
+<template name="usercptools" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[      <!-- Code usercptools Menu start -->
 <div id="usercptools-content">
 <div class="thead">{$lang['quick_options']}</div>
 
@@ -13963,7 +14000,7 @@ doc.src = "includes/captcha.php" + "?act=" + clicks;
 </div>
 
 <!-- Code usercptools Menu End -->]]></template>
-<template name="usercp_birth_date" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<link rel="stylesheet" href="{$ForumAdress}includes/js/jquery-ui.css">
+<template name="usercp_birth_date" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<link rel="stylesheet" href="{$ForumAdress}includes/js/jquery-ui.css">
 {if {$_CONF['info_row']['content_language']} == 'ar'}
 <script src="{$ForumAdress}includes/js/datepicker-ar.js"></script>
 {/if}
@@ -13982,7 +14019,7 @@ showButtonPanel: true
 <div class="inner-addon">
 <i class="fa fa-calendar fa-2x" aria-hidden="true"></i> <input type="text" class="form-control" name="birth_date" id="datepicker" maxlength="10" value="{$_CONF['rows']['member_row']['bday_day']}-{$_CONF['rows']['member_row']['bday_month']}-{$_CONF['rows']['member_row']['bday_year']}" style="min-width: 15%;width: 15%;">
 </div>]]></template>
-<template name="usercp_control_avatar" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<title> {$lang['personal_photo']}
+<template name="usercp_control_avatar" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<title> {$lang['personal_photo']}
 - {$_CONF['info_row']['title']}</title>
 <script type="text/javascript">
 
@@ -14125,7 +14162,7 @@ img.src = $('#url_input').val();
 </dl>
 </div><!-- /table -->
 <br />]]></template>
-<template name="usercp_control_email" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<title> {$lang['Change_email']}
+<template name="usercp_control_email" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<title> {$lang['Change_email']}
 - {$_CONF['info_row']['title']}</title>
 {template}address_bar_part1{/template}
 <a href="index.php?page=usercp&amp;index=1">{$lang['User_Control_Panel']}</a>
@@ -14170,7 +14207,7 @@ img.src = $('#url_input').val();
 </dl>
 </div><!-- /table -->
 <br />]]></template>
-<template name="usercp_control_info" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[{template}address_bar_part1{/template}
+<template name="usercp_control_info" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[{template}address_bar_part1{/template}
 <a href="index.php?page=usercp&amp;index=1">{$lang['User_Control_Panel']}</a>
 <div class="btn-nav"></div>
 {$lang['Your_Personal_Information']}
@@ -14342,7 +14379,7 @@ img.src = $('#url_input').val();
 </dl>
 </div><!-- /table -->
 <br />]]></template>
-<template name="usercp_control_password" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<title> {$lang['Change_password']}
+<template name="usercp_control_password" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<title> {$lang['Change_password']}
 - {$_CONF['info_row']['title']}</title>
 {template}address_bar_part1{/template}
 <a href="index.php?page=usercp&amp;index=1">{$lang['User_Control_Panel']}</a>
@@ -14392,7 +14429,7 @@ img.src = $('#url_input').val();
 </dl>
 </div><!-- /table -->
 <br />]]></template>
-<template name="usercp_control_setting" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<title> {$lang['Your_Options']} -
+<template name="usercp_control_setting" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<title> {$lang['Your_Options']} -
 {$_CONF['info_row']['title']}</title>{template}address_bar_part1{/template}
 <a href="index.php?page=usercp&amp;index=1">{$lang['User_Control_Panel']}</a>
 <div class="btn-nav"></div>
@@ -14583,7 +14620,7 @@ img.src = $('#url_input').val();
 </dl>
 </div><!-- /table -->
 <br />]]></template>
-<template name="usercp_control_sign" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<title> {$lang['Your_signature']} -
+<template name="usercp_control_sign" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<title> {$lang['Your_signature']} -
 {$_CONF['info_row']['title']}</title>
 {template}address_bar_part1{/template}
 <a href="index.php?page=usercp&amp;index=1">{$lang['User_Control_Panel']}</a>
@@ -14635,7 +14672,7 @@ img.src = $('#url_input').val();
 </dl>
 </div><!-- /table -->
 <br />]]></template>
-<template name="usercp_index" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[{template}address_bar_part1{/template}
+<template name="usercp_index" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[{template}address_bar_part1{/template}
 <a href="index.php?page=usercp&amp;index=1">{$lang['User_Control_Panel']}</a>
 <div class="btn-nav"></div>
 {$lang['home']}
@@ -14871,7 +14908,7 @@ img.src = $('#url_input').val();
 <span class="pager-left">{$pager} </span>
 </div>
 <br />]]></template>
-<template name="usercp_menu" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<table class="border right_text_align usercp_menu brd1 clpc0">
+<template name="usercp_menu" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<table class="border right_text_align usercp_menu brd1 clpc0">
 <tr class="center_text_align">
 <td class="tcat">
 <a href="index.php?page=usercp&amp;index=1">{$lang['usercp']}</a>
@@ -14984,7 +15021,7 @@ img.src = $('#url_input').val();
 </table>
 <br />
 ]]></template>
-<template name="usercp_options_attach" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<script language="JavaScript">
+<template name="usercp_options_attach" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<script language="JavaScript">
 <!--
 function checkAll(form){
 for (var i = 0; i < form.elements.length; i++){
@@ -15083,7 +15120,7 @@ KB
 </dl>
 </div><!-- /table -->
 <br />]]></template>
-<template name="usercp_options_emailed" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<script language="JavaScript">
+<template name="usercp_options_emailed" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<script language="JavaScript">
 <!--
 function checkAll(form){
 for (var i = 0; i < form.elements.length; i++){
@@ -15150,7 +15187,7 @@ eval("form.elements[" + i + "].checked = form.elements[0].checked");
 </dl>
 </div><!-- /table -->
 <br />]]></template>
-<template name="usercp_options_subjects" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<title> {$lang['Your_Subjects']} -
+<template name="usercp_options_subjects" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<title> {$lang['Your_Subjects']} -
 {$_CONF['info_row']['title']}</title>
 {template}address_bar_part1{/template}
 <a href="index.php?page=usercp&amp;index=1">{$lang['User_Control_Panel']}</a>
@@ -15232,7 +15269,7 @@ eval("form.elements[" + i + "].checked = form.elements[0].checked");
 </dl>
 </div><!-- /table -->
 <br />]]></template>
-<template name="usercp_reputations" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<title>{$lang['User_Control_Panel']}  -
+<template name="usercp_reputations" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<title>{$lang['User_Control_Panel']}  -
 {$lang['usercp_reputations']} </title>	{template}address_bar_part1{/template}
 <a href="index.php?page=usercp&amp;index=1">{$lang['User_Control_Panel']}</a>
 <div class="btn-nav"></div>
@@ -15318,7 +15355,7 @@ eval("form.elements[" + i + "].checked = form.elements[0].checked");
 </dl>
 </div><!-- /table -->
 <br />]]></template>
-<template name="view_reply" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[
+<template name="view_reply" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[
 <table class="border wd98 brd1 clpc0 a-center">
 <tr>
 <td class="thead1 right_text_align">
@@ -15332,7 +15369,7 @@ eval("form.elements[" + i + "].checked = form.elements[0].checked");
 </tr>
 </table>
 <br />]]></template>
-<template name="visitormessage_edit" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<title>{$lang['Edit_Message_visitor']}</title>
+<template name="visitormessage_edit" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<title>{$lang['Edit_Message_visitor']}</title>
 {template}address_bar_part1{/template}
 <a href="index.php?page=profile&amp;show=1&amp;id={$visitormessageinfo['userid']}">{$lang['View_Member_Profile']}: {$username}</a>
 <div class="btn-nav"></div>
@@ -15361,7 +15398,7 @@ eval("form.elements[" + i + "].checked = form.elements[0].checked");
 </table>
 </form>
 <br />]]></template>
-<template name="visitor_messag" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[{if !{$No_VisitorMessageList}}
+<template name="visitor_messag" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[{if !{$No_VisitorMessageList}}
 <form action="index.php?page=visitormessage&amp;del=1&amp;id={$MemberInfo['id']}" name="form1" method="post">
 <table class="border wd100 brd0 clp0 a-center" style="border-collapse: collapse">
 <tr>
@@ -15600,7 +15637,7 @@ doc.src = "includes/captcha.php" + "?act=" + clicks;
 {/if}
 {/if}
 {/if}]]></template>
-<template name="visitor_message_js" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<link rel="stylesheet" href="{$ForumAdress}look/sceditor/minified/themes/default.min.css" id="theme-style" />
+<template name="visitor_message_js" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<link rel="stylesheet" href="{$ForumAdress}look/sceditor/minified/themes/default.min.css" id="theme-style" />
 <script src="{$ForumAdress}look/sceditor/minified/formats/bbcode.js"></script>
 <script src="{$ForumAdress}look/sceditor/minified/PBB_bbcode.js"></script>
 <script src="look/sceditor/languages/{$_CONF['info_row']['content_language']}.js"></script>
@@ -15691,7 +15728,7 @@ $(function() {
 });
 </script>
 ]]></template>
-<template name="warn_send" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<title>{$lang['send_warn_to_mem']}
+<template name="warn_send" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<title>{$lang['send_warn_to_mem']}
 {$MemberInfo['username']}</title>{template}address_bar_part1{/template}
 {$lang['send_warn_to_mem']}
 {$MemberInfo['username']}
@@ -15739,7 +15776,7 @@ $(function() {
 </tr>
 </table></div></form><br />
 ]]></template>
-<template name="who_posted1" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html dir="{$_CONF['info_row']['content_dir']}" xmlns="http://www.w3.org/1999/xhtml" xml:lang="{$_CONF['info_row']['content_language']}" lang="{$_CONF['info_row']['content_language']}">
+<template name="who_posted1" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html dir="{$_CONF['info_row']['content_dir']}" xmlns="http://www.w3.org/1999/xhtml" xml:lang="{$_CONF['info_row']['content_language']}" lang="{$_CONF['info_row']['content_language']}">
 <title>{$lang['Who_poststed']} -
 {if {$_CONF['info_row']['allowed_powered']} == 1}
 {$lang['powered']}
@@ -15765,7 +15802,7 @@ $(function() {
 <td class="main_bar">{$lang['posts']}</td>
 </tr>
 ]]></template>
-<template name="who_posted2" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<tr>
+<template name="who_posted2" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<tr>
 <td class="row1 center_text_align">
 <a target="_blank" href="index.php?page=profile&amp;show=1&amp;username={$WhoPosted['writer']}">
 {$WhoPosted['writer']}</a>
@@ -15775,7 +15812,7 @@ $(function() {
 </td>
 </tr>
 ]]></template>
-<template name="who_posted3" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<tr>
+<template name="who_posted3" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<tr>
 <td class="tcat center_text_align" colspan="2">
 <div class="smallfont">
 <a onclick=" self.close();"><strong>{$lang['window_close']}</strong></a>
@@ -15784,13 +15821,13 @@ $(function() {
 </table>
 </div>
 </body>]]></template>
-<template name="window_close" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<html>
+<template name="window_close" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<html>
 <head>
 </head>
 <body onLoad="setTimeout('window.close()', 1500);">
 </body></html>
 ]]></template>
-<template name="writer_info" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<script type="text/javascript">
+<template name="writer_info" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<script type="text/javascript">
 $(document).ready(function(){
 $("#emenu_{$Info['id']}_{$Info['reply_id']}").click(function(){
 $(this).next("#menue_{$Info['id']}_{$Info['reply_id']}").slideToggle("slow");
@@ -16051,7 +16088,7 @@ border-bottom: 1px solid #d1d1e1 !important;
 </div>
 </div>
 <!-- /table -->]]></template>
-<template name="register_mail_message" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[{template}address_bar_part1{/template}
+<template name="register_mail_message" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[{template}address_bar_part1{/template}
 {$lang['PBB_Message']}
 {template}address_bar_part2{/template}
 <table class="border wd80 brd1 clpc0 a-center">
@@ -16072,7 +16109,7 @@ $PowerBB->_CONF['template']['_CONF']['lang']['registeremail'] = str_replace("{3}
 </tr>
 </table>
 <br />					]]></template>
-<template name="login_admittance" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<script type="text/javascript">
+<template name="login_admittance" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<script type="text/javascript">
 function AjaxLogin(){
 var AjaxState = {ajaxSend : $("#result").html("<img class='brd0' src='{$image_path}/loading.gif' width='25' height='25' alt='' />")};
 var data = {};
@@ -16109,7 +16146,7 @@ document.write('<input type="button" value="{$lang['login']}" id="login_id" />')
 </table>
 </form>
 <br/>]]></template>
-<template name="show_post" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[{template}address_bar_part1{/template}
+<template name="show_post" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[{template}address_bar_part1{/template}
 <li itemprop="itemListElement" itemscope
 itemtype="https://schema.org/ListItem">
 <a itemprop="item" href="index.php?page=forum&amp;show=1&amp;id={$section_info['id']}{$password}">
@@ -16315,7 +16352,7 @@ title="{$lang['qu_reply']}">
 {/if}
 </div><!-- /table -->
 <br />]]></template>
-<template name="usercp_control_profile_coordination" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<title> {$lang['profile_coordination']} -
+<template name="usercp_control_profile_coordination" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<title> {$lang['profile_coordination']} -
 {$_CONF['info_row']['title']}</title>{template}address_bar_part1{/template}
 <a href="index.php?page=usercp&amp;index=1">{$lang['User_Control_Panel']}</a>
 <div class="btn-nav"></div>
@@ -16332,7 +16369,7 @@ title="{$lang['qu_reply']}">
 <tr class="va-t">
 <td>
 ]]></template>
-<template name="usercp_control_profile_coordination_down" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[</td>
+<template name="usercp_control_profile_coordination_down" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[</td>
 <tr>
 <td class="row1 center_text_align" colspan="2">
 <input type="submit" value="{$lang['adoption_of_amendments']}" name="submit" />
@@ -16344,7 +16381,7 @@ title="{$lang['qu_reply']}">
 </table>
 <br /><br />
 <br />]]></template>
-<template name="chat_main" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<br />
+<template name="chat_main" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<br />
 {template}address_bar_part1{/template}
 <a href="index.php?page=chat_message&amp;control=1&amp;main=1">{$lang['mange_chat']} </a>
 {template}address_bar_part2{/template}
@@ -16393,7 +16430,7 @@ title="{$lang['qu_reply']}">
 <span class="pager-left">{$pager} </span>
 
 ]]></template>
-<template name="chat_edit" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<script type='text/javascript'>
+<template name="chat_edit" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<script type='text/javascript'>
 //path of images
 var path="look/images/images_bbcode_editor/";
 // show prompt or not 1 or 0
@@ -16527,7 +16564,21 @@ comm._toggle();
 </table>
 <br />
 </form>]]></template>
-<template name="review_reply" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[{Des::while}{AdsensesList}
+<template name="review_reply" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[{if {$ajax} == '1'}
+<link rel="stylesheet" href="{$ForumAdress}look/fonts/font-awesome.min.css" />
+<link rel="stylesheet" href="{$ForumAdress}look/fonts/fonts.css" />
+<link rel="stylesheet" href="{$ForumAdress}{$style_path}" />
+<script type="text/javascript" src="{$ForumAdress}includes/js/jquery-1.10.2.js"></script>
+<script type="text/javascript" src="{$ForumAdress}includes/js/jquery-ui.js"></script>
+{/if}
+{if {$ajax_last_replier}}
+<?php
+$site = $PowerBB->_CONF['template']['location'];
+echo '<meta http-equiv="refresh" content="0;URL='.$site.'" />';
+?>
+{/if}
+
+{Des::while}{AdsensesList}
 {if {$AdsensesList['between_replys']} == '1'}
 <div class="center_text_align">
 {$AdsensesList['adsense']}
@@ -16556,21 +16607,24 @@ comm._toggle();
 [<a title="{$lang['post']}
 ({$Info['reply_number']})" name="{$Info['reply_id']}" href="#{$Info['reply_id']}">{$Info['reply_number']}</a>]
 {if !{$mod_toolbar}}
-<input type="checkbox" name="check[]" value="{$Info['reply_id']}" />
+<input type="checkbox" id="docheck" name="checkd[]" onchange="AjaxDoReplys()" value="{$Info['reply_id']}" />
 {/if}
 </div>
 </dd>
 </dl>
-<dl class="center_text_align">
+<dl>
 <dt></dt>
-<dd class="va-t r-nfo r-review">
+<dd class="va-t r-nfo center_text_align">
 <div onclick="switchBlock('menu_{$Info['reply_id']}');">
 {template}writer_info{/template}
 </div>
 </dd>
 <dd class="tbar_review va-t">
 {get_hook}show_reply_text{/get_hook}
+<div id="status_{$Info['reply_id']}">
 <div class="text">{$Info['text']}</div>
+</div>
+<div id="status_rename_{$Info['reply_id']}" style="display: none;margin:0px;"></div>
 <div class="bottom_text"></div>
 {if {$Info['attach_reply']}}
 {template}attach_show{/template}
@@ -16578,7 +16632,7 @@ comm._toggle();
 {if {$Info['action_by']} != ''}
 <br />
 <br />
-<div class="action_by center_text_align">
+<div id="action_by_{$Info['reply_id']}" class="action_by center_text_align">
 <i>
 {$lang['action_by_reply']}
 <b><a title="{$Info['action_by']}" href="index.php?page=profile&show=1&username={$Info['action_by']}">{$Info['action_by']}</a></b>
@@ -16604,47 +16658,56 @@ comm._toggle();
 
 </dd>
 </dl>
-<dl>
+{if {$_CONF['group_info']['write_reply']}}
+<dl class="subc center_text_align">
 <dt></dt>
-<dd class="row1 a-center subbr"></dd>
-<dd class="row1 a-center">
+<dd class="r-subc1"></dd>
+<dd class="r-subc2">
 <!-- table -->
-
-<div style="width:100%; border-collapse: collapse;" class="table">
+<div class="wd100 clpc0 table r-subc">
 <dl>
 <dt></dt>
 <dd>
-<div class="r-right">
+<div class="r-right add_reputation">
 {if {$_CONF['member_permission']}}
 {if {$ReplierInfo['username']} !=''}
 {if {$_CONF['member_row']['username']} != {$ReplierInfo['username']}}
+
 {if {$_CONF['info_row']['reputationallw']} == 1}
 <a href="javascript:switchMenuNone('{$Info['reply_number']}replyreputation')"
 title="{$lang['add_reputation_to']}
 {$ReplierInfo['username']}">
-<img class="brd0" alt="{$lang['add_reputation_to']}
-{$ReplierInfo['username']}"
-src="{$image_path}/reputation.gif" />
+<i title="{$lang['add_reputation_to']}
+{$ReplierInfo['username']}"class="fa fa-thumbs-o-up fa-2" aria-hidden="true"></i>
 </a>
 {template}reply_reputation{/template}
-{/if}
-{/if}
-{/if}
-<a title="{$lang['reporting_for_post']}"
+{if {$ReplierInfo['usergroup']} > 2}
+<a class="for_post" title="{$lang['reporting_for_post']}"
 href="index.php?page=report&amp;index=1&amp;subject_id={$Info['subject_id']}&amp;reply_id={$Info['reply_id']}&amp;count={$count_peg}">
-<img alt="{$lang['reporting_for_post']}"
-class="brd0" src="{$image_path}/report.gif" />
+<i title="{$lang['reporting_for_post']}"class="fa fa-bell-o" aria-hidden="true"></i>
 </a>
+{/if}
+{/if}
+{/if}
+{/if}
 {/if}
 </div>
 <div class="l-left">
 <ul class="post_controls">
 {if {$_CONF['member_permission']}}
-{if !{$mod_toolbar}}
+{if {$mod_toolbar} == '0'}
 <li>
-<a title="{$lang['edit_reply']}"
-href="index.php?page=management&amp;reply=1&amp;section={$Info['section']}&amp;subject_id={$Info['subject_id']}&amp;reply_id={$Info['reply_id']}&amp;reply_number={$Info['reply_number']}&amp;count={$count_peg}&amp;operator=edit" class="Button_secondary">
-{$lang['edit_reply']}</a>
+<a title="{$lang['edit_reply']}" OnClick="edit_slide_Downd({$Info['reply_id']});return false;" class="Button_secondary">
+{$lang['edit_reply']}
+</a>
+<div class="edit_to_post slide_Down_{$Info['reply_id']}" id="edit_{$Info['reply_id']}" style="display:none;">
+<option value="{$Info['reply_id']}" class="Button_ss" aria-hidden="true" title="{$lang['fastedit']}" onclick="edit_reply('{$Info['reply_id']}')">
++&nbsp;{$lang['fastedit']}</option>
+<a title="{$lang['fulliedit']}"
+href="index.php?page=management&amp;reply=1&amp;section={$Info['section']}&amp;subject_id={$Info['subject_id']}&amp;reply_id={$Info['reply_id']}&amp;reply_number={$Info['reply_number']}&amp;count={$count_peg}&amp;operator=edit" class="Button_ss">
+{$lang['fulliedit']}
+</a>
+</div>
 </li>
 <li>
 <a href="index.php?page=managementreply&amp;do_replys=1&amp;section={$Info['section']}&amp;subject_id={$Info['subject_id']}&amp;reply_id={$Info['reply_id']}&amp;operator=delete" class="Button_secondary"
@@ -16652,17 +16715,26 @@ title="{$lang['delete_reply']}">
 {$lang['delete_reply']}</a>
 </li>
 {else}
+
 {if {$SubjectInfo['close']} == '0'}
 {if {$timeout}}
 {if {$_CONF['member_row']['username']} == {$ReplierInfo['username']}}
 {if {$_CONF['group_info']['edit_own_reply']}}
 <li>
-<a title="{$lang['edit_reply']}"
-href="index.php?page=management&amp;reply=1&amp;section={$Info['section']}&amp;subject_id={$Info['subject_id']}&amp;reply_id={$Info['reply_id']}&amp;reply_number={$Info['reply_number']}&amp;count={$count_peg}&amp;operator=edit" class="Button_secondary">
+<a title="{$lang['edit_reply']}" OnClick="edit_slide_Downd({$Info['reply_id']});return false;" class="Button_secondary">
 {$lang['edit_reply']}
 </a>
+<div class="edit_to_post slide_Down_{$Info['reply_id']}" id="edit_{$Info['reply_id']}" style="display:none;">
+<option value="{$Info['reply_id']}" class="Button_ss" aria-hidden="true" title="{$lang['fastedit']}" onclick="edit_reply('{$Info['reply_id']}')">
++&nbsp;{$lang['fastedit']}</option>
+<a title="{$lang['fulliedit']}"
+href="index.php?page=management&amp;reply=1&amp;section={$Info['section']}&amp;subject_id={$Info['subject_id']}&amp;reply_id={$Info['reply_id']}&amp;reply_number={$Info['reply_number']}&amp;count={$count_peg}&amp;operator=edit" class="Button_ss">
+{$lang['fulliedit']}
+</a>
+</div>
 </li>
 {/if}
+
 {if {$_CONF['group_info']['del_own_reply']}}
 <li>
 <a href="index.php?page=managementreply&amp;do_replys=1&amp;section={$Info['section']}&amp;subject_id={$Info['subject_id']}&amp;reply_id={$Info['reply_id']}&amp;operator=delete" class="Button_secondary"
@@ -16677,7 +16749,7 @@ title="{$lang['delete_reply']}">
 {/if}
 {/if}
 <li>
-<a href="index.php?page=new_reply&amp;index=1&amp;id={$subject_id}{$password}
+<a href="index.php?page=new_reply&amp;index=1&amp;id={$Info['subject_id']}{$password}
 &amp;qu_Reply={$Info['reply_id']}&amp;user={$ReplierInfo['username']}" class="Button_secondary"
 title="{$lang['qu_reply']}">
 {$lang['quote']}
@@ -16696,9 +16768,28 @@ title="{$lang['qu_reply']}">
 </div><!-- /table -->
 </dd>
 </dl>
+{/if}
 </div><!-- /table -->
-<br />]]></template>
-<template name="usercp_security" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<title> {$lang['security_settings']}
+<br />
+<script type='text/javascript'>
+function edit_slide_Downd(id) {
+$(".slide_Down_"+id).slideToggle();
+}
+function edit_reply(valu)
+{
+$("#status_rename_"+valu+"").show();
+$('html, body').animate({
+        scrollTop: $("#status_"+valu).offset().top
+    }, 100);
+$.post("index.php?page=topic&fastEdit=1&id="+valu, function(data, status){
+$("#status_rename_"+valu+"").html(data);
+$('.bottom_text').attr('style','min-height:2px !important;');
+});
+$("#status_"+valu+"").hide();
+$(".slide_Down_"+id).hide();
+}
+</script>]]></template>
+<template name="usercp_security" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<title> {$lang['security_settings']}
 - {$_CONF['info_row']['title']}</title>
 {template}address_bar_part1{/template}
 <a href="index.php?page=usercp&amp;index=1">{$lang['User_Control_Panel']}</a>
@@ -16783,7 +16874,7 @@ title="{$lang['qu_reply']}">
 </dl>
 </div><!-- /table -->
 <br />]]></template>
-<template name="login_security_code" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[{template}address_bar_part1{/template}
+<template name="login_security_code" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[{template}address_bar_part1{/template}
 {$lang['complete_log']}
 {template}address_bar_part2{/template}
 <br />
@@ -16821,7 +16912,7 @@ title="{$lang['qu_reply']}">
 </div>
 </form>
 <br />]]></template>
-<template name="side_list" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[{if {$_CONF['info_row']['sidebar_list_active']} and {$on_sidebar_list_thes_page}}
+<template name="side_list" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[{if {$_CONF['info_row']['sidebar_list_active']} and {$on_sidebar_list_thes_page}}
 <script type="text/javascript" src="{$ForumAdress}includes/js/sidebar.js"></script>
 {if {$_CONF['info_row']['sidebar_list_align']} == 'left'}
 <style>
@@ -16843,7 +16934,7 @@ right: -7px;
 <div class="sbp_forum" id="resizable" style="float:{$opposite_direction}; width:{$sidebar_list_width}">
 {/if}
 ]]></template>
-<template name="whatis_new" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<ul class="sidebar">
+<template name="whatis_new" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<ul class="sidebar">
 <li class="tcat">
 <span>{$lang['whatis_new']}</span>
 </li>
@@ -16918,7 +17009,7 @@ $PowerBB->_CONF['template']['while']['lastPostsList'][$this->x_loop]['avater_pat
 {/Des::while}
 </ul>
 </div>]]></template>
-<template name="login_box" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[{if !{$_CONF['member_permission']}}
+<template name="login_box" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[{if !{$_CONF['member_permission']}}
 <ul class="sidebar">
 <li class="tcat">
 <span>{$lang['Login_mem']}</span>
@@ -16939,7 +17030,7 @@ $PowerBB->_CONF['template']['while']['lastPostsList'][$this->x_loop]['avater_pat
 </ul>
 <br />
 {/if}]]></template>
-<template name="profile_cover_photo_upload" templatetype="template" date="1768524936" username="Soliman" decode="0" version="3.0.4"><![CDATA[<div class="PBBDialog" id="pbb_dialog_upload_photo" role="dialog" animating="false">
+<template name="profile_cover_photo_upload" templatetype="template" date="1768808333" username="Soliman" decode="0" version="3.0.4"><![CDATA[<div class="PBBDialog" id="pbb_dialog_upload_photo" role="dialog" animating="false">
 <div>
 <h3 class="PBBDialog_title">{$lang['upload_cover_photo']}</h3>
 <hr class="PBBHr">
@@ -16992,7 +17083,7 @@ gif, jpeg, jpg, png
 </div>
 </div>
 </div>]]></template>
-<template name="calendar" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<title>{$lang['Calendar']}
+<template name="calendar" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<title>{$lang['Calendar']}
 {if {$_CONF['info_row']['allowed_powered']} == 1}
 - {$lang['powered']}
 {/if}</title>
@@ -17095,7 +17186,7 @@ start: '2015-02-28'
 <br />
 <br />
 ]]></template>
-<template name="attach_list" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<style>
+<template name="attach_list" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<style>
 .file-preview {
     display: inline-block;
     font-size: 159px;
@@ -17232,7 +17323,7 @@ return(Insert);
 {/Des::while}
 </ul>
 ]]></template>
-<template name="forum_review_perpage_reply" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<?php
+<template name="forum_review_perpage_reply" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<?php
 $subject_id = $PowerBB->_CONF['template']['while']['review_subject_list'][$this->x_loop]['id'];
 $PagerReplyNumArr = $PowerBB->_CONF['template']['while']['review_subject_list'][$this->x_loop]['reply_number'];
 ?>
@@ -17286,7 +17377,7 @@ $countpage = $last_pagef;
 <?php
 unset($PagerReplyNumArr);
 ?>]]></template>
-<template name="fast_edit" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<link rel="stylesheet" href="{$ForumAdress}look/sceditor/minified/themes/default.min.css" id="theme-style" />
+<template name="fast_edit" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<link rel="stylesheet" href="{$ForumAdress}look/sceditor/minified/themes/default.min.css" id="theme-style" />
 <script src="{$ForumAdress}look/sceditor/minified/formats/bbcode.js"></script>
 <script src="{$ForumAdress}look/sceditor/minified/PBB_bbcode.js"></script>
 <script src="look/sceditor/languages/{$_CONF['info_row']['content_language']}.js"></script>
@@ -17440,7 +17531,7 @@ $(function() {
 
 });
 </script>]]></template>
-<template name="js_limited_use" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[{if {$is_bot}}
+<template name="js_limited_use" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[{if {$is_bot}}
 {if {$page} == 'topic' or {$page} == 'post' or {$page} == 'pm_show' or {$page} == 'print' or {$page} == 'new_reply' or {$page} == 'new_topic' or {$page} == 'management'}
 <link rel="stylesheet" href="{$ForumAdress}includes/js/highlight/styles/default.min.css">
 <script src="{$ForumAdress}includes/js/highlight/highlight.min.js"></script>
@@ -17448,7 +17539,7 @@ $(function() {
 {/if}
 {/if}
 ]]></template>
-<template name="usercp_mentions" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<title>{$lang['mention']} </title>
+<template name="usercp_mentions" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<title>{$lang['mention']} </title>
 {template}address_bar_part1{/template}
 <a href="index.php?page=usercp&amp;index=1">{$lang['User_Control_Panel']}</a>
 <div class="btn-nav"></div>
@@ -17559,7 +17650,7 @@ $.post("index.php?page=usercp&options=1&mention=1&start=1",data,function Success
 </div><!-- /table -->
 <br />
 ]]></template>
-<template name="chat_window" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[{Des::while}{Messages}
+<template name="chat_window" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[{Des::while}{Messages}
 <div style="padding: 5px 8px 2px 8px; vertical-align: top; font-size: 13px; clear: both;">
     <span style="display: inline-flex; align-items: center; gap: 5px;">
         {if {$_CONF['info_row']['allow_avatar']}}
@@ -17600,8 +17691,8 @@ $.post("index.php?page=usercp&options=1&mention=1&start=1",data,function Success
     </div>
 </div>
 {/Des::while}]]></template>
-<template name="chat_online" templatetype="template" date="1768524936" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<div style="padding: 8px; background: #eef2f5; border-bottom: 1px solid #ddd; font-weight: bold; font-size: 12px;">
-    <i class="fa fa-users"></i> {$lang['Number_Members']}: {$online_chat_number}
+<template name="chat_online" templatetype="template" date="1768808333" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<div style="padding: 8px; background: #eef2f5; border-bottom: 1px solid #ddd; font-weight: bold; font-size: 12px;">
+    <i class="fa fa-users"></i> {$lang['Number_Members']}: <span id="online_count_val">{$online_chat_number}</span>
 </div>
 
 <ul style="list-style: none; padding: 0; margin: 0;">
@@ -17622,7 +17713,7 @@ $.post("index.php?page=usercp&options=1&mention=1&start=1",data,function Success
         {/if}
     {else}
         <i class="fa fa-user" style="color: #185886; font-size: 11px;"></i>
-        <a target="_blank" href="index.php?page=profile&id={$ListonlineChat['user_id']}" style="text-decoration: none; font-weight: 500;">
+        <a target="_blank" href="index.php?page=profile&show=1&id={$ListonlineChat['user_id']}" style="text-decoration: none; font-weight: 500;">
             {$ListonlineChat['username_style']}
         </a>
     {/if}

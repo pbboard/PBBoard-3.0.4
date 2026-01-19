@@ -28,6 +28,16 @@ class PowerBBCOREMOD
              $PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['You_can_not_use_this_feature']);
              $PowerBB->functions->GetFooter();
 		}
+
+          if (!$PowerBB->_CONF['member_permission'])
+              {
+              header("HTTP/1.1 404 Not Found");
+              $PowerBB->functions->ShowHeader();
+              $PowerBB->template->display('login');
+              $PowerBB->functions->GetFooter();
+              $PowerBB->functions->error_stop();
+			}
+
 		/** Go to Chat site **/
 		if ($PowerBB->_GET['chat'] == '1')
 		{
@@ -274,6 +284,7 @@ class PowerBBCOREMOD
 		$member = $PowerBB->core->GetInfo($MemberArr,'member');
 		if ($member['posts'] < $PowerBB->_CONF['info_row']['chat_num_mem_posts'])
 		{
+		$PowerBB->template->assign('member',$member);
          $PowerBB->_CONF['template']['_CONF']['lang']['Member_can_not_use_the_chat_system_posts_less'] = str_ireplace('20',$PowerBB->_CONF['info_row']['chat_num_mem_posts'],$PowerBB->_CONF['template']['_CONF']['lang']['Member_can_not_use_the_chat_system_posts_less']);
          $PowerBB->functions->error_no_foot($PowerBB->_CONF['template']['_CONF']['lang']['Member_can_not_use_the_chat_system_posts_less']);
 		}

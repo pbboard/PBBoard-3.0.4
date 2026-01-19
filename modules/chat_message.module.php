@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 (!defined('IN_PowerBB')) ? die() : '';
 

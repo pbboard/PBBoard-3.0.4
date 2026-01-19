@@ -860,7 +860,7 @@ class PowerBBSearchEngineMOD
 
 	        if ($search_only == '1')
              {
-				$subject_nm = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT COUNT(*) FROM " . $PowerBB->table['subject'] . "  WHERE CONCAT(title,text) LIKE '%$keyword%' AND sec_subject = 0 AND review_subject = 0  AND delete_topic = 0"));
+				$subject_nm = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(*) FROM " . $PowerBB->table['subject'] . "  WHERE CONCAT(title,text) LIKE '%$keyword%' AND sec_subject = 0 AND review_subject = 0  AND delete_topic = 0"));
 				$PowerBB->template->assign('nm',$subject_nm);
 			    $SubjectArr['select'] = '
 			    s.*,

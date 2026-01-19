@@ -353,19 +353,11 @@ src="index.php?page=download&amp;attach=1&amp;id={$SubjectAttachList['id']}" tit
 </table>
 ]]></template>
 <template name="add_chat_message" templatetype="template" date="1768808355" username="PBBoard Solutions" decode="0" version="3.0.4"><![CDATA[<div class="chat-input-area" dir="{$_CONF['info_row']['content_dir']}" style="background: #fff; padding: 10px; border: 1px solid #ccc; border-top: 1px solid #eee; margin-bottom: 20px;">
-
-		<?php
-		if ($member['posts'] < $PowerBB->_CONF['info_row']['chat_num_mem_posts'] and $PowerBB->_CONF['member_row']['usergroup'] != '1')
-		{
-		?>    
+         {if {$_CONF['member_row']['posts']} < {$_CONF['info_row']['chat_num_mem_posts']}}
         <div style="color: #a94442; background-color: #f2dede; padding: 10px; border-radius: 4px; font-size: 12px; text-align: center;">
             عذراً، تحتاج إلى <b>{$_CONF['info_row']['chat_num_mem_posts']}</b> مشاركة في المنتدى لتتمكن من الدردشة.
         </div>
-    <?php
-}
-else
-{
-?>
+{else}
         <div style="display: flex; gap: 8px; align-items: center;">
             <div style="position: relative;">
                 <img src="look/images/emoii.gif" onclick="$('#smile_box').toggleClass('active')" style="width: 28px; cursor: pointer;" title="{$lang['smiles']}">
@@ -375,21 +367,16 @@ else
                     {/Des::while}
                 </div>
             </div>
-
-            <textarea id="box_text" 
-                      maxlength="{$_CONF['info_row']['chat_num_characters']}" 
+            <textarea id="box_text"
+                      maxlength="{$_CONF['info_row']['chat_num_characters']}"
                       style="flex: 1; height: 38px; padding: 8px; border: 1px solid #ddd; resize: none; font-size: 13px; border-radius: 4px; outline: none; background: #fafafa;"></textarea>
-
             <button type="button" onclick="AjaxInsertChat();" id="send_btn" style="background: #185886; color: #fff; border: none; padding: 0 15px; height: 38px; cursor: pointer; border-radius: 4px; font-weight: bold; display: flex; align-items: center; gap: 5px;">
                 <i class="fa fa-paper-plane"></i> {$lang['insert_chat_message']}
             </button>
         </div>
         <div id="char_count" style="font-size: 10px; color: #999; text-align: left; margin-top: 2px;">0 / {$_CONF['info_row']['chat_num_characters']}</div>
-<?php
-}
-?>
+{/if}
 </div>
-
 <script type="text/javascript">
 function AddSmileyIcon(icon) {
     var input = document.getElementById('box_text');
@@ -397,7 +384,6 @@ function AddSmileyIcon(icon) {
     input.focus();
     $(input).trigger('input');
 }
-
 $('#box_text').on('input', function() {
     var len = $(this).val().length;
     var max = {$_CONF['info_row']['chat_num_characters']};
@@ -1501,11 +1487,11 @@ showButtonPanel: true
 
     .digi-main { flex: 1; display: flex; flex-direction: column; background: #fff; min-width: 0; position: relative; }
 
-    .chat_ee { 
-        flex: 1 !important; 
+    .chat_ee {
+        flex: 1 !important;
         height: auto !important;
         max-height: none !important;
-        overflow-y: auto !important; 
+        overflow-y: auto !important;
         display: flex !important;
         flex-direction: column !important;
         padding: 10px !important;
@@ -1513,9 +1499,9 @@ showButtonPanel: true
 
     #content_div_id { margin-top: auto !important; width: 100%; }
 
-    .digi-sidebar { 
-        width: 240px; 
-        background: #f7f9fb; 
+    .digi-sidebar {
+        width: 240px;
+        background: #f7f9fb;
         border-<?php echo ($PowerBB->_CONF['info_row']['content_dir'] == 'rtl') ? 'left' : 'right'; ?>: 1px solid #ddd;
         transition: transform 0.3s ease;
         z-index: 1001;
@@ -1523,11 +1509,11 @@ showButtonPanel: true
 
     .digi-header { background: #185886; color: #fff; padding: 10px; display: flex; justify-content: space-between; align-items: center; }
 
-    .mobile-toggle { 
-        display: none; 
-        cursor: pointer; 
-        background: rgba(255,255,255,0.2); 
-        padding: 5px 10px; 
+    .mobile-toggle {
+        display: none;
+        cursor: pointer;
+        background: rgba(255,255,255,0.2);
+        padding: 5px 10px;
         border-radius: 4px;
         font-size: 12px;
     }
@@ -1544,24 +1530,28 @@ showButtonPanel: true
         .mobile-toggle { display: block; }
         .digi-sidebar {
             position: absolute;
-            top: 0; bottom: 0;
+            top: 0;
+            bottom: 0;
             width: 220px;
-            transform: translateX(<?php echo ($PowerBB->_CONF['info_row']['content_dir'] == 'rtl') ? '220px' : '-220px'; ?>);
+		<?php echo ($PowerBB->_CONF['info_row']['content_dir'] == 'rtl') ? 'right: 0; left: auto;' : 'left: 0; right: auto;'; ?>
+		transform: translateX(<?php echo ($PowerBB->_CONF['info_row']['content_dir'] == 'rtl') ? '220px' : '-220px'; ?>);
         }
-        .digi-sidebar.active { transform: translateX(0); }
+       .digi-sidebar.active {
+            transform: translateX(0) !important;
+        }
         .sidebar-overlay.active { display: block; }
     }
 
-    #smile_box { 
-        display: none !important; 
-        position: absolute; 
-        bottom: 45px; 
-        background: #fff; 
-        border: 1px solid #ccc; 
-        width: 260px; 
-        padding: 5px; 
-        z-index: 9999 !important; 
-        grid-template-columns: repeat(8, 1fr); 
+    #smile_box {
+        display: none !important;
+        position: absolute;
+        bottom: 45px;
+        background: #fff;
+        border: 1px solid #ccc;
+        width: 260px;
+        padding: 5px;
+        z-index: 9999 !important;
+        grid-template-columns: repeat(8, 1fr);
         gap: 2px;
         box-shadow: 0 2px 10px rgba(0,0,0,0.2);
     }
@@ -1578,7 +1568,7 @@ showButtonPanel: true
 {template}address_bar_part2{/template}
 <div class="digi-container">
     <div class="sidebar-overlay" onclick="toggleMobileSidebar()"></div>
-    
+
     <div class="digi-sidebar">
         <div class="digi-header"><i class="fa fa-users"></i> {$lang['online_naw']}</div>
         <div id="content_online"></div>
@@ -1588,13 +1578,13 @@ showButtonPanel: true
         <div class="digi-header">
             <div><i class="fa fa-comments"></i> {$lang['chat_message']}</div>
             <div class="mobile-toggle" onclick="toggleMobileSidebar()" title="{$lang['online_naw']}">
-                <i class="fa fa-users"></i> <span id="m_count">0</span>             
+                <i class="fa fa-users"></i> <span id="m_count">0</span>
             </div>
             {if {$_CONF['rows']['group_info']['admincp_allow']}}
                 <a href="index.php?page=chat_message&control=1&amp;main=1" title="{$lang['manges_chat']}" style="color:#fff;">
                     <i class="fa fa-cog"></i>
                 </a>
-            {/if}                 
+            {/if}
         </div>
         <div class="chat_ee" id="main_chat_scroll">
             <div id="content_div_id"></div>
@@ -1611,8 +1601,9 @@ showButtonPanel: true
     var isAudioAllowed = false;
     var userIsScrolling = false;
 
-    function toggleMobileSidebar() {
-        $('.digi-sidebar, .sidebar-overlay').toggleClass('active');
+function toggleMobileSidebar() {
+        $('.digi-sidebar').toggleClass('active');
+        $('.sidebar-overlay').toggleClass('active');
     }
 
     $("#main_chat_scroll").on('scroll', function() {
@@ -1624,9 +1615,9 @@ showButtonPanel: true
         var msgText = $("#box_text").val();
         if(msgText && msgText.trim() != "") {
             $(".add_chat_message button").attr("disabled", true);
-            
+
             $.post("index.php?page=chat_message&start=1", { textc: msgText, ajax: 1 }, function() {
-                $("#box_text").val(""); 
+                $("#box_text").val("");
                 $(".add_chat_message button").attr("disabled", false);
                 userIsScrolling = false;
                 read_cont();
@@ -1642,9 +1633,9 @@ showButtonPanel: true
                     if (isAudioAllowed) document.getElementById('chatAudio').play();
                 }
                 sessionStorage.setItem('last_l', currentHash);
-                
+
                 $("#content_div_id").html(data);
-                
+
                 if (!userIsScrolling) {
                     var scroller = document.getElementById("main_chat_scroll");
                     if(scroller) scroller.scrollTop = scroller.scrollHeight;
@@ -1669,9 +1660,9 @@ showButtonPanel: true
 
         $(document).on('keydown', '#box_text', function(e) {
             if(e.which == 13 && !e.shiftKey) {
-                e.preventDefault(); 
+                e.preventDefault();
                 AjaxInsertChat();
-                return false; 
+                return false;
             }
         });
 
@@ -8450,29 +8441,32 @@ itemtype="https://schema.org/ListItem">
 <div class="l-left"> {$lang['Number_of_results']}
 ({$username_nm})
 {$lang['result']}</div>
-{/if}			{if {$nm}}
+{/if}
+{if {$nm}}
 <div class="l-left"> {$lang['Number_of_results']}
 ({$nm})
-{$lang['result']}</div>
-{/if}		</td>
+{$lang['result']}
+</div>
+{/if}
+</td>
 </tr>
 <tr>
 <td class="thead center_text_align wd30" colspan="2">
 {$lang['subject_title']}
 </td>
 {if !{$search_username_subjects} }
-<td class="thead center_text_align wd20">
+<td class="thead center_text_align wd15">
 {$lang['subject_writer']}
 </td>
 {/if}
-<td class="thead center_text_align wd10">
+<td class="thead center_text_align wd5">
 {$lang['reply_num']}
 </td>
-<td class="thead center_text_align wd10">
+<td class="thead center_text_align wd5">
 {$lang['subject_visitor']}
 </td>
-<td class="thead center_text_align wd28">
-{$lang['date']}
+<td class="thead center_text_align wd15">
+{$lang['forum']}
 </td>
 </tr>
 {Des::while}{SubjectList}
@@ -8494,25 +8488,25 @@ itemtype="https://schema.org/ListItem">
 <span class="small">{$SubjectList['subject_describe']}</span>
 </td>
 {if !{$search_username_subjects} }
-<td class="row1 center_text_align wd20">
-<a href="index.php?page=profile&amp;show=1&amp;username={$SubjectList['writer']}">{$SubjectList['writer']}</a>       </td>
+<td class="row1 center_text_align wd15">
+<a href="index.php?page=profile&amp;show=1&amp;id={$SubjectList['writer_id']}">{$SubjectList['username_style_cache']}</a>
+<br />
+<span class="smallfont">{$SubjectList['write_date']}</span>
 </td>
 {/if}
-<td class="row2 center_text_align wd10">
-{if {$SubjectList['reply_number']} <= 0}
-{$lang['no_replys']}
-{else}
+<td class="row2 center_text_align wd5">
 {$SubjectList['reply_number']}
-{/if}
 </td>
-<td class="row1 center_text_align wd10">
+<td class="row1 center_text_align wd5">
 {$SubjectList['visitor']}
 </td>
-<td class="row2 center_text_align wd28">
-{$SubjectList['reply_date']}
+<td class="row2 center_text_align wd15">
+<a href="index.php?page=forum&amp;show=1&amp;id={$SubjectList['section_id']}"><span class="smallfont">{$SubjectList['section_title']}</span></a>
 </td>
 </tr>
-{/Des::while}	{Des::while}{SubjectTitleList}
+{/Des::while}
+
+{Des::while}{SubjectTitleList}
 <tr>
 <td class="row1 center_text_align wd3">
 <img src="{$_CONF['ReplyList_row']['icon_path']}{$SubjectTitleList['icon']}" alt="" />
@@ -8530,23 +8524,22 @@ itemtype="https://schema.org/ListItem">
 <span class="small">{$SubjectTitleList['subject_describe']}</span>
 </td>
 {if !{$search_username_subjects} }
-<td class="row1 center_text_align wd20">
-<a href="index.php?page=profile&amp;show=1&amp;username={$SubjectTitleList['writer']}">{$SubjectTitleList['writer']}</a><br />
+<td class="row1 center_text_align wd15">
+<a href="index.php?page=profile&amp;show=1&amp;id={$SubjectTitleList['writer_id']}">{$SubjectTitleList['username_style_cache']}</a>
+<br />
+<span class="smallfont">
 {$SubjectTitleList['write_date']}
+</span>
 </td>
 {/if}
-<td class="row2 center_text_align wd10">
-{if {$SubjectTitleList['reply_number']} <= 0}
-{$lang['no_replys']}
-{else}
+<td class="row2 center_text_align wd5">
 {$SubjectTitleList['reply_number']}
-{/if}
 </td>
-<td class="row1 center_text_align wd10">
+<td class="row1 center_text_align wd5">
 {$SubjectTitleList['visitor']}
 </td>
-<td class="row2 center_text_align wd28">
-{$SubjectTitleList['reply_date']}
+<td class="row2 center_text_align wd15">
+<a href="index.php?page=forum&amp;show=1&amp;id={$SubjectTitleList['section_id']}"><span class="smallfont">{$SubjectTitleList['section_title']}</span></a>
 </td>
 </tr>
 {/Des::while}
@@ -8568,27 +8561,24 @@ itemtype="https://schema.org/ListItem">
 <span class="small">{$MembersListSubject['subject_describe']}</span>
 </td>
 {if !{$search_username_subjects}}
-<td class="row1 center_text_align wd20">
-<a href="index.php?page=profile&amp;show=1&amp;username={$MembersListSubject['writer']}">{$MembersListSubject['writer']}</a><br />
+<td class="row1 center_text_align wd15">
+<a href="index.php?page=profile&amp;show=1&amp;id={$MembersListSubject['writer_id']}">{$MembersListSubject['username_style_cache']}</a><br />
 {$MembersListSubject['write_date']}
 </td>
 {/if}
-<td class="row2 center_text_align wd8">
-{if {$MembersListSubject['reply_number']} <= 0}
-{$lang['no_replys']}
-{else}
+<td class="row2 center_text_align wd5">
 {$MembersListSubject['reply_number']}
-{/if}
 </td>
-<td class="row1 center_text_align wd8">
+<td class="row1 center_text_align wd5">
 {$MembersListSubject['visitor']}
 </td>
-<td class="row2 center_text_align wd28">
-{$MembersListSubject['reply_date']}
+<td class="row2 center_text_align wd15">
+<a href="index.php?page=forum&amp;show=1&amp;id={$MembersListSubject['section_id']}"><span class="smallfont">{$MembersListSubject['section_title']}</span></a>
 </td>
 </tr>
 {/Des::while}
-</table>{else}
+</table>
+{else}
 <br />
 <table class="border wd98 brd1 clpc0 a-center">
 <tr>
@@ -8599,11 +8589,14 @@ itemtype="https://schema.org/ListItem">
 <div class="l-left"> {$lang['Number_of_results']}
 ({$username_nm})
 {$lang['result']}</div>
-{/if}			{if {$nm}}
+{/if}
+{if {$nm}}
 <div class="l-left"> {$lang['Number_of_results']}
 ({$nm})
-{$lang['result']}</div>
-{/if}		</td>
+{$lang['result']}
+</div>
+{/if}
+</td>
 </tr>
 <tr>
 <td class="thead center_text_align wd40" colspan="2">
@@ -8612,8 +8605,8 @@ itemtype="https://schema.org/ListItem">
 <td class="thead center_text_align wd20">
 {$lang['subject_writer']}
 </td>
-<td class="thead center_text_align wd10">
-{$lang['date']}
+<td class="thead wd15 a-center">
+{$lang['forum']}
 </td>
 </tr>
 {Des::while}{ReplyList}
@@ -8623,7 +8616,8 @@ itemtype="https://schema.org/ListItem">
 <img src="{$_CONF['ReplyList_row']['icon_path']}{$ReplyList['icon']}" alt="" />
 {else}
 <img src="look/images/icons/i1.gif" alt="" />
-{/if}		</td>
+{/if}
+</td>
 <td class="row2 wd40">
 {$lang['bY_reply']}
 <a href="index.php?page=post&amp;show=1&amp;id={$ReplyList['id']}">
@@ -8640,10 +8634,16 @@ itemtype="https://schema.org/ListItem">
 <span class="small">{$ReplyList['subject_describe']}</span>
 </td>
 <td class="row1 center_text_align wd20">
-<a href="index.php?page=profile&amp;show=1&amp;username={$ReplyList['writer']}">{$ReplyList['writer']}</a>
+{if {$ReplyList['writer']} =='Guest'}
+{$lang['Guest_']}
+ {else}
+<a href="index.php?page=profile&amp;show=1&amp;id={$ReplyList['writer_id']}">{$ReplyList['username_style_cache']}</a>
+{/if}
+<br />
+<span class="smallfont">{$ReplyList['reply_date']}</span>
 </td>
-<td class="row2 center_text_align wd10">
-{$ReplyList['reply_date']}
+<td class="row1 wd15 a-center">
+<a href="index.php?page=forum&amp;show=1&amp;id={$ReplyList['section_id']}"><span class="smallfont">{$ReplyList['section_title']}</span></a>
 </td>
 </tr>
 {/Des::while}

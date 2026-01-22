@@ -70,7 +70,7 @@ class PowerBBOnlineMOD
 
 		$OnlineArr = array();
 		$OnlineArr['order'] = array();
-		$OnlineArr['order']['field'] = 'last_move';
+		$OnlineArr['order']['field'] = 'user_id';
 		$OnlineArr['order']['type'] = 'DESC';
 		// Pager setup
 		$OnlineArr['pager'] 				= 	array();

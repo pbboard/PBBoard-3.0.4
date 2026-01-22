@@ -506,10 +506,10 @@ class PowerBBTopicMOD
        }
 
 		//////////
-		$SubjectInfoid = $PowerBB->_CONF['template']['SubjectInfo']['id'];
-		$member_row_id = $PowerBB->_CONF['member_row']['id'];
+		$SubjectInfoid = $PowerBB->_CONF['template']['SubjectInfo']['id'] ?? 0;
+		$member_row_id = $PowerBB->_CONF['member_row']['id'] ?? 0;
 
-		$subject_user_emailed_nm = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(*) FROM " . $PowerBB->table['emailed'] . " WHERE subject_id= $SubjectInfoid and user_id = $member_row_id "));
+		 $subject_user_emailed_nm = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(*) FROM " . $PowerBB->table['emailed'] . " WHERE subject_id= $SubjectInfoid and user_id = $member_row_id "));
          $PowerBB->template->assign('is_subscribe',$subject_user_emailed_nm);
 
 		//show list last 5 posts member
@@ -781,7 +781,7 @@ class PowerBBTopicMOD
 
         ///////////////////////////////////////////////
         // pager Up Subject
-		$SubjectInfid = $PowerBB->_GET['id'];
+		$SubjectInfid = $PowerBB->_GET['id']  ?? 0;
 		if ($PowerBB->functions->ModeratorCheck($This_SectionInfo['moderators']))
 		{
 		$SubjectInfReplyNum = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(*) FROM " . $PowerBB->table['reply'] . " WHERE subject_id= $SubjectInfid and delete_topic <>1 "));
@@ -937,8 +937,9 @@ class PowerBBTopicMOD
 	            {
                   if (!empty($answers))
                   {
-					$subject_id  = $PowerBB->_GET['id'];
-					$vote_nm = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(*) FROM " . $PowerBB->table['vote'] . " WHERE answer_number = " . $answers_number . " AND subject_id = " . $subject_id . " "));
+					$subject_id  = $PowerBB->_GET['id'] ?? 0;
+					$answers_num  = $answers_number ?? 0;
+					$vote_nm = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(*) FROM " . $PowerBB->table['vote'] . " WHERE answer_number = " . $answers_num . " AND subject_id = " . $subject_id . " "));
 
 					$answers =$PowerBB->Powerparse->censor_words($answers);
 					$answers = $PowerBB->functions->CleanVariable($answers,'sql');
@@ -1003,7 +1004,7 @@ class PowerBBTopicMOD
 
 					$PowerBB->template->assign('ShowVote',$ShowVote);
 
-					$subject_id  = $PowerBB->_GET['id'];
+					$subject_id  = $PowerBB->_GET['id'] ?? 0;
 					$Allvote_nm = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(*) FROM " . $PowerBB->table['vote'] . " WHERE votes AND subject_id = " . $subject_id . " "));
 					$PowerBB->template->assign('AllVote',$Allvote_nm);
 					$PowerBB->template->assign('Info',$PowerBB->_CONF['template']['SubjectInfo']);

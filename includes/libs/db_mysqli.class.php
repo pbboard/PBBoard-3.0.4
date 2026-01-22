@@ -11,6 +11,8 @@ class PowerBBSQL
     var $connect        = null;
     var $_from;
     var $_query;
+    var $query_count = 0;
+    var $debug          = false;
     var $_mysqli_err_no;
     var $_mysqli_err_msg;
     var $UserAdmin;
@@ -22,7 +24,7 @@ class PowerBBSQL
         $this->db_password = $db_password;
         $this->db_name      = $db_name;
         $this->db_type      = $db_type;
-        $this->encoding     = empty($db_encoding) ? 'utf8mb4' : $db_encoding;
+        $this->db_encoding     = empty($db_encoding) ? 'utf8mb4' : $db_encoding;
         $this->db_prefix    = $db_prefix;
         $this->UserAdmin    = isset($_SESSION['username_cookie']) ? $_SESSION['username_cookie'] : null;
     }
@@ -39,15 +41,15 @@ class PowerBBSQL
 
 	function GetQueriesNumber()
 	{
-		return $this->number;
+		return $this->query_count;
 	}
 
 	function GetQueriesArray()
 	{
-		return $this->queries;
+		return array();
 	}
 
-function sql_connect()
+  function sql_connect()
     {
         if (function_exists('mysqli_connect')) {
          // Enable error hiding and manual exception throwing to control formatting
@@ -60,7 +62,7 @@ function sql_connect()
                     throw new Exception(mysqli_connect_error(), mysqli_connect_errno());
                 }
 
-                @mysqli_set_charset($this->connect, $this->encoding);
+                @mysqli_set_charset($this->connect, $this->db_encoding);
                 @mysqli_query($this->connect, "SET @@session.sql_mode=''");
             } catch (Exception $e) {
                 $this->_from = 'connect';
@@ -106,18 +108,18 @@ function sql_connect()
 	function sql_query($query)
 	{
         global $PowerBB;
-
-		$result = @mysqli_query($this->sql_connect(),$query);
+        $link = $this->sql_connect();
+		$result = @mysqli_query($link,$query);
 		if (!$result)
 		{
-		$this->_mysqli_err_no = mysqli_errno($this->sql_connect());
-		$this->_mysqli_err_msg = mysqli_error($this->sql_connect());
+		$this->_mysqli_err_no = mysqli_errno($link);
+		$this->_mysqli_err_msg = mysqli_error($link);
 		$this->_query = $query;
 		$this->_from = 'query';
 		$this->_error();
         }
 
-		if ($PowerBB->_CONF['info_row']['show_debug_info'])
+		if (isset($PowerBB->_CONF['info_row']['show_debug_info']) && $PowerBB->_CONF['info_row']['show_debug_info'])
 		{
          $this->query_count++;
 		}
@@ -127,17 +129,19 @@ function sql_connect()
 
 	function sql_unbuffered_query($query)
 	{
-		$result = mysqli_query($this->sql_connect(),$query);
+	    global $PowerBB;
+	    $link = $this->sql_connect();
+		$result = mysqli_query($link,$query);
 		if (!$result)
 		{
 		$this->_from = 'query';
 		$this->_query = $query;
-		$this->_mysqli_err_no = mysqli_errno($this->sql_connect());
-		$this->_mysqli_err_msg = mysqli_error($this->sql_connect());
+		$this->_mysqli_err_no = mysqli_errno($link);
+		$this->_mysqli_err_msg = mysqli_error($link);
 		$this->_error();
         }
 
-		if ($PowerBB->_CONF['info_row']['show_debug_info'])
+		if (isset($PowerBB->_CONF['info_row']['show_debug_info']) && $PowerBB->_CONF['info_row']['show_debug_info'])
 		{
          $this->query_count++;
 		}
@@ -182,12 +186,9 @@ function sql_connect()
 
 	function sql_free_result($result)
 	{
-	 if(!empty($result))
-	  {
-	 // $free = mysqli_free_result($result);
-	  $free = $this->sql_close($result);
-	  return $free;
-	  }
+	    if ($result instanceof mysqli_result) {
+	        mysqli_free_result($result);
+	    }
 	}
 
 	function check($table)

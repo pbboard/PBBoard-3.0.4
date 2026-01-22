@@ -508,10 +508,14 @@ class PowerBBTopicMOD
 		//////////
 		$SubjectInfoid = $PowerBB->_CONF['template']['SubjectInfo']['id'] ?? 0;
 		$member_row_id = $PowerBB->_CONF['member_row']['id'] ?? 0;
-
+         if ($PowerBB->_CONF['member_permission'])
+         {
 		 $subject_user_emailed_nm = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(*) FROM " . $PowerBB->table['emailed'] . " WHERE subject_id= $SubjectInfoid and user_id = $member_row_id "));
          $PowerBB->template->assign('is_subscribe',$subject_user_emailed_nm);
-
+         }
+         else
+         {          $PowerBB->template->assign('is_subscribe', 0);
+         }
 		//show list last 5 posts member
 		if ($PowerBB->_CONF['info_row']['show_list_last_5_posts_member'] == 1)
 		{

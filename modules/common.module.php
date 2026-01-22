@@ -1,4 +1,5 @@
 <?php
+ob_start();
 (!defined('IN_PowerBB')) ? die() : '';
 class PowerBBCommon
 {

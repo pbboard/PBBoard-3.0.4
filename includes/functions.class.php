@@ -2798,6 +2798,14 @@ return preg_replace($pattern, $replacement, $email);
   function UpdateSectionCache($SectionCache)
  	{
       global $PowerBB;
+
+		$last_subjectid = 0;
+		$title = '';
+		$last_writer = '';
+		$icon = '';
+		$last_date = 0;
+		$last_berpage_nm = 0;
+
 			// Get Section Info
 			$SecArr 			= 	array();
 			$SecArr['where'] 	= 	array('id',$SectionCache);
@@ -2843,9 +2851,10 @@ return preg_replace($pattern, $replacement, $email);
 			else
 			{
 
-				if($GetLastReplyForm['write_time'] >= $GetLastSubjectInf['native_write_time'])
+				if($reply_num && !empty($GetLastReplyForm['subject_id']) && $GetLastReplyForm['write_time'] >= $GetLastSubjectInf['native_write_time'])
 				{
-				$GetSubjectInfoQuery = $PowerBB->DB->sql_query("SELECT id,title,reply_number,icon,last_replier,native_write_time,write_time FROM " . $PowerBB->table['subject'] . " WHERE id = ".$GetLastReplyForm['subject_id']." AND delete_topic=0 AND review_subject=0 LIMIT 1");
+				$subj_id = (int)$GetLastReplyForm['subject_id'];
+				$GetSubjectInfoQuery = $PowerBB->DB->sql_query("SELECT id,title,reply_number,icon,last_replier,native_write_time,write_time FROM " . $PowerBB->table['subject'] . " WHERE id = $subj_id AND delete_topic=0 AND review_subject=0 LIMIT 1");
 
 				$SubjectInf = $PowerBB->DB->sql_fetch_array($GetSubjectInfoQuery);
 				// Get info Reply
@@ -2861,9 +2870,9 @@ return preg_replace($pattern, $replacement, $email);
 				else
 				{
 				// Get info subject
-				$countpage = $PowerBB->functions->get_count_perpage($GetLastSubjectInf['reply_number'],$PowerBB->_CONF['info_row']['perpage']);
-				$last_subjectid = $GetLastSubjectInf['id'];
-				$icon = $GetLastSubjectInf['icon'];
+				$countpage = $PowerBB->functions->get_count_perpage($GetLastSubjectInf['reply_number'] ?? 0,$PowerBB->_CONF['info_row']['perpage']);
+				$last_subjectid = $GetLastSubjectInf['id'] ?? 0;
+				$icon = $GetLastSubjectInf['icon'] ?? '';
 				$last_reply_id = 0;
 				if (!empty($GetLastSubjectInf['lastreply_cache'])) {
 				    $cache_data = @unserialize($GetLastSubjectInf['lastreply_cache']);
@@ -2871,9 +2880,9 @@ return preg_replace($pattern, $replacement, $email);
 				}
 				$last_reply = (int)($last_reply_id ?? 0);
 				$last_berpage_nm = $countpage;
-				$last_writer = $GetLastSubjectInf['writer'];
-				$title = $GetLastSubjectInf['title'];
-				$last_date = $GetLastSubjectInf['native_write_time'];
+				$last_writer = $GetLastSubjectInf['writer'] ?? '';
+				$title = $GetLastSubjectInf['title'] ?? '';
+				$last_date = $GetLastSubjectInf['native_write_time'] ?? 0;
 				}
 			}
 
@@ -2928,8 +2937,8 @@ return preg_replace($pattern, $replacement, $email);
 			}
 			else
 			{
-				$review_replyNumArr = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(*) FROM " . $PowerBB->table['reply'] . " WHERE section=$SectionCache and review_reply=1"));
-				$review_subjectNumArr = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(*) FROM " . $PowerBB->table['subject'] . " WHERE section=$SectionCache and review_subject=1"));
+				$review_replyNumArr = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(*) FROM " . $PowerBB->table['reply'] . " WHERE section= $SectionCache and review_reply=1"));
+				$review_subjectNumArr = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(*) FROM " . $PowerBB->table['subject'] . " WHERE section= $SectionCache and review_subject=1"));
 				$CacheArr 			= 	array();
 				$CacheArr['where'] 	= 	array('section_id',$SectionCache);
 				$cache = $PowerBB->moderator->CreateModeratorsCache($CacheArr);

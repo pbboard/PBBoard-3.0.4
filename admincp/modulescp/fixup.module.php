@@ -245,41 +245,36 @@ function run()
 	{
 	    global $PowerBB;
 	    @session_write_close();
-	    // جلب رقم القسم عبر نظام السكربت المفلتر
 	    $sec_id = isset($PowerBB->_GET['sec_id']) ? $PowerBB->_GET['sec_id'] : 0;
 
 	    if ($sec_id > 0) {
 
-         // 1. عدد الردود بانتظار الموافقة لهذا القسم (منطق الدالة القديمة)
 	        $rev_q = $PowerBB->DB->sql_fetch_array($PowerBB->DB->sql_query("
 	            SELECT COUNT(R.id) as total
 	            FROM " . $PowerBB->table['reply'] . " R
 	            INNER JOIN " . $PowerBB->table['subject'] . " S ON R.subject_id = S.id
-	            WHERE S.section = '$sec_id' AND R.review_reply = '1' AND R.delete_topic = '0'
+	            WHERE S.section = $sec_id AND R.review_reply = 1 AND R.delete_topic = 0
 	        "));
 	        $r_review_num = $rev_q['total'];
 
-	        // 2. عدد المواضيع بانتظار الموافقة لهذا القسم (منطق الدالة القديمة)
 	        $s_review = $PowerBB->DB->sql_fetch_array($PowerBB->DB->sql_query("
-	            SELECT COUNT(id) as total FROM " . $PowerBB->table['subject'] . "
-	            WHERE section = '$sec_id' AND review_subject = '1' AND delete_topic = '0'
+	            SELECT COUNT(*) as total FROM " . $PowerBB->table['subject'] . "
+	            WHERE section = $sec_id AND review_subject = 1 AND delete_topic = 0
 	        "));
 	        $s_review_num = $s_review['total'];
 
-	        // 3. إحصائيات المواضيع والردود المعتمدة (الظاهرة للزوار)
 	        $stats = $PowerBB->DB->sql_fetch_array($PowerBB->DB->sql_query("
-	            SELECT COUNT(id) as total_s, SUM(reply_number) as total_r
+	            SELECT COUNT(*) as total_s, SUM(reply_number) as total_r
 	            FROM " . $PowerBB->table['subject'] . "
-	            WHERE section = '$sec_id' AND delete_topic = '0' AND review_subject = '0'
+	            WHERE section = $sec_id AND delete_topic = 0 AND review_subject = 0
 	        "));
 	        $s_num = $stats['total_s'];
 	        $r_num = $stats['total_r'];
 
-	        // 4. جلب بيانات آخر نشاط بناءً على write_time
 	        $last_act = $PowerBB->DB->sql_fetch_array($PowerBB->DB->sql_query("
 	            SELECT id, title, writer, last_replier, write_time, reply_number
 	            FROM " . $PowerBB->table['subject'] . "
-	            WHERE section = '$sec_id' AND delete_topic = '0' AND review_subject = '0'
+	            WHERE section = $sec_id AND delete_topic = 0 AND review_subject = 0
 	            ORDER BY CAST(write_time AS UNSIGNED) DESC LIMIT 1
 	        "));
 
@@ -288,21 +283,18 @@ function run()
 	        $l_time  = isset($last_act['write_time']) ? $last_act['write_time'] : 0;
 	        $l_writer = (isset($last_act['reply_number']) && $last_act['reply_number'] > 0) ? $last_act['last_replier'] : (isset($last_act['writer']) ? $last_act['writer'] : '');
 
-
-	        // 5. جلب بيانات آخر نشاط بناءً على last_reply
 	        $last_reply = $PowerBB->DB->sql_fetch_array($PowerBB->DB->sql_query("
 	            SELECT id
 	            FROM " . $PowerBB->table['reply'] . "
-	            WHERE section = '$sec_id' AND subject_id = '$l_id' AND delete_topic = '0' AND review_reply = '0'
+	            WHERE section = $sec_id AND subject_id = $l_id AND delete_topic = 0 AND review_reply = 0
 	            ORDER BY CAST(write_time AS UNSIGNED) DESC LIMIT 1
 	        "));
             $l_last_reply    = isset($last_reply['id']) ? $last_reply['id'] : 0;
 
-	        // 6. جلب وتجهيز بيانات المشرفين
 	        $mod_cache = array();
-	        $mod_query = $PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['moderators'] . " WHERE section_id = '$sec_id'");
+	        $mod_query = $PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['moderators'] . " WHERE section_id = $sec_id");
 	        while ($mod = $PowerBB->DB->sql_fetch_array($mod_query)) {
-	            $u_info = $PowerBB->DB->sql_fetch_array($PowerBB->DB->sql_query("SELECT id, avater_path, username_style_cache FROM " . $PowerBB->table['member'] . " WHERE id = '" . $mod['member_id'] . "' LIMIT 1"));
+	            $u_info = $PowerBB->DB->sql_fetch_array($PowerBB->DB->sql_query("SELECT id, avater_path, username_style_cache FROM " . $PowerBB->table['member'] . " WHERE id = " . $mod['member_id'] . " LIMIT 1"));
 	            $mod_cache[] = array(
 	                'id'                   => $mod['id'],
 	                'section_id'           => $mod['section_id'],
@@ -314,27 +306,25 @@ function run()
 	        }
 	        $mod_json = (!empty($mod_cache)) ? json_encode($mod_cache, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) : '[]';
 
-	        // 7. التحديث الشامل لجدول الأقسام
 	        $PowerBB->DB->sql_query("
 	            UPDATE " . $PowerBB->table['section'] . "
-	            SET subject_num = '$s_num',
-	                reply_num = '$r_num',
-	                subjects_review_num = '$s_review_num',
-	                replys_review_num = '$r_review_num',
-	                last_subjectid = '$l_id',
+	            SET subject_num = $s_num,
+	                reply_num = $r_num,
+	                subjects_review_num = $s_review_num,
+	                replys_review_num = $r_review_num,
+	                last_subjectid = $l_id,
 	                last_subject = '" . $PowerBB->DB->sql_escape($l_title) . "',
 	                last_writer = '" . $PowerBB->DB->sql_escape($l_writer) . "',
-	                last_reply = '$l_last_reply',
+	                last_reply = $l_last_reply,
 	                last_date = '$l_time',
 	                last_time = '$l_time',
 	                moderators = '" . $PowerBB->DB->sql_escape($mod_json) . "'
-	            WHERE id = '$sec_id'
+	            WHERE id = $sec_id
 	        ");
 
-	        // 8. بناء حقل forums_cache الهجين (خفيف وسريع)
 	        $cache_array = array();
 	        $parent_array = array();
-	        $sub_forums_query = $PowerBB->DB->sql_query("SELECT id, title, subject_num, reply_num, last_subject, last_subjectid, last_date, last_writer, moderators FROM " . $PowerBB->table['section'] . " WHERE parent = '$sec_id' ORDER BY sort ASC");
+	        $sub_forums_query = $PowerBB->DB->sql_query("SELECT id, title, subject_num, reply_num, last_subject, last_subjectid, last_date, last_writer, moderators FROM " . $PowerBB->table['section'] . " WHERE parent = $sec_id ORDER BY sort ASC");
 
 	        if ($PowerBB->DB->sql_num_rows($sub_forums_query) > 0) {
 	            while ($sub = $PowerBB->DB->sql_fetch_array($sub_forums_query)) {
@@ -349,8 +339,7 @@ function run()
 						{
 						$parents['parent'] 	= 	$sub;
 						}
-	                // جلب ستايل وأفاتار آخر كاتب للقسم الفرعي
-	                if (!empty($sub['last_writer'])) {
+ 	                if (!empty($sub['last_writer'])) {
 	                    $u = $PowerBB->DB->sql_fetch_array($PowerBB->DB->sql_query("SELECT id, avater_path, username_style_cache FROM " . $PowerBB->table['member'] . " WHERE username = '" . $PowerBB->DB->sql_escape($sub['last_writer']) . "' LIMIT 1"));
 	                    if ($u) {
 	                        $temp['last_writer_id'] = $u['id'];
@@ -362,7 +351,7 @@ function run()
 	                $parent_array[] = $parents;
 	            }
 	        } else {
-	            // بيانات العضو الأخير للقسم الرئيسي (إذا لم يكن له أقسام فرعية)
+
 	            if (!empty($l_writer)) {
 	                $u = $PowerBB->DB->sql_fetch_array($PowerBB->DB->sql_query("SELECT id, avater_path, username_style_cache FROM " . $PowerBB->table['member'] . " WHERE username = '" . $PowerBB->DB->sql_escape($l_writer) . "' LIMIT 1"));
 	                if ($u) {
@@ -373,10 +362,9 @@ function run()
 
 	        $json_cache = json_encode($json_cache,JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
 
-	        $PowerBB->DB->sql_query("UPDATE " . $PowerBB->table['section'] . " SET forums_cache = '" . $PowerBB->DB->sql_escape($json_cache) . "' WHERE id = '$sec_id'");
+	        $PowerBB->DB->sql_query("UPDATE " . $PowerBB->table['section'] . " SET forums_cache = '" . $PowerBB->DB->sql_escape($json_cache) . "' WHERE id = $sec_id");
 
             $UpdateSectionCache = $PowerBB->functions->UpdateSectionCache($sec_id);
-	        // 9. تحديث الكاش البرمجي للسيرفر
 	        if ($UpdateSectionCache) { die("SUCCESS"); }
 
 
@@ -521,7 +509,7 @@ function run()
 		$page = ($page == 0 ? 1 : $page);
 
 		$startpoint = ($page * $perpage) - $perpage;
-		$member_nm = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(*),id FROM " . $PowerBB->table['member'] . " WHERE id"));
+		$member_nm = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(*) FROM " . $PowerBB->table['member'] . " "));
               $br = '<br>';
 		echo('<br><br><table border="1" width="80%" cellspacing="0" cellpadding="0" bgcolor="#FFFFFF" style="border-collapse: collapse" align="center"><tr><td><font face="Tahoma" size="2">');
 
@@ -550,9 +538,9 @@ function run()
 
 		$update = $PowerBB->core->Update($UpdateArr,'member');
 		// UPDATE username_style today
-		$update_username_style_today = $PowerBB->DB->sql_query("UPDATE " . $PowerBB->table['today'] . " SET username_style='" . $style . "' WHERE user_id='" . $MemInfo['id'] . "'");
+		$update_username_style_today = $PowerBB->DB->sql_query("UPDATE " . $PowerBB->table['today'] . " SET username_style='" . $style . "' WHERE user_id= " . $MemInfo['id'] . " ");
 		// UPDATE username_style online
-		$update_username_style_online = $PowerBB->DB->sql_query("UPDATE " . $PowerBB->table['online'] . " SET username_style='" . $style . "' WHERE user_id='" . $MemInfo['id'] . "'");
+		$update_username_style_online = $PowerBB->DB->sql_query("UPDATE " . $PowerBB->table['online'] . " SET username_style='" . $style . "' WHERE user_id= " . $MemInfo['id'] . " ");
 
 		echo($MemInfo['username'] .' ..'. $br);
 
@@ -599,9 +587,9 @@ function run()
 		global $PowerBB;
 
 
-	         $reply_number = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query('SELECT COUNT(1),id FROM '.$PowerBB->table['reply'].' WHERE delete_topic <> 1 LIMIT 1'));
-	         $subject_number = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query('SELECT COUNT(1),id FROM '.$PowerBB->table['subject'].' WHERE delete_topic <> 1 LIMIT 1'));
-	         $member_number = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query('SELECT COUNT(1),id FROM '.$PowerBB->table['member'].' LIMIT 1'));
+	         $reply_number = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query('SELECT COUNT(*) FROM '.$PowerBB->table['reply'].' WHERE delete_topic <> 1 '));
+	         $subject_number = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query('SELECT COUNT(*) FROM '.$PowerBB->table['subject'].' WHERE delete_topic <> 1 '));
+	         $member_number = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query('SELECT COUNT(*) FROM '.$PowerBB->table['member'].' '));
 
 	        $update = array();
 			$update[0] = $PowerBB->info->UpdateInfo(array('value'=>$member_number,'var_name'=>'member_number'));
@@ -623,21 +611,15 @@ function run()
 	    @session_write_close();
 	    @set_time_limit(0);
 
-	    // -----------------------------
-	    // 1. جلب العدد الإجمالي للمواضيع
-	    // -----------------------------
 	    if (isset($PowerBB->_GET['get_total'])) {
 	        $query = $PowerBB->DB->sql_query(
-	            "SELECT COUNT(*) FROM " . $PowerBB->table['subject'] . " WHERE delete_topic = '0'"
+	            "SELECT COUNT(*) FROM " . $PowerBB->table['subject'] . " WHERE delete_topic = 0 "
 	        );
 	        $row = $PowerBB->DB->sql_fetch_row($query); // يرجع الرقم مباشرة
 	        echo json_encode(array("total" => $row));
 	        exit;
 	    }
 
-	    // -----------------------------
-	    // 2. معالجة الدفعات باستخدام last_id
-	    // -----------------------------
 	    if (isset($PowerBB->_GET['ajax_process'])) {
 	        $perpage = isset($PowerBB->_GET['perpage']) ? $PowerBB->_GET['perpage'] : 100;
 	        $last_id = isset($PowerBB->_GET['last_id']) ? $PowerBB->_GET['last_id'] : 0;
@@ -652,24 +634,23 @@ function run()
 	                    SELECT r.id
 	                    FROM {$PowerBB->table['reply']} r
 	                    WHERE r.subject_id = s.id
-	                      AND r.review_reply = '0'
-	                      AND r.delete_topic = '0'
+	                      AND r.review_reply = 0
+	                      AND r.delete_topic = 0
 	                    ORDER BY r.id DESC
 	                    LIMIT 1
 	                ) AS last_r_id
 	            FROM {$PowerBB->table['subject']} s
-	            WHERE s.delete_topic='0' AND s.id > $last_id
+	            WHERE s.delete_topic= 0 AND s.id > $last_id
 	            ORDER BY s.id ASC
 	            LIMIT $perpage
 	        ";
 
 	        $res = $PowerBB->DB->sql_query($sql);
-	        $max_id = 0; // لتخزين آخر ID تم معالجته
+	        $max_id = 0;
 
 	        while ($sub = $PowerBB->DB->sql_fetch_array($res)) {
 	            $max_id = $sub['id'];
 
-	            // تحديد آخر كاتب
 	            if (!empty($sub['last_r_id'])) {
 	                $reply = $PowerBB->DB->sql_fetch_array(
 	                    $PowerBB->DB->sql_query(
@@ -683,7 +664,6 @@ function run()
 	                $is_reply = false;
 	            }
 
-	            // جلب بيانات العضو
 	            $user_data = $PowerBB->DB->sql_fetch_array(
 	                $PowerBB->DB->sql_query(
 	                    "SELECT id, username_style_cache, avater_path
@@ -696,7 +676,6 @@ function run()
 	            $style = (!empty($user_data['username_style_cache'])) ? $user_data['username_style_cache'] : '{username}';
 	            $styled_name = str_replace('{username}', $target_user, $style);
 
-	            // بناء الكاش
 	            if ($is_reply) {
 	                $perpage_view = $PowerBB->_CONF['info_row']['perpage'];
 	                $countpage = ceil(($sub['reply_number'] + 1) / $perpage_view);
@@ -718,7 +697,6 @@ function run()
 	                );
 	            }
 
-	            // تحديث الموضوع
 	            $PowerBB->DB->sql_query(
 	                "UPDATE " . $PowerBB->table['subject'] . " SET
 	                    last_replier = '".$PowerBB->DB->sql_escape($target_user)."',
@@ -789,7 +767,7 @@ function run()
 		$page = ($page == 0 ? 1 : $page);
 
 		$startpoint = ($page * $perpage) - $perpage;
-		$member_nm = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['member'] . " WHERE id"));
+		$member_nm = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(*) FROM " . $PowerBB->table['member'] . " "));
               $br = '<br>';
 		echo('<br><br><table border="1" width="80%" cellspacing="0" cellpadding="0" bgcolor="#FFFFFF" style="border-collapse: collapse" align="center"><tr><td><font face="Tahoma" size="2">');
 
@@ -814,9 +792,9 @@ function run()
 		$update = $PowerBB->core->Update($UpdateArr,'member');
 
 		// UPDATE username_style today
-		$update_username_style_today = $PowerBB->DB->sql_query("UPDATE " . $PowerBB->table['today'] . " SET username_style='" . $style . "' WHERE user_id='" . $MemInfo['id'] . "'");
+		$update_username_style_today = $PowerBB->DB->sql_query("UPDATE " . $PowerBB->table['today'] . " SET username_style='" . $style . "' WHERE user_id= " . $MemInfo['id'] . " ");
 		// UPDATE username_style online
-		$update_username_style_online = $PowerBB->DB->sql_query("UPDATE " . $PowerBB->table['online'] . " SET username_style='" . $style . "' WHERE user_id='" . $MemInfo['id'] . "'");
+		$update_username_style_online = $PowerBB->DB->sql_query("UPDATE " . $PowerBB->table['online'] . " SET username_style='" . $style . "' WHERE user_id= " . $MemInfo['id'] . " ");
 
 
 		echo($MemInfo['username'] .' ..'. $br);
@@ -1080,7 +1058,7 @@ function run()
 						foreach($StyleList as $Style)
 						 {
 						      $StyleId = $Style['id'];
-							 $_query= $PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['template'] . " WHERE title = '$Templattitle' and styleid = '$StyleId' ");
+							 $_query= $PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['template'] . " WHERE title = '$Templattitle' and styleid = $StyleId ");
 							 $row = $PowerBB->DB->sql_fetch_array($_query);
 
 						    if($Template['attributes']['type'] == 'new')
@@ -1225,7 +1203,7 @@ function run()
 							$Templattitle = $Template['attributes']['name'];
 							$Templattitle = @str_replace(".tpl",'',$Templattitle);
 							$StyleId = $Style['id'];
-							$_query= $PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['template'] . " WHERE title = '$Templattitle' and styleid = '$StyleId' ");
+							$_query= $PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['template'] . " WHERE title = '$Templattitle' and styleid = $StyleId ");
 							$row = $PowerBB->DB->sql_fetch_array($_query);
 
 						    if($Template['attributes']['type'] == 'new')

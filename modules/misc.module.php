@@ -360,7 +360,7 @@ class PowerBBMiscMOD
 
 	  $reputation = $PowerBB->_POST['username'];
 	  $reputation_number = $PowerBB->_CONF['group_info']['reputation_number'];
-	  $update = $PowerBB->DB->sql_query("UPDATE " . $PowerBB->table['member'] . " SET reputation = reputation + '$reputation_number' WHERE username ='$reputation'");
+	  $update = $PowerBB->DB->sql_query("UPDATE " . $PowerBB->table['member'] . " SET reputation = reputation + $reputation_number WHERE username ='$reputation'");
 
 	  	if ($update)
 		{
@@ -430,7 +430,7 @@ class PowerBBMiscMOD
 
 	  $reputation = $PowerBB->_POST['username'];
 	  $reputation_number = $PowerBB->_CONF['group_info']['reputation_number'];
-	  $update = $PowerBB->DB->sql_query("UPDATE " . $PowerBB->table['member'] . " SET reputation = reputation + '$reputation_number' WHERE username ='$reputation'");
+	  $update = $PowerBB->DB->sql_query("UPDATE " . $PowerBB->table['member'] . " SET reputation = reputation + $reputation_number WHERE username ='$reputation'");
 
 	  	if ($update)
 		{
@@ -528,7 +528,7 @@ class PowerBBMiscMOD
 
 	  $rating = $PowerBB->_POST['subject_id'];
 	  $rating_number = $PowerBB->_POST['vote'];
-	  $update = $PowerBB->DB->sql_query("UPDATE " . $PowerBB->table['subject'] . " SET rating = rating + '$rating_number' WHERE id ='$rating'");
+	  $update = $PowerBB->DB->sql_query("UPDATE " . $PowerBB->table['subject'] . " SET rating = rating + $rating_number WHERE id ='$rating'");
 
 	  	if ($update)
 		{
@@ -568,20 +568,20 @@ class PowerBBMiscMOD
          $PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['Sorry_url_not_true']);
        }
 
-        $Posted_number = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['reply'] . " WHERE subject_id='" . $PowerBB->_GET['subject_id'] . "' and delete_topic <>1 LIMIT 1"));
+        $Posted_number = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(*) FROM " . $PowerBB->table['reply'] . " WHERE subject_id=" . $PowerBB->_GET['subject_id'] . " and delete_topic <>1 "));
         $PowerBB->template->assign('Posted_number',$Posted_number);
 
          $PowerBB->template->display('who_posted1');
 
 		 $subject_id = $PowerBB->_GET['subject_id'];
-		 $ReplyArr = $PowerBB->DB->sql_query("SELECT Distinct writer FROM " . $PowerBB->table['reply'] . " WHERE subject_id = '$subject_id'");
+		 $ReplyArr = $PowerBB->DB->sql_query("SELECT Distinct writer FROM " . $PowerBB->table['reply'] . " WHERE subject_id = $subject_id");
 
 		 	while($r = $PowerBB->DB->sql_fetch_array($ReplyArr))
  			{
 
  				$PowerBB->template->assign('WhoPosted',$r);
 
- 				  $Posted_writer_number = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['reply'] . " WHERE subject_id='" . $PowerBB->_GET['subject_id'] . "' and writer='" . $r['writer'] . "' and delete_topic <>1 LIMIT 1"));
+ 				  $Posted_writer_number = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(*) FROM " . $PowerBB->table['reply'] . " WHERE subject_id= " . $PowerBB->_GET['subject_id'] . " and writer='" . $r['writer'] . "' and delete_topic <>1 "));
                   $PowerBB->template->assign('Posted_writer_number',$Posted_writer_number);
                   $PowerBB->template->assign('subject_id',$subject_id);
                   $PowerBB->template->assign('reply_id',$r['id']);
@@ -887,7 +887,7 @@ class PowerBBMiscMOD
 		$SubjectInfoid = $PowerBB->_GET['id'];
 		$member_row_id = $PowerBB->_CONF['member_row']['id'];
 
-		$subject_user_emailed_nm = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['emailed'] . " WHERE subject_id='$SubjectInfoid' and user_id ='$member_row_id'"));
+		$subject_user_emailed_nm = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(*) FROM " . $PowerBB->table['emailed'] . " WHERE subject_id= $SubjectInfoid  and user_id = $member_row_id "));
 
 		$EmailedArr 			= 	array();
 		$EmailedArr['where'] 	= 	array('subject_id',$PowerBB->_GET['id']);

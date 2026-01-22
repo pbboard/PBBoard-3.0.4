@@ -1506,7 +1506,7 @@ class PowerBBCoreMOD
 
       	// Get the Member Subjects num
       	$writer = $PowerBB->_CONF['rows']['member_row']['username'];
-        $GetMemberSubjectNum = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['subject'] . " WHERE writer = '$writer'"));
+        $GetMemberSubjectNum = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(*) FROM " . $PowerBB->table['subject'] . " WHERE writer = '$writer'"));
        	$PowerBB->template->assign('member_subject_num',$GetMemberSubjectNum );
 
        // Get the Member Subjects information
@@ -1558,7 +1558,7 @@ class PowerBBCoreMOD
 
       	// Get the Member attachments num
       	$u_id = $PowerBB->_CONF['member_row']['id'];
-        $GetMemberAttachmentNum = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['attach'] . " WHERE u_id = '$u_id'"));
+        $GetMemberAttachmentNum = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(*) FROM " . $PowerBB->table['attach'] . " WHERE u_id = $u_id"));
        	$PowerBB->template->assign('member_Attachment_num',$GetMemberAttachmentNum );
 
 		// Get the attachment information
@@ -1622,7 +1622,7 @@ class PowerBBCoreMOD
 
       		// Get the Emailed num
       	$user_id = $PowerBB->_CONF['member_row']['id'];
-        $GetEmailedNum = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['emailed'] . " WHERE user_id = '$user_id'"));
+        $GetEmailedNum = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(*) FROM " . $PowerBB->table['emailed'] . " WHERE user_id = $user_id"));
        	$PowerBB->template->assign('emailed_num',$GetEmailedNum );
 		// Get the Emailed information
 			$EmailedArr 							= 	array();
@@ -1717,7 +1717,7 @@ class PowerBBCoreMOD
 		  $username_friendInfo = $PowerBB->_POST['username_friend'];
 		  $username_member_row = $PowerBB->_CONF['member_row']['username'];
 
-		  $sql_friendInfo1 = $PowerBB->DB->sql_query("SELECT  *   FROM " . $PowerBB->table['friends'] . " WHERE username = '$username_member_row'");
+		  $sql_friendInfo1 = $PowerBB->DB->sql_query("SELECT username_friend FROM " . $PowerBB->table['friends'] . " WHERE username = '$username_member_row'");
 
 	       while ($getSection_row1 = $PowerBB->DB->sql_fetch_array($sql_friendInfo1))
 	      {
@@ -1729,7 +1729,7 @@ class PowerBBCoreMOD
 
           }
 
-		  $sql_friendInfo2 = $PowerBB->DB->sql_query("SELECT  *   FROM " . $PowerBB->table['friends'] . " WHERE username = '$username_friendInfo'");
+		  $sql_friendInfo2 = $PowerBB->DB->sql_query("SELECT username_friend FROM " . $PowerBB->table['friends'] . " WHERE username = '$username_friendInfo'");
 
 	       while ($getSection_row2 = $PowerBB->DB->sql_fetch_array($sql_friendInfo2))
 	      {
@@ -1741,7 +1741,7 @@ class PowerBBCoreMOD
 
           }
       /*
-		  $sql_friendInfo2 = $PowerBB->DB->sql_query("SELECT  *   FROM " . $PowerBB->table['friends'] . " WHERE username = '$username_friendInfo' ");
+		  $sql_friendInfo2 = $PowerBB->DB->sql_query("SELECT  username  FROM " . $PowerBB->table['friends'] . " WHERE username = '$username_friendInfo' ");
 
 	       while ($getSection_row2 = $PowerBB->DB->sql_fetch_array($sql_friendInfo2))
 	      {
@@ -1793,7 +1793,7 @@ class PowerBBCoreMOD
 	        }
       	// Get the Member friends num
       	$user_ = $PowerBB->_CONF['member_row']['username'];
-        $GetMemberFriendsNum = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['friends'] . " WHERE username = '$user_'"));
+        $GetMemberFriendsNum = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(*) FROM " . $PowerBB->table['friends'] . " WHERE username = '$user_'"));
        	$PowerBB->template->assign('friends_numer',$GetMemberFriendsNum );
 
        	$perpage_friends_list = "12";
@@ -1939,7 +1939,7 @@ class PowerBBCoreMOD
 
 		$PowerBB->_CONF['template']['MemberInfo'] = $PowerBB->core->GetInfo($MemberArr,'member');
 
-       $IsFreind = $PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['friends'] . " WHERE username='".$PowerBB->_CONF['template']['MemberInfo']['username']."' AND username_friend='".$PowerBB->_CONF['member_row']['username']."' or username_friend='".$PowerBB->_CONF['template']['MemberInfo']['username']."' AND username='".$PowerBB->_CONF['member_row']['username']."'" );
+       $IsFreind = $PowerBB->DB->sql_query("SELECT COUNT(*) FROM " . $PowerBB->table['friends'] . " WHERE username='".$PowerBB->_CONF['template']['MemberInfo']['username']."' AND username_friend='".$PowerBB->_CONF['member_row']['username']."' or username_friend='".$PowerBB->_CONF['template']['MemberInfo']['username']."' AND username='".$PowerBB->_CONF['member_row']['username']."'" );
        $IsFreind_row = $PowerBB->DB->sql_fetch_array($IsFreind);
 		if($PowerBB->DB->sql_num_rows($IsFreind) > 0)
 		{
@@ -2030,7 +2030,7 @@ class PowerBBCoreMOD
 
       	// Get the Member Subjects num
       	$username = $PowerBB->_CONF['rows']['member_row']['username'];
-        $GetMemberReputationNum = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['reputation'] . " WHERE username = '$username'"));
+        $GetMemberReputationNum = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(*) FROM " . $PowerBB->table['reputation'] . " WHERE username = '$username'"));
        	$PowerBB->template->assign('member_reputation_num',$GetMemberReputationNum );
 
 
@@ -2106,7 +2106,7 @@ class PowerBBCoreMOD
 
       	// Get the Member Subjects num
       	$username = $PowerBB->_CONF['rows']['member_row']['username'];
-        $allmentionNumrs = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->prefix . "mention WHERE you = '$member_username'"));
+        $allmentionNumrs = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(*) FROM " . $PowerBB->prefix . "mention WHERE you = '$member_username'"));
        	$PowerBB->template->assign('member_mention_num',$allmentionNumrs );
 
 

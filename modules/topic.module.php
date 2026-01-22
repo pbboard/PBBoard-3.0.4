@@ -509,7 +509,7 @@ class PowerBBTopicMOD
 		$SubjectInfoid = $PowerBB->_CONF['template']['SubjectInfo']['id'];
 		$member_row_id = $PowerBB->_CONF['member_row']['id'];
 
-		$subject_user_emailed_nm = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['emailed'] . " WHERE subject_id='$SubjectInfoid' and user_id ='$member_row_id' LIMIT 1"));
+		$subject_user_emailed_nm = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(*) FROM " . $PowerBB->table['emailed'] . " WHERE subject_id= $SubjectInfoid and user_id = $member_row_id "));
          $PowerBB->template->assign('is_subscribe',$subject_user_emailed_nm);
 
 		//show list last 5 posts member
@@ -542,7 +542,7 @@ class PowerBBTopicMOD
 
 		//////////
 		//show Award member
-       $ALL_Awards_nm = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['award'] . " LIMIT 1"));
+       $ALL_Awards_nm = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(*) FROM " . $PowerBB->table['award'] . " "));
        if ($ALL_Awards_nm > 0)
 		{
 
@@ -696,11 +696,12 @@ class PowerBBTopicMOD
 
 		// The visitor come from search engine , I don't mean Google :/ I mean the local search engine
 		// so highlight the key word
+		/*
 		if (!empty($PowerBB->_GET['highlight']))
 		{
 			$PowerBB->_CONF['template']['SubjectInfo']['text'] = $PowerBB->Powerparse->content_search_highlight( $PowerBB->_CONF['template']['SubjectInfo']['text'], $PowerBB->_GET['highlight'] );
 		}
-
+        */
 		// If the PowerCode is allow , so use it :)
 		if ($This_SectionInfo['use_power_code_allow'])
 		{
@@ -783,13 +784,13 @@ class PowerBBTopicMOD
 		$SubjectInfid = $PowerBB->_GET['id'];
 		if ($PowerBB->functions->ModeratorCheck($This_SectionInfo['moderators']))
 		{
-		$SubjectInfReplyNum = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['reply'] . " WHERE subject_id='$SubjectInfid' and delete_topic <>1 LIMIT 1"));
+		$SubjectInfReplyNum = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(*) FROM " . $PowerBB->table['reply'] . " WHERE subject_id= $SubjectInfid and delete_topic <>1 "));
 		}
 		else
 		{
-		$SubjectInfReplyNum = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['reply'] . " WHERE subject_id='$SubjectInfid' and delete_topic <>1 and review_reply <>1 LIMIT 1"));
+		$SubjectInfReplyNum = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(*) FROM " . $PowerBB->table['reply'] . " WHERE subject_id= $SubjectInfid and delete_topic <>1 and review_reply <>1 "));
 		}
-              // Update rely reply number to Subject & no Update in Again on the same link
+               // Update rely reply number to Subject & no Update in Again on the same link
              $Get_Page_URL  = $PowerBB->functions->GetServerProtocol().$PowerBB->_SERVER['HTTP_HOST'].$PowerBB->_SERVER['REQUEST_URI'];
 
 			   if ($PowerBB->_SERVER['HTTP_REFERER'] != $Get_Page_URL)
@@ -816,7 +817,7 @@ class PowerBBTopicMOD
 		    $SubjectInfReviewNum = $PowerBB->_CONF['template']['SubjectInfo']['review_reply'];
 		    if ($SubjectInfReviewNum != $This_Info['review_reply'])
 		     {
-		      $PowerBB->DB->sql_query("UPDATE " . $PowerBB->table['subject'] . " SET review_reply='$SubjectInfReviewNum' WHERE id='$SubjectInfid'");
+		      $PowerBB->DB->sql_query("UPDATE " . $PowerBB->table['subject'] . " SET review_reply = $SubjectInfReviewNum  WHERE id = $SubjectInfid ");
 		     }
 
         	if ($SubjectInfReplyNum > $PowerBB->_CONF['info_row']['perpage'])
@@ -842,17 +843,17 @@ class PowerBBTopicMOD
 		    $PowerBB->template->assign('pager_reply',$PowerBB->pager->show());
 
 		   }
-
+           /*
 			if($PowerBB->_SERVER['HTTP_REFERER'] == $PowerBB->functions->GetForumAdress())
 			{
 			  $PowerBB->_GET['last_post'] = '1';
 			}
-			/*
+
          //// get count perpage
           if ($SubjectInfReplyNum > $PowerBB->_CONF['info_row']['perpage'])
           {
               	$subject_id = $PowerBB->_GET['id'];
-				$Reply_NumArr = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['reply'] . " WHERE subject_id='$subject_id' and delete_topic <>1 LIMIT 1"));
+				$Reply_NumArr = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(*) FROM " . $PowerBB->table['reply'] . " WHERE subject_id=$subject_id and delete_topic <>1 "));
 				$ss_r = $PowerBB->_CONF['info_row']['perpage']/2+1;
 				$roun_ss_r = round($ss_r, 0);
 				$reply_number_r = $Reply_NumArr-$roun_ss_r;
@@ -866,7 +867,7 @@ class PowerBBTopicMOD
 		     {
 				if ($PowerBB->_GET['last_post'])
 				{
-					$last_replyNumArr = $PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['reply'] . " WHERE subject_id='$subject_id' AND delete_topic<>1 AND review_reply<>1 ORDER BY id DESC LIMIT 0,1");
+					$last_replyNumArr = $PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['reply'] . " WHERE subject_id='$subject_id AND delete_topic<>1 AND review_reply<>1 ORDER BY id DESC LIMIT 0,1");
 					$last_reply = $PowerBB->DB->sql_fetch_array($last_replyNumArr);
 
 					if ($PowerBB->_CONF['info_row']['rewriterule'])
@@ -897,7 +898,7 @@ class PowerBBTopicMOD
 		$Subjectid = $PowerBB->_GET['id'];
 		if ($PowerBB->_CONF['member_row']['username'] != $This_Info['writer'])
 		{
-		$update_visitor = $PowerBB->DB->sql_query("UPDATE " . $PowerBB->table['subject'] . " SET visitor= '$visitor' WHERE id='$Subjectid'");
+		$update_visitor = $PowerBB->DB->sql_query("UPDATE " . $PowerBB->table['subject'] . " SET visitor = $visitor WHERE id = $Subjectid");
 		}
 
          ////////
@@ -937,7 +938,7 @@ class PowerBBTopicMOD
                   if (!empty($answers))
                   {
 					$subject_id  = $PowerBB->_GET['id'];
-					$vote_nm = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['vote'] . " WHERE answer_number = " . $answers_number . " AND subject_id = " . $subject_id . " LIMIT 1"));
+					$vote_nm = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(*) FROM " . $PowerBB->table['vote'] . " WHERE answer_number = " . $answers_number . " AND subject_id = " . $subject_id . " "));
 
 					$answers =$PowerBB->Powerparse->censor_words($answers);
 					$answers = $PowerBB->functions->CleanVariable($answers,'sql');
@@ -1003,7 +1004,7 @@ class PowerBBTopicMOD
 					$PowerBB->template->assign('ShowVote',$ShowVote);
 
 					$subject_id  = $PowerBB->_GET['id'];
-					$Allvote_nm = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['vote'] . " WHERE votes AND subject_id = " . $subject_id . " LIMIT 1"));
+					$Allvote_nm = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(*) FROM " . $PowerBB->table['vote'] . " WHERE votes AND subject_id = " . $subject_id . " "));
 					$PowerBB->template->assign('AllVote',$Allvote_nm);
 					$PowerBB->template->assign('Info',$PowerBB->_CONF['template']['SubjectInfo']);
 				}
@@ -1079,7 +1080,7 @@ class PowerBBTopicMOD
 			 {
 			   $real_section = $PowerBB->_CONF['template']['SubjectInfo']['section'];
 			   $Subject_id = $PowerBB->_CONF['template']['SubjectInfo']['id'];
-			   $update_incorrect_reply = $PowerBB->DB->sql_query("UPDATE " . $PowerBB->table['reply'] . " SET section= '$real_section' WHERE subject_id='$Subject_id'");
+			   $update_incorrect_reply = $PowerBB->DB->sql_query("UPDATE " . $PowerBB->table['reply'] . " SET section= $real_section WHERE subject_id = $Subject_id");
 			 }
 
 			$MemberArr 			= 	array();
@@ -1197,10 +1198,12 @@ class PowerBBTopicMOD
 
 			// The visitor come from search engine , I don't mean Google :/ I mean the local search engine
 			// so highlight the key word
+			/*
 			if (!empty($PowerBB->_GET['highlight']))
 			{
 				$This_RInfo[$This_x]['text'] = $PowerBB->Powerparse->content_search_highlight( $This_RInfo[$This_x]['text'], $PowerBB->_GET['highlight'] );
 			}
+			*/
 			// If the PowerCode is allow , use it
 			if ($This_SectionInfo['use_power_code_allow'])
 			{
@@ -1433,11 +1436,11 @@ class PowerBBTopicMOD
        // Show Next subject And previous subject:)
 		 $idSubject = $PowerBB->_GET['id'];
 		 $idSection = $This_Info['section'];
-         $getnextsubject_query = $PowerBB->DB->sql_query("SELECT title,id FROM  " . $PowerBB->table['subject'] . " WHERE id > '$idSubject' and section='" . $idSection . "' AND review_subject<>1 AND delete_topic<>1 ORDER BY id ASC LIMIT 0,1");
+         $getnextsubject_query = $PowerBB->DB->sql_query("SELECT title,id FROM  " . $PowerBB->table['subject'] . " WHERE id > $idSubject and section=" . $idSection . " AND review_subject<>1 AND delete_topic<>1 ORDER BY id ASC LIMIT 1");
          $getnextsubject_row   = $PowerBB->DB->sql_fetch_array($getnextsubject_query);
 
 
-         $getpersubject_query = $PowerBB->DB->sql_query("SELECT title,id FROM " . $PowerBB->table['subject'] . " WHERE id < '$idSubject' and section='" . $idSection . "' AND review_subject<>1 AND delete_topic<>1 ORDER BY id DESC LIMIT 0,1");
+         $getpersubject_query = $PowerBB->DB->sql_query("SELECT title,id FROM " . $PowerBB->table['subject'] . " WHERE id < $idSubject and section=" . $idSection . " AND review_subject<>1 AND delete_topic<>1 ORDER BY id DESC LIMIT 1");
          $getpersubject_row   = $PowerBB->DB->sql_fetch_array($getpersubject_query);
 
          $PowerBB->template->assign('getnextsubject_row',$getnextsubject_row['id']);
@@ -1556,7 +1559,7 @@ class PowerBBTopicMOD
 
 					$PowerBB->_CONF['template']['while']['TopicModsList'] = $PowerBB->core->GetList($TopicModArr,'topicmod');
 
-			      $TopicMods = $PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['topicmod'] . " WHERE id ");
+			      $TopicMods = $PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['topicmod'] . "");
 				  while ($ModsList = $PowerBB->DB->sql_fetch_array($TopicMods))
 			      {
 					if ( strstr( ",".$ModsList['forums'].",", ",".$This_Info['section']."," ) and $ModsList['forums'] != '*' )
@@ -1605,7 +1608,7 @@ class PowerBBTopicMOD
 	{
 	    global $PowerBB;
 	    $parent = array();
-	    $query_child =$PowerBB->DB->sql_query("SELECT id,parent,title  FROM " . $PowerBB->table['section'] . " WHERE id = '$catid' ORDER BY parent DESC");
+	    $query_child =$PowerBB->DB->sql_query("SELECT id,parent,title  FROM " . $PowerBB->table['section'] . " WHERE id = $catid ORDER BY parent DESC");
 		$child = $PowerBB->DB->sql_fetch_array($query_child);
 
 	    $parent[] = $child;

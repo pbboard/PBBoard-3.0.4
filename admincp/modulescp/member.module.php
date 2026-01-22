@@ -762,7 +762,7 @@ class PowerBBMemberMOD extends _functions
 
 		$TodayInfo = $PowerBB->online->GetTodayInfo($onlineArr);
 		$onlineInfo = $PowerBB->online->OnlineInfo($onlineArr);
-       if (!empty($PowerBB->_POST['new_username']))
+       if (!empty($PowerBB->_POST['new_username']) || $PowerBB->_POST['new_username'] != $PowerBB->_POST['username'])
         {
           // TODO;;;
           // Don't forget the cache of username style here
@@ -797,42 +797,14 @@ class PowerBBMemberMOD extends _functions
             $update26 = $PowerBB->DB->sql_query("UPDATE " . $PowerBB->table['announcement'] . " SET writer='" . $username . "' WHERE writer='" . $oldusername . "'");
             $update27 = $PowerBB->DB->sql_query("UPDATE " . $PowerBB->table['subject'] . " SET action_by='" . $username . "' WHERE action_by='" . $oldusername . "'");
             $update28 = $PowerBB->DB->sql_query("UPDATE " . $PowerBB->table['reply'] . " SET action_by='" . $username . "' WHERE action_by='" . $oldusername . "'");
+            $update29 = $PowerBB->DB->sql_query("UPDATE " . $PowerBB->prefix . "mention SET user_mention_about_you='" . $username . "' WHERE user_mention_about_you='" . $oldusername . "'");
+            $update30 = $PowerBB->DB->sql_query("UPDATE " . $PowerBB->prefix . "mention SET you='" . $username . "' WHERE you='" . $oldusername . "'");
             eval($PowerBB->functions->get_fetch_hooks('username_update'));
 
-          	if ($update1
-			or $update2
-			or $update3
-			or $update4
-			or $update5
-			or $update6
-			or $update7
-			or $update8
-			or $update9
-			or $update10
-			or $update11
-			or $update12
-            or $update13
-            or $update14
-            or $update15
-            or $update16
-            or $update17
-            or $update18
-            or $update19
-            or $update20
-            or $update21
-            or $update22
-            or $update23
-            or $update24
-            or $update25
-            or $update26
-            or $update27
-            or $update28)
-		  {
-			$PowerBB->functions->msg($PowerBB->_CONF['template']['_CONF']['lang']['member_has_been_updated_successfully']);
-			$PowerBB->functions->redirect('index.php?page=member&amp;edit=1&amp;main=1&amp;id='.$MemInfo['id']);
-			}
 		}
 
+	   $PowerBB->functions->msg($PowerBB->_CONF['template']['_CONF']['lang']['member_has_been_updated_successfully']);
+	   $PowerBB->functions->redirect('index.php?page=member&amp;edit=1&amp;main=1&amp;id='.$MemInfo['id']);
 
 	}
 
@@ -981,9 +953,7 @@ class PowerBBMemberMOD extends _functions
 		$PowerBB->_GET['count'] = (!isset($PowerBB->_GET['count'])) ? 0 : $PowerBB->_GET['count'];
 		$PowerBB->_GET['count'] = $PowerBB->functions->CleanVariable($PowerBB->_GET['count'],'intval');
 
-	 $GetMemberNumber = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['warnlog'] . " LIMIT 1"));
-
-
+	 $GetMemberNumber = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(*) FROM " . $PowerBB->table['warnlog'] . " "));
 
 
 		$MemWarningArr 					= 	array();
@@ -1152,9 +1122,9 @@ class PowerBBMemberMOD extends _functions
 
 		$update = $PowerBB->core->Update($UpdateArr,'member');
 		// UPDATE username_style today
-		$update_username_style_today = $PowerBB->DB->sql_query("UPDATE " . $PowerBB->table['today'] . " SET username_style='" . $style . "' WHERE user_id='" . $MemInfo['id'] . "'");
+		$update_username_style_today = $PowerBB->DB->sql_query("UPDATE " . $PowerBB->table['today'] . " SET username_style='" . $style . "' WHERE user_id= " . $MemInfo['id'] . " ");
 		// UPDATE username_style online
-		$update_username_style_online = $PowerBB->DB->sql_query("UPDATE " . $PowerBB->table['online'] . " SET username_style='" . $style . "' WHERE user_id='" . $MemInfo['id'] . "'");
+		$update_username_style_online = $PowerBB->DB->sql_query("UPDATE " . $PowerBB->table['online'] . " SET username_style='" . $style . "' WHERE user_id= " . $MemInfo['id'] . " ");
 
 
        }
@@ -1177,23 +1147,17 @@ class _functions
 	{
 		global $PowerBB;
 
-
-
 		$PowerBB->_GET['id'] = $PowerBB->functions->CleanVariable($PowerBB->_GET['id'],'intval');
 
-
-		 $CatArr = $PowerBB->DB->sql_query("SELECT  *   FROM " . $PowerBB->table['member'] . " WHERE id = ".$PowerBB->_GET['id']." ");
+		 $CatArr = $PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['member'] . " WHERE id = ".$PowerBB->_GET['id']." ");
 		 $MemInfo = $PowerBB->DB->sql_fetch_array($CatArr);
 
 		if ($MemInfo == false)
 		{
-
-		 $CatArr = $PowerBB->DB->sql_query("SELECT  *   FROM " . $PowerBB->table['member'] . " WHERE username = ".$PowerBB->_GET['username']." ");
+		 $CatArr = $PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['member'] . " WHERE username = ".$PowerBB->_GET['username']." ");
 		 $MemInfo = $PowerBB->DB->sql_fetch_array($CatArr);
 
 		}
-
-
 
 		if ($MemInfo == false)
 		{

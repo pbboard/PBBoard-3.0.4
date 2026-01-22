@@ -621,7 +621,7 @@ class PowerBBManagementMOD
 		$SectionToInfo = $PowerBB->section->GetSectionInfo($SecToArr);
 
 
-        $Move_replys = $PowerBB->DB->sql_query("SELECT  *   FROM " . $PowerBB->table['reply'] . " WHERE subject_id = '$subject_id' ");
+        $Move_replys = $PowerBB->DB->sql_query("SELECT id FROM " . $PowerBB->table['reply'] . " WHERE subject_id = $subject_id ");
          while ($Moved = $PowerBB->DB->sql_fetch_array($Move_replys))
 	         {
 				$UpdateArr 				= 	array();
@@ -903,7 +903,7 @@ class PowerBBManagementMOD
 
             //  Delete Tags
              $subjectInfoid =  $PowerBB->_GET['subject_id'];
-             $getTags_query = $PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['tag_subject'] . " WHERE subject_id = '$subjectInfoid'");
+             $getTags_query = $PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['tag_subject'] . " WHERE subject_id = $subjectInfoid");
                while ($getTags_row = $PowerBB->DB->sql_fetch_array($getTags_query))
                  {
 					  $DeleteTagArr				=	array();
@@ -921,7 +921,7 @@ class PowerBBManagementMOD
 				  $delReply = $PowerBB->core->Deleted($DelReplyArr,'reply');
 				if($delReply)
 				{
-				$reply_number = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query('SELECT COUNT(1),id FROM '.$PowerBB->table['reply'].' WHERE delete_topic <> 1 LIMIT 1'));
+				$reply_number = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query('SELECT COUNT(*) FROM '.$PowerBB->table['reply'].' WHERE delete_topic <> 1'));
 				$update_reply_number = $PowerBB->info->UpdateInfo(array('value'=>$reply_number,'var_name'=>'reply_number'));
 				}
 
@@ -932,7 +932,7 @@ class PowerBBManagementMOD
 
 				if($del)
 				{
-				$subject_number = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query('SELECT COUNT(1),id FROM '.$PowerBB->table['subject'].' WHERE delete_topic <> 1 LIMIT 1'));
+				$subject_number = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query('SELECT COUNT(*) FROM '.$PowerBB->table['subject'].' WHERE delete_topic <> 1'));
 				$update_subject_number = $PowerBB->info->UpdateInfo(array('value'=>$subject_number,'var_name'=>'subject_number'));
 				}
 
@@ -1178,7 +1178,7 @@ class PowerBBManagementMOD
 				}
 			}
 		}
-       $getmember_subscribtion = $PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['emailed'] . " WHERE user_id='" . $PowerBB->_CONF['member_row']['id'] . "' AND subject_id = '" .$PowerBB->_GET['subject_id'] . "'");
+       $getmember_subscribtion = $PowerBB->DB->sql_query("SELECT COUNT(*) FROM " . $PowerBB->table['emailed'] . " WHERE user_id=" . $PowerBB->_CONF['member_row']['id'] . " AND subject_id = " .$PowerBB->_GET['subject_id'] . "");
        $getmember_count = $PowerBB->DB->sql_fetch_row($getmember_subscribtion);
        $PowerBB->template->assign('IsSubscribed',$getmember_count);
 
@@ -1981,7 +1981,7 @@ class PowerBBManagementMOD
 		 $PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['error_permission']);
          }
 
-       $getmember_subscribtion = $PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['emailed'] . " WHERE user_id ='" . $PowerBB->_CONF['member_row']['id'] . "' AND subject_id = '" .$PowerBB->_GET['subject_id'] . "'");
+       $getmember_subscribtion = $PowerBB->DB->sql_query("SELECT COUNT(*) FROM " . $PowerBB->table['emailed'] . " WHERE user_id =" . $PowerBB->_CONF['member_row']['id'] . " AND subject_id = " .$PowerBB->_GET['subject_id'] . "");
        $getmember_count = $PowerBB->DB->sql_fetch_row($getmember_subscribtion);
        $PowerBB->template->assign('IsSubscribed',$getmember_count);
 
@@ -2356,7 +2356,7 @@ class PowerBBManagementMOD
 				$ReplyInfo_1 = $PowerBB->reply->GetReplyInfo($ReplyArr_1);
 
 				$subject_id_1 = $PowerBB->_GET['subject_id'];
-		        $reply__nm = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['reply'] . " WHERE subject_id='$subject_id_1' and delete_topic <>1 LIMIT 1"));
+		        $reply__nm = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(*) FROM " . $PowerBB->table['reply'] . " WHERE subject_id= $subject_id_1 and delete_topic <>1"));
 
 				//$PowerBB->functions->msg($PowerBB->_CONF['template']['_CONF']['lang']['Updated_successfully']);
 
@@ -2496,10 +2496,10 @@ class PowerBBManagementMOD
 					if ($SectionFormInfo['last_subjectid'] == $PowerBB->_GET['subject_id'])
 					{
 
-						$GetLastSubject = $PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['subject'] . " WHERE section = '$Move_from_section' ORDER by write_time DESC");
+						$GetLastSubject = $PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['subject'] . " WHERE section = $Move_from_section ORDER by write_time DESC");
 						$LastSubjectInfo = $PowerBB->DB->sql_fetch_array($GetLastSubject);
 
-						$GetLastReply = $PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['reply'] . " WHERE section = '$Move_from_section' ORDER by write_time DESC");
+						$GetLastReply = $PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['reply'] . " WHERE section = $Move_from_section ORDER by write_time DESC");
 						$LastReplyInfo = $PowerBB->DB->sql_fetch_array($GetLastReply);
 
 						if ($LastSubjectInfo['write_time']< $LastReplyInfo['write_time'])
@@ -2516,11 +2516,11 @@ class PowerBBManagementMOD
 						}
 
 						$Subjectid = $PowerBB->_GET['subject_id'];
-						$PagerReplyNumArr = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['reply'] . " WHERE subject_id='$Subjectid' and delete_topic <>1 LIMIT 1"));
-						$last_reply = $PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['reply'] . " WHERE subject_id='$Subjectid' and delete_topic <>1 ORDER by ID DESC limit 0,1");
+						$PagerReplyNumArr = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(*) FROM " . $PowerBB->table['reply'] . " WHERE subject_id= $Subjectid and delete_topic <>1"));
+						$last_reply = $PowerBB->DB->sql_query("SELECT id FROM " . $PowerBB->table['reply'] . " WHERE subject_id= $Subjectid and delete_topic <>1 ORDER by ID DESC limit 0,1");
 						$LastReply = $PowerBB->DB->sql_fetch_array($last_reply);
 			 		$Subjectid = $PowerBB->_GET['subject_id'];
-			        $PagerReplyNumArr = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['reply'] . " WHERE subject_id='$Subjectid' and delete_topic <>1 LIMIT 1"));
+			        $PagerReplyNumArr = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(*) FROM " . $PowerBB->table['reply'] . " WHERE subject_id= $Subjectid and delete_topic <>1"));
 			     		if($PagerReplyNumArr > $PowerBB->_CONF['info_row']['perpage'])
 			     		{
 							$last_page1 = $PagerReplyNumArr/$PowerBB->_CONF['info_row']['perpage'];
@@ -2551,11 +2551,11 @@ class PowerBBManagementMOD
 					 }
 
 						$Subjectid = $PowerBB->_GET['subject_id'];
-						$PagerReplyNumArr = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['reply'] . " WHERE subject_id='$Subjectid' and delete_topic <>1 LIMIT 1"));
-						$last_reply = $PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['reply'] . " WHERE subject_id='$Subjectid' and delete_topic <>1 ORDER by ID DESC limit 0,1");
+						$PagerReplyNumArr = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(*) FROM " . $PowerBB->table['reply'] . " WHERE subject_id= $Subjectid and delete_topic <>1"));
+						$last_reply = $PowerBB->DB->sql_query("SELECT id FROM " . $PowerBB->table['reply'] . " WHERE subject_id= $Subjectid and delete_topic <>1 ORDER by ID DESC limit 0,1");
 						$LastReply = $PowerBB->DB->sql_fetch_array($last_reply);
-			 		$Subjectid = $PowerBB->_GET['subject_id'];
-			        $PagerReplyNumArr = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['reply'] . " WHERE subject_id='$Subjectid' and delete_topic <>1 LIMIT 1"));
+			 		    $Subjectid = $PowerBB->_GET['subject_id'];
+			            $PagerReplyNumArr = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(*) FROM " . $PowerBB->table['reply'] . " WHERE subject_id= $Subjectid and delete_topic <>1"));
 			     		if($PagerReplyNumArr > $PowerBB->_CONF['info_row']['perpage'])
 			     		{
 
@@ -2583,7 +2583,7 @@ class PowerBBManagementMOD
 			     		// Update Last To Sec subject's information
 			     		$UpdateLastToSec = $PowerBB->section->UpdateSection($UpdateLastToSecArr);
 
-				$Move_replys = $PowerBB->DB->sql_query("SELECT  *   FROM " . $PowerBB->table['reply'] . " WHERE subject_id = '$subject_id' ");
+				$Move_replys = $PowerBB->DB->sql_query("SELECT id FROM " . $PowerBB->table['reply'] . " WHERE subject_id = $subject_id ");
 				while ($Moved = $PowerBB->DB->sql_fetch_array($Move_replys))
 				{
 				$UpdateArr 				= 	array();
@@ -2656,9 +2656,9 @@ class PowerBBManagementMOD
 
 					// The number of section's reply number
               		$sectionid = $SectionFormInfo['id'];
-                    $ReplyNumArr = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['reply'] . " WHERE section='$sectionid' and delete_topic <>1 and review_reply <>1 LIMIT 1"));
+                    $ReplyNumArr = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(*) FROM " . $PowerBB->table['reply'] . " WHERE section= $sectionid and delete_topic <>1 and review_reply <>1"));
 			 		$Subjectid = $PowerBB->_GET['subject_id'];
-			        $PagerReplyNumArr = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['reply'] . " WHERE subject_id='$Subjectid' and delete_topic <>1 LIMIT 1"));
+			        $PagerReplyNumArr = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(*) FROM " . $PowerBB->table['reply'] . " WHERE subject_id= $Subjectid and delete_topic <>1"));
 			     		if($PagerReplyNumArr > $PowerBB->_CONF['info_row']['perpage'])
 			     		{
 							$last_page1 = $PagerReplyNumArr/$PowerBB->_CONF['info_row']['perpage'];
@@ -3096,13 +3096,13 @@ class PowerBBManagementMOD
 			}
 
 				$Subjectid = $PowerBB->_GET['subject_id'];
-				$PagerReplyNumArr = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['reply'] . " WHERE subject_id='$Subjectid' and delete_topic <>1 LIMIT 1"));
+				$PagerReplyNumArr = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(*) FROM " . $PowerBB->table['reply'] . " WHERE subject_id= $Subjectid and delete_topic <>1"));
 
-				$last_reply = $PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['reply'] . " WHERE subject_id='$Subjectid' and delete_topic <>1 ORDER by ID DESC limit 0,1");
+				$last_reply = $PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['reply'] . " WHERE subject_id= $Subjectid and delete_topic <>1 ORDER by ID DESC limit 0,1");
 				$LastReply = $PowerBB->DB->sql_fetch_array($last_reply);
 
 				$Subjectid = $PowerBB->_GET['subject_id'];
-				$PagerReplyNumArr = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['reply'] . " WHERE subject_id='$Subjectid' and delete_topic <>1 LIMIT 1"));
+				$PagerReplyNumArr = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(*) FROM " . $PowerBB->table['reply'] . " WHERE subject_id= $Subjectid and delete_topic <>1"));
 				if($PagerReplyNumArr > $PowerBB->_CONF['info_row']['perpage'])
 				{
 					$last_page1 = $PagerReplyNumArr/$PowerBB->_CONF['info_row']['perpage'];
@@ -3461,7 +3461,7 @@ class PowerBBManagementMOD
 
                 $subject_id = $PowerBB->_GET['subject_id'];
                 $Subjectid = $PowerBB->_POST['url'];
-				$Move_replys = $PowerBB->DB->sql_query("SELECT  *   FROM " . $PowerBB->table['reply'] . " WHERE subject_id = '$subject_id' ");
+				$Move_replys = $PowerBB->DB->sql_query("SELECT id FROM " . $PowerBB->table['reply'] . " WHERE subject_id = $subject_id ");
 				while ($Moved = $PowerBB->DB->sql_fetch_array($Move_replys))
 				{
 				$UpdateArr 				= 	array();
@@ -3497,7 +3497,7 @@ class PowerBBManagementMOD
 
 		     		$UpdateWriteTime = $PowerBB->subject->UpdateWriteTime($TimeArr);
 
-                    $PagerReplyNumArr = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['reply'] . " WHERE subject_id='$Subjectid' and delete_topic <>1 LIMIT 1"));
+                    $PagerReplyNumArr = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(*) FROM " . $PowerBB->table['reply'] . " WHERE subject_id= $Subjectid and delete_topic <>1"));
 
 		     		$RepArr 					= 	array();
 		     		$RepArr['reply_number']		=	$PagerReplyNumArr;
@@ -3786,11 +3786,11 @@ class PowerBBManagementMOD
 			}
 
 				$Subjectid = $last_subjectid;
-				$PagerReplyNumArr = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['reply'] . " WHERE subject_id='$Subjectid' and delete_topic <>1 LIMIT 1"));
+				$PagerReplyNumArr = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(*) FROM " . $PowerBB->table['reply'] . " WHERE subject_id= $Subjectid and delete_topic <>1"));
 
-				$last_reply = $PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['reply'] . " WHERE subject_id='$Subjectid' and delete_topic <>1 ORDER by ID DESC limit 0,1");
+				$last_reply = $PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['reply'] . " WHERE subject_id= $Subjectid and delete_topic <>1 ORDER by ID DESC limit 0,1");
 				$LastReply = $PowerBB->DB->sql_fetch_array($last_reply);
-				$PagerReplyNumArr = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['reply'] . " WHERE subject_id='$Subjectid' and delete_topic <>1 LIMIT 1"));
+				$PagerReplyNumArr = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(*) FROM " . $PowerBB->table['reply'] . " WHERE subject_id= $Subjectid and delete_topic <>1"));
 				if($PagerReplyNumArr > $PowerBB->_CONF['info_row']['perpage'])
 				{
 					$last_page1 = $PagerReplyNumArr/$PowerBB->_CONF['info_row']['perpage'];
@@ -3978,7 +3978,7 @@ class PowerBBManagementMOD
 
                  $del = $PowerBB->core->Deleted($DelArr,'subject');
 
-				$subject_number = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query('SELECT COUNT(1),id FROM '.$PowerBB->table['subject'].' WHERE delete_topic <> 1 LIMIT 1'));
+				$subject_number = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query('SELECT COUNT(*) FROM '.$PowerBB->table['subject'].' WHERE delete_topic <> 1'));
 				$update_subject_number = $PowerBB->info->UpdateInfo(array('value'=>$subject_number,'var_name'=>'subject_number'));
 
 	           $UpdateSectionCache = $PowerBB->functions->UpdateSectionCache($PowerBB->_GET['section']);
@@ -4478,7 +4478,7 @@ class PowerBBManagementMOD
 			$update_ = $PowerBB->core->Update($Update_Arr,'subject');
 
 
-	        $Move_replys = $PowerBB->DB->sql_query("SELECT  *   FROM " . $PowerBB->table['reply'] . " WHERE subject_id = '$subject_id' ");
+	        $Move_replys = $PowerBB->DB->sql_query("SELECT id FROM " . $PowerBB->table['reply'] . " WHERE subject_id = $subject_id ");
 	         while ($Moved = $PowerBB->DB->sql_fetch_array($Move_replys))
 		         {
 						$UpdateArr 				= 	array();
@@ -4524,20 +4524,22 @@ class PowerBBManagementMOD
         $username = trim($matches[1]);
         if (!empty($username))
          {
+         	$safe_username = $PowerBB->DB->sql_escape($username);
+
 			if($username == $PowerBB->_CONF['member_row']['username'])
 			{
-             return "@".$username."<br />";
+             return "@".$username."";
 			}
 	        $reply_id = intval($PowerBB->_GET['reply_id']);
 			// insert mention
-			$Getmention_youNumrs = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->prefix . "mention WHERE you = '$username' AND reply_id = '$reply_id' AND user_read = '1'"));
+			$Getmention_youNumrs = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(*) FROM " . $PowerBB->prefix . "mention WHERE you = '$safe_username' AND reply_id = $reply_id AND user_read = 1"));
 			if(!$Getmention_youNumrs)
 			{
 				$InsertArr 					= 	array();
 				$InsertArr['field']			=	array();
 
 				$InsertArr['field']['user_mention_about_you'] 			= 	$PowerBB->_CONF['member_row']['username'];
-				$InsertArr['field']['you'] 			= 	$username;
+				$InsertArr['field']['you'] 			= 	$safe_username;
 				$InsertArr['field']['topic_id'] 				= 	intval($PowerBB->_GET['subject_id']);
 				$InsertArr['field']['reply_id'] 			= 	intval($PowerBB->_GET['reply_id']);
 				$InsertArr['field']['profile_id'] 			= 	$PowerBB->_CONF['member_row']['id'];
@@ -4546,10 +4548,14 @@ class PowerBBManagementMOD
 
 				$insert = $PowerBB->core->Insert($InsertArr,'mention');
 			}
-			$MemArr = $PowerBB->DB->sql_query("SELECT id FROM " . $PowerBB->table['member'] . " WHERE username = '$username' ");
+			$MemArr = $PowerBB->DB->sql_query("SELECT id FROM " . $PowerBB->table['member'] . " WHERE username = '$safe_username' ");
 			$Member_row = $PowerBB->DB->sql_fetch_array($MemArr);
+			if ($Member_row) {
 			$url = $forum_url."index.php?page=profile&amp;show=1&amp;id=".$Member_row['id'];
-			return "[url=".$PowerBB->functions->rewriterule($url)."]@".$username."[/url]<br />";
+			return "[url=".$PowerBB->functions->rewriterule($url)."]@".$username."[/url]";
+		    }
+
+		    return "@" . $username;
 		}
 
 	}
@@ -4559,24 +4565,27 @@ class PowerBBManagementMOD
 	{
 		global $PowerBB;
 
-        $username = trim($matches[1]);
+	    $username = trim($matches[1]);
+
         if (!empty($username))
          {
+         	$safe_username = $PowerBB->DB->sql_escape($username);
+
 			if($username == $PowerBB->_CONF['member_row']['username'])
 			{
-             return "@".$username."<br />";
+             return "@".$username."";
 			}
 	        $reply_id = 0;
 	        $topic_id = intval($PowerBB->_GET['subject_id']);
 			// insert mention
-			$Getmention_youNumrs = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->prefix . "mention WHERE you = '$username' AND topic_id = '$topic_id' AND user_read = '1'"));
+			$Getmention_youNumrs = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(*) FROM " . $PowerBB->prefix . "mention WHERE you = '$safe_username' AND topic_id = $topic_id AND user_read = 1"));
 			if(!$Getmention_youNumrs)
 			{
 					$InsertArr 					= 	array();
 					$InsertArr['field']			=	array();
 
 					$InsertArr['field']['user_mention_about_you'] 			= 	$PowerBB->_CONF['member_row']['username'];
-					$InsertArr['field']['you'] 			= 	$username;
+					$InsertArr['field']['you'] 			= 	$safe_username;
 					$InsertArr['field']['topic_id'] 				= 	intval($PowerBB->_GET['subject_id']);
 					$InsertArr['field']['reply_id'] 			= 	0;
 					$InsertArr['field']['profile_id'] 			= 	$PowerBB->_CONF['member_row']['id'];
@@ -4586,10 +4595,14 @@ class PowerBBManagementMOD
 					$insert = $PowerBB->core->Insert($InsertArr,'mention');
 			}
 
-			$MemArr = $PowerBB->DB->sql_query("SELECT id FROM " . $PowerBB->table['member'] . " WHERE username = '$username' ");
+			$MemArr = $PowerBB->DB->sql_query("SELECT id FROM " . $PowerBB->table['member'] . " WHERE username = '$safe_username' LIMIT 1");
 			$Member_row = $PowerBB->DB->sql_fetch_array($MemArr);
+			if ($Member_row) {
 			$url = $forum_url."index.php?page=profile&amp;show=1&amp;id=".$Member_row['id'];
-			return "[url=".$PowerBB->functions->rewriterule($url)."]@".$username."[/url]<br />";
+			return "[url=".$PowerBB->functions->rewriterule($url)."]@".$username."[/url]";
+			}
+
+			return "@" . $username;
 	     }
 	}
 

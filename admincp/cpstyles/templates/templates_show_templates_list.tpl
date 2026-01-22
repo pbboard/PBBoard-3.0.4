@@ -16,14 +16,12 @@ if (file_exists($singleoriginalfile))
 {
 $xml_code = @file_get_contents($singleoriginalfile);
 }
-
 		$xml_code = str_replace('decode="0"','decode="1"',$xml_code);
 		preg_match_all('/<!\[CDATA\[(.*?)\]\]>/is', $xml_code, $match);
 		foreach($match[0] as $val)
 		{
 		$xml_code = str_replace($val,base64_encode($val),$xml_code);
 		}
-
 
 $import = $PowerBB->functions->xml_array($xml_code);
 $SingleTemplates = $import['templategroup'];
@@ -116,11 +114,12 @@ $template =  $PowerBB->_CONF['template']['while']['TemplatList'][$this->x_loop][
  if($template_un == $template)
  {
 ?>
-{$TemplatList['title']}
+<big><b>{$TemplatList['title']}</b></big>
 <?php
 }else{
 ?>
-<b><font color="#FF0000">{$TemplatList['title']}</font></b>
+<big><b><font color="#FF0000">{$TemplatList['title']}</font></b></big><br /><small>{$lang['template_has_been_modified']}
+{$lang['On_date']}: {$TemplatList['dateline']}</small>
 <?php
 }
 ?>

@@ -97,7 +97,7 @@ class PowerBBFooterMOD
             $deys = ($PowerBB->_CONF['now'] - (30 * 86400));
 	        $forum_not = $PowerBB->_CONF['info_row']['last_subject_writer_not_in'];
 
-	        $subject_today_nm = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['subject'] . " WHERE native_write_time >= " . $deys . " AND section not in (" .$forum_not. ") AND review_subject<>1 AND delete_topic<>1 LIMIT 1"));
+	        $subject_today_nm = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(*) FROM " . $PowerBB->table['subject'] . " WHERE native_write_time >= " . $deys . " AND section not in (" .$forum_not. ") AND review_subject<>1 AND delete_topic<>1 "));
 
 			$PowerBB->template->assign('subject_today_nm',$subject_today_nm);
         }
@@ -109,14 +109,13 @@ class PowerBBFooterMOD
 
 	    // slurp all enabled feeds from the database
 	    $feeds_query = "SELECT * FROM " . $PowerBB->table['feeds'] . "
-	                    WHERE options = '1'";
+	                    WHERE options = 1";
 	    $feeds_result = $PowerBB->DB->sql_query($feeds_query);
 	    $FeedsInfo = $PowerBB->DB->sql_fetch_array($feeds_result);
 		if ($FeedsInfo) {
 
-				$cron_interval = 600; // 10 دقائق
-				$last_run = (int)$PowerBB->_CONF['info_row']['rss_feeds_cache']; // جلب قيمة آخر تشغيل من الإعدادات
-				// 1. جلب المفتاح من الإعدادات (يفترض أنه تم تحميل الإعدادات مسبقاً في $PowerBB->_CONF)
+				$cron_interval = 600;
+				$last_run = (int)$PowerBB->_CONF['info_row']['rss_feeds_cache'];
 				$cron_secret_key = $PowerBB->_CONF['info_row']['extrafields_cache'];
 				if (empty($cron_secret_key)) {
 				$new_key = $this->Feeder_Setup_Initial_Key();
@@ -125,24 +124,17 @@ class PowerBBFooterMOD
 
 			 if ($PowerBB->_CONF['now'] > $last_run + $cron_interval)
 			 {
-			    // أ. التحديث المسبق للوقت: نحدث وقت التشغيل فورًا لتجنب تضارب الزوار
 		        $PowerBB->DB->sql_query("UPDATE " . $PowerBB->table['info'] . " SET value='" . $PowerBB->_CONF['now'] . "' WHERE var_name='rss_feeds_cache'");
 
-			    // ب. تحديد مسار السكريبت التنفيذي
 			    $cron_script_path = 'includes/cron_rss_feeder.php';
 
-			    // ج. التشغيل غير المتزامن (Asynchronous Call)
-			    // هذا هو المفتاح لضمان عدم تأخير الزائر الحالي
 			    $ch = curl_init();
-
-			    // بناء الرابط المطلق لتشغيل السكريبت في الخلفية
 			    $cron_url = $PowerBB->functions->GetForumAdress() . $cron_script_path . '?key=' . $cron_secret_key;
 
 			    curl_setopt($ch, CURLOPT_URL, $cron_url);
-			    // إعدادات تجعله طلب "غير متزامن" (لا ينتظر الرد)
 			    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-			    curl_setopt($ch, CURLOPT_TIMEOUT, 1); // مهلة قصيرة جداً (1 ثانية)
-			    curl_setopt($ch, CURLOPT_HEADER, 0); // لا نريد رؤوس الاستجابة
+			    curl_setopt($ch, CURLOPT_TIMEOUT, 1);
+			    curl_setopt($ch, CURLOPT_HEADER, 0);
 			    curl_setopt($ch, CURLOPT_FRESH_CONNECT, true);
 
 			    curl_exec($ch);

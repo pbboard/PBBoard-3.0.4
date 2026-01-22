@@ -170,7 +170,7 @@ class PowerBBForumMOD
 			$this->Section['linkvisitor'] +=1;
 	        $visitor = $this->Section['linkvisitor'];
 			$Sectionid = $PowerBB->_GET['id'];
-		    $update_visitor_Section = $PowerBB->DB->sql_query("UPDATE " . $PowerBB->table['section'] . " SET linkvisitor= '$visitor' WHERE id='$Sectionid'");
+		    $update_visitor_Section = $PowerBB->DB->sql_query("UPDATE " . $PowerBB->table['section'] . " SET linkvisitor= $visitor WHERE id= $Sectionid ");
 
      		// Update section's cache
      		$UpdateArr 				= 	array();
@@ -328,7 +328,7 @@ class PowerBBForumMOD
 		$PowerBB->_CONF['template']['while']['SectionVisitor'] = $PowerBB->core->GetList($SecArr,'online');
 
 
-		$Forum_online_number = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(*) FROM " . $PowerBB->table['online'] . " WHERE section_id='" . $PowerBB->_GET['id'] . "' AND username='Guest'"));
+		$Forum_online_number = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(*) FROM " . $PowerBB->table['online'] . " WHERE section_id = " . $PowerBB->_GET['id'] . " AND username='Guest'"));
 		$PowerBB->_CONF['template']['GuestNumber'] = $Forum_online_number;
 
     	$PowerBB->_CONF['template']['MemberNumber'] = sizeof($PowerBB->_CONF['template']['while']['SectionVisitor']);
@@ -855,7 +855,7 @@ function _GetSubjectList()
 		   $PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['no_search_results']);
 		 }
 
-          	$subject_nm = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['subject'] . " WHERE text LIKE '%$keyword%' AND section = '$section' LIMIT 1"));
+          	$subject_nm = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(*) FROM " . $PowerBB->table['subject'] . " WHERE text LIKE '%$keyword%' AND section = $section "));
 
 
             $sec = ' AND section =  ';
@@ -938,11 +938,11 @@ function _GetSubjectList()
 
 			if ($PowerBB->functions->ModeratorCheck($tSection['moderators']))
 			{
-          	 $subject_nm = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['subject'] . " WHERE text LIKE '%$keyword%' AND section = '$section' LIMIT 1"));
+          	 $subject_nm = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(*) FROM " . $PowerBB->table['subject'] . " WHERE text LIKE '%$keyword%' AND section = $section "));
             }
              else
 			{
-          	 $subject_nm = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['subject'] . " WHERE text LIKE '%$keyword%' AND section = '$section' AND sec_subject = 0 LIMIT 1"));
+          	 $subject_nm = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(*) FROM " . $PowerBB->table['subject'] . " WHERE text LIKE '%$keyword%' AND section = $section AND sec_subject = 0 "));
             }
 
             $PowerBB->template->assign('nm',$subject_nm);
@@ -1053,7 +1053,7 @@ function _GetSubjectList()
 	{
 	    global $PowerBB;
 	    $parent = array();
-	    $query_child =$PowerBB->DB->sql_query("SELECT id,parent,title  FROM " . $PowerBB->table['section'] . " WHERE id = '$catid' ORDER BY parent DESC");
+	    $query_child =$PowerBB->DB->sql_query("SELECT id,parent,title  FROM " . $PowerBB->table['section'] . " WHERE id = $catid ORDER BY parent DESC");
 		$child = $PowerBB->DB->sql_fetch_array($query_child);
 
 	    $parent[] = $child;

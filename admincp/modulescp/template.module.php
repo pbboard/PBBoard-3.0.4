@@ -280,7 +280,7 @@ class PowerBBCoreMOD extends _functions
 
 		$StyleInfo = $PowerBB->core->GetInfo($StyleArr,'style');
 
-    	$CatArr = $PowerBB->DB->sql_query("SELECT  *   FROM " . $PowerBB->table['style'] . " WHERE id = ".$PowerBB->_GET['id']." ");
+    	$CatArr = $PowerBB->DB->sql_query("SELECT id,style_title FROM " . $PowerBB->table['style'] . " WHERE id = ".$PowerBB->_GET['id']." ");
 		$StyleInfo = $PowerBB->DB->sql_fetch_array($CatArr);
 
 		if (!$StyleInfo)
@@ -290,7 +290,7 @@ class PowerBBCoreMOD extends _functions
 
 		$StyleInfoid = $PowerBB->_GET['id'];
 
-      //  $Getstyles = $PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['template'] . " WHERE styleid ='$StyleInfoid' ORDER BY title ASC");
+      //  $Getstyles = $PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['template'] . " WHERE styleid = $StyleInfoid ORDER BY title ASC");
 
 		$TemplatArr 					= 	array();
 		$TemplatArr['where']                =    array();
@@ -305,7 +305,6 @@ class PowerBBCoreMOD extends _functions
 		$TemplatArr['proc'] 			= 	array();
 		$TemplatArr['proc']['*'] 		= 	array('method'=>'clean','param'=>'html');
 		$TemplatArr['proc']['dateline']    =    array('method'=>'date','store'=>'dateline','type'=>$PowerBB->_CONF['info_row']['timesystem']);
-
 
 		$PowerBB->_CONF['template']['while']['TemplatList'] = $PowerBB->core->GetList($TemplatArr,'template');
 

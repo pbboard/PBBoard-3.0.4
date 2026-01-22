@@ -1187,14 +1187,14 @@ class PowerBBCommon
 			$to 	= 	@mktime(23,59,59,$month,$day,$year);
             $deys = ($PowerBB->_CONF['now'] - (30 * 86400));
 		     $forum_not = $PowerBB->_CONF['info_row']['last_subject_writer_not_in'];
-		     $subject_today_nm = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['subject'] . " WHERE native_write_time >= " . $deys . " AND section not in (" .$forum_not. ") AND review_subject<>1 AND delete_topic<>1 LIMIT 1"));
+		     $subject_today_nm = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(*) FROM " . $PowerBB->table['subject'] . " WHERE native_write_time >= " . $deys . " AND section not in (" .$forum_not. ") AND review_subject<>1 AND delete_topic<>1 "));
 			 $PowerBB->template->assign('subject_today_nm',$subject_today_nm);
 
 		}
 			/**
 		 * Get subject special nm
 		 */
-         $subject_special_nm = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['subject'] . " WHERE special='1' LIMIT 1"));
+         $subject_special_nm = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(*) FROM " . $PowerBB->table['subject'] . " WHERE special = 1"));
 		 $PowerBB->template->assign('subject_special_nm',$subject_special_nm);
 			/**
 		 * Get last posts bar
@@ -1389,27 +1389,27 @@ class PowerBBCommon
 		{
 			 if ($PowerBB->_CONF['info_row']['pm_feature'])
 			 {
-			   $GetPmNum = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['pm'] . " WHERE user_to = '$user_name' and user_read = '' and folder = 'inbox' LIMIT 1"));
-		       $GetTotalPmNum = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['pm'] . " WHERE user_to = '$user_name' and folder = 'inbox' LIMIT 1"));
+			   $GetPmNum = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(*) FROM " . $PowerBB->table['pm'] . " WHERE user_to = '$user_name' and user_read = '' and folder = 'inbox'"));
+		       $GetTotalPmNum = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(*) FROM " . $PowerBB->table['pm'] . " WHERE user_to = '$user_name' and folder = 'inbox'"));
 			 }
 			 if ($PowerBB->_CONF['info_row']['active_visitor_message'])
 			 {
-		       $GetVisitorMessageNumrs = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['visitormessage'] . " WHERE userid = '$user_id' and messageread = '1' LIMIT 1"));
+		       $GetVisitorMessageNumrs = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(*) FROM " . $PowerBB->table['visitormessage'] . " WHERE userid = $user_id and messageread = 1"));
 			 }
 			 if ($PowerBB->_CONF['info_row']['active_friend'])
 			 {
-		       $GetFriendsNum = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['friends'] . " WHERE username_friend = '$user_name' and approval = '0' LIMIT 1"));
+		       $GetFriendsNum = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(*) FROM " . $PowerBB->table['friends'] . " WHERE username_friend = '$user_name' and approval = 0 "));
 			 }
 			 if ($PowerBB->_CONF['info_row']['reputationallw'])
 			 {
-		      $GetReputationNum = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['reputation'] . " WHERE username = '$user_name' and reputationread = '1' LIMIT 1"));
+		      $GetReputationNum = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(*) FROM " . $PowerBB->table['reputation'] . " WHERE username = '$user_name' and reputationread = 1 "));
 			 }
         }
 
 			// Get alerts num mention
 			if($PowerBB->functions->mention_permissions())
 			{
-			$GetMentionNum = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->prefix . "mention WHERE you = '$user_name' AND user_read = '1' LIMIT 1"));
+			$GetMentionNum = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(*) FROM " . $PowerBB->prefix . "mention WHERE you = '$user_name' AND user_read = 1 "));
 
 			if (!$GetMentionNum)
 			{

@@ -287,96 +287,100 @@ class PowerBBCore
 		return $text;
 	}
 
- 	function Create_last_posts_cache($param, $time, $limit)
+	function Create_last_posts_cache($param, $time, $limit)
 	{
-	   global $PowerBB;
- 		if (!isset($param)
- 			or !is_array($param))
- 		{
- 			$param = array();
- 		}
-        $table = 'subject';
-		$param['select'] 	= 	'*';
- 		$param['from'] 		= 	$PowerBB->prefix.$table;
-		$param['order'] 					= 	array();
+	    global $PowerBB;
 
-		$param['order']['field'] 		= 	'write_time';
-		$param['order']['type'] 			= 	'DESC';
-		$param['limit']		        =	$limit;
+	    if (!isset($param) or !is_array($param)) {
+	        $param = array();
+	    }
 
- 	 	$Posts = $this->Engine->records->GetList($param);
-       if($Posts)
-       {
-	 		$cache 	= 	array();
-	 		$x		=	0;
-	 		$numb =sizeof($Posts);
-        	 if($limit>$numb)
-			{
-	 		 $n		=	$limit;
-	 		}
-	 		else
-			{
-	 		 $n		=	$numb;
-	 		}
-			while ($x < $n)
-			{
+	    $table = 'subject';
+	    $param['select'] = '*';
+	    $param['from']   = $PowerBB->prefix . $table;
+	    $param['order']  = array('field' => 'write_time', 'type' => 'DESC');
+	    $param['limit']  = $limit;
 
-	         $InfSectionID = $Posts[$x]['section'];
-	         $sql_Section = $this->Engine->DB->sql_query("SELECT id FROM " . $PowerBB->table['section'] . " WHERE id = '$InfSectionID' and review_subject<>1 AND sec_section<>1 AND hide_subject<>1");
-	         if($sql_Section)
-	          {
+	    $Posts = $this->Engine->records->GetList($param);
 
-				$cache[$x] 					            = 	array();
-				$cache[$x]['id']		 	            = 	$Posts[$x]['id'];
-				$cache[$x]['section'] 	                = 	$Posts[$x]['section'];
-				$cache[$x]['writer'] 		            = 	$Posts[$x]['writer'];
-				$cache[$x]['title'] 		            = 	$Posts[$x]['title'];
-				$cache[$x]['review_reply']              = 	$Posts[$x]['review_reply'];
-				$cache[$x]['write_time']                = 	$Posts[$x]['write_time'];
-				$cache[$x]['icon'] 		                = 	$Posts[$x]['icon'];
-				$cache[$x]['visitor'] 		            = 	$Posts[$x]['visitor'];
-				$cache[$x]['last_replier'] 		        = 	$Posts[$x]['last_replier'];
-				$cache[$x]['sec_subject'] 		        = 	$Posts[$x]['sec_subject'];
-				$cache[$x]['review_subject'] 		    = 	$Posts[$x]['review_subject'];
-				$cache[$x]['prefix_subject'] 		    = 	$Posts[$x]['prefix_subject'];
-				$cache[$x]['native_write_time'] 		= 	$Posts[$x]['native_write_time'];
-				$cache[$x]['special'] 		            = 	$Posts[$x]['special'];
+	    if ($Posts) {
+	        $cache   = array();
+	        $x       = 0;
+	        $numb    = sizeof($Posts);
+	        $n       = min((int)$limit, (int)$numb);
+	        $perpage = (int)$this->Engine->_CONF['info_row']['perpage'];
 
-				if ($Posts[$x]['last_replier']!='')
-				{
-				$last_writer = $Posts[$x]['last_replier'];
-				}
-				else
-				{
-				$last_writer = $Posts[$x]['writer'];
-				}
+	        while ($x < $n) {
+	            $InfSectionID = (int)$Posts[$x]['section'];
 
- 				$MemberArr 							= 	array();
- 				$MemberArr['get_from'] 				= 	'db';
- 				$MemberArr['where'] 					= 	array('username',$last_writer);
-				$rows = $this->Engine->member->GetMemberInfo($MemberArr);
+	            if ($InfSectionID) {
+	                $l_last_reply = 0;
+	                $countpage    = 1;
+	                $reply_count  = (int)$Posts[$x]['reply_number'];
 
+	                if ($reply_count > 0) {
+	                    $sql_r = "SELECT id FROM " . $PowerBB->table['reply'] . "
+	                              WHERE subject_id = " . (int)$Posts[$x]['id'] . "
+	                              AND delete_topic = 0 AND review_reply = 0
+	                              ORDER BY write_time DESC, id DESC LIMIT 1";
 
+	                    $last_reply = $PowerBB->DB->sql_fetch_array($PowerBB->DB->sql_query($sql_r));
 
-				$cache[$x]['last_writer_id'] 	    = 	$rows['id'];
-				$cache[$x]['avater_path'] 		    = 	$rows['avater_path'];
-				$cache[$x]['username_style_cache']  = 	$rows['username_style_cache'];
-              }
-				$x += 1;
-			}
-			$cache = serialize($cache);
-			$update_cache_time = $this->Engine->info->UpdateInfo(array('var_name'=>'last_time_cache','value'=>$time));
-			$update = $this->Engine->info->UpdateInfo(array('var_name'=>'last_posts_cache','value'=>$cache));
-			return ($update) ? true : false;
-		}
-		else
-		{
+	                    if (isset($last_reply['id'])) {
+	                        $l_last_reply = $last_reply['id'];
+	                    }
 
-			$update_cache_time = $this->Engine->info->UpdateInfo(array('var_name'=>'last_time_cache','value'=>$time));
-			$update = $this->Engine->info->UpdateInfo(array('var_name'=>'last_posts_cache','value'=>''));
-			return ($update) ? true : false;
-		}
- 	}
+	                    if ($reply_count >= $perpage) {
+	                        $countpage = ceil(($reply_count) / $perpage);
+	                    }
+	                }
+
+	                $cache[$x] = array(
+	                    'id'                 => $Posts[$x]['id'],
+	                    'section'            => $Posts[$x]['section'],
+	                    'writer'             => $this->Engine->DB->sql_escape($Posts[$x]['writer']),
+	                    'title'              => $this->Engine->DB->sql_escape($Posts[$x]['title']),
+	                    'review_reply'       => $Posts[$x]['review_reply'],
+	                    'write_time'         => $Posts[$x]['write_time'],
+	                    'icon'               => $Posts[$x]['icon'],
+	                    'visitor'            => $Posts[$x]['visitor'],
+	                    'last_replier'       => $Posts[$x]['last_replier'],
+	                    'sec_subject'        => $Posts[$x]['sec_subject'],
+	                    'review_subject'     => $Posts[$x]['review_subject'],
+	                    'prefix_subject'     => $Posts[$x]['prefix_subject'],
+	                    'native_write_time'  => $Posts[$x]['native_write_time'],
+	                    'special'            => $Posts[$x]['special'],
+	                    'reply_number'       => $reply_count,
+	                    'last_berpage_nm'    => $countpage,
+	                    'last_reply'         => $l_last_reply
+	                );
+
+	                $last_writer = (!empty($Posts[$x]['last_replier'])) ? $Posts[$x]['last_replier'] : $Posts[$x]['writer'];
+
+	                $rows = $this->Engine->member->GetMemberInfo(array(
+	                    'get_from' => 'db',
+	                    'where'    => array('username', $this->Engine->DB->sql_escape($last_writer))
+	                ));
+
+	                $cache[$x]['last_writer_id']       = isset($rows['id']) ? $rows['id'] : 0;
+	                $cache[$x]['avater_path']          = isset($rows['avater_path']) ? $rows['avater_path'] : '';
+	                $cache[$x]['username_style_cache'] = isset($rows['username_style_cache']) ? $rows['username_style_cache'] : '';
+	            }
+	            $x++;
+	        }
+
+	        $cache_data = serialize(array_filter($cache));
+	        $this->Engine->info->UpdateInfo(array('var_name' => 'last_time_cache', 'value' => $time));
+	        $update = $this->Engine->info->UpdateInfo(array('var_name' => 'last_posts_cache', 'value' => $cache_data));
+
+	        return ($update) ? true : false;
+
+	    } else {
+	        $this->Engine->info->UpdateInfo(array('var_name' => 'last_time_cache', 'value' => $time));
+	        $this->Engine->info->UpdateInfo(array('var_name' => 'last_posts_cache', 'value' => ''));
+	        return false;
+	    }
+	}
 
      /**
  	 * Get the Server Protocol http or https

@@ -123,7 +123,7 @@ class PowerBBReplyAddMOD
 	 		{
 			  $membergroupid__s = $PowerBB->_CONF['member_row']['membergroupids'].",".$PowerBB->_CONF['group_info']['id'];
 			  $PowerBB->_CONF['member_row']['membergroupids'] = str_replace("," , "','",$PowerBB->_CONF['member_row']['membergroupids']);
-		      $SecGroupArr = $PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['section_group'] . " WHERE group_id in('".$PowerBB->_CONF['member_row']['membergroupids']."','".$PowerBB->_CONF['group_info']['id']."') ");
+		      $SecGroupArr = $PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['section_group'] . " WHERE group_id in(".$PowerBB->_CONF['member_row']['membergroupids'].",".$PowerBB->_CONF['group_info']['id'].") ");
 		    	while ($PermissionSectionGroup = $PowerBB->DB->sql_fetch_array($SecGroupArr))
 				{
 				  if (in_array($PermissionSectionGroup['group_id'], explode(',', $membergroupid__s))
@@ -323,18 +323,18 @@ class PowerBBReplyAddMOD
         // View 10 replys Inverse in template new_reply
          if (!empty($PowerBB->_GET['id']))
          {
-         $ReplyArr = $PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['reply'] . " WHERE subject_id = " . $PowerBB->_GET['id'] . " and delete_topic <>1 and review_reply <>1 ORDER by ID DESC limit 10 ");
-         while ($GeReplyInfo = $PowerBB->DB->sql_fetch_array($ReplyArr))
-         {
-            $GeReplyInfo['text'] = $PowerBB->Powerparse->replace($GeReplyInfo['text']);
-            $GeReplyInfo['text'] = $PowerBB->Powerparse->censor_words($GeReplyInfo['text']);
-            $GeReplyInfo['title'] = $PowerBB->Powerparse->censor_words($GeReplyInfo['title']);
-            $PowerBB->Powerparse->replace_smiles($GeReplyInfo['text']);
+	         $ReplyArr = $PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['reply'] . " WHERE subject_id = " . $PowerBB->_GET['id'] . " and delete_topic <>1 and review_reply <>1 ORDER by ID DESC limit 10 ");
+	         while ($GeReplyInfo = $PowerBB->DB->sql_fetch_array($ReplyArr))
+	         {
+	            $GeReplyInfo['text'] = $PowerBB->Powerparse->replace($GeReplyInfo['text']);
+	            $GeReplyInfo['text'] = $PowerBB->Powerparse->censor_words($GeReplyInfo['text']);
+	            $GeReplyInfo['title'] = $PowerBB->Powerparse->censor_words($GeReplyInfo['title']);
+	            $PowerBB->Powerparse->replace_smiles($GeReplyInfo['text']);
 
-            $PowerBB->_CONF['template']['GeReplyInfo'] = $GeReplyInfo;
+	            $PowerBB->_CONF['template']['GeReplyInfo'] = $GeReplyInfo;
 
-            $PowerBB->template->display('view_reply');
-         }
+	            $PowerBB->template->display('view_reply');
+	         }
         }
 
 	}
@@ -390,7 +390,7 @@ class PowerBBReplyAddMOD
 		 if (!empty($PowerBB->_GET['qu_Reply']))
          {
 
-            $QuoteReplyInfo = $PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['reply'] . " WHERE id = " . $PowerBB->_GET['qu_Reply'] . "  ");
+            $QuoteReplyInfo = $PowerBB->DB->sql_query("SELECT id,write_time,text FROM " . $PowerBB->table['reply'] . " WHERE id = " . $PowerBB->_GET['qu_Reply'] . "  ");
             $PowerBB->_CONF['template']['QuoteReplyInfo'] = $PowerBB->DB->sql_fetch_array($QuoteReplyInfo);
             $PowerBB->_CONF['template']['QuoteReplyInfo']['text'] = $PowerBB->Powerparse->remove_message_quotes($PowerBB->_CONF['template']['QuoteReplyInfo']['text']);
              $PowerBB->_CONF['template']['QuoteReplyInfo']['text'] = $PowerBB->Powerparse->replace_htmlentities($PowerBB->_CONF['template']['QuoteReplyInfo']['text']);
@@ -515,7 +515,7 @@ class PowerBBReplyAddMOD
         $PowerBB->_GET['reply_id'] = $PowerBB->functions->CleanVariable($PowerBB->_GET['reply_id'],'intval');
         $PowerBB->_GET['subject_id'] = $PowerBB->functions->CleanVariable($PowerBB->_GET['subject_id'],'intval');
   		$Subjectid = $PowerBB->_GET['id'];
-  		//$PagerReplyNumArr = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['reply'] . " WHERE subject_id='$Subjectid' and delete_topic <>1 LIMIT 1"));
+
         $PagerReplyNumArr = $this->SubjectInfo['reply_number'];
 
 		$PowerBB->_POST['title'] = $PowerBB->functions->CleanVariable($PowerBB->_POST['title'],'trim');
@@ -855,7 +855,6 @@ class PowerBBReplyAddMOD
 		     		$UpdateReplyNumber = $PowerBB->subject->UpdateReplyNumber($RepArr);
 
                     // The overall number of replys
-					//$reply_number = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query('SELECT COUNT(1),id FROM '.$PowerBB->table['reply'].' WHERE delete_topic <> 1 LIMIT 1'));
 					$update_reply_number = $PowerBB->info->UpdateInfo(array('value'=>$PowerBB->_CONF['info_row']['reply_number']+1,'var_name'=>'reply_number'));
 
 		     		//////////
@@ -929,7 +928,7 @@ class PowerBBReplyAddMOD
 
 							//	Update All Attach
 							 $member_id_Attach = '-'.$PowerBB->_CONF['member_row']['id'];
-		                     $getAttach = $PowerBB->DB->sql_query("SELECT  *   FROM " . $PowerBB->table['attach'] . " WHERE reply = '$member_id_Attach' ");
+		                     $getAttach = $PowerBB->DB->sql_query("SELECT id FROM " . $PowerBB->table['attach'] . " WHERE reply = $member_id_Attach ");
 		                     while ($getAttach_row = $PowerBB->DB->sql_fetch_array($getAttach))
 		                      {
 								// Count a new download
@@ -952,7 +951,7 @@ class PowerBBReplyAddMOD
 								$SubjectInfoid = $this->SubjectInfo['id'];
 								$member_row_id = $PowerBB->_CONF['member_row']['id'];
 
-								$subject_user_emailed_nm = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['emailed'] . " WHERE subject_id='$SubjectInfoid' and user_id ='$member_row_id' LIMIT 1"));
+								$subject_user_emailed_nm = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(*) FROM " . $PowerBB->table['emailed'] . " WHERE subject_id='$SubjectInfoid' and user_id ='$member_row_id'"));
 
 
 							if ($PowerBB->_POST['emailed'])
@@ -992,8 +991,7 @@ class PowerBBReplyAddMOD
 							$PowerBB->_POST['title'] . $br . $PowerBB->_CONF['template']['_CONF']['lang']['Please_login_on_the_following_link_to_access_the_subject'] . $topic_url .'<br>'. $PowerBB->_CONF['template']['_CONF']['lang']['greetings_Management_Forum']  . $PowerBB->_CONF['info_row']['title'] .'<br>' . $Adress_end . '';
 							$Mem_not = $PowerBB->_CONF['member_row']['id'];
 
-							$getmember_query = $PowerBB->DB->sql_query("SELECT Distinct user_id FROM " . $PowerBB->table['emailed'] . " WHERE user_id NOT IN ('$Mem_not') AND subject_id = '$SubjectInfoid'");
-
+							$getmember_query = $PowerBB->DB->sql_query("SELECT Distinct user_id FROM " . $PowerBB->table['emailed'] . " WHERE user_id NOT IN ($Mem_not) AND subject_id = $SubjectInfoid");
 
 
 							if ($PowerBB->emailed->IsEmailed(array('where' => array('subject_id',$SubjectInfoid))))
@@ -1134,7 +1132,7 @@ class PowerBBReplyAddMOD
 
 
 					// get url to last reply
-					//$Reply_NumArr = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['reply'] . " WHERE subject_id='$Subjectid' and delete_topic <>1 LIMIT 1"));
+					//$Reply_NumArr = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(*) FROM " . $PowerBB->table['reply'] . " WHERE subject_id= $Subjectid  and delete_topic <>1"));
 
 
 					if($Reply_NumArr <= $PowerBB->_CONF['info_row']['perpage'])
@@ -1345,38 +1343,46 @@ class PowerBBReplyAddMOD
 	{
 		global $PowerBB;
 
-        $username = trim($matches[1]);
+	    $username = trim($matches[1]);
+	    if (empty($username)) return '';
+
+	    $safe_username = $PowerBB->DB->sql_escape($username);
+
         if (!empty($username))
          {
 			if($username == $PowerBB->_CONF['member_row']['username'])
 			{
-             return "@".$username."<br />";
+             return "@".$username."";
 			}
-                $last_reply = $PowerBB->DB->sql_query("SELECT id FROM " . $PowerBB->table['reply'] . " ORDER BY id desc");
-                $last_reply_info = $PowerBB->DB->sql_fetch_array($last_reply);
+            $last_reply = $PowerBB->DB->sql_query("SELECT id FROM " . $PowerBB->table['reply'] . " ORDER BY id desc LIMIT 1");
+            $last_reply_info = $PowerBB->DB->sql_fetch_array($last_reply);
 
 	        $reply_id = $last_reply_info['id']+1;
 			// insert mention
-			$Getmention_youNumrs = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->prefix . "mention WHERE you = '$username' AND reply_id = '$reply_id' AND user_read = '1' LIMIT 1"));
+			$Getmention_youNumrs = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(*) FROM " . $PowerBB->prefix . "mention WHERE you = '$safe_username' AND reply_id = $reply_id AND user_read = 1"));
 			if(!$Getmention_youNumrs)
 			{
 				$InsertArr 					= 	array();
 				$InsertArr['field']			=	array();
 
 				$InsertArr['field']['user_mention_about_you'] 			= 	$PowerBB->_CONF['member_row']['username'];
-				$InsertArr['field']['you'] 			= 	$username;
+				$InsertArr['field']['you'] 			= 	$safe_username;
 				$InsertArr['field']['topic_id'] 				= 	intval($PowerBB->_GET['id']);
-				$InsertArr['field']['reply_id'] 			= 	$reply_id;
-				$InsertArr['field']['profile_id'] 			= 	$PowerBB->_CONF['member_row']['id'];
+				$InsertArr['field']['reply_id'] 			= 	(int)$reply_id;
+				$InsertArr['field']['profile_id'] 			= 	(int)$PowerBB->_CONF['member_row']['id'];
 				$InsertArr['field']['date'] 		= 	$PowerBB->_CONF['now'];
 				$InsertArr['field']['user_read'] 		    = 	'1';
 
 				$insert = $PowerBB->core->Insert($InsertArr,'mention');
 			}
-			$MemArr = $PowerBB->DB->sql_query("SELECT id FROM " . $PowerBB->table['member'] . " WHERE username = '$username' ");
+			$MemArr = $PowerBB->DB->sql_query("SELECT id FROM " . $PowerBB->table['member'] . " WHERE username = '$safe_username'  LIMIT 1");
 			$Member_row = $PowerBB->DB->sql_fetch_array($MemArr);
+			if ($Member_row) {
 			$url = $forum_url."index.php?page=profile&amp;show=1&amp;id=".$Member_row['id'];
-			return "[url=".$PowerBB->functions->rewriterule($url)."]@".$username."[/url]<br />";
+			return "[url=".$PowerBB->functions->rewriterule($url)."]@".$username."[/url]";
+			}
+
+			return "@" . $username;
 		}
 
 	}

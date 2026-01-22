@@ -342,7 +342,7 @@ class PowerBBProfileMOD
 	    {
 	        $perpage_Friends = '300';
 	        $user_namee  = $PowerBB->_CONF['template']['MemberInfo']['username'];
-	    	$GetFriendsNum = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT distinct username_friend, userid_friend FROM " . $PowerBB->table['friends'] . " WHERE username = '$user_namee' and approval = '1'"));
+	    	$GetFriendsNum = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT distinct username_friend, userid_friend FROM " . $PowerBB->table['friends'] . " WHERE username = '$user_namee' and approval = 1"));
 
 			// show Friends
 			$FriendsArr = array();
@@ -461,7 +461,7 @@ class PowerBBProfileMOD
  		 if ($PowerBB->_CONF['info_row']['active_visitor_message'] == '1')
 		 {
 		      	$userid = $PowerBB->_CONF['template']['MemberInfo']['id'];
-		        $GetVisitorMessageNum = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['visitormessage'] . " WHERE userid = '$userid'"));
+		        $GetVisitorMessageNum = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(*) FROM " . $PowerBB->table['visitormessage'] . " WHERE userid = $userid"));
 		       	$PowerBB->template->assign('visitor_message_num',$GetVisitorMessageNum);
 		       	$perpage = '8';
 

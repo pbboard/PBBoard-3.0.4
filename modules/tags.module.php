@@ -163,7 +163,7 @@ class PowerBBCoreMOD
 
 		$PowerBB->_CONF['template']['while']['TagSubjectList'] = $PowerBB->tag_subject->GetSubjectList($TagSubjectArr);
 		$subject_id = $PowerBB->_GET['id'];
-        $SubjectTagNm = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['tag_subject'] . " WHERE subject_id='$subject_id' LIMIT 1"));
+        $SubjectTagNm = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(*) FROM " . $PowerBB->table['tag_subject'] . " WHERE subject_id = $subject_id "));
 		$PowerBB->template->assign('SubjectTagNm',$SubjectTagNm);
 		$PowerBB->template->assign('subjectid',$PowerBB->_GET['id']);
 		$PowerBB->template->assign('tag_counter',0);

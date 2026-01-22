@@ -78,7 +78,7 @@ class PowerBBTopicAddMOD
 	 		{
 			  $membergroupid__s = $PowerBB->_CONF['member_row']['membergroupids'].",".$PowerBB->_CONF['group_info']['id'];
 			  $PowerBB->_CONF['member_row']['membergroupids'] = str_replace("," , "','",$PowerBB->_CONF['member_row']['membergroupids']);
-		      $SecGroupArr = $PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['section_group'] . " WHERE group_id in('".$PowerBB->_CONF['member_row']['membergroupids']."','".$PowerBB->_CONF['group_info']['id']."') ");
+		      $SecGroupArr = $PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['section_group'] . " WHERE group_id in(".$PowerBB->_CONF['member_row']['membergroupids'].",".$PowerBB->_CONF['group_info']['id'].") ");
 		    	while ($PermissionSectionGroup = $PowerBB->DB->sql_fetch_array($SecGroupArr))
 				{
 				 if (in_array($PermissionSectionGroup['group_id'], explode(',', $membergroupid__s))
@@ -216,7 +216,7 @@ class PowerBBTopicAddMOD
 			$to 	= 	mktime(23,59,59,$month,$day,$year);
 
             $user = $PowerBB->_CONF['rows']['member_row']['username'];
-	        $user_topic_day_number = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['subject'] . " WHERE native_write_time BETWEEN " . $from . " AND " . $to . " AND writer = '$user' LIMIT 1"));
+	        $user_topic_day_number = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(*) FROM " . $PowerBB->table['subject'] . " WHERE native_write_time BETWEEN " . $from . " AND " . $to . " AND writer = '$user'"));
 	        if ($user_topic_day_number>= $PowerBB->_CONF['group_info']['topic_day_number'])
 	        {
 		        $PowerBB->_CONF['template']['_CONF']['lang']['sorry_can_not_add_topic_more_than_in_day'] = str_replace("{topic_day}",$PowerBB->_CONF['group_info']['topic_day_number'],$PowerBB->_CONF['template']['_CONF']['lang']['sorry_can_not_add_topic_more_than_in_day']);
@@ -508,7 +508,7 @@ class PowerBBTopicAddMOD
 			 if (!$PowerBB->_CONF['group_info']['admincp_allow'])
 			 {
 				$writer = $PowerBB->_CONF['member_row']['username'];
-                $last_subject_write_time = $PowerBB->DB->sql_query("SELECT  *   FROM " . $PowerBB->table['subject'] . " WHERE writer= '$writer' ORDER BY id desc");
+                $last_subject_write_time = $PowerBB->DB->sql_query("SELECT native_write_time,title FROM " . $PowerBB->table['subject'] . " WHERE writer= '$writer' ORDER BY id desc");
                 $last_write_time = $PowerBB->DB->sql_fetch_array($last_subject_write_time);
 	            if ((time() - $PowerBB->_CONF['info_row']['floodctrl']) <= $last_write_time['native_write_time'])
 	            {
@@ -697,16 +697,24 @@ class PowerBBTopicAddMOD
 				//$PowerBB->_POST['text'] 	= 	$PowerBB->functions->CleanVariable($PowerBB->_POST['text'],'sql');
 
                   // mention users tag replace
+              if (preg_match('#\[mention\](.*)\[/mention\]#siU', $PowerBB->_POST['text']))
+			  {
                  if($PowerBB->functions->mention_permissions())
                  {
-				  $PowerBB->_POST['text'] = preg_replace_callback('#\[mention\](.+)\[\/mention\]#iUs', array($this, 'mention_subject_callback'), $PowerBB->_POST['text']);
+					$PowerBB->_POST['text'] = preg_replace_callback(
+					    '#\[mention\](.+)\[\/mention\]#iUs',
+					    function($matches){
+					        return $this->mention_subject_callback($matches);
+					    },
+					    $PowerBB->_POST['text']
+					);
                  }
+               }
 
+				$SecInfoArr 			= 	array();
+				$SecInfoArr['where'] 	= 	array('id',$this->SectionInfo['id']);
 
-		$SecInfoArr 			= 	array();
-		$SecInfoArr['where'] 	= 	array('id',$this->SectionInfo['id']);
-
-		$section_info = $PowerBB->core->GetInfo($SecInfoArr,'section');
+				$section_info = $PowerBB->core->GetInfo($SecInfoArr,'section');
 		       //Create writer cache:  id & avater_path & username_style_cache
 				$cache = array();
 				$cache[1]['user_id']		 	                = 	$PowerBB->_CONF['rows']['member_row']['id'];
@@ -769,7 +777,6 @@ class PowerBBTopicAddMOD
 
 		     	if ($Insert)
 		     	{
-		     		//////////
 
 		     		if ($PowerBB->_POST['poll'])
 		     		{
@@ -935,7 +942,7 @@ class PowerBBTopicAddMOD
 
 							//	Update All Attach
 							 $member_id_Attach = '-'.$PowerBB->_CONF['member_row']['id'];
-		                     $getAttach = $PowerBB->DB->sql_query("SELECT  *   FROM " . $PowerBB->table['attach'] . " WHERE subject_id = '$member_id_Attach' ");
+		                     $getAttach = $PowerBB->DB->sql_query("SELECT id FROM " . $PowerBB->table['attach'] . " WHERE subject_id = $member_id_Attach ");
 		                     while ($getAttach_row = $PowerBB->DB->sql_fetch_array($getAttach))
 		                      {
 								// Count a new download
@@ -989,7 +996,7 @@ class PowerBBTopicAddMOD
 
 
 				     		// The overall number of subjects
-							$subject_number = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query('SELECT COUNT(1),id FROM '.$PowerBB->table['subject'].' WHERE delete_topic <> 1 LIMIT 1'));
+							$subject_number = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query('SELECT COUNT(*) FROM '.$PowerBB->table['subject'].' WHERE delete_topic <> 1'));
 							$update_subject_number = $PowerBB->info->UpdateInfo(array('value'=>$subject_number,'var_name'=>'subject_number'));
 
 				     		//////////
@@ -1038,7 +1045,7 @@ class PowerBBTopicAddMOD
 				         	$Form_Massege = $PowerBB->_CONF['template']['_CONF']['lang']['Peace_be_upon_you']  . $PowerBB->_CONF['member_row']['username'].$PowerBB->_CONF['template']['_CONF']['lang']['Has_written_a_new_topic'] .
 				         $PowerBB->_CONF['template']['_CONF']['lang']['Please_login_on_the_following_link_to_access_the_subject']. $Adress . 'index.php?page=topic&show=1&id=' . $PowerBB->subject->id . $PowerBB->_CONF['template']['_CONF']['lang']['greetings_Management_Forum'] . $PowerBB->_CONF['info_row']['title'] .'<br>' . $Adress . 'index.php';
 
-	                     $getmember_query = $PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['emailed'] . " WHERE section_id = '$SectionInfoid'");
+	                     $getmember_query = $PowerBB->DB->sql_query("SELECT user_id FROM " . $PowerBB->table['emailed'] . " WHERE section_id = $SectionInfoid");
 						if ($PowerBB->core->Is(array('where' => array('section_id',$SectionInfoid)),'emailed'))
 						{
 
@@ -1124,43 +1131,45 @@ class PowerBBTopicAddMOD
 
 	function mention_subject_callback($matches)
 	{
-		global $PowerBB;
+	    global $PowerBB;
 
-        $username = trim($matches[1]);
-        if (!empty($username))
-         {
-			if($username == $PowerBB->_CONF['member_row']['username'])
-			{
-             return "@".$username."<br />";
-			}
-                $last_subject = $PowerBB->DB->sql_query("SELECT id FROM " . $PowerBB->table['subject'] . " ORDER BY id desc");
-                $last_subject_info = $PowerBB->DB->sql_fetch_array($last_subject);
+	    $username = trim($matches[1]);
+	    if (empty($username)) return '';
 
-	        $reply_id = 0;
-	        $topic_id = $last_subject_info['id']+1;
-			// insert mention
-			$Getmention_youNumrs = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->prefix . "mention WHERE you = '$username' AND topic_id = '$topic_id' AND user_read = '1'"));
-			if(!$Getmention_youNumrs)
-			{
-					$InsertArr 					= 	array();
-					$InsertArr['field']			=	array();
+	    $safe_username = $PowerBB->DB->sql_escape($username);
 
-					$InsertArr['field']['user_mention_about_you'] 			= 	$PowerBB->_CONF['member_row']['username'];
-					$InsertArr['field']['you'] 			= 	$username;
-					$InsertArr['field']['topic_id'] 				= 	$topic_id;
-					$InsertArr['field']['reply_id'] 			= 	0;
-					$InsertArr['field']['profile_id'] 			= 	$PowerBB->_CONF['member_row']['id'];
-					$InsertArr['field']['date'] 		= 	$PowerBB->_CONF['now'];
-					$InsertArr['field']['user_read'] 		    = 	'1';
+	    if ($username == $PowerBB->_CONF['member_row']['username']) {
+	        return "@" . $username;
+	    }
 
-					$insert = $PowerBB->core->Insert($InsertArr,'mention');
-			}
+        $last_subject = $PowerBB->DB->sql_query("SELECT id FROM " . $PowerBB->table['subject'] . " ORDER BY id desc LIMIT 1");
+        $last_subject_info = $PowerBB->DB->sql_fetch_array($last_subject);
 
-			$MemArr = $PowerBB->DB->sql_query("SELECT id FROM " . $PowerBB->table['member'] . " WHERE username = '$username' ");
-			$Member_row = $PowerBB->DB->sql_fetch_array($MemArr);
-			$url = $forum_url."index.php?page=profile&amp;show=1&amp;id=".$Member_row['id'];
-			return "[url=".$PowerBB->functions->rewriterule($url)."]@".$username."[/url]<br />";
-	     }
+        $topic_id = $last_subject_info['id']+1;
+	    $count = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(*) FROM " . $PowerBB->prefix . "mention WHERE you = '$safe_username' AND topic_id = $topic_id AND user_read = 1"));
+
+	    if ($count == 0) {
+	        $InsertArr = array('field' => array());
+	        $InsertArr['field']['user_mention_about_you'] = $PowerBB->_CONF['member_row']['username'];
+	        $InsertArr['field']['you']                    = $safe_username;
+	        $InsertArr['field']['topic_id']               = (int)$topic_id;
+	        $InsertArr['field']['reply_id']               = 0;
+	        $InsertArr['field']['profile_id']             = (int)$PowerBB->_CONF['member_row']['id'];
+	        $InsertArr['field']['date']                   = $PowerBB->_CONF['now'];
+	        $InsertArr['field']['user_read']              = '1';
+
+	        $PowerBB->core->Insert($InsertArr, 'mention');
+	    }
+
+	    $res = $PowerBB->DB->sql_query("SELECT id FROM " . $PowerBB->table['member'] . " WHERE username = '$safe_username' LIMIT 1");
+	    $Member_row = $PowerBB->DB->sql_fetch_array($res);
+
+	    if ($Member_row) {
+	        $url = "index.php?page=profile&show=1&id=" . $Member_row['id'];
+	        return "[url=" . $PowerBB->functions->rewriterule($url) . "]@" . $username . "[/url]";
+	    }
+
+	    return "@" . $username;
 	}
 
 }

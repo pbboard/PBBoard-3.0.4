@@ -49,8 +49,8 @@ class PowerBBStaticMOD
 		$StaticInfo['GetSubjectNumber'] = $PowerBB->functions->with_comma($PowerBB->_CONF['info_row']['subject_number']);
 		$StaticInfo['GetReplyNumber']   = $PowerBB->functions->with_comma($PowerBB->_CONF['info_row']['reply_number']);
 		$StaticInfo['GetMemberNumber']  = $PowerBB->functions->with_comma($PowerBB->_CONF['info_row']['member_number']);
-        $StaticInfo['GetActiveMember']  = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['member'] . " WHERE posts > 0 LIMIT 1"));
-		$StaticInfo['GetSectionNumber'] = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['section'] . " WHERE parent <> 0 LIMIT 1"));
+        $StaticInfo['GetActiveMember']  = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(*) FROM " . $PowerBB->table['member'] . " WHERE posts > 0 "));
+		$StaticInfo['GetSectionNumber'] = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(*) FROM " . $PowerBB->table['section'] . " WHERE parent <> 0 "));
 
 		/**
 		 * Get the writer of oldest subject , the most subject of riplies and the newer subject

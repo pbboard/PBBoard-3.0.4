@@ -34,8 +34,6 @@ class PowerBBPager
             $this->var_name		=	$var;
 
 
-
-
             if (($this->count <> 0) && ($this->count > 0) && ($this->count < $this->total) && (($this->count % $this->perpage) === 0)){
                 $this->current_page =  $this->count / $this->perpage;
             }else{

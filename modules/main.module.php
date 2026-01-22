@@ -255,7 +255,7 @@ class PowerBBCoreMOD
        $PowerBB->_CONF['template']['while']['TodayList'] = $PowerBB->core->GetList($TodayArr,'today');
 
        //////////
-     $GetGuestTodayNumber = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(1),id FROM " . $PowerBB->table['visitor'] . " LIMIT 1"));
+     $GetGuestTodayNumber = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(*) FROM " . $PowerBB->table['visitor'] . " "));
      $PowerBB->_CONF['template']['TodayNumber'] = sizeof($PowerBB->_CONF['template']['while']['TodayList']);
       $PowerBB->_CONF['template']['GuestTodayNumber'] = $GetGuestTodayNumber;
      $PowerBB->_CONF['template']['AllTodayNumber'] = $GetGuestTodayNumber+$PowerBB->_CONF['template']['TodayNumber'];
@@ -320,15 +320,15 @@ class PowerBBCoreMOD
 		    $sql_union = "
 		        (SELECT id, username AS f1, register_date AS f2, username_style_cache AS f3, avater_path AS f4, 'new_reg' AS type FROM " . $PowerBB->table['member'] . " ORDER BY id DESC LIMIT $limit)
 		        UNION ALL
-		        (SELECT id, username AS f1, posts AS f2, username_style_cache AS f3, avater_path AS f4, 'top_posts' AS type FROM " . $PowerBB->table['member'] . " WHERE posts != '0' ORDER BY posts DESC LIMIT $limit)
+		        (SELECT id, username AS f1, posts AS f2, username_style_cache AS f3, avater_path AS f4, 'top_posts' AS type FROM " . $PowerBB->table['member'] . " WHERE posts != 0 ORDER BY posts DESC LIMIT $limit)
 		        UNION ALL
-		        (SELECT id, username AS f1, reputation AS f2, username_style_cache AS f3, avater_path AS f4, 'top_rep' AS type FROM " . $PowerBB->table['member'] . " WHERE reputation != '0' ORDER BY reputation DESC LIMIT $limit)
+		        (SELECT id, username AS f1, reputation AS f2, username_style_cache AS f3, avater_path AS f4, 'top_rep' AS type FROM " . $PowerBB->table['member'] . " WHERE reputation != 0 ORDER BY reputation DESC LIMIT $limit)
 		        UNION ALL
-		        (SELECT id, username AS f1, invite_num AS f2, username_style_cache AS f3, avater_path AS f4, 'top_inv' AS type FROM " . $PowerBB->table['member'] . " WHERE invite_num != '0' ORDER BY invite_num DESC LIMIT $limit)
+		        (SELECT id, username AS f1, invite_num AS f2, username_style_cache AS f3, avater_path AS f4, 'top_inv' AS type FROM " . $PowerBB->table['member'] . " WHERE invite_num != 0 ORDER BY invite_num DESC LIMIT $limit)
 		        UNION ALL
-		        (SELECT id, title AS f1, visitor AS f2, '' AS f3, '' AS f4, 'top_vis' AS type FROM " . $PowerBB->table['subject'] . " WHERE review_subject<>'1' AND delete_topic<>'1' AND visitor <> '0' ORDER BY visitor DESC LIMIT $limit)
+		        (SELECT id, title AS f1, visitor AS f2, '' AS f3, '' AS f4, 'top_vis' AS type FROM " . $PowerBB->table['subject'] . " WHERE review_subject<>1 AND delete_topic<>1 AND visitor <> 0 ORDER BY visitor DESC LIMIT $limit)
 		        UNION ALL
-		        (SELECT id, title AS f1, reply_num AS f2, '' AS f3, '' AS f4, 'top_sec' AS type FROM " . $PowerBB->table['section'] . " WHERE sec_section<>'1' AND reply_num <> '0' ORDER BY reply_num DESC LIMIT $limit)
+		        (SELECT id, title AS f1, reply_num AS f2, '' AS f3, '' AS f4, 'top_sec' AS type FROM " . $PowerBB->table['section'] . " WHERE sec_section<>1 AND reply_num <> 0 ORDER BY reply_num DESC LIMIT $limit)
 		    ";
 
 		    $result = $PowerBB->DB->sql_query($sql_union);

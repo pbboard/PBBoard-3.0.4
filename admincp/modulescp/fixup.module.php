@@ -245,130 +245,14 @@ function run()
 	{
 	    global $PowerBB;
 	    @session_write_close();
-	    $sec_id = isset($PowerBB->_GET['sec_id']) ? $PowerBB->_GET['sec_id'] : 0;
-
-	    if ($sec_id > 0) {
-
-	        $rev_q = $PowerBB->DB->sql_fetch_array($PowerBB->DB->sql_query("
-	            SELECT COUNT(R.id) as total
-	            FROM " . $PowerBB->table['reply'] . " R
-	            INNER JOIN " . $PowerBB->table['subject'] . " S ON R.subject_id = S.id
-	            WHERE S.section = $sec_id AND R.review_reply = 1 AND R.delete_topic = 0
-	        "));
-	        $r_review_num = $rev_q['total'];
-
-	        $s_review = $PowerBB->DB->sql_fetch_array($PowerBB->DB->sql_query("
-	            SELECT COUNT(*) as total FROM " . $PowerBB->table['subject'] . "
-	            WHERE section = $sec_id AND review_subject = 1 AND delete_topic = 0
-	        "));
-	        $s_review_num = $s_review['total'];
-
-	        $stats = $PowerBB->DB->sql_fetch_array($PowerBB->DB->sql_query("
-	            SELECT COUNT(*) as total_s, SUM(reply_number) as total_r
-	            FROM " . $PowerBB->table['subject'] . "
-	            WHERE section = $sec_id AND delete_topic = 0 AND review_subject = 0
-	        "));
-	        $s_num = $stats['total_s'];
-	        $r_num = $stats['total_r'];
-
-	        $last_act = $PowerBB->DB->sql_fetch_array($PowerBB->DB->sql_query("
-	            SELECT id, title, writer, last_replier, write_time, reply_number
-	            FROM " . $PowerBB->table['subject'] . "
-	            WHERE section = $sec_id AND delete_topic = 0 AND review_subject = 0
-	            ORDER BY CAST(write_time AS UNSIGNED) DESC LIMIT 1
-	        "));
-
-	        $l_id    = isset($last_act['id']) ? $last_act['id'] : 0;
-	        $l_title = isset($last_act['title']) ? $last_act['title'] : '';
-	        $l_time  = isset($last_act['write_time']) ? $last_act['write_time'] : 0;
-	        $l_writer = (isset($last_act['reply_number']) && $last_act['reply_number'] > 0) ? $last_act['last_replier'] : (isset($last_act['writer']) ? $last_act['writer'] : '');
-
-	        $last_reply = $PowerBB->DB->sql_fetch_array($PowerBB->DB->sql_query("
-	            SELECT id
-	            FROM " . $PowerBB->table['reply'] . "
-	            WHERE section = $sec_id AND subject_id = $l_id AND delete_topic = 0 AND review_reply = 0
-	            ORDER BY CAST(write_time AS UNSIGNED) DESC LIMIT 1
-	        "));
-            $l_last_reply    = isset($last_reply['id']) ? $last_reply['id'] : 0;
-
-	        $mod_cache = array();
-	        $mod_query = $PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['moderators'] . " WHERE section_id = $sec_id");
-	        while ($mod = $PowerBB->DB->sql_fetch_array($mod_query)) {
-	            $u_info = $PowerBB->DB->sql_fetch_array($PowerBB->DB->sql_query("SELECT id, avater_path, username_style_cache FROM " . $PowerBB->table['member'] . " WHERE id = " . $mod['member_id'] . " LIMIT 1"));
-	            $mod_cache[] = array(
-	                'id'                   => $mod['id'],
-	                'section_id'           => $mod['section_id'],
-	                'member_id'            => $mod['member_id'],
-	                'username'             => $mod['username'],
-	                'avater_path'          => (isset($u_info['avater_path']) ? $u_info['avater_path'] : ''),
-	                'username_style_cache' => (isset($u_info['username_style_cache']) ? $u_info['username_style_cache'] : '')
-	            );
-	        }
-	        $mod_json = (!empty($mod_cache)) ? json_encode($mod_cache, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) : '[]';
-
-	        $PowerBB->DB->sql_query("
-	            UPDATE " . $PowerBB->table['section'] . "
-	            SET subject_num = $s_num,
-	                reply_num = $r_num,
-	                subjects_review_num = $s_review_num,
-	                replys_review_num = $r_review_num,
-	                last_subjectid = $l_id,
-	                last_subject = '" . $PowerBB->DB->sql_escape($l_title) . "',
-	                last_writer = '" . $PowerBB->DB->sql_escape($l_writer) . "',
-	                last_reply = $l_last_reply,
-	                last_date = '$l_time',
-	                last_time = '$l_time',
-	                moderators = '" . $PowerBB->DB->sql_escape($mod_json) . "'
-	            WHERE id = $sec_id
-	        ");
-
-	        $cache_array = array();
-	        $parent_array = array();
-	        $sub_forums_query = $PowerBB->DB->sql_query("SELECT id, title, subject_num, reply_num, last_subject, last_subjectid, last_date, last_writer, moderators FROM " . $PowerBB->table['section'] . " WHERE parent = $sec_id ORDER BY sort ASC");
-
-	        if ($PowerBB->DB->sql_num_rows($sub_forums_query) > 0) {
-	            while ($sub = $PowerBB->DB->sql_fetch_array($sub_forums_query)) {
-	                $temp = array(
-	                    'id' => $sub['id'], 'title' => $sub['title'], 'subject_num' => $sub['subject_num'],
-	                    'reply_num' => $sub['reply_num'], 'last_subject' => $sub['last_subject'],
-	                    'last_subjectid' => $sub['last_subjectid'], 'last_date' => $sub['last_date'],
-	                    'last_writer' => $sub['last_writer'], 'moderators' => $sub['moderators']
-	                );
-
-						if($sub['parent'])
-						{
-						$parents['parent'] 	= 	$sub;
-						}
- 	                if (!empty($sub['last_writer'])) {
-	                    $u = $PowerBB->DB->sql_fetch_array($PowerBB->DB->sql_query("SELECT id, avater_path, username_style_cache FROM " . $PowerBB->table['member'] . " WHERE username = '" . $PowerBB->DB->sql_escape($sub['last_writer']) . "' LIMIT 1"));
-	                    if ($u) {
-	                        $temp['last_writer_id'] = $u['id'];
-	                        $temp['avater_path'] = $u['avater_path'];
-	                        $temp['username_style_cache'] = $u['username_style_cache'];
-	                    }
-	                }
-	                $cache_array[] = $temp;
-	                $parent_array[] = $parents;
-	            }
-	        } else {
-
-	            if (!empty($l_writer)) {
-	                $u = $PowerBB->DB->sql_fetch_array($PowerBB->DB->sql_query("SELECT id, avater_path, username_style_cache FROM " . $PowerBB->table['member'] . " WHERE username = '" . $PowerBB->DB->sql_escape($l_writer) . "' LIMIT 1"));
-	                if ($u) {
-	                    $cache_array['u_last'] = array('last_writer_id' => $u['id'], 'avater_path' => $u['avater_path'], 'username_style_cache' => $u['username_style_cache']);
-	                }
-	            }
-	        }
-
-	        $json_cache = json_encode($json_cache,JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
-
-	        $PowerBB->DB->sql_query("UPDATE " . $PowerBB->table['section'] . " SET forums_cache = '" . $PowerBB->DB->sql_escape($json_cache) . "' WHERE id = $sec_id");
-
-            $UpdateSectionCache = $PowerBB->functions->UpdateSectionCache($sec_id);
-	        if ($UpdateSectionCache) { die("SUCCESS"); }
-
-
-	    }
+	    $check_by_id = isset($PowerBB->_GET['sec_id']) ? $PowerBB->_GET['sec_id'] : 0;
+    	$CatArr = $PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['section'] . " WHERE id = ".$check_by_id." ");
+		$Inf = $PowerBB->DB->sql_fetch_array($CatArr);
+		$sec_id = $Inf['id'];
+        $json_cache = json_encode($json_cache,JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+        $PowerBB->DB->sql_query("UPDATE " . $PowerBB->table['section'] . " SET forums_cache = '" . $PowerBB->DB->sql_escape($json_cache) . "' WHERE id = $sec_id");
+        $UpdateSectionCache = $PowerBB->functions->UpdateSectionCache($sec_id);
+        if ($UpdateSectionCache) { die("SUCCESS"); }
 	}
 
 	function _MeterGroupsStart()

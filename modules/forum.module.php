@@ -949,24 +949,43 @@ function _GetSubjectList()
 
             $sec = ' AND section =  ';
 
-            $SubjectSearchArr = array();
+			    $SubjectSearchArr['select'] = '
+			    s.*,
+			    m.id AS writer_id,
+			    m.username_style_cache,
+			    sec.id AS section_id,
+			    sec.title AS section_title';
+			    $SubjectSearchArr['from'] = $PowerBB->table['subject'] . ' AS s';
+				// JOINs
+				$SubjectSearchArr['join'] = array(
+				    array(
+				        'type'  => 'left',
+				        'from'  => $PowerBB->table['member'] . ' AS m',
+				        'where' => 'm.username = s.writer'
+				    ),
+				    array(
+				        'type'  => 'left',
+				        'from'  => $PowerBB->table['section'] . ' AS sec',
+				        'where' => 'sec.id = s.section'
+				    ),
+				);
 
 			$SubjectSearchArr['where'] 				= 	array();
 
 			$SubjectSearchArr['where'][0] 			= 	array();
-			$SubjectSearchArr['where'][0]['name'] 	= 	'text LIKE ';
-			$SubjectSearchArr['where'][0]['oper']		=  "'".'%' .$keyword .'%'."'  $sec";
+			$SubjectSearchArr['where'][0]['name'] 	= 	's.text LIKE ';
+			$SubjectSearchArr['where'][0]['oper']		=  "'".'%' .$keyword .'%'."'   AND s.section =  ";
 			$SubjectSearchArr['where'][0]['value']    =  $section;
            	if ($PowerBB->functions->ModeratorCheck($tSection['moderators']) == false)
 			{
 			$SubjectSearchArr['where'][1] 			= 	array();
 			$SubjectSearchArr['where'][1]['con'] 		= 	'AND';
-			$SubjectSearchArr['where'][1]['name'] 	= 	'sec_subject';
+			$SubjectSearchArr['where'][1]['name'] 	= 	's.sec_subject';
 			$SubjectSearchArr['where'][1]['oper'] 	= 	'=';
 			$SubjectSearchArr['where'][1]['value'] 	= 	'0';
            }
 			$SubjectSearchArr['order'] 			= 	array();
-			$SubjectSearchArr['order']['field'] 	= 	'id';
+			$SubjectSearchArr['order']['field'] 	= 	's.id';
 			$SubjectSearchArr['order']['type'] 	= 	$sort_order;
 
 			$SubjectSearchArr['proc'] 						= 	array();
@@ -982,7 +1001,7 @@ function _GetSubjectList()
 			$SubjectSearchArr['pager']['location'] 	= 	$location;
 			$SubjectSearchArr['pager']['var'] 		= 	'count';
 
-			$PowerBB->_CONF['template']['while']['SubjectList'] = $PowerBB->core->GetList($SubjectSearchArr,'subject');
+			$PowerBB->_CONF['template']['while']['SubjectList'] = $PowerBB->subject->GetSubjectListAdvanced($SubjectSearchArr);
 
        if (!$PowerBB->_CONF['template']['while']['SubjectList'])
 	   {

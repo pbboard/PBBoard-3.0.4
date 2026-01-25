@@ -8681,17 +8681,21 @@ itemtype="https://schema.org/ListItem">
 <tr>
 <td class="tcat small_text center_text_align wd100" colspan="6">
 <div class="r-right">{$lang['Search_results_for']}
-{$keyword}</div>
+{$keyword}
+</div>
 {if {$username_nm}}
 <div class="l-left"> {$lang['Number_of_results']}
 ({$username_nm})
-{$lang['result']}</div>
+{$lang['result']}
+</div>
 {/if}
 {if {$nm}}
 <div class="l-left"> {$lang['Number_of_results']}
 ({$nm})
-{$lang['result']}</div>
-{/if}		</td>
+{$lang['result']}
+</div>
+{/if}
+</td>
 </tr>
 <tr>
 <td class="thead center_text_align wd30" colspan="2">
@@ -8707,7 +8711,7 @@ itemtype="https://schema.org/ListItem">
 {$lang['subject_visitor']}
 </td>
 <td class="thead center_text_align wd28">
-{$lang['date']}
+{$lang['forum']}
 </td>
 </tr>
 {Des::while}{SubjectListOne}
@@ -8726,7 +8730,8 @@ itemtype="https://schema.org/ListItem">
 <span class="small">{$SubjectListOne['subject_describe']}</span>
 </td>
 <td class="row1 center_text_align wd20">
-<a href="index.php?page=profile&amp;show=1&amp;username={$SubjectListOne['writer']}">{$SubjectListOne['writer']}</a>		</td>
+<a href="index.php?page=profile&amp;show=1&amp;id={$SubjectListOne['writer_id']}">{$SubjectListOne['username_style_cache']}</a>
+</td>
 <td class="row2 center_text_align wd8">
 {$SubjectListOne['reply_number']}
 </td>
@@ -8734,10 +8739,11 @@ itemtype="https://schema.org/ListItem">
 {$SubjectListOne['visitor']}
 </td>
 <td class="row2 center_text_align wd28">
-{$SubjectListOne['reply_date']}
+<a href="index.php?page=forum&amp;show=1&amp;id={$SubjectListOne['section_id']}"><span class="smallfont">{$SubjectListOne['section_title']}</span></a>
 </td>
 </tr>
-{/Des::while}	{Des::while}{SubjectTitleListOne}
+{/Des::while}
+{Des::while}{SubjectTitleListOne}
 <tr>
 <td class="row1 center_text_align wd3">
 <img src="{$_CONF['SubjectTitleListOne_row']['icon_path']}{$SubjectTitleListOne['icon']}" alt="" />
@@ -8753,7 +8759,7 @@ itemtype="https://schema.org/ListItem">
 <span class="small">{$SubjectTitleListOne['subject_describe']}</span>
 </td>
 <td class="row1 center_text_align wd20">
-<a href="index.php?page=profile&amp;show=1&amp;username={$SubjectTitleListOne['writer']}">{$SubjectTitleListOne['writer']}</a><br />
+<a href="index.php?page=profile&amp;show=1&amp;id={$SubjectTitleListOne['writer_id']}">{$SubjectTitleListOne['username_style_cache']}</a><br />
 {$SubjectTitleListOne['write_date']}
 </td>
 <td class="row2 center_text_align wd8">
@@ -8763,11 +8769,7 @@ itemtype="https://schema.org/ListItem">
 {$SubjectTitleListOne['visitor']}
 </td>
 <td class="row2 center_text_align wd28">
-{if {$SubjectTitleListOne['reply_number']} <= 0}
-{$lang['no_replys']}
-{else}
-{$SubjectTitleListOne['reply_date']}
-{/if}
+<a href="index.php?page=forum&amp;show=1&amp;id={$SubjectTitleListOne['section_id']}">{$SubjectTitleListOne['section_title']}</a>
 </td>
 </tr>
 {/Des::while}
@@ -8787,7 +8789,7 @@ itemtype="https://schema.org/ListItem">
 <span class="small">{$MembersListSubjectOne['subject_describe']}</span>
 </td>
 <td class="row1 center_text_align wd20">
-<a href="index.php?page=profile&amp;show=1&amp;username={$MembersListSubjectOne['writer']}">{$MembersListSubjectOne['writer']}</a><br />
+<a href="index.php?page=profile&amp;show=1&amp;id={$MembersListSubjectOne['writer_id']}">{$MembersListSubjectOne['username_style_cache']}</a><br />
 {$MembersListSubjectOne['write_date']}
 </td>
 <td class="row2 center_text_align wd8">
@@ -8797,11 +8799,7 @@ itemtype="https://schema.org/ListItem">
 {$MembersListSubjectOne['visitor']}
 </td>
 <td class="row2 center_text_align wd28">
-{if {$MembersListSubjectOne['reply_number']} <= 0}
-{$lang['no_replys']}
-{else}
-{$MembersListSubjectOne['reply_date']}
-{/if}
+<a href="index.php?page=forum&amp;show=1&amp;id={$MembersListSubjectOne['section_id']}">{$MembersListSubjectOne['section_title']}</a>
 </td>
 </tr>
 {/Des::while}
@@ -8817,21 +8815,24 @@ itemtype="https://schema.org/ListItem">
 <div class="l-left"> {$lang['Number_of_results']}
 ({$username_nm})
 {$lang['result']}</div>
-{/if}			{if {$nm}}
+{/if}
+{if {$nm}}
 <div class="l-left"> {$lang['Number_of_results']}
 ({$nm})
-{$lang['result']}</div>
-{/if}		</td>
+{$lang['result']}
+</div>
+{/if}
+</td>
 </tr>
 <tr>
 <td class="thead center_text_align wd40" colspan="2">
 {$lang['subject_title']}
 </td>
-<td class="thead center_text_align wd20">
+<td class="thead center_text_align wd10">
 {$lang['subject_writer']}
 </td>
-<td class="thead center_text_align wd10">
-{$lang['date']}
+<td class="thead center_text_align wd20">
+{$lang['forum']}
 </td>
 </tr>
 {Des::while}{ReplyListOne}
@@ -8857,11 +8858,11 @@ itemtype="https://schema.org/ListItem">
 <br />
 <span class="small">{$ReplyListOne['subject_describe']}</span>
 </td>
-<td class="row1 center_text_align wd20">
-<a href="index.php?page=profile&amp;show=1&amp;username={$ReplyListOne['writer']}">{$ReplyListOne['writer']}</a>
+<td class="row1 center_text_align wd10">
+<a href="index.php?page=profile&amp;show=1&amp;id={$ReplyListOne['writer_id']}">{$ReplyListOne['username_style_cache']}</a>
 </td>
-<td class="row2 center_text_align wd10">
-{$ReplyListOne['reply_date']}
+<td class="row2 center_text_align wd20">
+<a href="index.php?page=forum&amp;show=1&amp;id={$ReplyListOne['section_id']}">{$ReplyListOne['section_title']}</a>
 </td>
 </tr>
 {/Des::while}

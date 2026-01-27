@@ -70,7 +70,7 @@ class PowerBBOnlineMOD
 
 		$OnlineArr = array();
 		$OnlineArr['order'] = array();
-		$OnlineArr['order']['field'] = 'user_id';
+		$OnlineArr['order']['field'] = 'user_id > 0 DESC, last_move';
 		$OnlineArr['order']['type'] = 'DESC';
 		// Pager setup
 		$OnlineArr['pager'] 				= 	array();
@@ -89,9 +89,24 @@ class PowerBBOnlineMOD
 			$OnlineArr['where'][0]['value'] = 	'1';
 		}
 
-        $OnlineArr['proc']['last_move'] = array('method'=>'time_ago','store'=>'last_move','type'=>$PowerBB->_CONF['info_row']['timesystem']);
+
         $OnlineArr['proc']['logged'] = array('method'=>'time_ago','store'=>'logged','type'=>$PowerBB->_CONF['info_row']['timesystem']);
 		$PowerBB->_CONF['template']['while']['Online'] = $PowerBB->online->GetOnlineList($OnlineArr);
+
+		foreach ($PowerBB->_CONF['template']['while']['Online'] as &$row) {
+
+		    if (empty($row['last_move']) || (int)$row['last_move'] === 0) {
+		        $row['last_move'] = $row['logged'];
+		    }
+		    elseif (is_numeric($row['last_move'])) {
+		        $row['last_move'] = $PowerBB->functions->time_ago(
+		            (int)$row['last_move'],
+		            $PowerBB->_CONF['info_row']['timesystem']
+		        );
+		    }
+		}
+		unset($row);
+
 
             if ($GetOnlineNum > $PowerBB->_CONF['info_row']['subject_perpage'])
 	        {

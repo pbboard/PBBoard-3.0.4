@@ -532,7 +532,7 @@ class PowerBBForumsMOD extends _functions
         $PowerBB->template->assign('DoJumpList',$MainAndSub->DoJumpList($Master,false,1));
 		unset($Master);
 	   ////////
-
+       @eval($PowerBB->functions->get_fetch_hooks('forums_module_EditMain'));
 		$PowerBB->template->display('forum_edit');
 	}
 
@@ -597,6 +597,9 @@ class PowerBBForumsMOD extends _functions
 		$SecArr['field']['parent']					=	$PowerBB->_POST['parent'];
 		$SecArr['field']['review_subject']			=	$PowerBB->_POST['review_subject'];
 		$SecArr['field']['forum_title_color']	   =	$PowerBB->_POST['forum_title_color'];
+
+       @eval($PowerBB->functions->get_fetch_hooks('forums_module_EditStart'));
+
 		$SecArr['where']							= 	array('id',$PowerBB->_CONF['template']['Inf']['id']);
 
 		$update = $PowerBB->core->Update($SecArr,'section');

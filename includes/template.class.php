@@ -71,6 +71,8 @@ class PBBTemplate
 		$style_id = (!empty($PowerBB->_COOKIE[$PowerBB->_CONF['style_cookie']])) ? $PowerBB->_COOKIE[$PowerBB->_CONF['style_cookie']] : $PowerBB->_CONF['info_row']['def_style'];
 		$style_id = $PowerBB->functions->CleanVariable($style_id,'intval');
 
+        @eval($PowerBB->functions->get_fetch_hooks('template_class_styleid'));
+
 	  return $style_id;
 	}
 

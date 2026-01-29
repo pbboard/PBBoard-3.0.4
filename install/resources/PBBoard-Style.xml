@@ -14792,15 +14792,6 @@ img.src = $('#url_input').val();
 {$lang['forum']}
 </td>
 </tr>
-{if {$No_Subjects}}
-</table>
-<table class="border wd98 brd1 clpc0 a-center">
-<tr>
-<td class="row1 center_text_align wd97" colspan="6">
-{$lang['no_replies_today']}
-</td>
-</tr>
-{else}
 {Des::while}{subject_list}
 <tr>
 <td class="row2 center_text_align wd3">
@@ -14816,7 +14807,7 @@ img.src = $('#url_input').val();
 </a>
 </td>
 <td class="row1 center_text_align wd10">
-{if {$subject_list['last_replier_style']}}
+{if {$subject_list['last_replier']}}
 <a href="index.php?page=profile&amp;show=1&amp;id={$subject_list['last_replier_id']}">
 {$subject_list['last_replier_style']}
 </a>
@@ -14824,7 +14815,6 @@ img.src = $('#url_input').val();
 <a href="index.php?page=profile&amp;show=1&amp;id={$subject_list['writer_id']}">
 {$subject_list['username_style_cache']}
 </a>
-{$subject_list['writer']}
 {/if}
 
 <br />
@@ -14844,8 +14834,14 @@ img.src = $('#url_input').val();
 </td>
 </tr>
 {/Des::while}
-</table>
+{if {$No_Subjects}}
+<tr>
+<td class="row1 center_text_align wd97" colspan="6">
+{$lang['No_Subjects']}
+</td>
+</tr>
 {/if}
+</table>
 </div>
 <br />
 
@@ -14873,15 +14869,6 @@ img.src = $('#url_input').val();
 {$lang['forum']}
 </td>
 </tr>
-{if {$No_posts}}
-</table>
-<table class="border wd98 brd1 clpc0 a-center">
-<tr>
-<td class="row1 center_text_align wd97" colspan="6">
-{$lang['no_replies_today']}
-</td>
-</tr>
-{else}
 {Des::while}{ReplyList}
 <tr>
 <td class="row2 center_text_align wd3">
@@ -14925,9 +14912,14 @@ img.src = $('#url_input').val();
 </td>
 </tr>
 {/Des::while}
-</table>
+{if {$No_posts}}
+<tr>
+<td class="row1 center_text_align wd97" colspan="6">
+{$lang['no_post']}
+</td>
+</tr>
 {/if}
-
+</table>
 
 </dd>
 <dd class="usercp_right">{template}usercp_menu{/template}</dd>

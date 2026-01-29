@@ -300,7 +300,7 @@ class PowerBBCoreMOD
 
 		// ORDER
 		$SubjectArr['order'] = array(
-		    'field' => 's.write_time',
+		    'field' => 's.native_write_time',
 		    'type'  => 'DESC'
 		);
 

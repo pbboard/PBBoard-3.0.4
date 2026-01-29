@@ -63,6 +63,10 @@ class PowerBBGroupsMOD extends _functions
 					$this->_DelStart();
 				}
 			}
+			elseif ($PowerBB->_GET['change_group_order'])
+			{
+				$this->_ChangeGroupOrder();
+			}
 			elseif ($PowerBB->_GET['move'])
 			{
 				if ($PowerBB->_GET['main'])
@@ -400,18 +404,19 @@ class PowerBBGroupsMOD extends _functions
 		global $PowerBB;
 
 		//////////
-      $groups = $PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['group'] . " WHERE id");
+      $groups = $PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['group'] . " ORDER BY group_order ASC");
 
              $PowerBB->template->display('groups_main_top');
 
        while ($GetGroupRow = $PowerBB->DB->sql_fetch_array($groups))
       {
       	$group_id = $GetGroupRow['id'];
-        $group_member_nm = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['member'] . " WHERE usergroup='$group_id'"));
+        $group_member_nm = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(*) FROM " . $PowerBB->table['member'] . " WHERE usergroup= $group_id "));
 
        $GetGroupRow['username_style'] = str_ireplace('[username]',$GetGroupRow['title'],$GetGroupRow['username_style']);
        $PowerBB->template->assign('groups_title',$GetGroupRow['username_style']);
        $PowerBB->template->assign('groups_id',$GetGroupRow['id']);
+       $PowerBB->template->assign('group_order',$GetGroupRow['group_order']);
 
       	$PowerBB->template->assign('group_member_nm',$group_member_nm);
        $PowerBB->template->display('groups_main');
@@ -820,6 +825,64 @@ class PowerBBGroupsMOD extends _functions
 
 
 
+	}
+
+	function _ChangeGroupOrder()
+	{
+		global $PowerBB;
+
+ 		$GroupArr 					= 	array();
+		$GroupArr['get_from']			=	'db';
+		$GroupArr['proc'] 			= 	array();
+		$GroupArr['proc']['*'] 		= 	array('method'=>'clean','param'=>'html');
+		$GroupArr['order']			=	array();
+		$GroupArr['order']['field']	=	'group_order';
+		$GroupArr['order']['type']	=	'ASC';
+
+		$GroupList = $PowerBB->core->GetList($GroupArr,'group');
+
+		$x = 0;
+		$y = sizeof($GroupList);
+		$s = array();
+
+		while ($x < $y)
+		{
+			$name = 'order-' . $GroupList[$x]['id'];
+
+			if ($GroupList[$x]['group_order'] != $PowerBB->_POST[$name])
+			{
+				$UpdateArr 						= 	array();
+
+				$UpdateArr['field']		 		= 	array();
+				$UpdateArr['field']['group_order'] 	= 	$PowerBB->_POST[$name];
+
+				$UpdateArr['where'] 			=	array('id',$GroupList[$x]['id']);
+
+				$update = $PowerBB->core->Update($UpdateArr,'group');
+
+				if ($update)
+				{
+		            $CacheArr 			= 	array();
+					$CacheArr['id'] 	= 	$GroupList[$x]['id'];
+
+					$cache = $PowerBB->group->UpdateGroupCache($CacheArr);
+				}
+
+				$s[$GroupList[$x]['id']] = ($update) ? 'true' : 'false';
+			}
+
+			$x += 1;
+		}
+
+		if (in_array('false',$s))
+		{
+			$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['did_not_succeed_the_process']);
+		}
+		else
+		{
+		$PowerBB->functions->msg($PowerBB->_CONF['template']['_CONF']['lang']['the_order_of_presentation_was_saved_successfully']);
+		$PowerBB->functions->redirect('index.php?page=groups&amp;control=1&amp;main=1');
+		}
 	}
 
 	function _MoveMain()

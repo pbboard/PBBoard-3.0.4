@@ -31,6 +31,7 @@
 				<td class="row1">
 			({$groups_id})
 		</td>
+	<td class="row1"><input type="text" name="order-{$groups_id}" id="input_order-{$groups_id}" value="{$group_order}" style="max-width: 45%;" size="2" oninput="this.value = this.value.replace(/[^0-9]/g, '');" /></td>
 	</tr>
 
 

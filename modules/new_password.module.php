@@ -195,23 +195,33 @@ class PowerBBPasswordMOD
 
 		$MemberInfo = $PowerBB->core->GetInfo($MemberArr,'member');
 
+		if (!$MemberInfo and $MemberInfo['new_password'] !='')
+		{
+			$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['Sorry_demand_does_not_exist']);
+		}
 
-		//////////
+      	$UpdatePassword = $PowerBB->functions->update_password($MemberInfo['id'], $MemberInfo['new_password']);
 
-		   $MemberInfo['new_password'] = md5($MemberInfo['new_password']);
-
-			$PassArr 				= 	array();
-			$PassArr['field']		=	array();
-			$PassArr['field']['password'] 			= 	$MemberInfo['new_password'];
-			$PassArr['where'] = array('id',$MemberInfo['id']);
-
-			$UpdatePassword = $PowerBB->core->Update($PassArr,'member');
 
 			if ($UpdatePassword)
-			{
+			{				$UpdateArr 				= 	array();
+				$UpdateArr['field']		= 	array();
+
+				$UpdateArr['field']['new_password'] 	= 	"";
+				$UpdateArr['where'] 					= 	array('id',$MemberInfo['id']);
+
+				$UpdateNewPassword = $PowerBB->core->Update($UpdateArr,'member');
+
+
+		        $DelArr				=	array();
+		        $DelArr['where'] 	= 	array('random_url',$PowerBB->_GET['code']);
+
+				$CleanReq = $PowerBB->core->Deleted($DelArr,'requests');
+
                 $PowerBB->functions->msg($PowerBB->_CONF['template']['_CONF']['lang']['password_was_changed_successfully']);
 				$PowerBB->functions->redirect('index.php?page=login&sign=1');
 			}
+
 
 	}
 

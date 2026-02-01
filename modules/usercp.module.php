@@ -900,20 +900,11 @@ class PowerBBCoreMOD
 		//////////
 
 		// Check old password
-          if(empty($PowerBB->_CONF['member_row']['active_number']))
-          {			if (md5($PowerBB->_POST['old_password']) != $PowerBB->_CONF['member_row']['password'])
-			{
-				$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['bad_password']);
-			}
-          }
-          else
-          {
-            $password_fields = $PowerBB->functions->verify_user_password($PowerBB->_CONF['member_row']['active_number'], $PowerBB->_POST['old_password']);
-			if ($password_fields['password'] != $PowerBB->_CONF['member_row']['password'])
-			{
-				$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['bad_password']);
-			}
-          }
+		$password_fields = $PowerBB->functions->verify_user_password($PowerBB->_CONF['member_row']['active_number'], $PowerBB->_POST['old_password']);
+		if ($password_fields['password'] != $PowerBB->_CONF['member_row']['password'])
+		{
+		$PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['bad_password']);
+		}
 
 		$ReqArr 			= 	array();
 		$ReqArr['where'] 	= 	array('username',$PowerBB->_CONF['member_row']['username']);
@@ -924,8 +915,6 @@ class PowerBBCoreMOD
 				$RequesArr 			= 	array();
 				$RequesArr['where'] 	= 	array('username',$PowerBB->_CONF['member_row']['username']);
 				$RequesInfo = $PowerBB->core->Deleted($RequesArr,'requests');
-                $PowerBB->functions->redirect('index.php?page=usercp&amp;control=1&amp;password=1&amp;main=1');
-                exit();
 		}
 
 		// Clean the information from white spaces (only in the begin and in the end)

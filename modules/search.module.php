@@ -858,6 +858,10 @@ class PowerBBSearchEngineMOD
          $SectionInfo = $PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['section'] . " WHERE sec_section<>1");
 		}
 
+		    $subject_nm = 0;
+            $subject_title = 0;
+            $reply_nm = 0;
+
 	        if ($search_only == '1')
              {
 				$subject_nm = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(*) FROM " . $PowerBB->table['subject'] . "  WHERE CONCAT(title,text) LIKE '%$keyword%' AND sec_subject = 0 AND review_subject = 0  AND delete_topic = 0"));

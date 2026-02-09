@@ -1421,6 +1421,7 @@ function pbb_prepare_main_view(array $tree)
 			$PowerBB->template->assign('keywords',$this->parse_keywords($keywords));
 
             $description    = strip_tags($ReplyInfo['text']);
+            $description = $PowerBB->Powerparse->_wordwrap($description,150);
             $description = str_replace(" .. ","", $description);
 
 			if(empty($description))
@@ -1493,7 +1494,8 @@ function pbb_prepare_main_view(array $tree)
 
 
 					$PowerBB->template->assign('keywords',$this->parse_keywords($keywords));
-
+					$description    = strip_tags($description);
+                    $description = $PowerBB->Powerparse->_wordwrap($description,150);
                     $description = str_replace(" .. ","", $description);
 					if(empty($description))
 					{

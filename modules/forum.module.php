@@ -592,7 +592,9 @@ function _GetSubjectList()
 			}
 			else
 			{
-				$subject_nums = $this->Section['subjects_review_num'];
+			  $section_id_clean = (int)$this->Section['id'];
+		      $Forum_no_review_subject = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(*) FROM " . $PowerBB->table['subject'] . " WHERE section = $section_id_clean AND review_subject <> 1 and delete_topic <> 1"));
+              $subject_nums = $Forum_no_review_subject;
 			}
 		}
 

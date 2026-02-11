@@ -537,8 +537,107 @@ class PowerBBMemberMOD extends _functions
 	{
 		global $PowerBB;
 
-		$extraFields=$PowerBB->extrafield->getEmptyLoginFields();
+		//getting extra fields
+    $extraFields=$PowerBB->extrafield->getEmptyLoginFields();
+		//checking if the extra fields are required
+	 foreach($extraFields AS $field)
+	 {
+		$FieldsArr = array();
+		$FieldsArr['where'] = array('name',$field['name']);
 
+		$FieldsInfo = $PowerBB->extrafield->GetFieldInfo($FieldsArr);
+        if($FieldsInfo['type'] == 'select_multiple')
+        {
+
+		$multFields = array();
+
+    	//-----------------------------------------
+    	// Check for an array
+    	//-----------------------------------------
+
+    	if ( is_array( $PowerBB->_POST[ $field['name_tag']] )  )
+    	{
+
+    		if ( in_array( 'all', $PowerBB->_POST[ $field['name_tag']] ) )
+    		{
+    			//-----------------------------------------
+    			// Searching all multiple..
+    			//-----------------------------------------
+
+    			return '*';
+    		}
+    		else
+    		{
+				//-----------------------------------------
+				// Go loopy loo
+				//-----------------------------------------
+
+				foreach( $PowerBB->_POST[ $field['name_tag']] as $l )
+				{
+
+						$multFields[] = $l;
+				}
+
+				//-----------------------------------------
+				// Do we have cats? Give 'em to Charles!
+				//-----------------------------------------
+
+				if ( count( $multFields  ) )
+				{
+					foreach( $multFields  as $f )
+					{
+						if ( is_array($f) and count($f) )
+						{
+							$multFields  = array_merge( $multFields , $f );
+						}
+					}
+				}
+				else
+				{
+					//-----------------------------------------
+					// No multiple selected / we have available
+					//-----------------------------------------
+
+					return;
+				}
+    		}
+		}
+		else
+		{
+			//-----------------------------------------
+			// Not an array...
+			//-----------------------------------------
+
+			if ($PowerBB->_POST[ $field['name_tag']] == 'all' )
+			{
+				return '*';
+			}
+			else
+			{
+				if ( $PowerBB->_POST[ $field['name_tag']] != "" )
+				{
+					$l = intval($PowerBB->_POST[ $field['name_tag']]);
+
+					//-----------------------------------------
+					// Single forum
+					//-----------------------------------------
+
+
+						$multFields[] = $l;
+
+
+						if ( is_array($f) and count($f) )
+						{
+							$multFields  = array_merge( $multFields , $f );
+						}
+				}
+			}
+		}
+
+         $PowerBB->_POST[ $field['name_tag']] = implode( ",", $multFields );
+
+        }
+      }
 		$MemInfo = false;
 
 		$this->check_by_id($MemInfo);
@@ -571,6 +670,8 @@ class PowerBBMemberMOD extends _functions
          else
          {          $member_group_ids = '';
          }
+
+
 		if (empty($PowerBB->_POST['email'])
 			or !isset($PowerBB->_POST['posts']))
 		{

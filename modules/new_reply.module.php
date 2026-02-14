@@ -177,6 +177,18 @@ class PowerBBReplyAddMOD
 			             }
 				}
 
+		       // if section Allw hide subject and he not topic writer can't reply to this topic  , so stop the page
+		   		if ($this->SectionInfo['hide_subject']
+		   		and !$PowerBB->functions->ModeratorCheck($this->SectionInfo['moderators']))
+		   		{
+
+			   		if ($PowerBB->_CONF['member_row']['username'] != $this->SubjectInfo['writer'])
+			   		{
+			   		$PowerBB->functions->ShowHeader($PowerBB->_CONF['template']['_CONF']['lang']['Mistake']);
+			        $PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['Sorry_You_do_not_have_powers_to_access_this_page'].".<br />".$PowerBB->_CONF['template']['_CONF']['lang']['you_cannot_reply_to_this_topic'].".");
+			        }
+		        }
+
      	$PowerBB->template->assign('upload_attach',$this->SectionGroup['upload_attach']);
 
 		if ($PowerBB->_CONF['group_info']['view_subject'] == 0)

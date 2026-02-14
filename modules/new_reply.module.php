@@ -125,11 +125,16 @@ class PowerBBReplyAddMOD
 				$groups_array = explode(',', $all_groups);
 				$groups_array = array_filter(array_map('intval', $groups_array));
 				$clean_ids = implode(',', $groups_array);
+				$this->SectionGroup['view_section']  = '';
+				$this->SectionGroup['write_subject'] = '';
+				$this->SectionGroup['upload_attach'] = '';
+				$this->SectionGroup['no_posts']      = '';
+				$this->SectionGroup['write_poll']    = '';
 				$SecGroupArr = $PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['section_group'] . " WHERE group_id IN ($clean_ids)");
 		    	while ($PermissionSectionGroup = $PowerBB->DB->sql_fetch_array($SecGroupArr))
 				{
-				  if (in_array($PermissionSectionGroup['group_id'], explode(',', $membergroupid__s))
-				 and $PermissionSectionGroup['section_id'] == $this->SectionInfo['id']){
+				if (in_array($PermissionSectionGroup['group_id'], $groups_array)
+				&& $PermissionSectionGroup['section_id'] == $this->SectionInfo['id']) {
 
 					 $this->SectionGroup['view_section'] .= $PermissionSectionGroup['view_section'];
 					 $this->SectionGroup['write_subject'] .= $PermissionSectionGroup['write_subject'];

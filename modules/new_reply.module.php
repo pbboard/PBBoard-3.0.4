@@ -121,9 +121,11 @@ class PowerBBReplyAddMOD
             /** Get section's group information and make some checks **/
 			if($PowerBB->_CONF['member_row']['membergroupids'] !='')
 	 		{
-			  $membergroupid__s = $PowerBB->_CONF['member_row']['membergroupids'].",".$PowerBB->_CONF['group_info']['id'];
-			  $PowerBB->_CONF['member_row']['membergroupids'] = str_replace("," , "','",$PowerBB->_CONF['member_row']['membergroupids']);
-		      $SecGroupArr = $PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['section_group'] . " WHERE group_id in(".$PowerBB->_CONF['member_row']['membergroupids'].",".$PowerBB->_CONF['group_info']['id'].") ");
+				$all_groups = $PowerBB->_CONF['member_row']['membergroupids'] . "," . $PowerBB->_CONF['group_info']['id'];
+				$groups_array = explode(',', $all_groups);
+				$groups_array = array_filter(array_map('intval', $groups_array));
+				$clean_ids = implode(',', $groups_array);
+				$SecGroupArr = $PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['section_group'] . " WHERE group_id IN ($clean_ids)");
 		    	while ($PermissionSectionGroup = $PowerBB->DB->sql_fetch_array($SecGroupArr))
 				{
 				  if (in_array($PermissionSectionGroup['group_id'], explode(',', $membergroupid__s))

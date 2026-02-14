@@ -29,11 +29,11 @@ class PowerBBCommon
 
              if ($Y[2] != $X[0])
              {
-              exit('No direct script access allowed - ÇáãÚÐÑÉ åÐå ÇáØÑíÞÉ ÛíÑ ÔÑÚíÉ');
+              exit('No direct script access allowed');
              }
              elseif ($Y[2] != $PowerBB->_SERVER['HTTP_HOST'])
              {
-              exit('No direct script access allowed - ÇáãÚÐÑÉ åÐå ÇáØÑíÞÉ ÛíÑ ÔÑÚíÉ');
+              exit('No direct script access allowed');
              }
          }
       }

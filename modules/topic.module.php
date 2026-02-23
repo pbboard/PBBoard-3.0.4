@@ -517,7 +517,7 @@ class PowerBBTopicMOD
          {          $PowerBB->template->assign('is_subscribe', 0);
          }
 		//show list last 5 posts member
-		if ($PowerBB->_CONF['info_row']['show_list_last_5_posts_member'] == 1)
+		if ($PowerBB->_CONF['info_row']['show_list_last_5_posts_member'] == 1 || $PowerBB->_CONF['template']['SubjectInfo']['writer'] != 'Guest')
 		{
 		$getid = $PowerBB->_GET['id'];
 
@@ -546,6 +546,8 @@ class PowerBBTopicMOD
 
 		//////////
 		//show Award member
+    if ($PowerBB->_CONF['template']['SubjectInfo']['writer'] != 'Guest')
+	{
        $ALL_Awards_nm = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(*) FROM " . $PowerBB->table['award'] . " "));
        if ($ALL_Awards_nm > 0)
 		{
@@ -569,7 +571,7 @@ class PowerBBTopicMOD
        $PowerBB->template->assign('Awards_nm',@sizeof($PowerBB->_CONF['template']['while']['AwardsList']));
 
        }
-
+    }
         //////////
  		  //$PowerBB->_CONF['template']['SubjectInfo']['title'] 				= 	$PowerBB->functions->CleanVariable($PowerBB->_CONF['template']['SubjectInfo']['title'],'html');
          // $PowerBB->_CONF['template']['SubjectInfo']['title'] = str_ireplace("'",'"', $PowerBB->_CONF['template']['SubjectInfo']['title']);
@@ -578,7 +580,8 @@ class PowerBBTopicMOD
 
 
      	//////////
-
+       if ($PowerBB->_CONF['template']['SubjectInfo']['writer'] != 'Guest')
+	{
 		////////
 	    // Extra Field info
 	    $extraEmptyFields=$PowerBB->extrafield->getEmptyLoginFields(true);
@@ -691,10 +694,10 @@ class PowerBBTopicMOD
 		$This_Info['away_msg'] =$PowerBB->functions->CleanVariable($This_Info['away_msg'],'sql');
         }
 
-     $This_Info['user_website'] = $PowerBB->functions->CleanVariable($This_Info['user_website'],'html');
-     $This_Info['user_info'] = $PowerBB->functions->CleanVariable($This_Info['user_info'],'html');
+	     $This_Info['user_website'] = $PowerBB->functions->CleanVariable($This_Info['user_website'],'html');
+	     $This_Info['user_info'] = $PowerBB->functions->CleanVariable($This_Info['user_info'],'html');
 
-
+     }
 
 		// $This_Info['text'] = wordwrap($This_Info['text'], $PowerBB->_CONF['info_row']['wordwrap'], "<br />", true);
 
@@ -1439,13 +1442,13 @@ class PowerBBTopicMOD
 
 
        // Show Next subject And previous subject:)
-		 $idSubject = $PowerBB->_GET['id'];
-		 $idSection = $This_Info['section'];
-         $getnextsubject_query = $PowerBB->DB->sql_query("SELECT title,id FROM  " . $PowerBB->table['subject'] . " WHERE id > $idSubject and section=" . $idSection . " AND review_subject<>1 AND delete_topic<>1 ORDER BY id ASC LIMIT 1");
+		 $idSubject = $PowerBB->functions->CleanVariable($PowerBB->_GET['id'],'intval');
+		 $idSection = $PowerBB->functions->CleanVariable($This_SectionInfo['id'],'intval');
+         $getnextsubject_query = $PowerBB->DB->sql_query("SELECT title,id FROM  " . $PowerBB->table['subject'] . " WHERE id > $idSubject and section = $idSection AND review_subject<>1 AND delete_topic<>1 ORDER BY id ASC LIMIT 1");
          $getnextsubject_row   = $PowerBB->DB->sql_fetch_array($getnextsubject_query);
 
 
-         $getpersubject_query = $PowerBB->DB->sql_query("SELECT title,id FROM " . $PowerBB->table['subject'] . " WHERE id < $idSubject and section=" . $idSection . " AND review_subject<>1 AND delete_topic<>1 ORDER BY id DESC LIMIT 1");
+         $getpersubject_query = $PowerBB->DB->sql_query("SELECT title,id FROM " . $PowerBB->table['subject'] . " WHERE id < $idSubject and section = $idSection AND review_subject<>1 AND delete_topic<>1 ORDER BY id DESC LIMIT 1");
          $getpersubject_row   = $PowerBB->DB->sql_fetch_array($getpersubject_query);
 
          $PowerBB->template->assign('getnextsubject_row',$getnextsubject_row['id']);

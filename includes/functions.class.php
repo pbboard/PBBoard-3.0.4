@@ -1304,6 +1304,7 @@ function pbb_prepare_main_view(array $tree)
 
 	return $keywords;
  	}
+
  	/**
  	 * Show the default header of forum page
  	 */
@@ -1630,25 +1631,50 @@ function pbb_prepare_main_view(array $tree)
 		}
 		elseif ($page == 'search')
 		{
-		 if ($PowerBB->_GET['keyword'] != '')
+		 if ($PowerBB->_GET['option'] == '1')
 		  {
 		     $search_keyword = $PowerBB->functions->CleanText($PowerBB->_GET['keyword']);
-			 $page_address['search'] 		= 	$search_keyword;
+			 $page_address['search'] 		= 	$PowerBB->_CONF['template']['_CONF']['lang']['Search_results_for']." ".$search_keyword." ".$PowerBB->_CONF['template']['_CONF']['lang']['Search_Engine']." - " .$PowerBB->_CONF['info_row']['title'];
+             $PowerBB->template->assign('description',$PowerBB->functions->CleanText($PowerBB->_CONF['template']['_CONF']['lang']['Search_results_for']." ".$search_keyword));
+		     $PowerBB->template->assign('keywords',$search_keyword);
+		  }
+		 elseif ($PowerBB->_GET['option'] == '2')
+		  {
+	         $search_keyword = $PowerBB->functions->CleanText($PowerBB->_GET['keyword']);
+			 $page_address['search'] 		= 	$PowerBB->_CONF['template']['_CONF']['lang']['Search_results_for']." ".$search_keyword." ".$PowerBB->_CONF['template']['_CONF']['lang']['Search_Engine']." - " .$PowerBB->_CONF['info_row']['title'];
              $PowerBB->template->assign('description',$PowerBB->functions->CleanText($PowerBB->_CONF['template']['_CONF']['lang']['Search_results_for']." ".$search_keyword));
 		     $PowerBB->template->assign('keywords',$search_keyword);
 		  }
 		  elseif ($PowerBB->_GET['option'] == '3')
 		  {
-		     $search_option = $PowerBB->functions->CleanText($PowerBB->_GET['username']);
-			 $page_address['search'] 		= 	$search_option;
-             $PowerBB->template->assign('description',$PowerBB->functions->CleanText($PowerBB->_CONF['template']['_CONF']['lang']['Search_results_for_all_subject_user']." ".$search_option));
+             if($PowerBB->_GET['keyword'] !='')
+             {             $search_username = $PowerBB->functions->CleanText($PowerBB->_GET['username']);
+             $search_keyword = $PowerBB->functions->CleanText($PowerBB->_GET['keyword']);
+             $page_address['search'] = 	$PowerBB->_CONF['template']['_CONF']['lang']['Search_results_for']." ".$search_keyword." ".$PowerBB->_CONF['template']['_CONF']['lang']['Member_Topics']." ".$search_username ;
+             }
+             else
+             {
+		     $search_username = $PowerBB->functions->CleanText($PowerBB->_GET['username']);
+             $page_address['search'] = 	$PowerBB->_CONF['template']['_CONF']['lang']['Search_results_for_all_subject_user']." ".$search_username ;
+             }
+
+             $PowerBB->template->assign('description',$page_address['search']);
 		     $PowerBB->template->assign('keywords',$search_keyword);
 		  }
 		  elseif ($PowerBB->_GET['option'] == '4')
 		  {
-		     $search_option = $PowerBB->functions->CleanText($PowerBB->_GET['username']);
-			 $page_address['search'] 		= 	$PowerBB->_CONF['template']['_CONF']['lang']['Search_results_for_all_reply_user']." ".$search_option;
-             $PowerBB->template->assign('description',$PowerBB->functions->CleanText($PowerBB->_CONF['template']['_CONF']['lang']['Search_results_for_all_reply_user']." ".$search_option));
+	        if($PowerBB->_GET['keyword'] !='')
+             {
+             $search_username = $PowerBB->functions->CleanText($PowerBB->_GET['username']);
+             $search_keyword = $PowerBB->functions->CleanText($PowerBB->_GET['keyword']);
+             $page_address['search'] = 	$PowerBB->_CONF['template']['_CONF']['lang']['Search_results_for']." ".$search_keyword." ".$PowerBB->_CONF['template']['_CONF']['lang']['Search_in_replies'].": ".$search_username ;
+             }
+             else
+             {
+		     $search_username = $PowerBB->functions->CleanText($PowerBB->_GET['username']);
+             $page_address['search'] = 	$PowerBB->_CONF['template']['_CONF']['lang']['Search_results_for_all_reply_user']." ".$search_username ;
+             }
+		     $PowerBB->template->assign('description',$page_address['search']);
 		     $PowerBB->template->assign('keywords',$search_option);
 
 		  }

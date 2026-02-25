@@ -712,14 +712,20 @@ class PowerBBSearchEngineMOD
 	           {
 	           	$user_name    =  $username;
 		       }
+		        if(!empty($keyword))
+		        {
+		         $is_keyword= " text LIKE '%$keyword%' AND ";
+		         $do_keyword= "&amp;keyword=".$keyword."";
+		        }
 
            if ($starteronly == '0')
 	        {
-       	        $username_subject_nm = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(*) FROM " . $PowerBB->table['subject'] . " WHERE writer LIKE '$user_name' AND delete_topic = 0 AND review_subject = 0 AND sec_subject = 0 ".$section." "));
+
+       	        $username_subject_nm = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(*) FROM " . $PowerBB->table['subject'] . " WHERE ".$is_keyword." writer LIKE '$user_name' AND delete_topic = 0 AND review_subject = 0 AND sec_subject = 0 ".$section." "));
 	          if ($username_subject_nm > '0')
 	          {
 		       $PowerBB->functions->msg($PowerBB->_CONF['template']['_CONF']['lang']['Search_successful']);
-		       $PowerBB->functions->redirect('index.php?page=search&amp;option=3&amp;username=' . $username . '&amp;starteronly=0&amp;section=' . $sectionall . '&amp;exactname=' . $exactname . '&amp;sort_order='.strtoupper($sort_order));
+		       $PowerBB->functions->redirect('index.php?page=search&amp;option=3&amp;username=' . $username . $do_keyword . '&amp;starteronly=0&amp;section=' . $sectionall . '&amp;exactname=' . $exactname . '&amp;sort_order='.strtoupper($sort_order));
 	           }
 		      else
 		       {
@@ -729,17 +735,17 @@ class PowerBBSearchEngineMOD
 	           }
 		      elseif ($starteronly == '1')
 		       {
-	             $username_reply_nm = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(*) FROM " . $PowerBB->table['reply'] . " WHERE writer LIKE '$username' AND delete_topic = 0 AND review_reply = 0 ".$section." "));
+	             $username_reply_nm = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(*) FROM " . $PowerBB->table['reply'] . " WHERE ".$is_keyword." writer LIKE '$username' AND delete_topic = 0 AND review_reply = 0 ".$section." "));
 		         $PowerBB->functions->msg($PowerBB->_CONF['template']['_CONF']['lang']['Search_successful']);
 	          if ($username_reply_nm > '0')
 	          {
 		       if ($exactname)
 	           {
-		       $PowerBB->functions->redirect('index.php?page=search&amp;option=4&amp;username=' . $username . '&amp;starteronly=0&amp;section=' . $sectionall . '&amp;exactname=' . $exactname . '&amp;sort_order='.strtoupper($sort_order));
+		       $PowerBB->functions->redirect('index.php?page=search&amp;option=4&amp;username=' . $username . $do_keyword . '&amp;starteronly=0&amp;section=' . $sectionall . '&amp;exactname=' . $exactname . '&amp;sort_order='.strtoupper($sort_order));
 		       }
 		       else
 		       {
-		       $PowerBB->functions->redirect('index.php?page=search&amp;option=4&amp;username=' . $username . '&amp;starteronly=0&amp;section=' . $sectionall . '&amp;exactname=' . $exactname . '&amp;sort_order='.strtoupper($sort_order));
+		       $PowerBB->functions->redirect('index.php?page=search&amp;option=4&amp;username=' . $username . $do_keyword . '&amp;starteronly=0&amp;section=' . $sectionall . '&amp;exactname=' . $exactname . '&amp;sort_order='.strtoupper($sort_order));
 		       }
 	           }
 		      else
@@ -1466,12 +1472,14 @@ class PowerBBSearchEngineMOD
 
         if ($section == 'all')
 		{
-              $section = " AND section not in (" .$forum_not. ")";
+              $section_q = " AND section not in (" .$forum_not. ")";
+              $section_join = " AND s.section not in (" .$forum_not. ")";
               $sectionall = "all";
 		 }
 		 else
 		{
-              $section = " AND section = '".$section."' AND section not in (" .$forum_not. ")";
+              $section_q = " AND section = ".$section." AND section not in (" .$forum_not. ")";
+              $section_join = " AND s.section = ".$section." AND s.section not in (" .$forum_not. ")";
               $sectionall = $PowerBB->_GET['section'];
 		 }
 
@@ -1480,7 +1488,12 @@ class PowerBBSearchEngineMOD
 	           	$username    =  '%' .$username .'%';
 		       }
 
-       	        $username_subject_nm = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(*) FROM " . $PowerBB->table['subject'] . " WHERE writer LIKE '$username' AND delete_topic = 0 AND review_subject = 0 AND sec_subject = 0 ".$section." "));
+		        if(!empty($keyword))
+		        {
+		         $is_keyword= " text LIKE '%$keyword%' AND ";
+		        }
+
+       	        $username_subject_nm = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(*) FROM " . $PowerBB->table['subject'] . " WHERE ".$is_keyword." writer LIKE '$username' AND delete_topic = 0 AND review_subject = 0 AND sec_subject = 0 ".$section_q." "));
 
 				$PowerBB->template->assign('username_nm',$username_subject_nm);
 			    $MemSubjectArr['select'] = '
@@ -1511,9 +1524,17 @@ class PowerBBSearchEngineMOD
 
                 $MemSubjectArr['where'][1] 			= 	array();
 				$MemSubjectArr['where'][1]['con']		=	'AND';
-				$MemSubjectArr['where'][1]['name'] 	= 	"s.review_subject = 0 AND s.sec_subject = 0 ".$section." AND s.delete_topic";
+				$MemSubjectArr['where'][1]['name'] 	= 	"s.review_subject = 0 AND s.sec_subject = 0 ".$section_join." AND s.delete_topic";
 				$MemSubjectArr['where'][1]['oper'] 	= 	'=';
 				$MemSubjectArr['where'][1]['value'] = 	'0';
+		        if(!empty($keyword))
+		        {
+                $MemSubjectArr['where'][2] 			= 	array();
+				$MemSubjectArr['where'][2]['con']		=	'AND';
+				$MemSubjectArr['where'][2]['name'] 	= 	's.text';
+				$MemSubjectArr['where'][2]['oper'] 	= 	'LIKE';
+				$MemSubjectArr['where'][2]['value'] 	= 	'%'.$keyword.'%';
+				}
 
 				$MemSubjectArr['order'] 			= 	array();
 				$MemSubjectArr['order']['field'] 	= 	's.id';
@@ -1560,7 +1581,8 @@ class PowerBBSearchEngineMOD
 					$PowerBB->template->assign('pager',$PowerBB->pager->show());
 			        }
                 $PowerBB->template->assign('search_username_subjects',1);
-				$PowerBB->template->assign('keyword',$username);
+				$PowerBB->template->assign('username',$username);
+				$PowerBB->template->assign('keyword',$keyword);
 				$PowerBB->template->display('search_results_username_subject');
 
     }
@@ -1633,13 +1655,13 @@ class PowerBBSearchEngineMOD
 
         if ($section == 'all')
 		{
-              $section = " AND section not in (" .$forum_not. ")";
+              $section_q = " AND section not in (" .$forum_not. ")";
               $section_join = " AND s.section not in (" .$forum_not. ")";
               $sectionall = "all";
 		 }
 		 else
 		{
-              $section = " AND section = ".$section." AND section not in (" .$forum_not. ")";
+              $section_q = " AND section = ".$section." AND section not in (" .$forum_not. ")";
               $section_join = " AND s.section = ".$section." AND s.section not in (" .$forum_not. ")";
               $sectionall = $PowerBB->_GET['section'];
 		 }
@@ -1650,7 +1672,11 @@ class PowerBBSearchEngineMOD
 	           {
 		       	$username    =  '%' .$username .'%';
 		       }
-	           $username_reply_nm = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(*) FROM " . $PowerBB->table['reply'] . " WHERE writer LIKE '$username' AND delete_topic = 0 AND review_reply = 0 ".$section." "));
+		        if(!empty($keyword))
+		        {
+		         $is_keyword= " text LIKE '%$keyword%' AND ";
+		        }
+	           $username_reply_nm = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(*) FROM " . $PowerBB->table['reply'] . " WHERE ".$is_keyword." writer LIKE '$username' AND delete_topic = 0 AND review_reply = 0 ".$section_q." "));
 
 				$PowerBB->template->assign('username_nm',$username_reply_nm);
 
@@ -1684,10 +1710,17 @@ class PowerBBSearchEngineMOD
 
                 $MemReplyArr['where'][1] 			= 	array();
 				$MemReplyArr['where'][1]['con']		=	'AND';
-				$MemReplyArr['where'][1]['name'] 	= 	's.section not in (' .$forum_not. ') AND s.review_reply = 0 '.$section_join.' AND s.delete_topic';
+				$MemReplyArr['where'][1]['name'] 	= 	's.review_reply = 0 '.$section_join.' AND s.delete_topic';
 				$MemReplyArr['where'][1]['oper'] 	= 	'=';
 				$MemReplyArr['where'][1]['value'] 	= 	'0';
-
+		        if(!empty($keyword))
+		        {
+                $MemReplyArr['where'][2] 			= 	array();
+				$MemReplyArr['where'][2]['con']		=	'AND';
+				$MemReplyArr['where'][2]['name'] 	= 	's.text';
+				$MemReplyArr['where'][2]['oper'] 	= 	'LIKE';
+				$MemReplyArr['where'][2]['value'] 	= 	'%'.$keyword.'%';
+				}
 				$MemReplyArr['order'] 			= 	array();
 				$MemReplyArr['order']['field'] 	= 	'id';
 				$MemReplyArr['order']['type'] 	= 	strtoupper($sort_order);
@@ -1733,7 +1766,8 @@ class PowerBBSearchEngineMOD
 					$PowerBB->template->assign('pager',$PowerBB->pager->show());
 			        }
 
-				$PowerBB->template->assign('keyword',$username);
+				$PowerBB->template->assign('username',$username);
+				$PowerBB->template->assign('keyword',$keyword);
 				$PowerBB->template->display('search_results_username_reply');
 
 	   }

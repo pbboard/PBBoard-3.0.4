@@ -1,6 +1,6 @@
 <?php
 /**
- * PBBoard 3.3
+ * PBBoard 3
  * Copyright 2019 PBBoard Group, All Rights Reserved
  *
  * Website: https://pbboard.info
@@ -23,7 +23,7 @@ $tables[] = "CREATE TABLE pbb_addons (
   active smallint(5) UNSIGNED NOT NULL DEFAULT '1',
   languagevals longtext NOT NULL,
   PRIMARY KEY (id)
-) ENGINE=MyISAM";
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci";
 
 $tables[] = "CREATE TABLE pbb_ads (
   id int(9) NOT NULL AUTO_INCREMENT,
@@ -34,7 +34,7 @@ $tables[] = "CREATE TABLE pbb_ads (
   height int(9) NOT NULL DEFAULT '0',
   clicks int(9) NOT NULL DEFAULT '0',
   PRIMARY KEY (id)
-) ENGINE=MyISAM";
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci";
 
 $tables[] = "CREATE TABLE pbb_adsense (
   id int(9) NOT NULL AUTO_INCREMENT,
@@ -51,7 +51,7 @@ $tables[] = "CREATE TABLE pbb_adsense (
   side int(9) NOT NULL DEFAULT '0',
   mid_topic int(9) NOT NULL DEFAULT '0',
   PRIMARY KEY (id)
-) ENGINE=MyISAM";
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci";
 
 $tables[] = "CREATE TABLE pbb_announcement (
   id int(9) NOT NULL AUTO_INCREMENT,
@@ -61,7 +61,7 @@ $tables[] = "CREATE TABLE pbb_announcement (
   date varchar(100) NOT NULL default '',
   visitor int(10) NOT NULL DEFAULT '0',
   PRIMARY KEY (id)
-) ENGINE=MyISAM";
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci";
 
 $tables[] = "CREATE TABLE pbb_attach (
   id int(9) NOT NULL AUTO_INCREMENT,
@@ -78,13 +78,13 @@ $tables[] = "CREATE TABLE pbb_attach (
   extension varchar(20) NOT NULL default '',
   user_ip varchar(250) NOT NULL default '',
   PRIMARY KEY (id)
-) ENGINE=MyISAM";
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci";
 
 $tables[] = "CREATE TABLE pbb_avatar (
   id int(9) NOT NULL AUTO_INCREMENT,
   avatar_path varchar(250) NOT NULL default '',
   PRIMARY KEY (id)
-) ENGINE=MyISAM";
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci";
 
 $tables[] = "CREATE TABLE pbb_award (
   id int(10) NOT NULL AUTO_INCREMENT,
@@ -93,7 +93,7 @@ $tables[] = "CREATE TABLE pbb_award (
   username varchar(100) NOT NULL default '',
   user_id int(9) NOT NULL DEFAULT '0',
   PRIMARY KEY (id)
-) ENGINE=MyISAM";
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci";
 
 $tables[] = "CREATE TABLE pbb_banned (
   id int(9) NOT NULL AUTO_INCREMENT,
@@ -102,7 +102,7 @@ $tables[] = "CREATE TABLE pbb_banned (
   ip varchar(100) NOT NULL default '',
   reason text NOT NULL,
   PRIMARY KEY (id)
-) ENGINE=MyISAM";
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci";
 
 $tables[] = "CREATE TABLE pbb_blocks (
   id int(9) NOT NULL AUTO_INCREMENT,
@@ -112,7 +112,7 @@ $tables[] = "CREATE TABLE pbb_blocks (
   sort int(5) NOT NULL DEFAULT '0',
   active smallint(5) UNSIGNED NOT NULL DEFAULT '1',
   PRIMARY KEY (id)
-) ENGINE=MyISAM";
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci";
 
 $tables[] = "CREATE TABLE pbb_chat (
   id int(9) NOT NULL AUTO_INCREMENT,
@@ -122,7 +122,7 @@ $tables[] = "CREATE TABLE pbb_chat (
   user_id int(9) NOT NULL DEFAULT '0',
   date varchar(100) NOT NULL default '',
   PRIMARY KEY (id)
-) ENGINE=MyISAM";
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci";
 
 $tables[] = "CREATE TABLE pbb_custom_bbcode (
   id int(9) NOT NULL AUTO_INCREMENT,
@@ -137,7 +137,7 @@ $tables[] = "CREATE TABLE pbb_custom_bbcode (
   bbcode_menu_option_text varchar(400) NOT NULL DEFAULT '',
   bbcode_menu_content_text varchar(400) NOT NULL DEFAULT '',
   PRIMARY KEY (id)
-) ENGINE=MyISAM";
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci";
 
 $tables[] = "CREATE TABLE pbb_emailed (
   id int(9) NOT NULL AUTO_INCREMENT,
@@ -148,7 +148,7 @@ $tables[] = "CREATE TABLE pbb_emailed (
   section_id int(9) NOT NULL DEFAULT '0',
   autosubscribe int(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (id)
-) ENGINE=MyISAM";
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci";
 
 $tables[] = "CREATE TABLE pbb_emailmessages (
   id int(9) NOT NULL AUTO_INCREMENT,
@@ -158,14 +158,14 @@ $tables[] = "CREATE TABLE pbb_emailmessages (
   user_group varchar(200) NOT NULL default '',
   message longtext NOT NULL,
   PRIMARY KEY (id)
-) ENGINE=MyISAM";
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci";
 
 $tables[] = "CREATE TABLE pbb_email_msg (
   id int(9) NOT NULL AUTO_INCREMENT,
   title varchar(300) NOT NULL default '',
   text text NOT NULL,
   PRIMARY KEY (id)
-) ENGINE=MyISAM";
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci";
 
 $tables[] = "CREATE TABLE pbb_ex (
   id int(9) NOT NULL AUTO_INCREMENT,
@@ -173,7 +173,7 @@ $tables[] = "CREATE TABLE pbb_ex (
   max_size varchar(100) NOT NULL default '',
   mime_type varchar(255) NOT NULL default '',
   PRIMARY KEY (id)
-) ENGINE=MyISAM";
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci";
 
 $tables[] = "CREATE TABLE pbb_extrafield (
   id int(9) NOT NULL AUTO_INCREMENT,
@@ -183,7 +183,7 @@ $tables[] = "CREATE TABLE pbb_extrafield (
   type varchar(250) NOT NULL default '',
   options text NOT NULL,
   PRIMARY KEY (id)
-) ENGINE=MyISAM";
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci";
 
 $tables[] = "CREATE TABLE pbb_faq (
   id int(9) NOT NULL AUTO_INCREMENT,
@@ -191,7 +191,7 @@ $tables[] = "CREATE TABLE pbb_faq (
   text longtext NOT NULL,
   description longtext NOT NULL,
   PRIMARY KEY (id)
-) ENGINE=MyISAM";
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci";
 
 $tables[] = "CREATE TABLE pbb_feeds (
   id int(9) NOT NULL AUTO_INCREMENT,
@@ -205,7 +205,7 @@ $tables[] = "CREATE TABLE pbb_feeds (
   options int(10) UNSIGNED NOT NULL DEFAULT '1',
   feeds_time varchar(20) NOT NULL default '',
   PRIMARY KEY (id)
-) ENGINE=MyISAM";
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci";
 
 $tables[] = "CREATE TABLE pbb_friends (
   id int(9) NOT NULL AUTO_INCREMENT,
@@ -214,7 +214,7 @@ $tables[] = "CREATE TABLE pbb_friends (
   username_friend varchar(100) NOT NULL default '',
   approval int(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (id)
-) ENGINE=MyISAM";
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci";
 
 $tables[] = "CREATE TABLE pbb_group (
   id int(9) NOT NULL AUTO_INCREMENT,
@@ -307,7 +307,7 @@ $tables[] = "CREATE TABLE pbb_group (
   groups_security int(1) NOT NULL DEFAULT '1',
   profile_photo int(1) NOT NULL DEFAULT '1',
   PRIMARY KEY (id)
-) ENGINE=MyISAM";
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci";
 
 $tables[] = "CREATE TABLE pbb_hooks (
   id int(9) NOT NULL AUTO_INCREMENT,
@@ -316,14 +316,14 @@ $tables[] = "CREATE TABLE pbb_hooks (
   place_of_hook varchar(250) NOT NULL default '',
   phpcode longtext NOT NULL,
   PRIMARY KEY (id)
-) ENGINE=MyISAM";
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci";
 
 $tables[] = "CREATE TABLE pbb_info (
   id int(9) NOT NULL AUTO_INCREMENT,
   var_name varchar(255) NOT NULL default '',
   value text NOT NULL,
   PRIMARY KEY (id)
-) ENGINE=MyISAM";
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci";
 
 $tables[] = "CREATE TABLE pbb_lang (
   id int(9) NOT NULL AUTO_INCREMENT,
@@ -332,7 +332,7 @@ $tables[] = "CREATE TABLE pbb_lang (
   lang_on int(1) NOT NULL DEFAULT '1',
   lang_path varchar(200) NOT NULL default '',
   PRIMARY KEY (id)
-) ENGINE=MyISAM";
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci";
 
 $tables[] = "CREATE TABLE pbb_member (
   id int(9) NOT NULL AUTO_INCREMENT,
@@ -405,7 +405,7 @@ $tables[] = "CREATE TABLE pbb_member (
   INDEX (email),
   INDEX (usergroup),
   INDEX idx_user_info (id, username, usergroup, username_style_cache, avater_path)
-) ENGINE=InnoDB";
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci";
 
 $tables[] = "CREATE TABLE pbb_moderators (
   id int(9) NOT NULL AUTO_INCREMENT,
@@ -413,7 +413,7 @@ $tables[] = "CREATE TABLE pbb_moderators (
   member_id int(9) NOT NULL DEFAULT '0',
   username varchar(255) NOT NULL default '',
   PRIMARY KEY (id)
-) ENGINE=MyISAM";
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci";
 
 $tables[] = "CREATE TABLE pbb_online (
   id int(11) NOT NULL AUTO_INCREMENT,
@@ -438,7 +438,7 @@ $tables[] = "CREATE TABLE pbb_online (
   INDEX (logged),
   INDEX (last_move),
   INDEX (is_bot)
-) ENGINE=InnoDB";
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci";
 
 $tables[] = "CREATE TABLE pbb_pages (
   id int(9) NOT NULL AUTO_INCREMENT,
@@ -447,7 +447,7 @@ $tables[] = "CREATE TABLE pbb_pages (
   sort int(9) NOT NULL DEFAULT '0',
   link text NOT NULL,
   PRIMARY KEY (id)
-) ENGINE=MyISAM";
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci";
 
 $tables[] = "CREATE TABLE pbb_phrase_language (
   phraseid int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -460,7 +460,7 @@ $tables[] = "CREATE TABLE pbb_phrase_language (
   username varchar(100) NOT NULL DEFAULT '',
   version varchar(30) NOT NULL DEFAULT '',
   PRIMARY KEY (phraseid)
-) ENGINE=MyISAM";
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci";
 
 $tables[] = "CREATE TABLE pbb_pm (
   id int(9) NOT NULL AUTO_INCREMENT,
@@ -474,21 +474,21 @@ $tables[] = "CREATE TABLE pbb_pm (
   icon varchar(50) NOT NULL default '',
   folder varchar(200) NOT NULL default '',
   PRIMARY KEY (id)
-) ENGINE=MyISAM";
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci";
 
 $tables[] = "CREATE TABLE pbb_pm_folder (
   id int(9) NOT NULL AUTO_INCREMENT,
   folder_name varchar(200) NOT NULL default '',
   username varchar(200) NOT NULL default '',
   PRIMARY KEY (id)
-) ENGINE=MyISAM";
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci";
 
 $tables[] = "CREATE TABLE pbb_pm_lists (
   id int(9) NOT NULL AUTO_INCREMENT,
   list_username varchar(250) NOT NULL default '',
   username varchar(250) NOT NULL default '',
   PRIMARY KEY (id)
-) ENGINE=MyISAM";
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci";
 
 $tables[] = "CREATE TABLE pbb_poll (
   id int(9) NOT NULL AUTO_INCREMENT,
@@ -496,7 +496,7 @@ $tables[] = "CREATE TABLE pbb_poll (
   answers text NOT NULL,
   subject_id int(9) NOT NULL DEFAULT '0',
   PRIMARY KEY (id)
-) ENGINE=MyISAM";
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci";
 
 $tables[] = "CREATE TABLE pbb_profile_view (
    profile_user_id mediumint(8) unsigned NOT NULL,
@@ -505,7 +505,7 @@ $tables[] = "CREATE TABLE pbb_profile_view (
    viewer_visit_time int(11) unsigned NOT NULL default '0',
   KEY (profile_user_id),
   KEY (viewer_user_id)
-) ENGINE=MyISAM";
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci";
 
 $tables[] = "CREATE TABLE pbb_rating (
   id int(9) NOT NULL AUTO_INCREMENT,
@@ -515,7 +515,7 @@ $tables[] = "CREATE TABLE pbb_rating (
   ratingdate varchar(250) NOT NULL default '',
   subject_id int(9) NOT NULL DEFAULT '0',
   PRIMARY KEY (id)
-) ENGINE=MyISAM";
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci";
 
 $tables[] = "CREATE TABLE pbb_reply (
   id int(9) NOT NULL AUTO_INCREMENT,
@@ -540,7 +540,7 @@ $tables[] = "CREATE TABLE pbb_reply (
   INDEX subject_replies (subject_id, write_time),
   INDEX writer_idx (writer),
   INDEX section_idx (section)
-) ENGINE=InnoDB";
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci";
 
 $tables[] = "CREATE TABLE pbb_reputation (
   id int(9) NOT NULL AUTO_INCREMENT,
@@ -554,7 +554,7 @@ $tables[] = "CREATE TABLE pbb_reputation (
   peg_count int(9) NOT NULL DEFAULT '0',
   reputationread smallint(5) UNSIGNED NOT NULL DEFAULT '0',
   PRIMARY KEY (id)
-) ENGINE=MyISAM";
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci";
 
 $tables[] = "CREATE TABLE pbb_requests (
   id int(9) NOT NULL AUTO_INCREMENT,
@@ -562,7 +562,7 @@ $tables[] = "CREATE TABLE pbb_requests (
   username varchar(250) NOT NULL default '',
   request_type int(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (id)
-) ENGINE=MyISAM";
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci";
 
 $tables[] = "CREATE TABLE pbb_section (
   id int(9) NOT NULL AUTO_INCREMENT,
@@ -606,7 +606,7 @@ $tables[] = "CREATE TABLE pbb_section (
   subjects_review_num int(1) NOT NULL DEFAULT '0',
   replys_review_num int(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (id)
-) ENGINE=InnoDB";
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci";
 
 $tables[] = "CREATE TABLE pbb_sectiongroup (
   id int(9) NOT NULL AUTO_INCREMENT,
@@ -628,7 +628,7 @@ $tables[] = "CREATE TABLE pbb_sectiongroup (
   main_section int(1) NOT NULL DEFAULT '0',
   group_name varchar(355) NOT NULL default '',
   PRIMARY KEY (id)
-) ENGINE=MyISAM";
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci";
 
 $tables[] = "CREATE TABLE pbb_smiles (
   id int(9) NOT NULL AUTO_INCREMENT,
@@ -636,7 +636,7 @@ $tables[] = "CREATE TABLE pbb_smiles (
   smile_path text NOT NULL,
   smile_type int(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (id)
-) ENGINE=MyISAM";
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci";
 
 $tables[] = "CREATE TABLE pbb_style (
   id int(9) NOT NULL AUTO_INCREMENT,
@@ -648,7 +648,7 @@ $tables[] = "CREATE TABLE pbb_style (
   template_path varchar(250) NOT NULL default '',
   cache_path varchar(250) NOT NULL default '',
   PRIMARY KEY (id)
-) ENGINE=MyISAM";
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci";
 
 $tables[] = "CREATE TABLE pbb_subject (
   id int(9) NOT NULL AUTO_INCREMENT,
@@ -692,7 +692,7 @@ $tables[] = "CREATE TABLE pbb_subject (
   INDEX native_write_idx (native_write_time),
   INDEX idx_perf_subject (delete_topic, review_subject, native_write_time, section),
   INDEX idx_perf_reply (delete_topic, review_subject, write_time, section)
-) ENGINE=InnoDB";
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci";
 
 $tables[] = "CREATE TABLE pbb_supermemberlogs (
   id int(9) NOT NULL AUTO_INCREMENT,
@@ -702,7 +702,7 @@ $tables[] = "CREATE TABLE pbb_supermemberlogs (
   subject_id int(9) NOT NULL DEFAULT '0',
   edit_date varchar(10) NOT NULL default '',
   PRIMARY KEY (id)
-) ENGINE=MyISAM";
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci";
 
 $tables[] = "CREATE TABLE pbb_tags (
   id int(9) NOT NULL AUTO_INCREMENT,
@@ -711,7 +711,7 @@ $tables[] = "CREATE TABLE pbb_tags (
   PRIMARY KEY (id),
   INDEX (tag),
   INDEX (number)
-) ENGINE=InnoDB";
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci";
 
 $tables[] = "CREATE TABLE pbb_tags_subject (
   id int(9) NOT NULL AUTO_INCREMENT,
@@ -722,7 +722,7 @@ $tables[] = "CREATE TABLE pbb_tags_subject (
   PRIMARY KEY (id),
   INDEX (tag_id),
   INDEX (subject_id)
-) ENGINE=InnoDB";
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci";
 
 $tables[] = "CREATE TABLE pbb_template (
   templateid int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -739,7 +739,7 @@ $tables[] = "CREATE TABLE pbb_template (
   active smallint(5) UNSIGNED NOT NULL DEFAULT '1',
   PRIMARY KEY (templateid),
   INDEX style_title (styleid, title, templatetype)
-) ENGINE=InnoDB";
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci";
 
 $tables[] = "CREATE TABLE pbb_templates_edits (
   id int(9) NOT NULL AUTO_INCREMENT,
@@ -749,7 +749,7 @@ $tables[] = "CREATE TABLE pbb_templates_edits (
   old_text longtext NOT NULL,
   text longtext NOT NULL,
   PRIMARY KEY (id)
-) ENGINE=MyISAM";
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci";
 
 $tables[] = "CREATE TABLE pbb_today (
   id int(9) NOT NULL AUTO_INCREMENT,
@@ -760,14 +760,14 @@ $tables[] = "CREATE TABLE pbb_today (
   hide_browse int(1) NOT NULL DEFAULT '0',
   username_style varchar(455) NOT NULL default '',
   PRIMARY KEY (id)
-) ENGINE=MyISAM";
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci";
 
 $tables[] = "CREATE TABLE pbb_toolbox (
   id int(9) NOT NULL AUTO_INCREMENT,
   name varchar(250) NOT NULL default '',
   tool_type int(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (id)
-) ENGINE=MyISAM";
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci";
 
 $tables[] = "CREATE TABLE pbb_topicmod (
   id int(9) NOT NULL AUTO_INCREMENT,
@@ -784,28 +784,28 @@ $tables[] = "CREATE TABLE pbb_topicmod (
   approve tinyint(1) NOT NULL DEFAULT '0',
   forums text NOT NULL,
   PRIMARY KEY (id)
-) ENGINE=MyISAM";
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci";
 
 $tables[] = "CREATE TABLE pbb_userrating (
   id int(9) NOT NULL AUTO_INCREMENT,
   rating varchar(350) NOT NULL default '',
   posts int(9) NOT NULL DEFAULT '0',
   PRIMARY KEY (id)
-) ENGINE=MyISAM";
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci";
 
 $tables[] = "CREATE TABLE pbb_usertitle (
   id int(9) NOT NULL AUTO_INCREMENT,
   usertitle varchar(200) NOT NULL default '',
   posts int(9) NOT NULL DEFAULT '0',
   PRIMARY KEY (id)
-) ENGINE=MyISAM";
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci";
 
 $tables[] = "CREATE TABLE pbb_visitor (
   id int(9) NOT NULL AUTO_INCREMENT,
   lang_id int(9) NOT NULL DEFAULT '0',
   ip varchar(100) NOT NULL default '',
   PRIMARY KEY (id)
-) ENGINE=MyISAM";
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci";
 
 $tables[] = "CREATE TABLE pbb_visitormessage (
   id int(9) NOT NULL AUTO_INCREMENT,
@@ -818,7 +818,7 @@ $tables[] = "CREATE TABLE pbb_visitormessage (
   messageread smallint(5) UNSIGNED NOT NULL DEFAULT '0',
   PRIMARY KEY (id),
   INDEX user_date (userid, dateline)
-) ENGINE=InnoDB";
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci";
 
 $tables[] = "CREATE TABLE pbb_vote (
   id int(9) NOT NULL AUTO_INCREMENT,
@@ -830,7 +830,7 @@ $tables[] = "CREATE TABLE pbb_vote (
   user_ip varchar(100) NOT NULL default '',
   username varchar(255) NOT NULL default '',
   PRIMARY KEY (id)
-) ENGINE=MyISAM";
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci";
 
 $tables[] = "CREATE TABLE pbb_warnlog (
   id int(9) NOT NULL AUTO_INCREMENT,
@@ -840,7 +840,7 @@ $tables[] = "CREATE TABLE pbb_warnlog (
   warn_date varchar(200) NOT NULL default '',
   warn_liftdate varchar(200) NOT NULL default '',
   PRIMARY KEY (id)
-) ENGINE=MyISAM";
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci";
 
 $tables[] = "CREATE TABLE pbb_mention (
   id int(10) NOT NULL AUTO_INCREMENT,
@@ -852,5 +852,5 @@ $tables[] = "CREATE TABLE pbb_mention (
   date varchar(200) NULL default '',
   user_read int(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (id)
-) ENGINE=MyISAM";
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci";
 

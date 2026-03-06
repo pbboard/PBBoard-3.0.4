@@ -20,7 +20,7 @@
 			{$lang['Forum_title']}
 			</td>
 			<td class="row1">
-				<input type="text" name="name" value="{$Inf['title']}" size="50" />
+				<textarea name="name" rows="1" cols="40" dir="{$_CONF['info_row']['content_dir']}" style="max-width: 60%;padding: 7px 7px;margin: 3px 0;box-sizing: border-box;vertical-align: middle;">{$Inf['title']}</textarea>
 				<label for="forum_title_color">{$lang['forum_title_color']}:</label>
               <input class="colors" name="forum_title_color" type="text" value="{$Inf['forum_title_color']}" size="10" />
 			</td>

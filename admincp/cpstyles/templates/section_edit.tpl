@@ -15,7 +15,7 @@
 <tr valign="top">
 		<td class="row1">{$lang['Section_name']}</td>
 		<td class="row1">
-<textarea name="name" id="input_name" rows="2" cols="50" dir="{$_CONF['info_row']['content_dir']}">{$Inf['title']}</textarea>
+<textarea name="name" id="input_name" rows="1" cols="40" dir="{$_CONF['info_row']['content_dir']}">{$Inf['title']}</textarea>
 
 </td>
 </tr>

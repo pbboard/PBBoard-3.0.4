@@ -2826,7 +2826,7 @@ return preg_replace($pattern, $replacement, $email);
   function UpdateSectionCache($SectionCache)
  	{
       global $PowerBB;
-
+       $SectionCache = intval($SectionCache);
 		$last_subjectid = 0;
 		$title = '';
 		$last_writer = '';
@@ -3464,7 +3464,7 @@ return preg_replace($pattern, $replacement, $email);
 
             $type = str_replace('index.php?page=latest_reply&amp;today=1', 'whats_new', $type);
             $type = str_replace('index.php?page=latest_reply&today=1', 'whats_new', $type);
-
+            $type = str_replace('whats_new&amp;count=', 'whats_new-', $type);
 
 
 	   		$type = str_replace("index.php?page=latest&amp;today=1","today_topics",$type);

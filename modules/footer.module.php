@@ -108,12 +108,14 @@ class PowerBBFooterMOD
 		$Get_Footer = $PowerBB->template->display('footer');
 
 	    // slurp all enabled feeds from the database
-	    $feeds_query = "SELECT * FROM " . $PowerBB->table['feeds'] . "
-	                    WHERE options = 1";
+
+        $feeds_query = "SELECT * FROM " . $PowerBB->table['feeds'] . "
+                        WHERE options = '1' AND feeds_time < (" . $PowerBB->_CONF['now'] . " - ttl)
+                        ORDER BY feeds_time ASC";
 	    $feeds_result = $PowerBB->DB->sql_query($feeds_query);
 	    $FeedsInfo = $PowerBB->DB->sql_fetch_array($feeds_result);
 		if ($FeedsInfo) {
-
+                $any_new_subject = false;
 				$cron_interval = 600;
 				$last_run = (int)$PowerBB->_CONF['info_row']['rss_feeds_cache'];
 				$cron_secret_key = $PowerBB->_CONF['info_row']['extrafields_cache'];
@@ -123,8 +125,8 @@ class PowerBBFooterMOD
 				}
 
 			 if ($PowerBB->_CONF['now'] > $last_run + $cron_interval)
-			 {
-		        $PowerBB->DB->sql_query("UPDATE " . $PowerBB->table['info'] . " SET value='" . $PowerBB->_CONF['now'] . "' WHERE var_name='rss_feeds_cache'");
+			 {
+                $PowerBB->DB->sql_query("UPDATE " . $PowerBB->table['info'] . " SET value='" . $PowerBB->_CONF['now'] . "' WHERE var_name='rss_feeds_cache'");
 
 			    $cron_script_path = 'includes/cron_rss_feeder.php';
 
@@ -139,10 +141,13 @@ class PowerBBFooterMOD
 
 			    curl_exec($ch);
 			    curl_close($ch);
-
-			        ///////
-
+                $any_new_subject = true;
 		      }
+
+
+                if ($any_new_subject == true) {
+                   $this->SyncSectionStats($FeedsInfo['forumid']);
+                }
 		  }
 
      $user_group = (int)$PowerBB->_CONF['group_info']['id'];
@@ -183,6 +188,41 @@ class PowerBBFooterMOD
          ob_end_flush();
 
 	}
+
+    function SyncSectionStats($forum_id) {
+        global $PowerBB;
+
+		$info_query = $PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['subject'] . " WHERE id and section = '$forum_id' ORDER BY id DESC");
+		$info_row   = $PowerBB->DB->sql_fetch_array($info_query);
+
+		$UpdateLastArr = array();
+		$UpdateLastArr['field']			=	array();
+
+		$UpdateLastArr['field']['last_writer'] 		= 	$info_row['writer'];
+		$UpdateLastArr['field']['last_subject'] 	= 	$PowerBB->functions->CleanVariable($info_row['title'],'html');
+		$UpdateLastArr['field']['last_subjectid'] 	= 	$info_row['id'];
+		$UpdateLastArr['field']['last_date'] 	    = 	$PowerBB->_CONF['now'];
+		$UpdateLastArr['field']['last_time'] 	    = 	$PowerBB->_CONF['now'];
+		$UpdateLastArr['field']['icon'] 		    = 	'look/images/icons/i1.gif';
+
+		$UpdateLastArr['where'] 		            = 	array('id',$forum_id);
+
+		// Update Last subject's information
+		$UpdateLast = $PowerBB->core->Update($UpdateLastArr,'section');
+
+		// Free memory
+		unset($UpdateLastArr);
+
+		$Upsubject_nm = $PowerBB->DB->sql_num_rows($PowerBB->DB->sql_query("SELECT * FROM " . $PowerBB->table['subject'] . " WHERE section='$forum_id'"));
+
+
+		// The overall number of subjects
+		$UpdateSubjectNumber = $PowerBB->cache->UpdateSubjectNumber(array('subject_num'	=>	$PowerBB->_CONF['info_row']['subject_number']));
+
+
+		// Update section's cache
+		$UpdateSectionCache = $PowerBB->functions->UpdateSectionCache($forum_id);
+    }
 
 	function Feeder_Generate_Key($length = 32)
 	{

@@ -6,17 +6,13 @@ define('IN_PowerBB',true);
 require(ROOT_PATH . 'common.php');
 Run_Feeder();
 
-
 	function Run_Feeder()
 	{
        global $PowerBB;
-	// 1. جلب المفتاح من الإعدادات
 	$expected_key = $PowerBB->_CONF['info_row']['extrafields_cache'];
 	$received_key = isset($PowerBB->_GET['key']) ? $PowerBB->_GET['key'] : '';
 
-		// 2. التحقق
 		if (empty($expected_key) || $received_key !== $expected_key) {
-		    // إذا لم يتطابق المفتاح، نرفض الوصول
 		    header('HTTP/1.0 403 Forbidden');
 		    die("Unauthorized cron access.");
 		}
@@ -24,8 +20,6 @@ Run_Feeder();
     }
 
 
-// ملف الدالة المُعدلة (يفترض أنه داخل 'includes')
-// إذا كان functions_feeder.php داخل 'includes' مع ملف الـ cron:
 require(dirname(__FILE__) . '/functions_feeder.php');
 
 // 4. تأكيد التشغيل عبر سطر الأوامر (CLI)

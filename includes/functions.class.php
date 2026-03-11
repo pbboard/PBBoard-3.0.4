@@ -3469,7 +3469,7 @@ return preg_replace($pattern, $replacement, $email);
 
 	   		$type = str_replace("index.php?page=latest&amp;today=1","today_topics",$type);
 	   		$type = str_replace("index.php?page=latest&today=1","today_topics",$type);
-
+            $type = str_replace('today_topics&amp;count=', 'today_topics-', $type);
 
             $type = str_replace("index.php?page=forget&amp;index=1","forget.html",$type);
             $type = str_replace("index.php?page=forget&amp;active_member=1&amp;send_active_code=1","active_user.html",$type);

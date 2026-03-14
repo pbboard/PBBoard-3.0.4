@@ -2563,6 +2563,11 @@ return preg_replace($pattern, $replacement, $email);
 				}
 				else
 				{
+						if ($PowerBB->functions->is_json($Row)) {
+						    $moderators = json_decode($Row, true);
+						} else {
+						    $moderators = $Row;
+						}
 				       if (is_array($moderators))
 						{
 						 foreach($moderators as $moderator)

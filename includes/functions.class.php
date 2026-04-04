@@ -274,7 +274,7 @@ class PowerBBFunctions
                                                               // subs forum +++
                                                              $subs_cache_include = "cache/forums_cache/forums_cache_".$subforum['id'].".php";
 															if (is_file($subs_cache_include)) {
-															include $sub_cache_include;
+															include $subs_cache_include;
 															}
 		                                                    else
 		                                                    {

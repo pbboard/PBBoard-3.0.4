@@ -90,19 +90,19 @@ class PowerBBCodeParse
 		$regexcode_css['[css]'] = '#\[css\](.*)\[/css\]#siU';
 		$string = preg_replace_callback($regexcode_css, function($matchescss) {
 		$matchescss[1] = str_replace("&amp;#39;", "'", $matchescss[1]);
-		return '<div class="maxy"><div class="codediv-wrapper" style="position: relative; border: 1px solid #ddd; margin-bottom: 10px;"><div class="codediv">CSS <button class="copy-btn" style="float: '.$PowerBB->_CONF['info_row']['content_dir'].';background: #3090d0;color: white;border: none;padding: 1px 8px;font-family: '.'Droid Arabic Kufi'.';margin-left: 32px;margin-top: -2px;font-size: 9px;cursor: pointer;border-radius: 6px;transition: background 0.3s;" onclick="copyCode(this)">نسخ الكود</button></div><pre><code class="language-php">'.$matchescss[1].'</code></pre></div><div class="maxy"></div>';
+		return '<div class="maxy"><div class="codediv-wrapper" style="position: relative; border: 1px solid #ddd; margin-bottom: 10px;"><div class="codediv">CSS <button class="copy-btn" style="float: '.$PowerBB->_CONF['info_row']['content_dir'].';background: #3090d0;color: white;border: none;padding: 1px 8px;font-family: '.'Droid Arabic Kufi'.';margin-left: 32px;margin-top: -2px;font-size: 9px;cursor: pointer;border-radius: 6px;transition: background 0.3s;" onclick="copyCode(this)">نسخ الكود</button></div><pre><code class="language-php">'.$matchescss[1].'</code></pre></div></div>';
 		}, $string);
 
 		$regexcode_xml['[xml]'] = '#\[xml\](.*)\[/xml\]#siU';
 		$string = preg_replace_callback($regexcode_xml, function($matchesxml) {
 		$matchesxml[1] = str_replace("&amp;#39;", "'", $matchesxml[1]);
-		return '<div class="maxy"><div class="codediv-wrapper" style="position: relative; border: 1px solid #ddd; margin-bottom: 10px;"><div class="codediv">XML <button class="copy-btn" style="float: '.$PowerBB->_CONF['info_row']['content_dir'].';background: #3090d0;color: white;border: none;padding: 1px 8px;font-family: '.'Droid Arabic Kufi'.';margin-left: 32px;margin-top: -2px;font-size: 9px;cursor: pointer;border-radius: 6px;transition: background 0.3s;" onclick="copyCode(this)">نسخ الكود</button></div><pre><code class="language-php">'.$matchesxml[1].'</code></pre></div><div class="maxy"></div>';
+		return '<div class="maxy"><div class="codediv-wrapper" style="position: relative; border: 1px solid #ddd; margin-bottom: 10px;"><div class="codediv">XML <button class="copy-btn" style="float: '.$PowerBB->_CONF['info_row']['content_dir'].';background: #3090d0;color: white;border: none;padding: 1px 8px;font-family: '.'Droid Arabic Kufi'.';margin-left: 32px;margin-top: -2px;font-size: 9px;cursor: pointer;border-radius: 6px;transition: background 0.3s;" onclick="copyCode(this)">نسخ الكود</button></div><pre><code class="language-php">'.$matchesxml[1].'</code></pre></div></div>';
 		}, $string);
 
 		$regexcode_sql['[sql]'] = '#\[sql\](.*)\[/sql\]#siU';
 		$string = preg_replace_callback($regexcode_sql, function($matchessql) {
 		$matchessql[1] = str_replace("&amp;#39;", "'", $matchessql[1]);
-		return '<div class="maxy"><div class="codediv-wrapper" style="position: relative; border: 1px solid #ddd; margin-bottom: 10px;"><div class="codediv">SQL <button class="copy-btn" style="float: '.$PowerBB->_CONF['info_row']['content_dir'].';background: #3090d0;color: white;border: none;padding: 1px 8px;font-family: '.'Droid Arabic Kufi'.';margin-left: 32px;margin-top: -2px;font-size: 9px;cursor: pointer;border-radius: 6px;transition: background 0.3s;" onclick="copyCode(this)">نسخ الكود</button></div><pre><code class="language-php">'.$matchessql[1].'</code></pre></div><div class="maxy"></div>';
+		return '<div class="maxy"><div class="codediv-wrapper" style="position: relative; border: 1px solid #ddd; margin-bottom: 10px;"><div class="codediv">SQL <button class="copy-btn" style="float: '.$PowerBB->_CONF['info_row']['content_dir'].';background: #3090d0;color: white;border: none;padding: 1px 8px;font-family: '.'Droid Arabic Kufi'.';margin-left: 32px;margin-top: -2px;font-size: 9px;cursor: pointer;border-radius: 6px;transition: background 0.3s;" onclick="copyCode(this)">نسخ الكود</button></div><pre><code class="language-php">'.$matchessql[1].'</code></pre></div></div>';
 		}, $string);
 
  		$brackets = (strpos($string,'[') !== false) and (strpos($string,']') !== false);
@@ -255,7 +255,6 @@ class PowerBBCodeParse
 	        $string = preg_replace('#\[style\=(.+)\]#iUs', "<span style=\"$1\" class=\"mycode_style\">", $string);
 	        $string = preg_replace('#\[divstyle\=(.+)\](.+)\[\/divstyle\]#iUs', "<div style=\"$1\" class=\"mycode_style\">$2</div>", $string);
             $string = preg_replace("#\[size=(xx-small|x-small|small|medium|large|x-large|xx-large)\](.*?)\[/size\]#si", "<span style=\"font-size: $1;\" class=\"mycode_size\">$2</span>", $string);
-       	    $string = preg_replace('#\[size\=(.+)\](.+)\[\/size\]#iUs', "<font size=\"$1\" style=\"font-size: $1;\" class=\"mycode_size\">$2</font>", $string);
             $string = preg_replace('#\[font\=(.+)\](.+)\[\/font\]#iUs', "<font face=\"$1\" style=\"font-family: $1;\" class=\"mycode_font\">$2</font>", $string);
 			$regexx_list = '#\[list=(1|2)\](.*)\[/list\]#siU';
 			$string = preg_replace_callback($regexx_list, function($xx_list) {
@@ -266,6 +265,17 @@ class PowerBBCodeParse
 			return $this->DoList($x_list[1]);
 			}, $string);
             $string = str_replace('[/list]', '', $string);
+
+	        // Replace all again to confirm
+            $string = preg_replace("#\[(left|center|right|justify)\](.*?)\[/(left|center|right|justify)\]#si", "<div style=\"text-align: $1;\" class=\"mycode_align\">$2</div>", $string);
+            $string = preg_replace("#\[align=(left|center|right|justify)\](.*?)\[/align\]#si", "<div style=\"text-align: $1;\" class=\"mycode_align\">$2</div>", $string);
+	        $string = preg_replace("#\[color=([a-zA-Z]*|\#?[\da-fA-F]{3}|\#?[\da-fA-F]{6})](.*?)\[/color\]#si", "<span style=\"color: $1;\" class=\"mycode_color\">$2</span>", $string);
+	        $string = preg_replace('#\[color\=(.+)\](.+)\[\/color\]#iUs', "<span style=\"color: $1;\" class=\"mycode_color\">$2</span>", $string);
+	        $string = preg_replace('#\[style\=(.+)\](.+)\[\/style\]#iUs', "<span style=\"$1\" class=\"mycode_style\">$2</span>", $string);
+	        $string = preg_replace('#\[style\=(.+)\]#iUs', "<span style=\"$1\" class=\"mycode_style\">", $string);
+	        $string = preg_replace('#\[divstyle\=(.+)\](.+)\[\/divstyle\]#iUs', "<div style=\"$1\" class=\"mycode_style\">$2</div>", $string);
+            $string = preg_replace("#\[size=(xx-small|x-small|small|medium|large|x-large|xx-large)\](.*?)\[/size\]#si", "<span style=\"font-size: $1;\" class=\"mycode_size\">$2</span>", $string);
+            $string = preg_replace('#\[font\=(.+)\](.+)\[\/font\]#iUs', "<font face=\"$1\" style=\"font-family: $1;\" class=\"mycode_font\">$2</font>", $string);
 
             eval($PowerBB->functions->get_fetch_hooks('BBCodeParseHooks1'));
 
@@ -369,7 +379,7 @@ class PowerBBCodeParse
 					}
 				}
 
-            return '<div class="maxy"><div class="codediv-wrapper" style="position: relative; border: 1px solid #ddd; margin-bottom: 10px;"><div class="codediv">CODE <button class="copy-btn" style="float: '.$PowerBB->_CONF['info_row']['content_dir'].';background: #3090d0;color: white;border: none;padding: 1px 8px;font-family: '.'Droid Arabic Kufi'.';margin-left: 32px;margin-top: -2px;font-size: 9px;cursor: pointer;border-radius: 6px;transition: background 0.3s;" onclick="copyCode(this)">نسخ الكود</button></div><pre><code class="language-php">'.$matches[1].'</code></pre></div><div class="maxy"></div>';
+            return '<div class="maxy"><div class="codediv-wrapper" style="position: relative; border: 1px solid #ddd; margin-bottom: 10px;"><div class="codediv">CODE <button class="copy-btn" style="float: '.$PowerBB->_CONF['info_row']['content_dir'].';background: #3090d0;color: white;border: none;padding: 1px 8px;font-family: '.'Droid Arabic Kufi'.';margin-left: 32px;margin-top: -2px;font-size: 9px;cursor: pointer;border-radius: 6px;transition: background 0.3s;" onclick="copyCode(this)">نسخ الكود</button></div><pre><code class="language-php">'.$matches[1].'</code></pre></div></div>';
 			}, $string);
 
 			$regexcode['[php]'] = '#\[php\](.*)\[/php\]#siU';
@@ -377,7 +387,7 @@ class PowerBBCodeParse
 			$matches[1] = htmlspecialchars(base64_decode($matches[1]));
 			$matches[1] = $this->htmlspecialchars_uni($matches[1]);
            // $matches[1] = str_replace('&amp;', '&amp;amp;', $matches[1]);
-            return '<div class="maxy"><div class="codediv-wrapper" style="position: relative; border: 1px solid #ddd; margin-bottom: 10px;"><div class="codediv">PHP <button class="copy-btn" style="float: '.$PowerBB->_CONF['info_row']['content_dir'].';background: #3090d0;color: white;border: none;padding: 1px 8px;font-family: '.'Droid Arabic Kufi'.';margin-left: 32px;margin-top: -2px;font-size: 9px;cursor: pointer;border-radius: 6px;transition: background 0.3s;" onclick="copyCode(this)">نسخ الكود</button></div><pre><code class="language-php">'.$matches[1].'</code></pre></div><div class="maxy"></div>';
+            return '<div class="maxy"><div class="codediv-wrapper" style="position: relative; border: 1px solid #ddd; margin-bottom: 10px;"><div class="codediv">PHP <button class="copy-btn" style="float: '.$PowerBB->_CONF['info_row']['content_dir'].';background: #3090d0;color: white;border: none;padding: 1px 8px;font-family: '.'Droid Arabic Kufi'.';margin-left: 32px;margin-top: -2px;font-size: 9px;cursor: pointer;border-radius: 6px;transition: background 0.3s;" onclick="copyCode(this)">نسخ الكود</button></div><pre><code class="language-php">'.$matches[1].'</code></pre></div></div>';
 			}, $string);
 
 			$regexcode_html['[html]'] = '#\[html\](.*)\[/html\]#siU';
@@ -386,7 +396,7 @@ class PowerBBCodeParse
 			$matches[1] = $this->htmlspecialchars_uni($matches[1]);
 			$matches[1] = $this->Simplereplace($matches[1]);
             $matches[1] = str_replace('&amp;', '&amp;amp;', $matches[1]);
-			return '<div class="maxy"><div class="codediv-wrapper" style="position: relative; border: 1px solid #ddd; margin-bottom: 10px;"><div class="codediv">Html <button class="copy-btn" style="float: '.$PowerBB->_CONF['info_row']['content_dir'].';background: #3090d0;color: white;border: none;padding: 1px 8px;font-family: '.'Droid Arabic Kufi'.';margin-left: 32px;margin-top: -2px;font-size: 9px;cursor: pointer;border-radius: 6px;transition: background 0.3s;" onclick="copyCode(this)">نسخ الكود</button></div><pre><code class="language-php">'.$matches[1].'</code></pre></div><div class="maxy"></div>';
+			return '<div class="maxy"><div class="codediv-wrapper" style="position: relative; border: 1px solid #ddd; margin-bottom: 10px;"><div class="codediv">Html <button class="copy-btn" style="float: '.$PowerBB->_CONF['info_row']['content_dir'].';background: #3090d0;color: white;border: none;padding: 1px 8px;font-family: '.'Droid Arabic Kufi'.';margin-left: 32px;margin-top: -2px;font-size: 9px;cursor: pointer;border-radius: 6px;transition: background 0.3s;" onclick="copyCode(this)">نسخ الكود</button></div><pre><code class="language-php">'.$matches[1].'</code></pre></div></div>';
 			}, $string);
 
 			$regexcode_js['[js]'] = '#\[js\](.*)\[/js\]#siU';
@@ -395,7 +405,7 @@ class PowerBBCodeParse
 			$matches[1] = $this->fix_javascript($matches[1]);
 			$matches[1] = $this->htmlspecialchars_uni($matches[1]);
 			$matches[1] = $this->Simplereplace($matches[1]);
-			return '<div class="maxy"><div class="codediv-wrapper" style="position: relative; border: 1px solid #ddd; margin-bottom: 10px;"><div class="codediv">Java <button class="copy-btn" style="float: '.$PowerBB->_CONF['info_row']['content_dir'].';background: #3090d0;color: white;border: none;padding: 1px 8px;font-family: '.'Droid Arabic Kufi'.';margin-left: 32px;margin-top: -2px;font-size: 9px;cursor: pointer;border-radius: 6px;transition: background 0.3s;" onclick="copyCode(this)">نسخ الكود</button></div><pre><code class="language-php">'.$matches[1].'</code></pre></div><div class="maxy"></div>';
+			return '<div class="maxy"><div class="codediv-wrapper" style="position: relative; border: 1px solid #ddd; margin-bottom: 10px;"><div class="codediv">Java <button class="copy-btn" style="float: '.$PowerBB->_CONF['info_row']['content_dir'].';background: #3090d0;color: white;border: none;padding: 1px 8px;font-family: '.'Droid Arabic Kufi'.';margin-left: 32px;margin-top: -2px;font-size: 9px;cursor: pointer;border-radius: 6px;transition: background 0.3s;" onclick="copyCode(this)">نسخ الكود</button></div><pre><code class="language-php">'.$matches[1].'</code></pre></div></div>';
 			}, $string);
 
 		return $string;
@@ -479,7 +489,6 @@ class PowerBBCodeParse
       {
         	global $PowerBB;
 		$message = trim($message);
-
 		if(!$message)
 		{
 			return '';

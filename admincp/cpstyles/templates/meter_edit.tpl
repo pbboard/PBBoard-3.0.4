@@ -273,6 +273,71 @@ function deleteOrphanReplies() {
 
 
 <br />
+<form id="deleteOrphanForm" onsubmit="deleteOrphanAttachments(); return false;">
+    <table width="80%" class="t_style_b" border="0" cellspacing="1" align="center">
+        <tr align="center">
+            <td class="main1" colspan="2">إدارة وتنظيف المرفقات اليتيمة</td>
+        </tr>
+        <tr>
+            <td class="row1" style="padding:20px; font-size:13px; color:#444; line-height: 1.6;">
+                <div style="margin-bottom: 10px; font-weight: bold; color: #d9534f;">
+                    <i class="fa fa-exclamation-triangle"></i> سيقوم هذا الإجراء بالعمليات التالية:
+                </div>
+                <ul style="margin: 0; padding-right: 20px; list-style-type: square;">
+                    <li>فحص وحذف سجلات المرفقات التي تتبع <b>مواضيع أو ردود محذوفة</b>.</li>
+                    <li>فحص وحذف المرفقات التابعة <b>لرسائل خاصة محذوفة</b>.</li>
+                    <li>فلترة مجلد الرفع (download) وحذف <b>أي ملف غير مسجل</b> في قاعدة البيانات.</li>
+                </ul>
+                <p style="margin-top: 15px; background: #fffbcc; padding: 8px; border-right: 4px solid #f0ad4e;">
+                    <strong>ملاحظة:</strong> عملية الحذف نهائية ولا يمكن التراجع عنها. ينصح بأخذ نسخة احتياطية للمجلد والقاعدة قبل البدء.
+                </p>
+            </td>
+        </tr>
+        <tr align="center">
+            <td class="row1" style="padding: 15px;">
+                <div id="loader_orphan" style="display: none; margin-bottom: 10px;">
+                    <img src="images/loading.gif" alt="" /> جارٍ الفحص والتنظيف، يرجى الانتظار...
+                </div>
+                <input type="submit" id="btn_delete_orphan" value="بدء عملية التنظيف الشاملة" class="button" style="padding: 8px 25px; cursor: pointer;" />
+            </td>
+        </tr>
+    </table>
+</form>
+
+<script type="text/javascript">
+function deleteOrphanAttachments() {
+    if (!confirm('هل أنت متأكد من رغبتك في بدء التنظيف الشامل؟ سيتم حذف الملفات والسجلات اليتيمة نهائياً.')) return;
+
+    // تعطيل الزر وإظهار مؤشر التحميل
+    $('#btn_delete_orphan').prop('disabled', true).css('opacity', '0.5');
+    $('#loader_orphan').show();
+
+    $.ajax({
+        url: 'index.php?page=fixup&delete_orphan_Attachments=1',
+        type: 'GET',
+        dataType: 'json',
+        success: function(res) {
+            // إعادة الحالة الطبيعية
+            $('#btn_delete_orphan').prop('disabled', false).css('opacity', '1');
+            $('#loader_orphan').hide();
+
+            if(res.status === 'success') {
+                alert("تمت العملية بنجاح!\n" + res.message);
+            } else {
+                alert("تنبيه: " + res.message);
+            }
+        },
+        error: function() {
+            $('#btn_delete_orphan').prop('disabled', false).css('opacity', '1');
+            $('#loader_orphan').hide();
+            alert('حدث خطأ غير متوقع أثناء عملية الحذف! تأكد من صلاحيات الملفات.');
+        }
+    });
+}
+</script>
+
+
+<br />
 <form action="index.php?page=fixup&amp;update_username_members=1" method="post">
     <table width="80%" class="t_style_b" border="0" cellspacing="1" align="center">
         <tr align="center"><td class="main1">{$lang['update_username_members']}</td></tr>

@@ -24,7 +24,7 @@ function run()
 		if ($PowerBB->_CONF['member_permission'])
 		{
             // 1. Prevent Header for AJAX and Specific Actions
-	        if (!isset($PowerBB->_GET['ajax_process']) && !isset($PowerBB->_GET['get_total']) && !isset($PowerBB->_GET['pbboard_updates']) && !isset($PowerBB->_GET['clear_all_files_cache']) && !isset($PowerBB->_GET['delete_orphan_replies'])) {
+	        if (!isset($PowerBB->_GET['ajax_process']) && !isset($PowerBB->_GET['get_total']) && !isset($PowerBB->_GET['pbboard_updates']) && !isset($PowerBB->_GET['clear_all_files_cache']) && !isset($PowerBB->_GET['delete_orphan_replies']) && !isset($PowerBB->_GET['delete_orphan_Attachments'])) {
 	            $PowerBB->template->display('header');
 	        }
 
@@ -42,6 +42,10 @@ function run()
 			if (isset($PowerBB->_GET['delete_orphan_replies']))
 			{
                  $this->_DeleteOrphanReplies();
+			}
+			if (isset($PowerBB->_GET['delete_orphan_Attachments']))
+			{
+                 $this->_DeleteOrphanAttachments();
 			}
 			elseif ($PowerBB->_GET['repair'])
 			{
@@ -103,7 +107,7 @@ function run()
 			}
 
             // 2. Prevent Footer for AJAX and Specific Actions
-	        if (!isset($PowerBB->_GET['ajax_process']) && !isset($PowerBB->_GET['get_total']) && !isset($PowerBB->_GET['pbboard_updates']) && !isset($PowerBB->_GET['delete_orphan_replies']) && !isset($PowerBB->_GET['clear_all_files_cache'])) {
+	        if (!isset($PowerBB->_GET['ajax_process']) && !isset($PowerBB->_GET['get_total']) && !isset($PowerBB->_GET['pbboard_updates']) && !isset($PowerBB->_GET['delete_orphan_replies']) && !isset($PowerBB->_GET['delete_orphan_Attachments']) && !isset($PowerBB->_GET['clear_all_files_cache'])) {
                 $PowerBB->template->display('footer');
             }
 		}
@@ -633,6 +637,78 @@ function run()
 	    exit;
 	}
 
+
+
+	function _DeleteOrphanAttachments()
+	{
+	    global $PowerBB;
+	    @set_time_limit(0);
+
+	    $directory = '../download/';
+	    $directoryrel = 'download/';
+	    $db_orphan_count = 0;
+	    $file_orphan_count = 0;
+
+	    $sql_subjects = "SELECT a.id, a.filepath FROM " . $PowerBB->table['attach'] . " a
+	                     LEFT JOIN " . $PowerBB->table['subject'] . " s ON a.subject_id = s.id
+	                     WHERE a.reply = 0 AND a.pm_id = 0 AND s.id IS NULL";
+
+	    $sql_replies = "SELECT a.id, a.filepath FROM " . $PowerBB->table['attach'] . " a
+	                    LEFT JOIN " . $PowerBB->table['reply'] . " r ON a.subject_id = r.id
+	                    WHERE a.reply = 1 AND a.pm_id = 0 AND r.id IS NULL";
+
+	    $sql_pms = "SELECT a.id, a.filepath FROM " . $PowerBB->table['attach'] . " a
+	                LEFT JOIN " . $PowerBB->table['pm'] . " p ON a.pm_id = p.id
+	                WHERE a.pm_id > 0 AND p.id IS NULL";
+
+	    $queries = array($sql_subjects, $sql_replies, $sql_pms);
+
+	    foreach ($queries as $sql) {
+	        $result = $PowerBB->DB->sql_query($sql);
+	        while ($row = $PowerBB->DB->sql_fetch_array($result)) {
+	            $physical_path = '../' . $row['filepath'];
+	            if (file_exists($physical_path)) {
+	                @unlink($physical_path);
+	            }
+	            $PowerBB->DB->sql_query("DELETE FROM " . $PowerBB->table['attach'] . " WHERE id = " . (int)$row['id']);
+	            $db_orphan_count++;
+	        }
+	    }
+
+
+	    if (!is_dir($directory)) {
+	        echo json_encode(array(
+	            'status' => 'error',
+	            'message' => "المجلد {$directory} غير موجود."
+	        ));
+	        exit;
+	    }
+
+	    $files = array_diff(scandir($directory), array('.', '..', 'index.html', '.htaccess', 'index.php'));
+
+	    foreach ($files as $filename) {
+	        $full_filepathrel = $directoryrel . $filename;
+	        $full_path_to_unlink = $directory . $filename;
+
+	        $check_file = $PowerBB->DB->sql_query("SELECT id FROM " . $PowerBB->table['attach'] . " WHERE filepath = '" . $PowerBB->DB->sql_escape($full_filepathrel) . "' LIMIT 1");
+
+	        if ($PowerBB->DB->sql_num_rows($check_file) == 0) {
+	            if (file_exists($full_path_to_unlink)) {
+	                if (@unlink($full_path_to_unlink)) {
+	                    $file_orphan_count++;
+	                }
+	            }
+	        }
+	    }
+
+	    echo json_encode(array(
+	        'status' => 'success',
+	        'message' => "تمت العملية بنجاح: \n" .
+	                     "- حذف {$db_orphan_count} سجل مرفق يتيم من قاعدة البيانات مع ملفاتهم.\n" .
+	                     "- حذف {$file_orphan_count} ملف من المجلد ليس لها سجلات أصلاً."
+	    ));
+	    exit;
+	}
 
 
 	function _UpdatUsernameMembersStart()

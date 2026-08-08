@@ -689,6 +689,16 @@ class PBBTemplate
 				   // end auto link titles php
 		          }
 
+					if ($filename == 'usercp_index')
+					{
+                    $write_b = str_replace("&amp;count=0","",$write_b);
+                    $write_b = str_replace("#0","",$write_b);
+                    }
+					if ($filename == 'usercp_reputations')
+					{
+                    $write_b = str_replace("&amp;count=0","",$write_b);
+                    $write_b = str_replace("#0","",$write_b);
+                    }
 				$write_b = str_replace('src="look/','src="'.$PowerBB->functions->GetForumAdress().'look/', $write_b);
 				$write_b = str_replace("src='look/","src='".$PowerBB->functions->GetForumAdress()."look/", $write_b);
 				$write_b = str_replace('src="includes/','src="'.$PowerBB->functions->GetForumAdress().'includes/', $write_b);

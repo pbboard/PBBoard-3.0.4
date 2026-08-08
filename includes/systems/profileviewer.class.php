@@ -189,7 +189,7 @@ class PowerBBProfileViewer {
 		}
 
 		# Go ahead and get the required data
-		$SQL = 'SELECT m.id , m.username, p.viewer_user_id, p.viewer_user_counter, p.viewer_visit_time
+		$SQL = 'SELECT m.id , m.username, m.username_style_cache, p.viewer_user_id, p.viewer_user_counter, p.viewer_visit_time
 		FROM ' . $this->table_name . ' AS p INNER JOIN  ' . $this->Engine->prefix . 'member AS m
 		ON p.viewer_user_id =  m.id
 		WHERE p.profile_user_id = ' . $profile_id . '

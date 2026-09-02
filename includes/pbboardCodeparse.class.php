@@ -61,6 +61,21 @@ class PowerBBCodeParse
 		return '[php]'.base64_encode($matches[1]).'[/php]';
 		}, $string);
 
+		$regex_assembly['[assembly]'] = '#\[assembly\](.*)\[/assembly\]#siU';
+		$string = preg_replace_callback($regex_assembly, function($matche_assembly) {
+		$matche_assembly[1] = preg_replace('#\[color\=(.+)\](.+)\[\/color\]#iUs', "$2", $matche_assembly[1]);
+		$matche_assembly[1] = preg_replace('#\[font\=(.+)\](.+)\[\/font\]#iUs', "$2", $matche_assembly[1]);
+		$matche_assembly[1] = preg_replace('#\[size\=(.+)\](.+)\[\/size\]#iUs', "$2", $matche_assembly[1]);
+		return '[assembly]'.base64_encode($matche_assembly[1]).'[/assembly]';
+		}, $string);
+
+		$regex_cxx['[cpp]'] = '#\[cpp\](.*)\[/cpp\]#siU';
+		$string = preg_replace_callback($regex_cxx, function($matche_cxx) {
+		$matche_cxx[1] = preg_replace('#\[color\=(.+)\](.+)\[\/color\]#iUs', "$2", $matche_cxx[1]);
+		$matche_cxx[1] = preg_replace('#\[font\=(.+)\](.+)\[\/font\]#iUs', "$2", $matche_cxx[1]);
+		$matche_cxx[1] = preg_replace('#\[size\=(.+)\](.+)\[\/size\]#iUs', "$2", $matche_cxx[1]);
+		return '[cpp]'.base64_encode($matche_cxx[1]).'[/cpp]';
+		}, $string);
 
        // replace html tags to bbcode
        $string = $this->html2bb($string);
@@ -389,6 +404,20 @@ class PowerBBCodeParse
            // $matches[1] = str_replace('&amp;', '&amp;amp;', $matches[1]);
             return '<div class="maxy"><div class="codediv-wrapper" style="position: relative; border: 1px solid #ddd; margin-bottom: 10px;"><div class="codediv">PHP <button class="copy-btn" style="float: '.$PowerBB->_CONF['info_row']['content_dir'].';background: #3090d0;color: white;border: none;padding: 1px 8px;font-family: '.'Droid Arabic Kufi'.';margin-left: 32px;margin-top: -2px;font-size: 9px;cursor: pointer;border-radius: 6px;transition: background 0.3s;" onclick="copyCode(this)">نسخ الكود</button></div><pre><code class="language-php">'.$matches[1].'</code></pre></div></div>';
 			}, $string);
+
+		$regex_assembly['[assembly]'] = '#\[assembly\](.*)\[/assembly\]#siU';
+		$string = preg_replace_callback($regex_assembly, function($matche_assembly) {
+		$matche_assembly[1] = htmlspecialchars(base64_decode($matche_assembly[1]));
+		$matche_assembly[1] = $this->htmlspecialchars_uni($matche_assembly[1]);
+        return '<div class="maxy"><div class="codediv-wrapper" style="position: relative; border: 1px solid #ddd; margin-bottom: 10px;"><div class="codediv">Assembly <button class="copy-btn" style="float: '.$PowerBB->_CONF['info_row']['content_dir'].';background: #3090d0;color: white;border: none;padding: 1px 8px;font-family: '.'Droid Arabic Kufi'.';margin-left: 32px;margin-top: -2px;font-size: 9px;cursor: pointer;border-radius: 6px;transition: background 0.3s;" onclick="copyCode(this)">نسخ الكود</button></div><pre><code class="language-javascript">'.$matche_assembly[1].'</code></pre></div></div>';
+		}, $string);
+
+		$regex_cxx['[cpp]'] = '#\[cpp\](.*)\[/cpp\]#siU';
+		$string = preg_replace_callback($regex_cxx, function($matche_cxx) {
+		$matche_cxx[1] = htmlspecialchars(base64_decode($matche_cxx[1]));
+		$matche_cxx[1] = $this->htmlspecialchars_uni($matche_cxx[1]);
+        return '<div class="maxy"><div class="codediv-wrapper" style="position: relative; border: 1px solid #ddd; margin-bottom: 10px;"><div class="codediv"><b dir="ltr">C++</b> <button class="copy-btn" style="float: '.$PowerBB->_CONF['info_row']['content_dir'].';background: #3090d0;color: white;border: none;padding: 1px 8px;font-family: '.'Droid Arabic Kufi'.';margin-left: 32px;margin-top: -2px;font-size: 9px;cursor: pointer;border-radius: 6px;transition: background 0.3s;" onclick="copyCode(this)">نسخ الكود</button></div><pre><code class="language-java">'.$matche_cxx[1].'</code></pre></div></div>';
+		}, $string);
 
 			$regexcode_html['[html]'] = '#\[html\](.*)\[/html\]#siU';
 			$string = preg_replace_callback($regexcode_html, function($matches) {
@@ -1398,6 +1427,16 @@ class PowerBBCodeParse
 		return '[js]'.base64_encode($matchesjs[1]).'[/js]';
 		}, $string);
 
+		$regex_assembly['[assembly]'] = '#\[assembly\](.*)\[/assembly\]#siU';
+		$string = preg_replace_callback($regex_assembly, function($matche_assembly) {
+        return '[assembly]'.base64_encode($matche_assembly[1]).'[/assembly]';
+		}, $string);
+
+		$regex_cxx['[cpp]'] = '#\[cpp\](.*)\[/cpp\]#siU';
+		$string = preg_replace_callback($regex_cxx, function($matche_cxx) {
+        return '[cpp]'.base64_encode($matche_cxx[1]).'[/cpp]';
+		}, $string);
+
 	  $string = str_replace("&quot;", '"', $string);
 	  $string = str_replace("&lt;","<", $string);
 	  $string = str_replace("&gt;",">", $string);
@@ -1586,6 +1625,16 @@ class PowerBBCodeParse
 		$regexcode_js['[js]'] = '#\[js\](.*)\[/js\]#siU';
 		$string = preg_replace_callback($regexcode_js, function($matchesjs) {
 		return '[js]'.base64_decode($matchesjs[1]).'[/js]';
+		}, $string);
+
+		$regex_assembly['[assembly]'] = '#\[assembly\](.*)\[/assembly\]#siU';
+		$string = preg_replace_callback($regex_assembly, function($matche_assembly) {
+        return '[assembly]'.base64_decode($matche_assembly[1]).'[/assembly]';
+		}, $string);
+
+		$regex_cxx['[cpp]'] = '#\[cpp\](.*)\[/cpp\]#siU';
+		$string = preg_replace_callback($regex_cxx, function($matche_cxx) {
+        return '[cpp]'.base64_decode($matche_cxx[1]).'[/cpp]';
 		}, $string);
 
 		// Convert HTML quotes

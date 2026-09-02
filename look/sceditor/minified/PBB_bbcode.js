@@ -105,6 +105,10 @@ $.sceditor.command.set("codebrush", {
 			'<div>' +
 				'<a class="sceditor-header-option" OnClick=bbcode_wysiwyg("' + ('code') + '") ">' +
 				  '<b>CODE</b>' +
+				'<a class="sceditor-header-option" OnClick=bbcode_wysiwyg("' + ('assembly') + '") ">' +
+				  '<b>Assembly</b>' +
+				'<a class="sceditor-header-option" OnClick=bbcode_wysiwyg("' + ('cpp') + '") ">' +
+				  '<b dir="ltr">C++</b>' +
 				'</a><div />'+
 				'<a class="sceditor-header-option" OnClick=bbcode_wysiwyg("' + ('php') + '") ">' +
 					'<b>PHP</b>' +
@@ -141,6 +145,10 @@ txtExec: function(caller) {
 			'<div>' +
 				'<a class="sceditor-header-option" OnClick=bbcode_tags("' + ('code') + '") ">' +
 					'<b>CODE</b>' +
+			'<a class="sceditor-header-option" OnClick=bbcode_tags("' + ('assembly') + '") ">' +
+					'<b>Assembly</b>' +
+			'<a class="sceditor-header-option" OnClick=bbcode_tags("' + ('cpp') + '") ">' +
+					'<b dir="ltr">C++</b>' +
 				'</a><div />'+
 				'<a class="sceditor-header-option" OnClick=bbcode_tags("' + ('php') + '") ">' +
 					'<b>PHP</b>' +

@@ -331,8 +331,11 @@ class PowerBBForumMOD
 		$Forum_online_number = $PowerBB->DB->sql_fetch_row($PowerBB->DB->sql_query("SELECT COUNT(*) FROM " . $PowerBB->table['online'] . " WHERE section_id = " . $PowerBB->_GET['id'] . " AND username='Guest'"));
 		$PowerBB->_CONF['template']['GuestNumber'] = $Forum_online_number;
 
-    	$PowerBB->_CONF['template']['MemberNumber'] = sizeof($PowerBB->_CONF['template']['while']['SectionVisitor']);
-		$online_number = $PowerBB->_CONF['template']['GuestNumber']+$PowerBB->_CONF['template']['MemberNumber'];
+    	$AllSectionVisitor = sizeof($PowerBB->_CONF['template']['while']['SectionVisitor']);
+
+        $PowerBB->_CONF['template']['MemberNumber'] = max(0, $AllSectionVisitor - $PowerBB->_CONF['template']['GuestNumber']);
+
+		$online_number = $AllSectionVisitor;
 
        $PowerBB->template->assign('online_number',$online_number);
 	}

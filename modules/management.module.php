@@ -1492,7 +1492,7 @@ class PowerBBManagementMOD
 
 
                     $TitlePost = utf8_decode($PowerBB->_POST['title']);
-		     		if (isset($TitlePost{$PowerBB->_CONF['info_row']['post_title_max']}))
+		     		if (isset($TitlePost[$PowerBB->_CONF['info_row']['post_title_max']]))
 		     		{
 		     			$PowerBB->functions->ShowHeader();
 		                $PowerBB->_CONF['template']['_CONF']['lang']['post_text_max_subjects'] = str_replace("60", $PowerBB->_CONF['info_row']['post_title_max'], $PowerBB->_CONF['template']['_CONF']['lang']['post_text_max_subjects']);
@@ -1502,7 +1502,7 @@ class PowerBBManagementMOD
 		    		}
 
                     $TitlePost = preg_replace('/\s+/', '', $TitlePost);
-		        	if  (!isset($TitlePost{$PowerBB->_CONF['info_row']['post_title_min']}))
+		        	if  (!isset($TitlePost[$PowerBB->_CONF['info_row']['post_title_min']]))
 		     		{
 		     			$PowerBB->functions->ShowHeader();
 		                $PowerBB->_CONF['template']['_CONF']['lang']['post_text_min_subjects'] = str_replace("(4)", " (".$PowerBB->_CONF['info_row']['post_text_min'].") ", $PowerBB->_CONF['template']['_CONF']['lang']['post_text_min_subjects']);
@@ -1514,7 +1514,7 @@ class PowerBBManagementMOD
                     $TextPost = utf8_decode($PowerBB->_POST['text']);
                     $TextPost = preg_replace('#\[IMG\](.*)\[/IMG\]#siU', '', $TextPost);
                     $TextPost = $PowerBB->Powerparse->remove_message_quotes($TextPost);
-		       	 	if (isset($TextPost{$PowerBB->_CONF['info_row']['post_text_max']}))
+		       	 	if (isset($TextPost[$PowerBB->_CONF['info_row']['post_text_max']]))
 		     		{
 		     		$PowerBB->functions->ShowHeader();
 		     			$PowerBB->_CONF['template']['_CONF']['lang']['post_text_max'] = str_replace("30000", $PowerBB->_CONF['info_row']['post_text_max'], $PowerBB->_CONF['template']['_CONF']['lang']['post_text_max']);
@@ -1523,7 +1523,7 @@ class PowerBBManagementMOD
 		      			$PowerBB->functions->error_stop();
 		     		}
                     $TextPost = preg_replace('/\s+/', '', $TextPost);
-		     		if (!isset($TextPost{$PowerBB->_CONF['info_row']['post_text_min']}))
+		     		if (!isset($TextPost[$PowerBB->_CONF['info_row']['post_text_min']]))
 		     		{
 		     			$PowerBB->functions->ShowHeader();
 		     			 $PowerBB->_CONF['template']['_CONF']['lang']['post_text_min'] = str_replace("5", $PowerBB->_CONF['info_row']['post_text_min'], $PowerBB->_CONF['template']['_CONF']['lang']['post_text_min']);
@@ -2221,7 +2221,7 @@ class PowerBBManagementMOD
             $PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['post_text_min']);
 			}
 
-     		if (isset($TextPost{$PowerBB->_CONF['info_row']['post_text_max']}))
+     		if (isset($TextPost[$PowerBB->_CONF['info_row']['post_text_max']]))
      		{
      			$PowerBB->functions->ShowHeader();
 		     	$PowerBB->_CONF['template']['_CONF']['lang']['post_text_max'] = str_replace("30000", $PowerBB->_CONF['info_row']['post_text_max'], $PowerBB->_CONF['template']['_CONF']['lang']['post_text_max']);
@@ -2231,7 +2231,7 @@ class PowerBBManagementMOD
 	     	 }
 
              $TextPost = preg_replace('/\s+/', '', $TextPost);
-     		 if (!isset($TextPost{$PowerBB->_CONF['info_row']['post_text_min']}))
+     		 if (!isset($TextPost[$PowerBB->_CONF['info_row']['post_text_min']]))
      		{
              $PowerBB->functions->ShowHeader();
 		     $PowerBB->_CONF['template']['_CONF']['lang']['post_text_min'] = str_replace("5", $PowerBB->_CONF['info_row']['post_text_min'], $PowerBB->_CONF['template']['_CONF']['lang']['post_text_min']);

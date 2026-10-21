@@ -235,7 +235,7 @@ class PowerBBAJAXtMOD
 		$error_stop = false;
 		}
 
-		if (isset($TextPost{$PowerBB->_CONF['info_row']['post_text_max']}))
+		if (isset($TextPost[$PowerBB->_CONF['info_row']['post_text_max']]))
 		{
 		 $PowerBB->_CONF['template']['_CONF']['lang']['post_text_max'] = str_replace("30000", $PowerBB->_CONF['info_row']['post_text_max'], $PowerBB->_CONF['template']['_CONF']['lang']['post_text_max']);
 		 $error_msg =($PowerBB->_CONF['template']['_CONF']['lang']['post_text_max']);
@@ -311,7 +311,7 @@ class PowerBBAJAXtMOD
 		$error_stop = false;
 		}
 
-		if (isset($TextPost{$PowerBB->_CONF['info_row']['post_text_max']}))
+		if (isset($TextPost[$PowerBB->_CONF['info_row']['post_text_max']]))
 		{
 		 $PowerBB->_CONF['template']['_CONF']['lang']['post_text_max'] = str_replace("30000", $PowerBB->_CONF['info_row']['post_text_max'], $PowerBB->_CONF['template']['_CONF']['lang']['post_text_max']);
 		 $error_msg =($PowerBB->_CONF['template']['_CONF']['lang']['post_text_max']);

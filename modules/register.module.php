@@ -393,7 +393,7 @@ class PowerBBRegisterMOD
 			$PowerBB->functions->GetFooter();
 			}
 
-      	if (isset($PowerBB->_POST['password']{$PowerBB->_CONF['info_row']['reg_pass_max_num']+1}))
+      	if (isset($PowerBB->_POST['password'][$PowerBB->_CONF['info_row']['reg_pass_max_num']+1]))
       	{
       		$PowerBB->functions->ShowHeader();
       		$PowerBB->_CONF['template']['_CONF']['lang']['Character_pass_many'] = str_replace("{paas_num}", $PowerBB->_CONF['info_row']['reg_pass_max_num'], $PowerBB->_CONF['template']['_CONF']['lang']['Character_pass_many']);
@@ -401,7 +401,7 @@ class PowerBBRegisterMOD
 			$PowerBB->functions->GetFooter();
       	}
 
-      	if (!isset($PowerBB->_POST['password']{$PowerBB->_CONF['info_row']['reg_pass_min_num']-1}))
+      	if (!isset($PowerBB->_POST['password'][$PowerBB->_CONF['info_row']['reg_pass_min_num']-1]))
       	{
       		$PowerBB->functions->ShowHeader();
 		    $PowerBB->_CONF['template']['_CONF']['lang']['Character_pass_few'] = str_replace("5", $PowerBB->_CONF['info_row']['reg_pass_min_num'], $PowerBB->_CONF['template']['_CONF']['lang']['Character_pass_few']);

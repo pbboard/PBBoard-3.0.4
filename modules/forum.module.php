@@ -398,28 +398,6 @@ class PowerBBForumMOD
 
 	}
 
-
-	/**
-	 * Get sections list.
-	 * // Is files forums Cache  = false
-	 */
-	function _GetSections_direct()
-	{
-		global $PowerBB;
-		if (isset($this->Section['id'])) {
-		    // الدالة الآن سترجع true فقط إذا وجد أقسام فرعية فعلياً
-		    $has_sub = $PowerBB->functions->_GetSections_direct($this->Section['id']);
-
-		    if ($has_sub) {
-		        $PowerBB->template->assign('SHOW_SUB_SECTIONS', true);
-		    } else {
-		        $PowerBB->template->assign('SHOW_SUB_SECTIONS', false);
-		    }
-		}
-
-	}
-
-
 	function forum_run_Hooks()
 	{
 	    global $PowerBB;

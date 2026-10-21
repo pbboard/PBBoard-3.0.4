@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 
 (!defined('IN_PowerBB')) ? die() : '';
 
@@ -338,7 +338,7 @@ class PowerBBCOREMOD
 		        $PowerBB->_POST['textc'] = $PowerBB->functions->CleanVariable($PowerBB->_POST['textc'],'sql');
 
             $TextPost = utf8_decode($PowerBB->_POST['textc']);
-    		if (isset($TextPost{$PowerBB->_CONF['info_row']['chat_num_characters']}))
+    		if (isset($TextPost[$PowerBB->_CONF['info_row']['chat_num_characters']]))
     		{
     		     $PowerBB->_CONF['template']['_CONF']['lang']['message_large_number_of_characters'] = str_ireplace('970',$PowerBB->_CONF['info_row']['chat_num_characters'],$PowerBB->_CONF['template']['_CONF']['lang']['message_large_number_of_characters']);
                  $PowerBB->functions->error_no_foot($PowerBB->_CONF['template']['_CONF']['lang']['message_large_number_of_characters']);
@@ -519,7 +519,7 @@ class PowerBBCOREMOD
 		        $PowerBB->_POST['text'] = $PowerBB->functions->CleanVariable($PowerBB->_POST['text'],'sql');
 
             $TextPost = utf8_decode($PowerBB->_POST['text']);
-    		if (isset($TextPost{$PowerBB->_CONF['info_row']['chat_num_characters']}))
+    		if (isset($TextPost[$PowerBB->_CONF['info_row']['chat_num_characters']]))
     		{
     		     $PowerBB->_CONF['template']['_CONF']['lang']['message_large_number_of_characters'] = str_ireplace('970',$PowerBB->_CONF['info_row']['chat_num_characters'],$PowerBB->_CONF['template']['_CONF']['lang']['message_large_number_of_characters']);
                  $PowerBB->functions->error_no_foot($PowerBB->_CONF['template']['_CONF']['lang']['message_large_number_of_characters']);

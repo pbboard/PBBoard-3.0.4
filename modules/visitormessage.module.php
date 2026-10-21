@@ -177,7 +177,7 @@ class PowerBBCoreMOD
 		}
 
 
-    		if (isset($PowerBB->_POST['text']{$PowerBB->_CONF['info_row']['visitor_message_chars']}))
+    		if (isset($PowerBB->_POST['text'][$PowerBB->_CONF['info_row']['visitor_message_chars']]))
     		{
                  $PowerBB->functions->error($PowerBB->_CONF['template']['_CONF']['lang']['visitor_message_large_number_of_characters']);
              }
@@ -274,7 +274,7 @@ class PowerBBCoreMOD
 				    }
               }
 
-    		if (isset($PowerBB->_POST['text']{$PowerBB->_CONF['info_row']['visitor_message_chars']}))
+    		if (isset($PowerBB->_POST['text'][$PowerBB->_CONF['info_row']['visitor_message_chars']]))
     		{
                  $PowerBB->functions->error_no_foot($PowerBB->_CONF['template']['_CONF']['lang']['visitor_message_large_number_of_characters']);
              }

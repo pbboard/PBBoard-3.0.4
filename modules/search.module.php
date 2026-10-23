@@ -437,15 +437,15 @@ class PowerBBSearchEngineMOD
 
 
         $characters >= '1';
-		if  (isset($keyword{$characters}))
+		if  (isset($keyword[$characters]))
 		{
 			$this->_StartSearchKeyword();
 		}
-		if  (isset($username{$characters}))
+		if  (isset($username[$characters]))
 		{
 			$this->_StartSearchUser();
 		}
-       	if  (isset($tag{$characters}))
+       	if  (isset($tag[$characters]))
 		{
 			$this->_SearchTag();
 		}
